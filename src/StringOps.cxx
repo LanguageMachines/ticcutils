@@ -44,16 +44,16 @@ namespace TiCC {
     //    cerr << "trim: '" << s << "' (" << chars << ")" << endl;
     string result;
     if ( !s.empty() ){
-      string::size_type b_it = s.find_first_not_of( chars );
-      //      cerr << "BIT = " << b_it << endl;
-      if ( b_it == string::npos )
+      string::size_type b_pos = s.find_first_not_of( chars );
+      //      cerr << "BIT = " << b_pos << endl;
+      if ( b_pos == string::npos )
 	return result;
-      string::size_type e_it = s.find_last_not_of( chars );
-      //      cerr << "EIT = " << e_it << endl;
-      if ( e_it == string::npos )
-	result = s.substr( b_it );
+      string::size_type e_pos = s.find_last_not_of( chars );
+      //      cerr << "EIT = " << e_pos << endl;
+      if ( e_pos == string::npos )
+	result = s.substr( b_pos );
       else
-	result = s.substr( b_it, e_it+1 );
+	result = s.substr( b_pos, e_pos-b_pos+1 );
     }
     //    cerr << "trim ==> '" << result << "'" << endl;
     return result;
