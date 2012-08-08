@@ -34,6 +34,8 @@
 #include <vector>
 
 namespace TiCC {
+  std::string trim( const std::string&, const std::string& = " \t\r\n" );
+
   size_t split_at( const std::string&, std::vector<std::string>&, 
 		   const std::string& );
   size_t split_at_first_of( const std::string&, std::vector<std::string>&, 

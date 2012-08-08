@@ -38,7 +38,27 @@
 
 using namespace std;
 namespace TiCC {
-
+  
+  string trim( const string& s, const string& chars ){
+    // remove leading and trailing characters from a string
+    //    cerr << "trim: '" << s << "' (" << chars << ")" << endl;
+    string result;
+    if ( !s.empty() ){
+      string::size_type b_it = s.find_first_not_of( chars );
+      //      cerr << "BIT = " << b_it << endl;
+      if ( b_it == string::npos )
+	return result;
+      string::size_type e_it = s.find_last_not_of( chars );
+      //      cerr << "EIT = " << e_it << endl;
+      if ( e_it == string::npos )
+	result = s.substr( b_it );
+      else
+	result = s.substr( b_it, e_it+1 );
+    }
+    //    cerr << "trim ==> '" << result << "'" << endl;
+    return result;
+  }
+  
   size_t split_at( const string& src, vector<string>& results, 
 		   const string& sep ){
     // split a string into substrings, using seps as seperator
