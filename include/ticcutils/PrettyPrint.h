@@ -1,6 +1,6 @@
 /*
-  $Id: Types.h 13846 2012-01-02 16:38:19Z sloot $
-  $URL: https://ilk.uvt.nl/svn/trunk/sources/Timbl6/include/timbl/Types.h $
+  $Id$
+  $URL$
 
   Copyright (c) 1998 - 2012
   ILK   - Tilburg University

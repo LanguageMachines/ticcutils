@@ -1,6 +1,6 @@
 /*
-  $Id: StringOps.cxx 14652 2012-04-17 09:48:46Z sloot $
-  $URL: https://ilk.uvt.nl/svn/trunk/sources/Timbl6/src/StringOps.cxx $
+  $Id$
+  $URL$
 
   Copyright (c) 1998 - 2012
   ILK   - Tilburg University
