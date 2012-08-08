@@ -1,0 +1,34 @@
+TiCC utils 0.1 (c) ILK/CLiPS 1998 - 2012
+
+Tilburg centre for Cognition and Communication, Tilburg University.
+Centre for Dutch Language and Speech, University of Antwerp
+
+This module contains useful functions for genaral use in the TiCC software 
+stack and beyond.
+
+TiCC utils is distributed under the GNU Public Licence (see the file COPYING).
+
+This software has been tested on:
+- Intel/AMD platforms running several versions of Linux, including Ubuntu,
+  Debian and Fedora.
+- both 32 and 64 bits
+- MAC platform running OS X 10.5
+
+Compilers:
+- GCC (4.0.0 - 4.6.0). It is highly recommended to upgrade to at least GCC 4.1
+
+Contents of this distribution:
+- Sources
+- Licensing information ( COPYING )
+- Installation instructions ( INSTALL )
+- Build system based om Gnu Autotools
+- Documentation ( in the docs directory )
+
+Dependencies:
+To be able to succesfully build libticcl from the tarball, you need the
+following pakages:
+- autotools
+- autoconf-archive
+
+
+
