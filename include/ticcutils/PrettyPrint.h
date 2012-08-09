@@ -93,5 +93,5 @@ namespace TiCC {
     os << "}";
     return os;
   }
-
 }
+#endif // PRETTY_PRINT_H

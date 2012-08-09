@@ -3,6 +3,10 @@
 
 AM_CPPFLAGS = -I@top_srcdir@/include
 
+bin_PROGRAMS = test
+test_SOURCES = test.cxx
+
+
 LDADD = libticcutils.la
 
 lib_LTLIBRARIES = libticcutils.la

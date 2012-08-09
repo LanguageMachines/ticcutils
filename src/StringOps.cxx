@@ -59,6 +59,35 @@ namespace TiCC {
     return result;
   }
   
+  string trimStart( const string& s, const string& chars ){
+    // remove leading characters from a string
+    //    cerr << "trimStart: '" << s << "' (" << chars << ")" << endl;
+    string result;
+    if ( !s.empty() ){
+      string::size_type b_pos = s.find_first_not_of( chars );
+      //      cerr << "BIT = " << b_pos << endl;
+      if ( b_pos != string::npos )
+	result = s.substr( b_pos );
+    }
+    //    cerr << "trim ==> '" << result << "'" << endl;
+    return result;
+  }
+  
+  string trimEnd( const string& s, const string& chars ){
+    // remove trailing characters from a string
+    //    cerr << "trim: '" << s << "' (" << chars << ")" << endl;
+    string result;
+    if ( !s.empty() ){
+      string::size_type e_pos = s.find_last_not_of( chars );
+      //      cerr << "EIT = " << e_pos << endl;
+      if ( e_pos != string::npos )
+	result = s.substr( 0, e_pos+1 );
+    }
+    //    cerr << "trim ==> '" << result << "'" << endl;
+    return result;
+  }
+  
+
   size_t split_at( const string& src, vector<string>& results, 
 		   const string& sep ){
     // split a string into substrings, using seps as seperator
