@@ -38,6 +38,10 @@ void test_trim(){
   string val = " aha ";
   string res = trim(val);
   assert_eq( res, "aha" );
+  assert_eq( string(""), trim(" \r ") );
+  assert_true( "A" == trim("A") );
+  assert_true( "AHA" == trim("AHA") );
+  assert_true( "AHA" == trim("AHA\r\n") );
 }
 
 void test_trimStart(){
