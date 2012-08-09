@@ -32,6 +32,7 @@
 
 #include <string>
 #include <set>
+#include <list>
 #include <vector>
 #include <map>
 #include <ostream>
@@ -39,7 +40,7 @@
 namespace TiCC {
 
   template< typename T >
-    std::ostream& operator<< ( std::ostream& os, const std::set<T>& s ){
+    inline std::ostream& operator<< ( std::ostream& os, const std::set<T>& s ){
     os << "{";
     typename std::set<T>::const_iterator it = s.begin();
     while ( it != s.end() ){
@@ -53,7 +54,21 @@ namespace TiCC {
   }
 
   template< typename T >
-    std::ostream& operator<< ( std::ostream& os, const std::vector<T>& s ){
+    inline std::ostream& operator<<( std::ostream& os, const std::list<T>& s ){
+    os << "[";
+    typename std::list<T>::const_iterator it = s.begin();
+    while ( it != s.end() ){
+      os << *it;
+      ++it;
+      if ( it != s.end() )
+	os << ",";
+    }
+    os << "]";
+    return os;
+  }
+  
+  template< typename T >
+    inline std::ostream& operator<< ( std::ostream& os, const std::vector<T>& s ){
     os << "[";
     typename std::vector<T>::const_iterator it = s.begin();
     while ( it != s.end() ){
@@ -67,7 +82,7 @@ namespace TiCC {
   }
 
   template< typename S, typename T >
-    std::ostream& operator<< ( std::ostream& os, const std::map<S,T>& s ){
+    inline std::ostream& operator<< ( std::ostream& os, const std::map<S,T>& s ){
     os << "{";
     typename std::map<S,T>::const_iterator it = s.begin();
     while ( it != s.end() ){
@@ -93,5 +108,20 @@ namespace TiCC {
     os << "}";
     return os;
   }
+
+  template< typename S, typename T >
+    inline std::ostream& operator<< ( std::ostream& os, const std::multimap<S,T>& s ){
+    os << "{";
+    typename std::multimap<S,T>::const_iterator it = s.begin();
+    while ( it != s.end() ){
+      os << "<" << it->first << "," << it->second << ">";
+      ++it;
+      if ( it != s.end() )
+	os << ",";
+    }
+    os << "}";
+    return os;
+  }
+  
 }
 #endif // PRETTY_PRINT_H

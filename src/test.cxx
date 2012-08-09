@@ -66,7 +66,7 @@ void test_split(){
   string line = "De kat krabt de krullen\n van de   trap.";
   vector<string> res;
   int cnt = split( line, res );
-  cerr << "after split: " << res << endl;
+  //  cerr << "after split: " << res << endl;
   assert_eq( cnt, 8 );
   assert_eq( res[5], "van" );
 }
@@ -76,7 +76,7 @@ void test_split_at(){
   vector<string> res;
   int cnt = split_at( line, res, "rare" );
   assert_eq( cnt, 8 );
-  cerr << "after split: " << res << endl;
+  //  cerr << "after split: " << res << endl;
   assert_eq( res[5], "van" );
 }
 
@@ -85,8 +85,32 @@ void test_split_at_first(){
   vector<string> res;
   int cnt = split_at_first_of( line, res, ".,?!:;" );
   assert_eq( cnt, 8 );
-  cerr << "after split: " << res << endl;
+  //  cerr << "after split: " << res << endl;
   assert_eq( res[5], "van" );
+}
+
+void test_toUpper(){
+  string line = "Een CamelCapped Zin.";
+  toUpper( line );
+  assert_eq( line, "EEN CAMELCAPPED ZIN." );
+}
+
+void test_toLower(){
+  string line = "Een CamelCapped Zin.";
+  toLower( line );
+  assert_eq( line, "een camelcapped zin." );
+}
+
+void test_uppercase(){
+  string line = "Een CamelCapped Zin.";
+  string res = uppercase( line );
+  assert_eq( res, "EEN CAMELCAPPED ZIN." );
+}
+
+void test_lowercase(){
+  string line = "Een CamelCapped Zin.";
+  string res = lowercase( line );
+  assert_eq( res, "een camelcapped zin." );
 }
 
 int main(){
@@ -97,6 +121,10 @@ int main(){
   test_split();
   test_split_at();
   test_split_at_first();
+  test_toUpper();
+  test_toLower();
+  test_uppercase();
+  test_lowercase();
   cout << "performed " << tests << " tests, " << fails << " failures." << endl;
   return fails;
 }

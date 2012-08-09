@@ -87,6 +87,28 @@ namespace TiCC {
     return result;
   }
   
+  int to_lower( const int& i ){ return tolower(i); }
+  int to_upper( const int& i ){ return toupper(i); }
+  
+  void toLower( string& s ){
+    transform( s.begin(), s.end(), s.begin(), to_lower );
+  }
+  
+  void toUpper( string& s ){
+    transform( s.begin(), s.end(), s.begin(), to_upper );
+  }
+
+  string lowercase( const string& s ){
+    string result = s;
+    toLower( result );
+    return result;
+  }
+  
+  string uppercase( const string& s ){
+    string result = s;
+    toUpper( result );
+    return result;
+  }
 
   size_t split_at( const string& src, vector<string>& results, 
 		   const string& sep ){
