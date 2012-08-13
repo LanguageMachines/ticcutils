@@ -3,7 +3,9 @@
 
 AM_CPPFLAGS = -I@top_srcdir@/include
 
-bin_PROGRAMS = test
+check_PROGRAMS = test
+TESTS = $(check_PROGRAMS)
+
 test_SOURCES = test.cxx
 
 

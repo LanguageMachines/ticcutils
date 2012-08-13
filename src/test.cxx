@@ -5,10 +5,13 @@
 #include "ticcutils/PrettyPrint.h"
 
 #define assert_eq( XX, YY ) test_eq<typeof XX>( __func__, __LINE__, XX, YY )
-#define assert_true( YY ) test_true( __func__, __LINE__, YY )
+#define assert_true( YY ) test_true( __func__, __LINE__, (YY) )
 
 using namespace std;
 using namespace TiCC;
+
+const string OK = "\033[1;32m OK  \033[0m";
+const string FAIL = "\033[1;31m  FAILED  \033[0m";
 
 int tests = 0;
 int fails = 0;
@@ -16,21 +19,29 @@ int fails = 0;
 template <typename T>
 void test_eq( const char* F, int L, 
 	      const T& s1, const T& s2 ){
-  cout << "test: " << F << endl;
+  cout << "test: " << F << " ";
   ++tests;
   if ( s1 != s2 ){
     ++fails;
-    cerr << "EQ FAIL " << F << "(), line " << L << " : '" << s1 << "' != '" << s2 << "'" << endl;
+    cerr << FAIL << endl;
+    cerr << F << "(), line " << L << " : '" << s1 << "' != '" 
+	 << s2 << "'" << endl;
+  }
+  else {
+    cerr << OK << endl;
   }
 }
 
 void test_true( const char* F, int L, bool b ){
-  cout << "test: " << F << endl;
+  cout << "test: " << F << " ";
   ++tests;
   if ( !b ){
     ++fails;
-    cerr << "FAIL " << F << "(), line " << L << " : '" 
-	 << b << "' != TRUE" << endl;
+    cerr << FAIL << endl;
+    cerr << F << "(), line " << L << " : '"  << b << "' != TRUE" << endl;
+  }
+  else {
+    cerr << "OK" << endl;
   }
 }
 

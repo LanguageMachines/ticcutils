@@ -77,15 +77,15 @@ namespace TiCC {
     return result;
   }
   
-  static int tolower( const int& i ){ return tolower(i); }
-  static int toupper( const int& i ){ return toupper(i); }
+  static int toLower( const int& i ){ return tolower(i); }
+  static int toUpper( const int& i ){ return toupper(i); }
   
   void to_lower( string& s ){
-    transform( s.begin(), s.end(), s.begin(), tolower );
+    transform( s.begin(), s.end(), s.begin(), toLower );
   }
   
   void to_upper( string& s ){
-    transform( s.begin(), s.end(), s.begin(), toupper );
+    transform( s.begin(), s.end(), s.begin(), toUpper );
   }
 
   string lowercase( const string& s ){
