@@ -35,11 +35,11 @@
 
 namespace TiCC {
   std::string trim( const std::string&, const std::string& = " \t\r\n" );
-  std::string trimStart( const std::string&, const std::string& = " \t\r\n" );
-  std::string trimEnd( const std::string&, const std::string& = " \t\r\n" );
+  std::string trim_front( const std::string&, const std::string& = " \t\r\n" );
+  std::string trim_back( const std::string&, const std::string& = " \t\r\n" );
 
-  void toLower( std::string& );
-  void toUpper( std::string& );
+  void to_lower( std::string& );
+  void to_upper( std::string& );
   std::string lowercase( const std::string& );
   std::string uppercase( const std::string& );
 

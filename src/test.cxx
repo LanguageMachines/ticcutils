@@ -44,19 +44,19 @@ void test_trim(){
   assert_true( "AHA" == trim("AHA\r\n") );
 }
 
-void test_trimStart(){
+void test_trim_front(){
   string val = " aha ";
-  string res = trimStart(val);
+  string res = trim_front(val);
   assert_eq( res, "aha " );
 }
 
-void test_trimEnd(){
+void test_trim_back(){
   string val = " aha ";
-  string res = trimEnd(val);
+  string res = trim_back(val);
   assert_eq( res, " aha" );
 }
 
-void test_formatNonAscii(){
+void test_format_non_ascii(){
   string val = "ø en €";
   string res = format_nonascii(val);
   assert_eq( res, "-0xffc3--0xffb8- en -0xffe2--0xff82--0xffac-" );
@@ -89,15 +89,15 @@ void test_split_at_first(){
   assert_eq( res[5], "van" );
 }
 
-void test_toUpper(){
+void test_to_upper(){
   string line = "Een CamelCapped Zin.";
-  toUpper( line );
+  to_upper( line );
   assert_eq( line, "EEN CAMELCAPPED ZIN." );
 }
 
-void test_toLower(){
+void test_to_lower(){
   string line = "Een CamelCapped Zin.";
-  toLower( line );
+  to_lower( line );
   assert_eq( line, "een camelcapped zin." );
 }
 
@@ -115,14 +115,14 @@ void test_lowercase(){
 
 int main(){
   test_trim();
-  test_trimStart();
-  test_trimEnd();
-  test_formatNonAscii();
+  test_trim_front();
+  test_trim_back();
+  test_format_non_ascii();
   test_split();
   test_split_at();
   test_split_at_first();
-  test_toUpper();
-  test_toLower();
+  test_to_upper();
+  test_to_lower();
   test_uppercase();
   test_lowercase();
   cout << "performed " << tests << " tests, " << fails << " failures." << endl;

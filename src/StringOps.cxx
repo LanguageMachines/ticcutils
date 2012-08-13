@@ -41,72 +41,62 @@ namespace TiCC {
   
   string trim( const string& s, const string& chars ){
     // remove leading and trailing characters from a string
-    //    cerr << "trim: '" << s << "' (" << chars << ")" << endl;
     string result;
     if ( !s.empty() ){
       string::size_type b_pos = s.find_first_not_of( chars );
-      //      cerr << "BIT = " << b_pos << endl;
       if ( b_pos == string::npos )
 	return result;
       string::size_type e_pos = s.find_last_not_of( chars );
-      //      cerr << "EIT = " << e_pos << endl;
       if ( e_pos == string::npos )
 	result = s.substr( b_pos );
       else
 	result = s.substr( b_pos, e_pos-b_pos+1 );
     }
-    //    cerr << "trim ==> '" << result << "'" << endl;
     return result;
   }
   
-  string trimStart( const string& s, const string& chars ){
+  string trim_front( const string& s, const string& chars ){
     // remove leading characters from a string
-    //    cerr << "trimStart: '" << s << "' (" << chars << ")" << endl;
     string result;
     if ( !s.empty() ){
       string::size_type b_pos = s.find_first_not_of( chars );
-      //      cerr << "BIT = " << b_pos << endl;
       if ( b_pos != string::npos )
 	result = s.substr( b_pos );
     }
-    //    cerr << "trim ==> '" << result << "'" << endl;
     return result;
   }
   
-  string trimEnd( const string& s, const string& chars ){
+  string trim_back( const string& s, const string& chars ){
     // remove trailing characters from a string
-    //    cerr << "trim: '" << s << "' (" << chars << ")" << endl;
     string result;
     if ( !s.empty() ){
       string::size_type e_pos = s.find_last_not_of( chars );
-      //      cerr << "EIT = " << e_pos << endl;
       if ( e_pos != string::npos )
 	result = s.substr( 0, e_pos+1 );
     }
-    //    cerr << "trim ==> '" << result << "'" << endl;
     return result;
   }
   
-  int to_lower( const int& i ){ return tolower(i); }
-  int to_upper( const int& i ){ return toupper(i); }
+  static int tolower( const int& i ){ return tolower(i); }
+  static int toupper( const int& i ){ return toupper(i); }
   
-  void toLower( string& s ){
-    transform( s.begin(), s.end(), s.begin(), to_lower );
+  void to_lower( string& s ){
+    transform( s.begin(), s.end(), s.begin(), tolower );
   }
   
-  void toUpper( string& s ){
-    transform( s.begin(), s.end(), s.begin(), to_upper );
+  void to_upper( string& s ){
+    transform( s.begin(), s.end(), s.begin(), toupper );
   }
 
   string lowercase( const string& s ){
     string result = s;
-    toLower( result );
+    to_lower( result );
     return result;
   }
   
   string uppercase( const string& s ){
     string result = s;
-    toUpper( result );
+    to_upper( result );
     return result;
   }
 
