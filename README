@@ -3,7 +3,7 @@ TiCC utils 0.1 (c) ILK/CLiPS 1998 - 2012
 Tilburg centre for Cognition and Communication, Tilburg University.
 Centre for Dutch Language and Speech, University of Antwerp
 
-This module contains useful functions for genaral use in the TiCC software 
+This module contains useful functions for general use in the TiCC software 
 stack and beyond.
 
 TiCC utils is distributed under the GNU Public Licence (see the file COPYING).
@@ -21,7 +21,7 @@ Contents of this distribution:
 - Sources
 - Licensing information ( COPYING )
 - Installation instructions ( INSTALL )
-- Build system based om Gnu Autotools
+- Build system based on Gnu Autotools
 - Documentation ( in the docs directory )
 
 Dependencies:
@@ -29,6 +29,4 @@ To be able to succesfully build libticcl from the tarball, you need the
 following pakages:
 - autotools
 - autoconf-archive
-
-
 
