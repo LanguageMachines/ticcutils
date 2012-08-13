@@ -1,11 +1,45 @@
 #ifndef UNITTEST_H
 #define UNITTEST_H
 
-#define assert_eq( XX, YY ) test_eq<typeof XX, typeof YY>( __func__, __LINE__, XX, YY )
-#define assert_true( YY ) test_true( __func__, __LINE__, (YY) )
-
 const std::string OK = "\033[1;32m OK  \033[0m";
 const std::string FAIL = "\033[1;31m  FAILED  \033[0m";
+
+
+#define assertEqual( XX, YY ) test_eq<typeof XX, typeof YY>( __func__, __LINE__, XX, YY )
+#define assertThrow( XX, EE ) \
+  do { 									\
+    std::cout << "test: " << __func__ << "(" << __LINE__ << "): ";	\
+    try {								\
+      XX; }								\
+    catch( const EE& ){							\
+      std::cerr << OK << endl;						\
+      break;								\
+    }									\
+    catch ( const std::exception& e ){					\
+      std::cout << FAIL << std::endl;					\
+      std::cerr << __func__ << "(), line " << __LINE__ << " : wrong exception, what='" << e.what() << "'" << std::endl; \
+      break;								\
+    }									\
+    std::cout << FAIL << std::endl;					\
+    std::cerr << __func__ << "(), line " << __LINE__ << " : no exception thrown" << std::endl; \
+  }									\
+  while( false )							\
+    
+#define assertNoThrow( XX )						\
+  do { 									\
+    std::cout << "test: " << __func__ << "(" << __LINE__ << "): ";	\
+    try {								\
+      XX; }								\
+    catch ( const std::exception& e ){					\
+      std::cout << FAIL << std::endl;					\
+      std::cerr << __func__ << "(), line " << __LINE__ << " : thrwos, what='" << e.what() << "'" << std::endl; \
+      break;								\
+    }									\
+    std::cout << OK << std::endl;					\
+  }									\
+  while( false )							\
+  
+#define assertTrue( YY ) test_true( __func__, __LINE__, (YY) )
 
 int tests;
 int fails;
