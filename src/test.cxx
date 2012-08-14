@@ -19,6 +19,22 @@ void test_throw(){
   assertNoThrow( 4==7 );
 }
 
+void test_subtests_fail(){
+  startTest( "we testen subtests, met faal." );
+  assertThrow( helper(), range_error );
+  assertEqual( 4, 4 );
+  assertEqual( 4, 5 );
+  endTest();
+}
+
+void test_subtests_ok(){
+  startTest( "we testen subtests, allemaal OK." );
+  assertThrow( helper(), runtime_error );
+  assertEqual( 4, 4 );
+  assertTrue( true );
+  endTest();
+}
+
 void test_trim(){
   string val = " aha ";
   string res = trim(val);
@@ -101,6 +117,8 @@ void test_lowercase(){
 
 int main(){
   init_tests();
+  test_subtests_fail();
+  test_subtests_ok();
   test_throw();
   test_trim();
   test_trim_front();
@@ -113,5 +131,5 @@ int main(){
   test_to_lower();
   test_uppercase();
   test_lowercase();
-  return summarize_tests();
+  return summarize_tests() - 2; // we know we have 2 failures
 }
