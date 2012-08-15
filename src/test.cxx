@@ -131,5 +131,5 @@ int main(){
   test_to_lower();
   test_uppercase();
   test_lowercase();
-  return summarize_tests() - 2; // we know we have 2 failures
+  return summarize_tests(2); // we know we have 2 failures
 }

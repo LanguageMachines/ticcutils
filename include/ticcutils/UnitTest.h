@@ -57,6 +57,7 @@ bool inSub = false;
   while( false )							\
   
 #define assertTrue( YY ) test_true( __func__, __LINE__, (YY) )
+#define assertMessage( MM, YY ) test_true_message( __func__, __LINE__, (MM), (YY) )
 
 #define startTest( SS ) start_serie( __func__, (SS) )
 #define endTest() end_serie( __func__ )
@@ -126,10 +127,41 @@ inline void test_true( const char* F, int L, bool b ){
   }
 }
 
-inline int summarize_tests(){
+inline void test_true_message( const char* F, int L, const std::string& m, bool b ){
+  if ( !inSub )
+    std::cout << "test: " << F << "(" << L << "): ";
+  ++tests;
+  if ( !b ){
+    ++fails;
+    if ( !inSub )
+      std::cout << FAIL << std::endl;
+    else
+      std::cerr << "\t";
+    std::cerr << F << "(" << L << ") : '"  << m << "'" << std::endl;
+  }
+  else {
+    if ( !inSub )
+      std::cout << OK << std::endl;
+  }
+}
+
+inline int summarize_tests( int expected=0 ){
   std::cout << "performed " << tests << " tests, " 
-	    << fails << " failures." << std::endl;
-  return fails;
+	    << fails << " failures.";
+  int diff = fails - expected;
+  if ( diff > 0 ){
+    std::cout << " We expected " << expected << " failures." << std::endl;
+    std::cout << "overall " << FAIL << std::endl;
+  }
+  else if ( diff < 0 ){
+    std::cout << " This is less than the " << expected << " we expected." << std::endl;
+    std::cout << "overall " << FAIL << std::endl;
+  }
+  else {
+    std::cout << " that was what we expected." << std::endl;
+    std::cout << "overall " << OK << std::endl;
+  }
+  return diff;
 }
 
 #endif
