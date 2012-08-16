@@ -20,19 +20,17 @@ void test_throw(){
 }
 
 void test_subtests_fail(){
-  startTest( "we testen subtests, met faal." );
+  startTestSerie( "we testen subtests, met faal." );
   assertThrow( helper(), range_error );
   assertEqual( 4, 4 );
   assertEqual( 4, 5 );
-  endTest();
 }
 
 void test_subtests_ok(){
-  startTest( "we testen subtests, allemaal OK." );
+  startTestSerie( "we testen subtests, allemaal OK." );
   assertThrow( helper(), runtime_error );
   assertEqual( 4, 4 );
   assertTrue( true );
-  endTest();
 }
 
 void test_trim(){
@@ -116,7 +114,6 @@ void test_lowercase(){
 }
 
 int main(){
-  init_tests();
   test_subtests_fail();
   test_subtests_ok();
   test_throw();
@@ -131,5 +128,5 @@ int main(){
   test_to_lower();
   test_uppercase();
   test_lowercase();
-  return summarize_tests(2); // we know we have 2 failures
+  summarize_tests(2);
 }
