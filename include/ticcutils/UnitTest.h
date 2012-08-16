@@ -33,6 +33,10 @@ MyTSerie currentTestContext( "default", 0, "default" );
 
 int exit_status = 0;
 bool summarized = false;
+bool testSilent = false;
+
+#define TEST_SILENT_ON() testSilent = true;
+#define TEST_SILENT_OFF() testSilent = false;
 
 void MyTSerie::stop( const std::string& fun, int line ){
   if ( isDefault() ){
@@ -61,12 +65,12 @@ void MyTSerie::stop( const std::string& fun, int line ){
 #define assertThrow( XX, EE )						\
   do { 									\
     ++currentTestContext._tests;					\
-    if ( currentTestContext.isDefault() )				\
+    if ( !testSilent && currentTestContext.isDefault() )		\
       std::cout << "test: " << __func__ << "(" << __LINE__ << "): ";	\
     try {								\
       XX; }								\
     catch( const EE& ){							\
-      if ( currentTestContext.isDefault() )				\
+      if (  !testSilent && currentTestContext.isDefault() )		\
 	std::cerr << OK << endl;					\
       break;								\
     }									\
@@ -91,7 +95,7 @@ void MyTSerie::stop( const std::string& fun, int line ){
 #define assertNoThrow( XX )						\
   do { 									\
     ++currentTestContext._tests;					\
-    if ( currentTestContext.isDefault() )				\
+    if (  !testSilent && currentTestContext.isDefault() )		\
       std::cout << "test: " << __func__ << "(" << __LINE__ << "): ";	\
     try {								\
       XX; }								\
@@ -104,7 +108,7 @@ void MyTSerie::stop( const std::string& fun, int line ){
       std::cerr << __func__ << "(" << __LINE__ << ") : throws, what='" << e.what() << "'" << std::endl; \
       break;								\
     }									\
-    if ( currentTestContext.isDefault() )				\
+    if (  !testSilent && currentTestContext.isDefault() )		\
       std::cout << OK << std::endl;					\
   }									\
   while( false )							\
@@ -117,7 +121,7 @@ void MyTSerie::stop( const std::string& fun, int line ){
 template <typename T1, typename T2>
   inline void test_eq( const char* F, int L, 
 		       const T1& s1, const T2& s2, MyTSerie& T ){
-  if ( T.isDefault() )
+  if ( !testSilent && T.isDefault() )
     std::cout << "test: " << F << "(" << L << "): ";
   ++T._tests;
   if ( s1 != s2 ){
@@ -130,13 +134,13 @@ template <typename T1, typename T2>
 	      << s2 << "'" << std::endl;
   }
   else {
-    if ( T.isDefault() )
+    if ( !testSilent && T.isDefault() )
       std::cout << OK << std::endl;
   }
 }
 
 inline void test_true( const char* F, int L, bool b, MyTSerie& T ){
-  if ( T.isDefault() )
+  if ( !testSilent && T.isDefault() )
     std::cout << "test: " << F << "(" << L << "): ";
   ++T._tests;
   if ( !b ){
@@ -148,14 +152,14 @@ inline void test_true( const char* F, int L, bool b, MyTSerie& T ){
     std::cerr << F << "(" << L << ") : '"  << b << "' != TRUE" << std::endl;
   }
   else {
-    if ( T.isDefault() )
+    if ( !testSilent && T.isDefault() )
       std::cout << OK << std::endl;
   }
 }
 
 inline void test_true_message( const char* F, int L, const std::string& m, 
 			       bool b, MyTSerie& T ){
-  if ( T.isDefault() )
+  if ( !testSilent && T.isDefault() )
     std::cout << "test: " << F << "(" << L << "): ";
   ++T._tests;
   if ( !b ){
@@ -167,7 +171,7 @@ inline void test_true_message( const char* F, int L, const std::string& m,
     std::cerr << F << "(" << L << ") : '"  << m << "'" << std::endl;
   }
   else {
-    if ( T.isDefault() )
+    if ( !testSilent && T.isDefault() )
       std::cout << OK << std::endl;
   }
 }
