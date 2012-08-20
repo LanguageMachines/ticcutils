@@ -165,7 +165,7 @@ The output changes to:
 test: main(6):  OK  
 test: main(7):   FAILED  
 main(7) : '0' != TRUE
-performed 2 tests, 1 failures. that was what we expected.
+TiCC tests performed 2 tests, with 1 failures. that was what we expected.
 overall:  OK  
 .fi
 .RE
@@ -204,10 +204,33 @@ The output of this program is:
 .nf
 test: main(13):  OK  
 test: main(14):  OK  
-performed 2 tests, 0 failures. that was what we expected.
+TiCC tests performed 2 tests, with 0 failures. that was what we expected.
 overall:  OK  
 .fi
 .RE
+
+.BR Example " 3"
+.RS
+.nf
+.fi
+.RE
+
+So we call a separate function to perform a series of tests.
+
+The output of this program is:
+.RS
+.nf
+test: main(17):  OK  
+Serie:	test1 (Test some numb stuff)
+	test1(): all 6 tests OK  
+test: main(19):  OK  
+TiCC tests performed 8 tests, with 0 failures. that was what we expected.
+overall:  OK  
+.fi
+.RE
+
+As you an see, the results of the tests inside the series are summarized. This
+gives us cleaner output.
 
 .SH AUTHORS
 Ko van der Sloot Timbl@uvt.nl
