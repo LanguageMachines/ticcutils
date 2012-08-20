@@ -10,7 +10,7 @@ TiCC Unit Tests - A 'poor mans' C++ Unit testing Framework
 Ticc Unit Test provides some powerful functions, combined in a single header 
 file, which give you a simple way to implement Unit Tests.
 
-Ticc Utils aims at easy usage, quick implementation of test suites without
+Ticc Utils aims at easy usage, an quick implementation, of test suites without
 compiling and linking issues. It is possible to create a test suite by just adding
 a few assertions around C++ expressions, and Ticc Unit Test will start working 
 at once: counting the number of tests, failures and providing a summary at 
@@ -32,6 +32,11 @@ If not so: signal the problem and increment the number of detected failures
 If so: signal success. (except when part of a 
 .BR testSerie . 
 see below)
+
+It is wise to use brackets around the expression, otherwise the compiler may get
+confused. See 
+.B Example " 1"
+below.
 .RE
 
 .B assertTrue(expression)
@@ -45,6 +50,11 @@ If not so: signal the problem and increment the number of detected failures
 If so: signal success. (except when part of a 
 .BR testSerie . 
 see below)
+
+It is wise to use brackets around the expression, otherwise the compiler may get
+confused. See 
+.B Example " 1"
+below.
 .RE
 
 .B assertMessage(message,expression)
@@ -52,7 +62,8 @@ see below)
 the same as 
 .B assertTrue()
 but also displays 
-.B message on failure
+.B message
+on failure.
 .RE
 
 .B assertThrow(expression,exception)
@@ -66,9 +77,14 @@ If not so: signal the problem and increment the number of detected failures
 If so: signal success. (except when part of a 
 .BR testSerie . 
 see below)
+
+It is wise to use brackets around the expression, otherwise the compiler may get
+confused. See 
+.B Example " 1"
+below.
 .RE
 
-.B assertNoThrow()
+.B assertNoThrow(expression)
 .RS
 test if 
 .B expression
@@ -78,14 +94,20 @@ If not so: signal the problem and increment the number of detected failures
 If so: signal success. (except when part of a 
 .BR testSerie . 
 see below)
+
+It is wise to use brackets around the expression, otherwise the compiler may get
+confused. See 
+.B Example " 1"
+below.
 .RE
 
-.SH setting up a testSerie
+.SH Setting up a testSerie
 
 .B startTestSerie(message)
 .RS
 Signal the beginning of a series of tests, using 
 .B message
+
 When a
 .B testSerie
 is active, all success messages of the 
@@ -114,17 +136,15 @@ all failures are still displayed as to inform you off any trouble.
 
 .SH Summarizing Tests
 The Ticc Unit test will automatically give a summary of the results at the end
- of the program. It also returns the number of failures to the shell.
+of the program. It also returns the number of failures to the shell.
 
 It is however possible to call
-.B summarize_tests(expected)
-.BR
+.BR summarize_tests(expected) .
 The advantage is, that you can provide a number
 .B expected
 to signal that you expected some failures, and that it is 
 .B not
 a showstopper.
-.ER
 
 .SH EXAMPLES
 
