@@ -22,7 +22,7 @@ void test_throw(){
 void test_subtests_fail(){
   startTestSerie( "we testen subtests, met faal." );
   assertThrow( helper(), range_error );
-  assertEqual( 4, 4 );
+  assertEqual( (1 + 2), (2 + 1) );
   assertEqual( 4, 5 );
 }
 
