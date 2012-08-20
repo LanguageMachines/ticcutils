@@ -1,0 +1,132 @@
+.TH ticc_unit_test 1 "2012 August 20"
+
+.SH NAME
+TiCC Unit Tests - A 'poor mans' C++ Unit testing Framework
+.SH SYNOPSIS
+
+.B #include "ticcutils/UnitTest.h"
+
+.SH DESCRIPTION
+Ticc Unit Test provides some powerful functions, combined in a single header 
+file, which give you a simple way to implement Unit Tests.
+
+Ticc Utils aims at easy usage, quick implementation of test suites without
+compiling and linking issues. It is possible to create a test suite by just adding
+a few assertions around C++ expressions, and Ticc Unit Test will start working 
+at once: counting the number of tests, failures and providing a summary at 
+program end.
+
+Compared to other frameworks, like Boost, CPPUNIT or Google there are some 
+limitations. [But who cares? more to say!]
+
+.SH List of assertions.
+
+.B assertEqual(expression1,expression2)
+.RS
+test if 
+.B expression1
+equals
+.B expression2
+
+If not so: signal the problem and increment the number of detected failures
+If so: signal success. (except when part of a 
+.BR testSerie . 
+see below)
+.RE
+
+.B assertTrue(expression)
+.RS
+test if 
+.B expression
+evaluates to 
+.B true
+
+If not so: signal the problem and increment the number of detected failures
+If so: signal success. (except when part of a 
+.BR testSerie . 
+see below)
+.RE
+
+.B assertMessage(message,expression)
+.RS
+the same as 
+.B assertTrue()
+but also displays 
+.B message on failure
+.RE
+
+.B assertThrow(expression,exception)
+.RS
+test if 
+.B expression
+throws the given
+.B exception
+
+If not so: signal the problem and increment the number of detected failures
+If so: signal success. (except when part of a 
+.BR testSerie . 
+see below)
+.RE
+
+.B assertNoThrow()
+.RS
+test if 
+.B expression
+doesn't throw.
+
+If not so: signal the problem and increment the number of detected failures
+If so: signal success. (except when part of a 
+.BR testSerie . 
+see below)
+.RE
+
+.SH setting up a testSerie
+
+.B startTestSerie(message)
+.RS
+Signal the beginning of a series of tests, using 
+.B message
+When a
+.B testSerie
+is active, all success messages of the 
+.B assert*
+macro's are suppressed. Failures are still signaled. At the end of a
+.B testSerie
+a summary is given.
+
+A
+.B testSerie
+automatically ends at the end of the program block it is declared in.
+
+.SH suppressing output.
+Sometimes it is desirable to suppress excessive success messages, for instance 
+when one of the
+.B assert*
+functions is called in a loop.
+
+This can be achieved with the macro's:
+
+.B TEST_SILENT_ON()
+and
+.B TEST_SILENT_OFF()
+
+all failures are still displayed as to inform you off any trouble.
+
+.SH Summarizing
+The Ticc Unit test will automatically give a summary of the results at the end
+ of the program. It also returns the number of failures to the shell.
+
+It is however possible to call
+.B summarize_tests(expected)
+.BR
+The advantage is, that you can provide a number
+.B expected
+to signal that you expected some failures, and that it is 
+.B not
+a showstopper.
+.ER
+
+.SH AUTHORS
+Ko van der Sloot Timbl@uvt.nl
+
+
