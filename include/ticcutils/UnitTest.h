@@ -40,8 +40,8 @@ bool testSilent = false;
 
 inline void summarize_tests( int expected=0 ){
   summarized = true;
-  std::cout << "performed " << currentTestContext._tests << " tests, " 
-	    << currentTestContext._fails << " failures.";
+  std::cout << "TiCC tests performed " << currentTestContext._tests 
+	    << " tests, with " << currentTestContext._fails << " failures.";
   int diff = currentTestContext._fails - expected;
   if ( diff > 0 ){
     std::cout << " We expected " << expected << " failures." << std::endl;
