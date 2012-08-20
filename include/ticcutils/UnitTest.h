@@ -9,10 +9,7 @@ const std::string FAIL = "\033[1;31m  FAILED  \033[0m";
 class MyTSerie {
  public:
   MyTSerie( const std::string& fun, int lineno, const std::string& line ){
-    _fun = fun;
     start( fun, lineno, line );
-    _fails = 0;
-    _tests = 0;
   }
   ~MyTSerie(){
     stop( _fun, 0 );
@@ -20,16 +17,19 @@ class MyTSerie {
   bool isDefault() const {return _fun =="default"; };
   int _fails;
   int _tests;
+  std::string _fun;
  private:
   void start( const std::string& fun, int lineno, const std::string& line ){
+    _fun = fun;
+    _fails = 0;
+    _tests = 0;
     if ( !isDefault() )
       std::cout << "Serie:\t" << fun << " (" << line << ")" << std::endl;
   };
   void stop( const std::string& fun, int line );
-  std::string _fun;
 };
 
-MyTSerie currentTestContext( "default", 0, "default" );
+static MyTSerie currentTestContext( "default", 0, "default" );
 
 int exit_status = 0;
 bool summarized = false;
@@ -38,16 +38,32 @@ bool testSilent = false;
 #define TEST_SILENT_ON() testSilent = true;
 #define TEST_SILENT_OFF() testSilent = false;
 
+inline void summarize_tests( int expected=0 ){
+  summarized = true;
+  std::cout << "performed " << currentTestContext._tests << " tests, " 
+	    << currentTestContext._fails << " failures.";
+  int diff = currentTestContext._fails - expected;
+  if ( diff > 0 ){
+    std::cout << " We expected " << expected << " failures." << std::endl;
+    std::cout << "overall " << FAIL << std::endl;
+  }
+  else if ( diff < 0 ){
+    std::cout << " This is less than the " << expected << " we expected." << std::endl;
+    std::cout << "overall: " << FAIL << std::endl;
+  }
+  else {
+    std::cout << " that was what we expected." << std::endl;
+    std::cout << "overall: " << OK << std::endl;
+  }
+  exit_status = diff;
+}
+
 void MyTSerie::stop( const std::string& fun, int line ){
   if ( isDefault() ){
     if ( !summarized ){
-      std::cout << "performed " << currentTestContext._tests << " tests, " 
-		<< currentTestContext._fails << " failures." << std::endl;
-      exit( currentTestContext._fails );
+      summarize_tests( 0 );
     }
-    else {
-      exit( exit_status );
-    }
+    exit( exit_status );
   }
   else {
     currentTestContext._tests += _tests;
@@ -61,7 +77,7 @@ void MyTSerie::stop( const std::string& fun, int line ){
   };
 }
 
-#define assertEqual( XX, YY ) test_eq<typeof XX, typeof YY>( __func__, __LINE__, XX, YY, currentTestContext )
+#define assertEqual( XX , YY ) test_eq<typeof XX, typeof YY>( __func__, __LINE__, (XX), (YY), currentTestContext )
 #define assertThrow( XX, EE )						\
   do { 									\
     ++currentTestContext._tests;					\
@@ -71,7 +87,7 @@ void MyTSerie::stop( const std::string& fun, int line ){
       XX; }								\
     catch( const EE& ){							\
       if (  !testSilent && currentTestContext.isDefault() )		\
-	std::cerr << OK << endl;					\
+	std::cerr << OK << std::endl;					\
       break;								\
     }									\
     catch ( const std::exception& e ){					\
@@ -174,26 +190,6 @@ inline void test_true_message( const char* F, int L, const std::string& m,
     if ( !testSilent && T.isDefault() )
       std::cout << OK << std::endl;
   }
-}
-
-inline void summarize_tests( int expected=0 ){
-  summarized = true;
-  std::cout << "performed " << currentTestContext._tests << " tests, " 
-	    << currentTestContext._fails << " failures.";
-  int diff = currentTestContext._fails - expected;
-  if ( diff > 0 ){
-    std::cout << " We expected " << expected << " failures." << std::endl;
-    std::cout << "overall " << FAIL << std::endl;
-  }
-  else if ( diff < 0 ){
-    std::cout << " This is less than the " << expected << " we expected." << std::endl;
-    std::cout << "overall: " << FAIL << std::endl;
-  }
-  else {
-    std::cout << " that was what we expected." << std::endl;
-    std::cout << "overall: " << OK << std::endl;
-  }
-  exit_status = diff;
 }
 
 #endif
