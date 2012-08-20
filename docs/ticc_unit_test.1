@@ -94,9 +94,9 @@ macro's are suppressed. Failures are still signaled. At the end of a
 .B testSerie
 a summary is given.
 
-A
 .B testSerie
 automatically ends at the end of the program block it is declared in.
+.RE
 
 .SH suppressing output.
 Sometimes it is desirable to suppress excessive success messages, for instance 
@@ -112,7 +112,7 @@ and
 
 all failures are still displayed as to inform you off any trouble.
 
-.SH Summarizing
+.SH Summarizing Tests
 The Ticc Unit test will automatically give a summary of the results at the end
  of the program. It also returns the number of failures to the shell.
 
@@ -125,6 +125,89 @@ to signal that you expected some failures, and that it is
 .B not
 a showstopper.
 .ER
+
+.SH EXAMPLES
+
+.BR Example " 1"
+.RS
+.nf
+#include <string>
+#include <iostream>
+#include "ticcutils/UnitTest.h"
+int main(){
+  assertEqual( (1+2), (2+1) );
+  assertTrue( 0 == 1 );
+}
+.fi
+.RE
+
+The output of this program is:
+.RS
+.nf
+test: main(6):  OK  
+test: main(7):   FAILED  
+main(7) : '0' != TRUE
+performed 2 tests, 1 failures. We expected 0 failures.
+overall   FAILED  
+.fi
+.RE
+
+When an extra line is added at the end of main():
+.RS
+.nf
+  summarize_tests(1);
+.fi
+.RE
+
+The output changes to:
+.RS
+.nf
+test: main(6):  OK  
+test: main(7):   FAILED  
+main(7) : '0' != TRUE
+performed 2 tests, 1 failures. that was what we expected.
+overall:  OK  
+.fi
+.RE
+
+.BR Example " 2"
+.RS
+.nf
+#include <string>
+#include <iostream>
+#include <stdexcept>
+#include <cmath>
+#include "ticcutils/UnitTest.h"
+
+void helper(){
+  throw std::runtime_error("fout");
+}
+
+int main(){
+  assertThrow( helper(), std::runtime_error );
+  assertNoThrow( 1/std::sqrt(0) );
+}
+.fi
+.RE
+
+So we force a runtime error in our helper function, and detect it.
+We also attempt a division by zero. But on my system, this will result in an
+.B inf
+result and 
+.B NOT
+in an exception. Therefor the 
+.B assertNoThrow()
+will be satisfied.
+
+The output of this program is:
+.RS
+.nf
+test: main(13):  OK  
+test: main(14):  OK  
+performed 2 tests, 0 failures. that was what we expected.
+overall:  OK  
+.fi
+.RE
 
 .SH AUTHORS
 Ko van der Sloot Timbl@uvt.nl
