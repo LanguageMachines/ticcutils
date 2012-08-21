@@ -1,10 +1,148 @@
-.TH ticc_string 1 "2012 August 20"
+.TH ticc_string 1 "2012 August 21"
 
 .SH NAME
 ticc_string - A collection of C++ string manipulating utilities.
 
+.SH SYNOPSIS
+.B #include "ticcutils/StringOps.h"
+
+.B using namespace TiCC;
+
 .SH DESCRIPTION
-TO DO
+Ticc String Utilities provides a few convenient functions for manipulating 
+C++ 'string' objects. These functions are widely used in the TiCC software 
+stack , but are of general use too.
+
+.SH List of Functions
+
+.B  string trim( const string& in, const string& filter= """ \et\er\en""" );
+.RS
+Remove from
+.B in
+all leading and trailing characters that are present in
+.BR filter .
+
+Embedded characters are retained.
+
+.RE
+
+.B  string trim_front( const string& in, const string& filter = """ \et\er\en""" );
+.RS
+Remove from
+.B in
+all leading characters that are present in
+.BR filter .
+
+Embedded characters are retained.
+.RE
+
+.B  string trim_back( const string& in, const string& filter = """ \et\er\en""" );
+.RS
+Remove from
+.B in
+all trailing characters that are present in
+.BR filter .
+
+Embedded characters are retained.
+.RE
+
+.B  void to_lower( string& s );
+.RS
+convert all characters in
+.B s
+to lowercase
+.BR filter .
+.RE
+
+.B  void to_upper( string& s );
+.RS
+convert all characters in
+.B s
+to uppercase
+.BR filter .
+.RE
+
+.B  string lowercase( const string& in );
+.RS
+Return a string that contains the lowercase of the characters in
+.BR in .
+.RE
+
+.B  string uppercase( const string& in );
+.RS
+Return a string that contains the uppercase of the characters in
+.BR in .
+.RE
+
+.B  size_t split_at( const string& s, vector<string>& vec, const string& sep );
+.RS
+split the input string
+.B s
+at every position of the string
+.B sep
+and return the parts in the string vector
+.BR vec .
+
+consecutive occurrences of
+.B sep
+are all skipped, so 
+.B vec
+will never contain empty strings.
+
+.B return value:
+The size of
+.BR vec .
+.RE
+
+.B size_t split_at_first_of( const string& s, vector<string>& vec, const string& filter );
+.RS
+split the input string
+.B s
+at every occurrence of a character from
+.B filter
+and return the parts in the string vector
+.BR vec .
+
+consecutive occurrences of
+.B filter
+characters are all skipped, so 
+.B vec
+will never contain empty strings.
+
+.B return value:
+The size of
+.BR vec .
+.RE
+
+.B  inline size_t split( const string& s, vector<string>& vec ){
+.B    return split_at_first_of( s, vec, """ \et\er\en""" );
+.B  }
+.RS
+split the input string
+.B s
+at every occurrence of a whitespace character, and return the parts in the string vector
+.B vec
+
+consecutive occurrences of
+.B filter
+characters are all skipped, so 
+.B vec
+will never contain empty strings.
+
+.B return value:
+The size of
+.B vec
+.RE
+  
+.B  string format_nonascii( const string& s );
+.RS
+given a string
+.B s
+with possibly unprintable (non-ascii) characters, produce a string where these 
+are replaced by hexadecimal representations.
+
+Useful for debugging.
+.RE
 
 .SH AUTHORS
 Ko van der Sloot Timbl@uvt.nl
