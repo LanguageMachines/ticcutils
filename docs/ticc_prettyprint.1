@@ -1,11 +1,42 @@
-.TH ticc_prettyprint 1 "2012 August 20"
+.TH ticc_prettyprint 1 "2012 August 21"
 
 .SH NAME
 ticc_prettyprint - format C++ containers
 
-.SH DESCRIPTION
-To DO
+.SH SYNOPSYS
+.B #include "ticcutils/PrettyPrint.h"
 
+.B using namespace TiCC;
+
+.SH DESCRIPTION
+TiCC Pretty Print provides some C++ templates to output C++ containers in an 
+orderly fashion. It's not rocket science, nor complete. But for instance for
+.B debugging
+it is convenient to be able to output containers a bit readable.
+
+To get usefull output, it is needed that an output operator is defined for
+the elements in the container too.
+
+TiCC output operators are currenly define for:
+
+.B set<T>
+
+.B list<T>
+
+.B vector<T>
+
+.B map<S,T>
+
+.B map<S,T,U>
+
+.B multimap<S,T>
+
+To get usefull output, it is needed that an output operator is defined for
+the elements 
+.B S
+and 
+.B T
+in the container too.
 .SH AUTHORS
 Ko van der Sloot Timbl@uvt.nl
 
