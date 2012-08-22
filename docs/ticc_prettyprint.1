@@ -14,10 +14,10 @@ orderly fashion. It's not rocket science, nor complete. But for instance for
 .B debugging
 it is convenient to be able to output containers a bit readable.
 
-To get usefull output, it is needed that an output operator is defined for
-the elements in the container too.
+To get usefull output, a well defined output operator is required for the 
+elements in the container too.
 
-TiCC output operators are currenly define for:
+TiCC output operators are currenly defined for:
 
 .B set<T>
 
@@ -37,6 +37,144 @@ the elements
 and 
 .B T
 in the container too.
+
+.SH EXAMPLES
+
+.BR Example " 1"
+.RS
+.nf
+#include <vector>
+#include <string>
+#include <iostream>
+#include "ticcutils/PrettyPrint.h"
+
+using namespace std;
+using namespace TiCC;
+
+int main(){
+   vector<string> vec;
+   vec.push_back("one");
+   vec.push_back("two");
+   vec.push_back("three");
+   cout << vec << endl;
+}
+.fi
+.RE
+The output of this simple program will be:
+.RS
+[one,two,three]
+.RE
+
+.BR Example " 2"
+.RS
+.nf
+#include <vector>
+#include <string>
+#include <iostream>
+#include "ticcutils/PrettyPrint.h"
+
+using namespace std;
+using namespace TiCC;
+
+class myClass {
+  friend ostream& operator<< (ostream&, const myClass& );
+public:
+  myClass( int i, const string& s ): _i(i),_s(s){}
+private:
+  int _i;
+  string _s;
+};
+
+ostream& operator<< (ostream& os, const myClass& mc ){
+  os << "Myclass(" << mc._i << "," << mc._s << ")";
+  return os;
+}
+
+int main(){
+   vector<myClass> vec;
+   vec.push_back( myClass(1,"one") );
+   vec.push_back( myClass(2,"two") );
+   vec.push_back( myClass(3,"three") );
+   cout << vec << endl;
+}
+.fi
+.RE
+The output of this example program will be:
+.RS
+[Myclass(1,one),Myclass(2,two),Myclass(3,three)]
+.RE
+
+.BR Example " 3"
+.RS
+.nf
+#include <vector>
+#include <string>
+#include <iostream>
+#include "ticcutils/PrettyPrint.h"
+
+using namespace std;
+using namespace TiCC;
+
+class myClass {
+  friend ostream& operator<< (ostream&, const myClass& );
+public:
+  myClass( int i, const string& s ): _i(i),_s(s){}
+private:
+  int _i;
+  string _s;
+};
+
+ostream& operator<< (ostream& os, const myClass& mc ){
+  os << "Myclass(" << mc._i << "," << mc._s << ")";
+  return os;
+}
+
+int main(){
+   vector<*myClass> vec;
+   vec.push_back( new myClass(1,"one") );
+   vec.push_back( new myClass(2,"two") );
+   vec.push_back( new myClass(3,"three") );
+   cout << vec << endl;
+}
+.fi
+.RE
+The output of this program will be:
+.RS
+[0x2363040,0x23630b0,0x2363060]
+Or something similar.
+
+.RE
+Why is this so? Well, we
+.B didn't
+provide an output operator for 
+.B myClass
+pointers!
+
+To fix this we have to change de definition of the output operator for 
+.B myClass
+or just add a second definition, e.g. add:
+
+.nf
+  friend ostream& operator<< (ostream&, const myClass* );
+.fi
+
+to myClass, and also add:
+
+.nf
+ostream& operator<< (ostream& os, const myClass *mc ){
+  if ( mc )
+    os << *mc;
+  else
+    os << "zero pointer";
+  return os;
+}
+.fi
+
+.RE
+The output now indeed is what we expected:
+.RS
+[Myclass(1,one),Myclass(2,two),Myclass(3,three)]
+.RE
 .SH AUTHORS
 Ko van der Sloot Timbl@uvt.nl
 
