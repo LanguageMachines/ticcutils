@@ -37,10 +37,15 @@ AC_LANG([C++])
 #checks for libraries.
 
 # Checks for header files.
+AC_CHECK_HEADERS([sys/time.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_C_INLINE
+AC_HEADER_STDBOOL
+AC_TYPE_SIZE_T
 
 # Checks for library functions.
+AC_CHECK_FUNCS([localtime_r, gettimeofday])
 
 ACX_PTHREAD([],[AC_MSG_ERROR([We need pthread support!])])
 
