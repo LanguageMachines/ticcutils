@@ -26,8 +26,8 @@
   or send mail to:
       timbl@uvt.nl
 */
-#ifndef LOGBUFFER_H
-#define LOGBUFFER_H
+#ifndef TICC_LOGBUFFER_H
+#define TICC_LOGBUFFER_H
 
 #include <ctime>
 #include <cstdio>

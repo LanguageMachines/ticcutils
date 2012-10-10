@@ -26,8 +26,8 @@
   or send mail to:
       timbl@uvt.nl
 */
-#ifndef LOGSTREAM_H
-#define LOGSTREAM_H
+#ifndef TICC_LOGSTREAM_H
+#define TICC_LOGSTREAM_H
 
 #include <iostream>
 #include <string>

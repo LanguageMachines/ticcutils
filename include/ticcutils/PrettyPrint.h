@@ -27,8 +27,8 @@
       timbl@uvt.nl
 */
 
-#ifndef PRETTY_PRINT_H
-#define PRETTY_PRINT_H
+#ifndef TICC_PRETTY_PRINT_H
+#define TICC_PRETTY_PRINT_H
 
 #include <string>
 #include <set>
