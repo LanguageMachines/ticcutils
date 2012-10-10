@@ -1,6 +1,6 @@
 /*
-  $Id: Tree.h 15264 2012-10-10 10:13:54Z sloot $
-  $URL: https://ilk.uvt.nl/svn/trunk/sources/Timbl6/include/timbl/Tree.h $
+  $Id$
+  $URL$
 
   Copyright (c) 1998 - 2012
   ILK   - Tilburg University

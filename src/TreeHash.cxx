@@ -1,6 +1,6 @@
 /*
-  $Id: Tree.cxx 14944 2012-07-03 12:30:57Z sloot $
-  $URL: https://ilk.uvt.nl/svn/trunk/sources/Timbl6/src/Tree.cxx $
+  $Id$
+  $URL$
 
   Copyright (c) 1998 - 2012
   ILK   - Tilburg University
