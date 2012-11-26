@@ -191,7 +191,7 @@ namespace TiCC {
     return true;
   }
   
-  void Configuration::dump( ostream& os ){
+  void Configuration::dump( ostream& os ) const {
     sssMap::const_iterator it1 = myMap.find("global");
     os << "[global]" << endl;
     os << "configDir=" << cdir << endl;
@@ -252,6 +252,23 @@ namespace TiCC {
       else
 	return it2->second;
     }
+  }
+
+  map<string,string> Configuration::lookUpAll( const string& section ) const {
+    map<string,string> result;
+    sssMap::const_iterator it1;
+    if ( section.empty() )
+      it1 = myMap.find( "global" );
+    else
+      it1 = myMap.find( section );
+    if ( it1 != myMap.end() ){
+      ssMap::const_iterator it2 = it1->second.begin();
+      while ( it2 != it1->second.end() ){
+	result[it2->first] = it2->second;
+	++it2;
+      }
+    }
+    return result;
   }
   
   set<string> Configuration::lookUpSections() const {
