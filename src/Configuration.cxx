@@ -27,6 +27,7 @@
 
 #include <string>
 #include <map>
+#include <set>
 #include <fstream>
 #include <stdexcept>
 #include <iostream>
@@ -213,9 +214,9 @@ namespace TiCC {
     }
   }
   
-  string Configuration::set( const string& att, 
-			     const string& val,
-			     const string& sect ){
+  string Configuration::setatt( const string& att, 
+				const string& val,
+				const string& sect ){
     string oldVal;
     string section = sect;
     if ( section.empty() )
@@ -251,6 +252,17 @@ namespace TiCC {
       else
 	return it2->second;
     }
+  }
+  
+  set<string> Configuration::lookUpSections() const {
+    set<string> result;
+    result.insert("global");
+    sssMap::const_iterator it = myMap.begin();
+    while ( it != myMap.end() ){
+      result.insert( it->first );
+      ++it;
+    }
+    return result;
   }
   
   bool Configuration::hasSection( const string& section ) const {

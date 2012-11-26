@@ -38,9 +38,10 @@ namespace TiCC {
     bool fill( const std::string&, const std::string& );
     bool hasSection( const std::string& ) const;
     std::string lookUp( const std::string&, const std::string& = "" ) const;
-    std::string set( const std::string&, 
-		     const std::string&, 
-		     const std::string& = "" );
+    std::set<std::string> lookUpSections() const;
+    std::string setatt( const std::string&, 
+			const std::string&, 
+			const std::string& = "" );
     void dump( std::ostream& );
     std::string configDir() const { return cdir; };
   private:
