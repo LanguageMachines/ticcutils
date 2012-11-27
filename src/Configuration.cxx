@@ -37,6 +37,9 @@
 using namespace std;
 
 namespace TiCC {
+  Configuration::Configuration(){
+    myMap["global"] = ssMap();
+  }
 
   string dirname( const string& f ){
     string::size_type pos = f.find_last_of("/");
@@ -193,6 +196,10 @@ namespace TiCC {
   
   void Configuration::dump( ostream& os ) const {
     sssMap::const_iterator it1 = myMap.find("global");
+    if ( it1 == myMap.end() ){
+      os << "empty" << endl;
+      return;
+    }
     os << "[global]" << endl;
     os << "configDir=" << cdir << endl;
     ssMap::const_iterator it2 = it1->second.begin();

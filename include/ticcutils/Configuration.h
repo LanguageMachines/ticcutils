@@ -34,6 +34,7 @@ namespace TiCC {
     typedef std::map<std::string,std::string> ssMap;
     typedef std::map<std::string, ssMap> sssMap;
   public:
+    Configuration();
     bool fill( const std::string& );
     bool fill( const std::string&, const std::string& );
     bool hasSection( const std::string& ) const;
