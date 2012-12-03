@@ -19,6 +19,11 @@ void test_throw(){
   assertNoThrow( 4==7 );
 }
 
+void test_nothrow(){
+  assertNoThrow( helper() );
+  assertThrow( helper(), runtime_error );
+}
+
 void test_subtests_fail(){
   startTestSerie( "we testen subtests, met faal." );
   assertThrow( helper(), range_error );
@@ -117,6 +122,7 @@ int main(){
   test_subtests_fail();
   test_subtests_ok();
   test_throw();
+  test_nothrow();
   test_trim();
   test_trim_front();
   test_trim_back();
@@ -128,5 +134,5 @@ int main(){
   test_to_lower();
   test_uppercase();
   test_lowercase();
-  summarize_tests(2);
+  summarize_tests(3);
 }
