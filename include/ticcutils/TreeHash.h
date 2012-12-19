@@ -31,7 +31,7 @@
 #define TICC_TREE_H
 
 #include <vector>
-#include "ticcutils/Tries.h"
+#include "ticcutils/Trie.h"
 
 namespace Hash {
   using namespace Tries;
