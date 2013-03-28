@@ -32,6 +32,8 @@
 
 #include <string>
 #include <vector>
+#include <sstream>
+#include <stdexcept>
 
 namespace TiCC {
   std::string trim( const std::string&, const std::string& = " \t\r\n" );
@@ -52,6 +54,67 @@ namespace TiCC {
   }
   
   std::string format_nonascii( const std::string& );
+
+  template< typename T >
+    T stringTo( const std::string& str ) {
+    T result;
+    std::stringstream dummy ( str );
+    if ( !( dummy >> result ) ) {
+      throw( std::runtime_error( "conversion from string '"
+				 + str + "' failed" ) );
+    }
+    return result;
+  }
+  
+  template <>
+    inline bool stringTo<bool>( const std::string& str ) {
+    bool result;
+    std::stringstream dummy ( str );
+    if ( !( dummy >> result ) ) {
+      dummy.clear();
+      dummy.setf(std::ios_base::boolalpha);
+      if ( !( dummy >> result ) ) {
+	throw( std::runtime_error( "conversion from string '"
+				   + str + "' to bool failed" ) );
+      }
+   }
+    return result;
+  }
+  
+  template< typename T >
+    bool stringTo( const std::string& str, T& result ) {
+    try {
+      result = stringTo<T>( str );
+      return true;
+    }
+    catch( ... ){
+     return false;
+    }
+  }
+
+  template <typename T>
+    bool stringTo( const std::string& s, T &answer, T low, T upp ){
+    try {
+      T tmp = stringTo<T>( s );
+      if ( (tmp >= low) && (tmp <= upp) ){
+	answer = tmp;
+	return true;
+      }
+      return false;
+    }
+    catch(...){
+      return false;
+    }
+  }
+  
+  template< typename T >
+    std::string toString ( const T& obj, bool=false ) {
+    std::stringstream dummy;
+    if ( !( dummy << obj ) ) {
+      throw( std::runtime_error( "conversion to long string failed" ) );
+    }
+   return dummy.str();
+  }
   
 }
 
