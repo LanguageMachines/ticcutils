@@ -66,20 +66,17 @@ namespace TiCC {
     return result;
   }
   
-  template <>
-    inline bool stringTo<bool>( const std::string& str ) {
-    bool result;
-    std::stringstream dummy ( str );
-    if ( !( dummy >> result ) ) {
-      dummy.clear();
-      dummy.setf(std::ios_base::boolalpha);
-      if ( !( dummy >> result ) ) {
-	throw( std::runtime_error( "conversion from string '"
-				   + str + "' to bool failed" ) );
-      }
-   }
-    return result;
-  }
+  template<>
+    inline bool stringTo<bool>( const std::string& str ) { 
+    std::string b = TiCC::uppercase( str );
+    if ( b == "YES" || b == "TRUE" || b == "1" ) 
+      return true; 
+    else if ( b == "FALSE" || b == "NO" || b == "0" ) 
+      return false; 
+    else
+      throw( std::runtime_error( "conversion from string '" 
+				 + str + "' to bool failed" ) ); 
+  } 
   
   template< typename T >
     bool stringTo( const std::string& str, T& result ) {
