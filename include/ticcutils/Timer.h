@@ -26,6 +26,8 @@
   or send mail to:
       timbl@uvt.nl
 */
+#ifndef TICC_TIMER_H
+#define TICC_TIMER_H
 
 #include <cstdlib>
 #include <sys/time.h>
@@ -49,3 +51,5 @@ namespace TiCC {
   };
 
 }
+
+#endif // TICC_TIMER_H
