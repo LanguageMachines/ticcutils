@@ -1,6 +1,6 @@
 /*
-  $Id: StringOps.cxx 15564 2013-01-07 14:25:32Z sloot $
-  $URL: https://ilk.uvt.nl/svn/sources/libticcutils/trunk/src/StringOps.cxx $
+  $Id$
+  $URL$
 
   Copyright (c) 1998 - 2013
   ILK   - Tilburg University
