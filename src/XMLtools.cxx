@@ -67,6 +67,35 @@ namespace TiCC {
     xmlDocSetRootElement( the_doc, root );
     return root;
   }
+
+  string getNS( const xmlNode *node, string& prefix ){
+    string result;
+    prefix = "";
+    xmlNs *p = node->ns;
+    if ( p ){
+      if ( p->prefix ){
+	prefix = (char *)p->prefix;
+      }
+      result = (char *)p->href;
+    }
+    return result;
+  }
+
+  map<string,string> getNSlist( const xmlNode *node ){
+    map<string,string> result;
+    xmlNs *p = node->ns;
+    while ( p ){
+      string pre;
+      string val;
+      if ( p->prefix ){
+	pre = (char *)p->prefix;
+      }
+      val = (char *)p->href;
+      result[pre] = val;
+      p = p->next;
+    }
+    return result;
+  }
       
   string serialize( const xmlNode& node ){
     // serialize to a string (XML fragment)
