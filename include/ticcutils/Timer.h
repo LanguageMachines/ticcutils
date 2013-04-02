@@ -1,0 +1,51 @@
+/*
+  $Id: $
+  $URL: $
+
+  Copyright (c) 1998 - 2013
+  ILK   - Tilburg University
+  CLiPS - University of Antwerp
+ 
+  This file is part of ticcutils
+
+  ticcutils is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 3 of the License, or
+  (at your option) any later version.
+
+  ticcutils is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+  For questions and suggestions, see:
+      http://ilk.uvt.nl/software.html
+  or send mail to:
+      timbl@uvt.nl
+*/
+
+#include <cstdlib>
+#include <sys/time.h>
+
+namespace TiCC {
+  class Timer {
+  public:
+    friend std::ostream& operator << ( std::ostream& os, const Timer& T );
+    Timer(){ reset(); };
+    void reset(){ myTime.tv_sec=0; myTime.tv_usec=0; };
+    void start(){
+      gettimeofday( &startTime, 0 );
+    };
+    void stop();
+    unsigned int secs() { stop(); return myTime.tv_sec; };
+    std::string toString();
+    static std::string now();
+  private:
+    timeval startTime;
+    timeval myTime;
+  };
+
+}
