@@ -1,6 +1,6 @@
 /*
-  $Id: XMLtools.cxx 15565 2013-01-07 14:27:05Z sloot $
-  $URL: https://ilk.uvt.nl/svn/trunk/sources/Timbl6/src/XMLtools.cxx $
+  $Id$
+  $URL$
 
   Copyright (c) 1998 - 2013
   ILK   - Tilburg University
