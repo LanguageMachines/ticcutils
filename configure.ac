@@ -54,6 +54,17 @@ if test x"$acx_pthread_ok" = xyes; then
    CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 fi
 
+# ugly hack when PKG_CONFIG_PATH isn't defined.
+# couldn't get it to work otherwise
+if test "x$PKG_CONFIG_PATH" = x; then
+    export PKG_CONFIG_PATH=""
+fi
+
+PKG_PROG_PKG_CONFIG
+PKG_CHECK_MODULES([XML2], [libxml-2.0 >= 2.6.16] )
+CXXFLAGS="$CXXFLAGS $XML2_CFLAGS"
+LIBS="$LIBS $XML2_LIBS"
+
 OPENMP_CHECK( [CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
 	       AC_DEFINE(HAVE_OPENMP, 1 , Define to 1 if you have OpenMP )],
 	      [AC_MSG_NOTICE(We don't have OpenMP. Multithreaded testing is disabled)] )
