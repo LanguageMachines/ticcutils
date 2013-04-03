@@ -32,6 +32,7 @@
 
 #include <string>
 #include <map>
+#include <list>
 #include "libxml/tree.h"
 
 namespace TiCC {
@@ -116,7 +117,7 @@ namespace TiCC {
     return getNS( n, s);
   }
 
-  std::map<std::string,std::string> getNSlist( const xmlNode * );
+  std::map<std::string,std::string> getNSvalues( const xmlNode * );
 
   std::string serialize( const xmlNode& node );
 
@@ -169,6 +170,9 @@ namespace TiCC {
     os << serialize( *node );
     return os;
   }
+
+  std::list<xmlNode*> FindNodes( xmlNode *, const std::string& );
+  xmlNode *xPath( xmlNode *, const std::string& );
 
 } // namespace TiCC
 

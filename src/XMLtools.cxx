@@ -29,6 +29,8 @@
 
 #include <iostream>
 #include <string>
+#include <stdexcept>
+#include "libxml/xpath.h"
 #include "ticcutils/XMLtools.h"
 
 using namespace std;
@@ -81,7 +83,7 @@ namespace TiCC {
     return result;
   }
 
-  map<string,string> getNSlist( const xmlNode *node ){
+  map<string,string> getNSvalues( const xmlNode *node ){
     map<string,string> result;
     xmlNs *p = node->ns;
     while ( p ){
@@ -93,6 +95,62 @@ namespace TiCC {
       val = (char *)p->href;
       result[pre] = val;
       p = p->next;
+    }
+    return result;
+  }
+
+  list<xmlNode*> FindLocal( xmlXPathContext* ctxt, 
+			    const string& xpath ){
+    list<xmlNode*> nodes;
+    xmlXPathObject* result = xmlXPathEval((xmlChar*)xpath.c_str(), ctxt);
+    if ( result ){
+      if (result->type != XPATH_NODESET) {
+	xmlXPathFreeObject(result);
+	throw runtime_error( "sorry, only nodeset types supported for now." );
+	return nodes;
+      }
+      xmlNodeSet* nodeset = result->nodesetval;
+      if ( nodeset ){
+	for (int i = 0; i != nodeset->nodeNr; ++i)
+	  nodes.push_back(nodeset->nodeTab[i]);
+      }
+      else {
+	throw runtime_error( "FindLocal: Missing nodeset" );
+      }
+      xmlXPathFreeObject(result);
+    }
+    else {
+      throw runtime_error( "Invalid Xpath: '" + xpath + "'" );
+    }
+    return nodes;
+  }
+  
+  list<xmlNode*> FindNodes( xmlNode* node,
+			    const string& xpath ){
+    xmlXPathContext* ctxt = xmlXPathNewContext( node->doc );
+    ctxt->node = node;
+    ctxt->namespaces = xmlGetNsList( node->doc, ctxt->node );
+    ctxt->nsNr = 0;
+    if (ctxt->namespaces != 0 ) {
+      while (ctxt->namespaces[ctxt->nsNr] != 0 ){
+	ctxt->nsNr++;
+      }
+    }
+    list<xmlNode*> nodes = FindLocal( ctxt, xpath );
+    if (ctxt->namespaces != NULL)
+      xmlFree(ctxt->namespaces);
+    xmlXPathFreeContext(ctxt);
+    return nodes;
+  }
+
+  xmlNode *xPath( xmlNode *node, const string& xpath ){
+    // try to find a path, but it may not be there...
+    // if there are more, just return the first
+
+    list<xmlNode*> srch = FindNodes( node, xpath );
+    xmlNode *result = 0;
+    if ( srch.size() != 0 ){
+      result = srch.front();
     }
     return result;
   }
