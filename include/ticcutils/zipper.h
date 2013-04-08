@@ -30,15 +30,18 @@
 #ifndef TICC_ZIP_TOOLS_H
 #define TICC_ZIP_TOOLS_H
 
-#include "bzlib.h"
-
 namespace TiCC {
 
-  bool bz2compress( const std::string&, const std::string& = "" );
-  bool bz2decompress( const std::string&, const std::string& = "" );
+  bool bz2Compress( const std::string&, const std::string& = "" );
+  bool bz2Decompress( const std::string&, const std::string& = "" );
+  std::string bz2ReadFile( const std::string& );
+  bool bz2WriteFile( const std::string&, const std::string& );
 
-  std::string bz2readFile( const std::string& );
-  bool bz2writeFile( const std::string&, const std::string& );
+  bool gzCompress( const std::string&, const std::string& = "" );
+  bool gzDecompress( const std::string&, const std::string& = "" );
+  std::string gzReadFile( const std::string& );
+  bool gzWriteFile( const std::string&, const std::string& );
+
 
 } // namespace TiCC
 

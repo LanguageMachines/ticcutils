@@ -120,12 +120,21 @@ void test_lowercase(){
 }
 
 void test_bz2compression(){
-  assertTrue( bz2compress( "small.txt", "bzout.bz2" ) );
-  assertTrue( bz2decompress( "bzout.bz2", "bzout.txt" ) );
+  assertTrue( bz2Compress( "small.txt", "bzout.bz2" ) );
+  assertTrue( bz2Decompress( "bzout.bz2", "bzout.txt" ) );
   string buffer;
-  assertNoThrow( buffer = bz2readFile( "bzout.bz2" ) );
+  assertNoThrow( buffer = bz2ReadFile( "bzout.bz2" ) );
   assertEqual( buffer.substr(0,4), "This" );
   assertEqual( system("diff small.txt bzout.txt"), 0 );
+}
+
+void test_gzcompression(){
+  assertTrue( gzCompress( "small.txt", "gzout.gz" ) );
+  assertTrue( gzDecompress( "gzout.gz", "gzout.txt" ) );
+  string buffer;
+  assertNoThrow( buffer = gzReadFile( "gzout.gz" ) );
+  assertEqual( buffer.substr(0,4), "This" );
+  assertEqual( system("diff small.txt gzout.txt"), 0 );
 }
 
 int main(){
@@ -145,5 +154,6 @@ int main(){
   test_uppercase();
   test_lowercase();
   test_bz2compression();
+  test_gzcompression();
   summarize_tests(3);
 }
