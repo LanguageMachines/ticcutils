@@ -120,8 +120,11 @@ void test_lowercase(){
 }
 
 void test_bz2compression(){
-  assertTrue( BZ2compress( "small.txt", "bzout.bz2" ) );
-  assertTrue( BZ2decompress( "bzout.bz2", "bzout.txt" ) );
+  assertTrue( bz2compress( "small.txt", "bzout.bz2" ) );
+  assertTrue( bz2decompress( "bzout.bz2", "bzout.txt" ) );
+  string buffer;
+  assertNoThrow( buffer = bz2readFile( "bzout.bz2" ) );
+  assertEqual( buffer.substr(0,4), "This" );
   assertEqual( system("diff small.txt bzout.txt"), 0 );
 }
 

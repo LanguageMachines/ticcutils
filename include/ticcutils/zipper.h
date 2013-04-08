@@ -34,12 +34,11 @@
 
 namespace TiCC {
 
-  bool BZ2compress( const std::string&, const std::string& = "" );
   bool bz2compress( const std::string&, const std::string& = "" );
-  bool BZ2decompress( const std::string&, const std::string& = "" );
   bool bz2decompress( const std::string&, const std::string& = "" );
 
-  std::ifstream& bz2open( const std::string& );
+  std::string bz2readFile( const std::string& );
+  bool bz2writeFile( const std::string&, const std::string& );
 
 } // namespace TiCC
 
