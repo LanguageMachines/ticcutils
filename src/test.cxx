@@ -4,6 +4,7 @@
 
 #include "ticcutils/StringOps.h"
 #include "ticcutils/PrettyPrint.h"
+#include "ticcutils/zipper.h"
 
 #include "ticcutils/UnitTest.h"
 
@@ -118,6 +119,12 @@ void test_lowercase(){
   assertEqual( res, "een camelcapped zin." );
 }
 
+void test_bz2compression(){
+  assertTrue( BZ2compress( "small.txt", "bzout.bz2" ) );
+  assertTrue( BZ2decompress( "bzout.bz2", "bzout.txt" ) );
+  assertEqual( system("diff small.txt bzout.txt"), 0 );
+}
+
 int main(){
   test_subtests_fail();
   test_subtests_ok();
@@ -134,5 +141,6 @@ int main(){
   test_to_lower();
   test_uppercase();
   test_lowercase();
+  test_bz2compression();
   summarize_tests(3);
 }
