@@ -45,6 +45,9 @@ namespace TiCC {
   std::string lowercase( const std::string& );
   std::string uppercase( const std::string& );
 
+  bool match_front( const std::string&, const std::string& );
+  bool match_back( const std::string&, const std::string& );
+
   size_t split_at( const std::string&, std::vector<std::string>&, 
 		   const std::string& );
   size_t split_at_first_of( const std::string&, std::vector<std::string>&, 

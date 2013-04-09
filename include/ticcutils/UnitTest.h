@@ -159,6 +159,7 @@ void MyTSerie::stop( const std::string& fun, int line ){
   while( false )							\
 
 #define assertTrue( YY ) test_true( __func__, __LINE__, (YY), currentTestContext )
+#define assertFalse( YY ) test_false( __func__, __LINE__, (YY), currentTestContext )
 #define assertMessage( MM, YY ) test_true_message( __func__, __LINE__, (MM), (YY), currentTestContext )
 
 #define startTestSerie( SS ) MyTSerie currentTestContext( __func__, __LINE__, (SS) )
@@ -189,6 +190,24 @@ inline void test_true( const char* F, int L, bool b, MyTSerie& T ){
     std::cout << "test: " << F << "(" << L << "): ";
   ++T._tests;
   if ( !b ){
+    ++T._fails;
+    if ( T.isDefault() )
+      std::cout << FAIL << std::endl;
+    else
+      std::cerr << "\t";
+    std::cerr << F << "(" << L << ") : '"  << b << "' != TRUE" << std::endl;
+  }
+  else {
+    if ( !testSilent && T.isDefault() )
+      std::cout << OK << std::endl;
+  }
+}
+
+inline void test_false( const char* F, int L, bool b, MyTSerie& T ){
+  if ( !testSilent && T.isDefault() )
+    std::cout << "test: " << F << "(" << L << "): ";
+  ++T._tests;
+  if ( b ){
     ++T._fails;
     if ( T.isDefault() )
       std::cout << FAIL << std::endl;

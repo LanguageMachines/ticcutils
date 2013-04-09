@@ -100,6 +100,22 @@ namespace TiCC {
     return result;
   }
 
+  bool match_back( const std::string& s, const std::string& tail ){
+    string::size_type pos = s.rfind( tail );
+    if ( pos != string::npos && (s.length() - pos == tail.length() ) ){
+      return true;
+    }
+    return false;
+  }
+  
+  bool match_front( const std::string& s, const std::string& head ){
+    string::size_type pos = s.find( head );
+    if ( pos == 0  ){
+      return true;
+    }
+    return false;
+  }
+
   size_t split_at( const string& src, vector<string>& results, 
 		   const string& sep ){
     // split a string into substrings, using seps as seperator

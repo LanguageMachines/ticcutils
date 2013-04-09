@@ -62,6 +62,16 @@ void test_trim_back(){
   assertEqual( res, " aha" );
 }
 
+void test_match_front(){
+  assertTrue( match_front("janklaassenenkatrien", "janklaassen" ) );
+  assertFalse( match_front("janklaassenenkatrien", "anklaassen" ) );
+}
+
+void test_match_back(){
+  assertTrue( match_back("janklaassenenkatrien", "katrien" ) );
+  assertFalse( match_back("janklaassenenkatrien", "katrie" ) );
+}
+
 void test_format_non_ascii(){
   string val = "ø en €";
   string res = format_nonascii(val);
@@ -145,6 +155,8 @@ int main(){
   test_trim();
   test_trim_front();
   test_trim_back();
+  test_match_front();
+  test_match_back();
   test_format_non_ascii();
   test_split();
   test_split_at();

@@ -129,10 +129,8 @@ namespace TiCC {
       cerr << "gz: unable to open outputfile: " << outname << endl;
       return false;
     }
-    cerr << "OPENED " << outname << endl;
     char c;
     while ( infile.get(c) ){
-      cerr << "write: " << c << endl;
       outfile << c;
     }
     infile.close();
