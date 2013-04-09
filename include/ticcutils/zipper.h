@@ -1,6 +1,6 @@
 /*
-  $Id: XMLtools.h 15892 2013-04-03 08:49:18Z sloot $
-  $URL: https://ilk.uvt.nl/svn/sources/libticcutils/trunk/include/ticcutils/XMLtools.h $
+  $Id$
+  $URL$
 
   Copyright (c) 1998 - 2013
   ILK   - Tilburg University

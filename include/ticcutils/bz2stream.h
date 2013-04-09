@@ -24,7 +24,7 @@
  |                                                                            |
  \---------------------------------------------------------------------------*/
 
-// $Id: bz2stream.hpp,v 1.5 2002/07/07 02:02:27 aisotton Exp $
+// $Id$
 
 #ifndef BZ2STREAM_BZ2STREAM_HPP
 #define BZ2STREAM_BZ2STREAM_HPP
