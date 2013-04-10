@@ -1,6 +1,6 @@
 /*
-  $Id: StringOps.h 15964 2013-04-09 12:17:22Z sloot $
-  $URL: https://ilk.uvt.nl/svn/sources/libticcutils/trunk/include/ticcutils/StringOps.h $
+  $Id$
+  $URL$
 
   Copyright (c) 1998 - 2013
   ILK   - Tilburg University
