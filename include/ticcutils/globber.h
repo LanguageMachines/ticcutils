@@ -1,6 +1,6 @@
 /*
-  $Id: Version.h 15979 2013-04-10 12:38:38Z sloot $
-  $URL: https://ilk.uvt.nl/svn/sources/libticcutils/trunk/include/ticcutils/Version.h $
+  $Id$
+  $URL$
 
   Copyright (c) 1998 - 2013
   ILK   - Tilburg University
