@@ -34,10 +34,18 @@
 
 #include <cerrno>
 #include <cfloat>
+#include "ticcutils/Version.h"
 #include "ticcutils/StringOps.h"
 
 using namespace std;
 namespace TiCC {
+
+  string BuildInfo() { 
+    // cannot be defined in the header becaus otherwise __DATE__ ans
+    // __TIME__ would be dynamic. (changing every time it is included)
+    return VersionName() + "-" + Version() + ". Compiled on " 
+      + __DATE__ + " " + __TIME__;
+  }
   
   string trim( const string& s, const string& chars ){
     // remove leading and trailing characters from a string

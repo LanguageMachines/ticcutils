@@ -3,7 +3,7 @@
 
 ACLOCAL_AMFLAGS =-I m4 --install
 
-SUBDIRS = src include docs m4
+SUBDIRS = src include docs m4 tests
 
 EXTRA_DIST = bootstrap AUTHORS TODO NEWS ticcutils.pc.in
 

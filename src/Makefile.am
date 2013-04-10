@@ -4,8 +4,9 @@
 AM_CPPFLAGS = -I@top_srcdir@/include
 
 check_PROGRAMS = test
+TESTS_ENVIRONMENT = topsrcdir=$(top_srcdir)
 TESTS = $(check_PROGRAMS)
-
+CLEANFILES = bzout.txt gzout.txt bzout.bz2 gzout.gz
 test_SOURCES = test.cxx
 
 LDADD = libticcutils.la

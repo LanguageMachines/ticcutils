@@ -5,7 +5,7 @@
 #include "ticcutils/StringOps.h"
 #include "ticcutils/PrettyPrint.h"
 #include "ticcutils/zipper.h"
-
+#include "ticcutils/Version.h"
 #include "ticcutils/UnitTest.h"
 
 using namespace std;
@@ -130,24 +130,31 @@ void test_lowercase(){
 }
 
 void test_bz2compression(){
-  assertTrue( bz2Compress( "small.txt", "bzout.bz2" ) );
+  string path = getenv( "topsrcdir" );
+  path += "/tests/";
+  assertTrue( bz2Compress( path + "small.txt", "bzout.bz2" ) );
   assertTrue( bz2Decompress( "bzout.bz2", "bzout.txt" ) );
   string buffer;
   assertNoThrow( buffer = bz2ReadFile( "bzout.bz2" ) );
   assertEqual( buffer.substr(0,4), "This" );
-  assertEqual( system("diff small.txt bzout.txt"), 0 );
+  string cmd = "diff " + path + "small.txt bzout.txt";
+  assertEqual( system( cmd.c_str() ), 0 );
 }
 
 void test_gzcompression(){
-  assertTrue( gzCompress( "small.txt", "gzout.gz" ) );
+  string path = getenv( "topsrcdir" );
+  path += "/tests/";
+  assertTrue( gzCompress( path + "small.txt", "gzout.gz" ) );
   assertTrue( gzDecompress( "gzout.gz", "gzout.txt" ) );
   string buffer;
   assertNoThrow( buffer = gzReadFile( "gzout.gz" ) );
   assertEqual( buffer.substr(0,4), "This" );
-  assertEqual( system("diff small.txt gzout.txt"), 0 );
+  string cmd = "diff " + path + "small.txt gzout.txt";
+  assertEqual( system(cmd.c_str()), 0 );
 }
 
 int main(){
+  cerr << BuildInfo() << endl;
   test_subtests_fail();
   test_subtests_ok();
   test_throw();
