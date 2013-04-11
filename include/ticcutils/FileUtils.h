@@ -27,8 +27,8 @@
       timbl@uvt.nl
 */
 
-#ifndef TICC_GLOBBER_H
-#define TICC_GLOBBER_H
+#ifndef TICC_FILE_UTILS_H
+#define TICC_FILE_UTILS_H
 
 namespace TiCC {
   std::vector<std::string> glob( const std::string&);
@@ -39,4 +39,4 @@ namespace TiCC {
 
 }
 
-#endif // TICC_GLOBBER_H
+#endif // TICC_FILE_UTILS_H

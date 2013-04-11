@@ -35,6 +35,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include "ticcutils/StringOps.h"
+#include "ticcutils/FileUtils.h"
 
 using namespace std;
 namespace TiCC {
