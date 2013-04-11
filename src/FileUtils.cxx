@@ -73,7 +73,6 @@ namespace TiCC {
 	   << "' doesn't seem te be a directory." << endl;
       exit(EXIT_FAILURE);
     }
-    cout << "Searching dir '" << dirName << "' for *" << ext << endl;
     DIR *dir = opendir( dirName.c_str() );
     if ( !dir ){
       cerr << "unable to open dir" << dirName << endl;
