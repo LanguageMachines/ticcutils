@@ -26,11 +26,13 @@
   or send mail to:
       timbl@uvt.nl
 */
-#include <glob.h>
+#include <cerrno>
+#include <cstring>
 #include <vector>
 #include <string>
 #include <iostream>
 #include <cstdlib>
+#include <glob.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -41,14 +43,21 @@ using namespace std;
 namespace TiCC {
 
   vector<string> glob( const string& pat ){
+    vector<string> result;
     glob_t glob_result;
-    glob(pat.c_str(),GLOB_TILDE,NULL,&glob_result);
-    vector<string> ret;
+    int res = glob(pat.c_str(),GLOB_TILDE,NULL,&glob_result);
+    if ( res == GLOB_NOMATCH ){
+      return result;
+    }
+    else if ( res != 0 ){
+      cerr << "TiCC::glob:" << strerror( errno ) << endl;
+      exit(EXIT_FAILURE);
+    }
     for(unsigned int i=0;i<glob_result.gl_pathc;++i){
-      ret.push_back(string(glob_result.gl_pathv[i]));
+      result.push_back(string(glob_result.gl_pathv[i]));
     }
     globfree(&glob_result);
-    return ret;
+    return result;
   }
 
   bool isDir( const string& name ){
