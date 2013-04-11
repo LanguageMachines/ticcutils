@@ -29,9 +29,16 @@
 #include <glob.h>
 #include <vector>
 #include <string>
+#include <iostream>
+#include <cstdlib>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include "ticcutils/StringOps.h"
 
 using namespace std;
 namespace TiCC {
+
   vector<string> glob( const string& pat ){
     glob_t glob_result;
     glob(pat.c_str(),GLOB_TILDE,NULL,&glob_result);
@@ -42,5 +49,55 @@ namespace TiCC {
     globfree(&glob_result);
     return ret;
   }
+
+  bool isDir( const string& name ){
+    // is 'name' a directory in sight ?
+    struct stat st_buf;
+    int status = stat( name.c_str(), &st_buf );
+    return S_ISDIR (st_buf.st_mode);
+  }
+
+  bool isFile( const string& name ){
+    // is 'name' a file in sight ?
+    struct stat st_buf;
+    int status = stat( name.c_str(), &st_buf );
+    return S_ISREG (st_buf.st_mode);
+  }
+
+  vector<string> scanDir( const string& dirName, const string& ext, 
+			  bool fullPath ){   
+    vector<string> result;
+    if ( !isDir( dirName ) ){
+      cerr << "the name '" << dirName 
+	   << "' doesn't seem te be a directory." << endl;
+      exit(EXIT_FAILURE);
+    }
+    cout << "Searching dir '" << dirName << "' for *" << ext << endl;
+    DIR *dir = opendir( dirName.c_str() );
+    if ( !dir ){
+      cerr << "unable to open dir" << dirName << endl;
+      exit(EXIT_FAILURE);
+    }
+    struct stat sb;
+    struct dirent *entry = readdir( dir );
+    while ( entry ){
+      if (entry->d_name[0] != '.') {
+	string name = entry->d_name;
+	if ( ext.empty() ){
+	  if ( fullPath )
+	    name = dirName  + "/" + name;
+	  result.push_back( name );
+	}
+	else if ( TiCC::match_back( name, ext ) ){
+	  if ( fullPath )
+	    name = dirName  + "/" + name;
+	  result.push_back( name );
+	}
+      }
+      entry = readdir( dir );
+    }
+    closedir( dir );
+    return result;
+  } 
 
 } // namespace TiCC

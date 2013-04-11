@@ -32,6 +32,11 @@
 
 namespace TiCC {
   std::vector<std::string> glob( const std::string&);
+  std::vector<std::string> scanDir( const std::string&,
+				    const std::string&, bool = false );
+  bool isDir( const std::string& );
+  bool isFile( const std::string& );
+
 }
 
 #endif // TICC_GLOBBER_H
