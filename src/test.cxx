@@ -159,11 +159,14 @@ void test_fileutils(){
   path += "/tests/";
   vector<string> res;
   assertNoThrow( res = searchFilesExt( path, ".txt", false ) );
-  cerr << res << endl;
   assertEqual( res.size(), 1 );
   assertNoThrow( res = searchFilesExt( path, ".txt" ) );
-  cerr << res << endl;
   assertEqual( res.size(), 2 );
+  assertNoThrow( res = searchFilesExt( path+"small.txt", ".txt" ) );
+  assertEqual( res.size(), 1 );
+  assertNoThrow( res = searchFiles( path+"small.txt" ) );
+  assertEqual( res.size(), 1 );
+  assertTrue( res[0] == path+"small.txt" );
 }
 
 int main(){
