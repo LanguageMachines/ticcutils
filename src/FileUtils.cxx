@@ -36,6 +36,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#include "config.h"
+#ifdef HAVE_BOOST_REGEX
+#include <boost/regex.hpp>
+#endif
 #include "ticcutils/StringOps.h"
 #include "ticcutils/FileUtils.h"
 
@@ -74,8 +78,8 @@ namespace TiCC {
     return S_ISREG (st_buf.st_mode);
   }
 
-  void gatherFiles( const string& dirName, const string& ext, 
-		    vector<string>& result, bool recurse ){   
+  void gatherFilesExt( const string& dirName, const string& ext, 
+		       vector<string>& result, bool recurse ){   
     DIR *dir = opendir( dirName.c_str() );
     if ( !dir ){
       cerr << "unable to open dir" << dirName << endl;
@@ -88,7 +92,7 @@ namespace TiCC {
       string fullName = dirName + "/" + name;
       if ( isDir( fullName ) ){
 	if ( recurse && name[0] != '.' ){
-	  gatherFiles( fullName, ext, result, recurse );
+	  gatherFilesExt( fullName, ext, result, recurse );
 	}
       }
       else if ( ext.empty() ||
@@ -117,8 +121,63 @@ namespace TiCC {
 	   << "' doesn't match a file or directory." << endl;
       exit(EXIT_FAILURE);
     }
-    gatherFiles( name, ext, result, recurse );
+    gatherFilesExt( name, ext, result, recurse );
     return result;
   } 
+
+#ifdef HAVE_BOOST_REGEX
+  void gatherFilesMatch( const string& dirName, const boost::regex& match,
+			 vector<string>& result, bool recurse ){   
+    DIR *dir = opendir( dirName.c_str() );
+    if ( !dir ){
+      cerr << "unable to open dir" << dirName << endl;
+      exit(EXIT_FAILURE);
+    }
+    struct stat sb;
+    struct dirent *entry = readdir( dir );
+    while ( entry ){
+      string name = entry->d_name;
+      string fullName = dirName + "/" + name;
+      if ( isDir( fullName ) ){
+	if ( recurse && name[0] != '.' ){
+	  gatherFilesMatch( fullName, match, result, recurse );
+	}
+      }
+      else if ( boost::regex_search( fullName, match ) ){
+	result.push_back( fullName );
+      }
+      entry = readdir( dir );
+    }
+    closedir( dir );
+  } 
+
+  vector<string> searchFilesMatch( const string& name, 
+				   const string& match,
+				   bool recurse ){
+    boost::regex rx( match );
+    vector<string> result;
+    if ( isFile( name ) ){
+      // it is just 1 file
+      if ( boost::regex_search(name, rx ) )
+	result.push_back( name );
+      return result;
+    }
+    else if ( !isDir( name ) ){
+      cerr << "the name '" << name 
+	   << "' doesn't match a file or directory." << endl;
+      exit(EXIT_FAILURE);
+    }
+    gatherFilesMatch( name, rx, result, recurse );
+    return result;
+  } 
+#else
+  vector<string> searchFilesMatch( const string& name, 
+				   const string& match,
+				   bool recurse ){
+    cerr << "REGEXP support not available" << endl;
+    cerr << "  attempting lame extension matching instead" << endl;
+    return searchFilesExt( name, match, recurse );
+  }
+#endif
 
 } // namespace TiCC

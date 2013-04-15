@@ -29,6 +29,7 @@
 
 #ifndef TICC_FILE_UTILS_H
 #define TICC_FILE_UTILS_H
+#include "config.h"
 
 namespace TiCC {
   std::vector<std::string> glob( const std::string&);
@@ -39,7 +40,9 @@ namespace TiCC {
 					bool recurse = true ){
     return searchFilesExt( name, "", recurse );
   }
-
+  std::vector<std::string> searchFilesMatch( const std::string&,
+					     const std::string&,
+					     bool = true );
   bool isDir( const std::string& );
   bool isFile( const std::string& );
 

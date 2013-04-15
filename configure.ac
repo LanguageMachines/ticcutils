@@ -43,7 +43,6 @@ AC_CHECK_HEADERS([bzlib.h],
 		[LIBS="$LIBS -lbz2"],
 		[AC_MSG_ERROR([libbz2-dev not found])] )
 		
-
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
 AC_HEADER_STDBOOL
@@ -58,6 +57,10 @@ if test x"$acx_pthread_ok" = xyes; then
    LIBS="$PTHREAD_LIBS $LIBS" \
    CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 fi
+
+AX_BOOST_BASE([1.40])
+AX_BOOST_REGEX
+LIBS="$LIBS $BOOST_REGEX_LIB"
 
 # ugly hack when PKG_CONFIG_PATH isn't defined.
 # couldn't get it to work otherwise
