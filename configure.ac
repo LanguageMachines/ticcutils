@@ -85,5 +85,6 @@ AC_CONFIG_FILES([
   include/Makefile
   include/ticcutils/Makefile
   tests/Makefile
+  tests/sub1/Makefile
 ])
 AC_OUTPUT

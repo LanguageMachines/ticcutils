@@ -32,8 +32,14 @@
 
 namespace TiCC {
   std::vector<std::string> glob( const std::string&);
-  std::vector<std::string> scanDir( const std::string&,
-				    const std::string&, bool = false );
+  std::vector<std::string> searchFilesExt( const std::string&,
+					   const std::string&,
+					   bool = true );
+  std::vector<std::string> searchFiles( const std::string& name,
+					bool recurse = true ){
+    return searchFilesExt( name, "", recurse );
+  }
+
   bool isDir( const std::string& );
   bool isFile( const std::string& );
 

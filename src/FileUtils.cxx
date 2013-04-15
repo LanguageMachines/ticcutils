@@ -74,14 +74,8 @@ namespace TiCC {
     return S_ISREG (st_buf.st_mode);
   }
 
-  vector<string> scanDir( const string& dirName, const string& ext, 
-			  bool fullPath ){   
-    vector<string> result;
-    if ( !isDir( dirName ) ){
-      cerr << "the name '" << dirName 
-	   << "' doesn't seem te be a directory." << endl;
-      exit(EXIT_FAILURE);
-    }
+  void gatherFiles( const string& dirName, const string& ext, 
+		    vector<string>& result, bool recurse ){   
     DIR *dir = opendir( dirName.c_str() );
     if ( !dir ){
       cerr << "unable to open dir" << dirName << endl;
@@ -90,22 +84,40 @@ namespace TiCC {
     struct stat sb;
     struct dirent *entry = readdir( dir );
     while ( entry ){
-      if (entry->d_name[0] != '.') {
-	string name = entry->d_name;
-	if ( ext.empty() ){
-	  if ( fullPath )
-	    name = dirName  + "/" + name;
-	  result.push_back( name );
+      string name = entry->d_name;
+      string fullName = dirName + "/" + name;
+      if ( isDir( fullName ) ){
+	if ( recurse && name[0] != '.' ){
+	  gatherFiles( fullName, ext, result, recurse );
 	}
-	else if ( TiCC::match_back( name, ext ) ){
-	  if ( fullPath )
-	    name = dirName  + "/" + name;
-	  result.push_back( name );
-	}
+      }
+      else if ( ext.empty() ||
+		TiCC::match_back( fullName, ext ) ){
+	result.push_back( fullName );
       }
       entry = readdir( dir );
     }
     closedir( dir );
+  } 
+
+  vector<string> searchFilesExt( const string& name, 
+				 const string& ext,
+				 bool recurse ){
+    vector<string> result;
+    if ( isFile( name ) ){
+      // it is just 1 file
+      if ( ext.empty() ||
+	   TiCC::match_back( name, ext ) ){
+	result.push_back( name );
+      }
+      return result;
+    }
+    else if ( !isDir( name ) ){
+      cerr << "the name '" << name 
+	   << "' doesn't match a file or directory." << endl;
+      exit(EXIT_FAILURE);
+    }
+    gatherFiles( name, ext, result, recurse );
     return result;
   } 
 

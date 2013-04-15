@@ -7,6 +7,7 @@
 #include "ticcutils/zipper.h"
 #include "ticcutils/Version.h"
 #include "ticcutils/UnitTest.h"
+#include "ticcutils/FileUtils.h"
 
 using namespace std;
 using namespace TiCC;
@@ -153,6 +154,18 @@ void test_gzcompression(){
   assertEqual( system(cmd.c_str()), 0 );
 }
 
+void test_fileutils(){
+  string path = getenv( "topsrcdir" );
+  path += "/tests/";
+  vector<string> res;
+  assertNoThrow( res = searchFilesExt( path, ".txt", false ) );
+  cerr << res << endl;
+  assertEqual( res.size(), 1 );
+  assertNoThrow( res = searchFilesExt( path, ".txt" ) );
+  cerr << res << endl;
+  assertEqual( res.size(), 2 );
+}
+
 int main(){
   cerr << BuildInfo() << endl;
   test_subtests_fail();
@@ -174,5 +187,6 @@ int main(){
   test_lowercase();
   test_bz2compression();
   test_gzcompression();
+  test_fileutils();
   summarize_tests(3);
 }
