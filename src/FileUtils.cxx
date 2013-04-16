@@ -143,7 +143,7 @@ namespace TiCC {
 	  gatherFilesMatch( fullName, match, result, recurse );
 	}
       }
-      else if ( boost::regex_search( fullName, match ) ){
+      else if ( boost::regex_search( name, match ) ){
 	result.push_back( fullName );
       }
       entry = readdir( dir );
@@ -151,23 +151,61 @@ namespace TiCC {
     closedir( dir );
   } 
 
-  vector<string> searchFilesMatch( const string& name, 
-				   const string& match,
-				   bool recurse ){
-    boost::regex rx( match );
-    vector<string> result;
-    if ( isFile( name ) ){
-      // it is just 1 file
-      if ( boost::regex_search(name, rx ) )
-	result.push_back( name );
-      return result;
+  string wildToRegExp( const string& wild ){
+    // convert 'shell'-like wildcards into a regexp
+    string result;
+    for ( size_t i=0; i < wild.length(); ++i ){
+      switch( wild[i] ){
+      case '*':
+	result += ".*";
+	break;
+      case '?':
+	result += ".";
+	break;
+      case '.':
+	result += "\\";
+	result += wild[i];
+	break;
+      default:
+	result += wild[i];
+      }
     }
-    else if ( !isDir( name ) ){
-      cerr << "the name '" << name 
-	   << "' doesn't match a file or directory." << endl;
+    //    cerr << "wild to regexp: " << wild << " ==> " << result << endl;
+    return result;
+  }
+
+  vector<string> searchFilesMatch( const string& name, 
+				   const string& wild,
+				   bool recurse ){
+    vector<string> result;
+    string reg = wildToRegExp( wild ); 
+    try {
+      boost::regex rx( reg );
+      if ( isFile( name ) ){
+	// it is just 1 file
+	string::size_type pos = name.rfind( "/" );
+	string fname;
+	if ( pos != string::npos ){
+	  fname = name.substr( pos+1 );
+	}
+	else {
+	  fname = name;
+	}
+	if ( boost::regex_search( fname, rx ) )
+	  result.push_back( name );
+	return result;
+      }
+      else if ( !isDir( name ) ){
+	cerr << "the name '" << name 
+	     << "' doesn't match a file or directory." << endl;
+	exit(EXIT_FAILURE);
+      }
+      gatherFilesMatch( name, rx, result, recurse );
+    }
+    catch( boost::regex_error& e ){
+      cerr << "invalid regexp: " << e.what() << endl;
       exit(EXIT_FAILURE);
     }
-    gatherFilesMatch( name, rx, result, recurse );
     return result;
   } 
 #else
