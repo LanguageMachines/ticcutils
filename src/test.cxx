@@ -169,8 +169,18 @@ void test_fileutils(){
   assertEqual( res.size(), 1 );
   assertTrue( res[0] == path+"small.txt" );
 #ifdef HAVE_BOOST_REGEX
-  assertNoThrow( res = searchFilesMatch( path+"small.txt", ".tx." ) );
+  assertNoThrow( res = searchFilesMatch( path, "*.txt", false ) );
+  // non recursive. should match small.txt 
   assertEqual( res.size(), 1 );
+  assertNoThrow( res = searchFilesMatch( path, "*.txt" ) );
+  // recursive should match small.txt and sub1/sub.txt
+  assertEqual( res.size(), 2 );
+  assertNoThrow( res = searchFilesMatch( path, "small" ) );
+  // should match small.txt
+  assertEqual( res.size(), 1 );
+  assertNoThrow( res = searchFilesMatch( path, "s*[lb].txt" ) );
+  // should match small.txt and sub1/sub.txt
+  assertEqual( res.size(), 2 );
 #endif
 }
 
