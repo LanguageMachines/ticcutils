@@ -1,4 +1,4 @@
-TiCC utils 0.1 (c) ILK/CLiPS 1998 - 2012
+TiCC utils 0.1 (c) ILK/CLiPS 1998 - 2013
 
 Tilburg centre for Cognition and Communication, Tilburg University.
 Centre for Dutch Language and Speech, University of Antwerp
@@ -29,4 +29,10 @@ To be able to succesfully build libticcl from the tarball, you need the
 following pakages:
 - autotools
 - autoconf-archive
+
+Installation instructions (see INSTALL for more details):
+1) sh bootstrap
+2) configure
+3) make
+4) make install
 
