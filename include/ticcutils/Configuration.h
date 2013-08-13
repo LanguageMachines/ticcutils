@@ -29,6 +29,11 @@
 #ifndef TICC_CONFIGURATION_H
 #define TICC_CONFIGURATION_H
 
+#include <string>
+#include <map>
+#include <set>
+#include <iosfwd>
+
 namespace TiCC {
   class Configuration {
     typedef std::map<std::string,std::string> ssMap;

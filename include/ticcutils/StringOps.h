@@ -111,7 +111,7 @@ namespace TiCC {
     std::string toString ( const T& obj, bool=false ) {
     std::stringstream dummy;
     if ( !( dummy << obj ) ) {
-      throw( std::runtime_error( "conversion to long string failed" ) );
+      throw( std::runtime_error( "conversion failed" ) );
     }
    return dummy.str();
   }
