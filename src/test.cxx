@@ -6,7 +6,7 @@
 #include "ticcutils/StringOps.h"
 #include "ticcutils/PrettyPrint.h"
 #include "ticcutils/zipper.h"
-#include "ticcutils/tar.h"
+#include "ticcutils/Tar.h"
 #include "ticcutils/Version.h"
 #include "ticcutils/UnitTest.h"
 #include "ticcutils/FileUtils.h"
@@ -178,6 +178,8 @@ void test_tar(){
   assertEqual( line, "a testfile." );
   assertNoThrow( mytar.extract_file_names( res, ".xml" ) );
   assertEqual( res.size(), 1 );
+  assertNoThrow( mytar.extract_file_names_match( res, "sub" ) );
+  assertEqual( res.size(), 3 );
 }
 
 void test_fileutils(){
