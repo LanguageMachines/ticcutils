@@ -42,7 +42,11 @@ AC_CHECK_HEADERS([sys/time.h])
 AC_CHECK_HEADERS([bzlib.h],
 		[LIBS="$LIBS -lbz2"],
 		[AC_MSG_ERROR([libbz2-dev not found])] )
-		
+
+AC_CHECK_HEADERS([libtar.h],
+		[LIBS="$LIBS -ltar"],
+		[AC_MSG_ERROR([libtar-dev not found])] )
+
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
 AC_HEADER_STDBOOL

@@ -6,6 +6,7 @@
 #include "ticcutils/StringOps.h"
 #include "ticcutils/PrettyPrint.h"
 #include "ticcutils/zipper.h"
+#include "ticcutils/tar.h"
 #include "ticcutils/Version.h"
 #include "ticcutils/UnitTest.h"
 #include "ticcutils/FileUtils.h"
@@ -155,6 +156,30 @@ void test_gzcompression(){
   assertEqual( system(cmd.c_str()), 0 );
 }
 
+void test_tar(){
+  string path = getenv( "topsrcdir" );
+  path += "/tests/";
+  tar mytar;
+  assertNoThrow( mytar.open( path + "test.tar" ) );
+  vector<string> res;
+  assertNoThrow( mytar.extract_file_names( res ) );
+  //  cerr << res << endl;
+  assertEqual( res.size(), 4 );
+  ifstream tmp;
+  string name;
+  assertTrue( mytar.next_ifstream( tmp, name ) );
+  assertEqual( name, "small.txt" );
+  assertTrue( mytar.next_ifstream( tmp, name ) );
+  assertTrue( mytar.next_ifstream( tmp, name ) );
+  assertEqual( name, "sub1/sub.txt" );
+  mytar.extract_ifstream( "sub1/sub.txt", tmp );
+  string line;
+  assertTrue( getline( tmp, line ) );
+  assertEqual( line, "a testfile." );
+  assertNoThrow( mytar.extract_file_names( res, ".xml" ) );
+  assertEqual( res.size(), 1 );
+}
+
 void test_fileutils(){
   string path = getenv( "topsrcdir" );
   path += "/tests/";
@@ -170,7 +195,7 @@ void test_fileutils(){
   assertTrue( res[0] == path+"small.txt" );
 #ifdef HAVE_BOOST_REGEX
   assertNoThrow( res = searchFilesMatch( path, "*.txt", false ) );
-  // non recursive. should match small.txt 
+  // non recursive. should match small.txt
   assertEqual( res.size(), 1 );
   assertNoThrow( res = searchFilesMatch( path, "*.txt" ) );
   // recursive should match small.txt and sub1/sub.txt
@@ -205,6 +230,7 @@ int main(){
   test_lowercase();
   test_bz2compression();
   test_gzcompression();
+  test_tar();
   test_fileutils();
   summarize_tests(3);
 }

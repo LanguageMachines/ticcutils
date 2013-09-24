@@ -15,4 +15,5 @@ lib_LTLIBRARIES = libticcutils.la
 libticcutils_la_LDFLAGS = -version-info 2:0:0
 
 libticcutils_la_SOURCES = LogStream.cxx StringOps.cxx TreeHash.cxx \
-	Configuration.cxx Timer.cxx XMLtools.cxx zipper.cxx FileUtils.cxx
+	Configuration.cxx Timer.cxx XMLtools.cxx zipper.cxx tar.cxx \
+	FileUtils.cxx
