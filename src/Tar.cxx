@@ -3,9 +3,13 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include "config.h"
 #include "libtar.h"
 #include <sys/fcntl.h>
 #include "ticcutils/StringOps.h"
+#ifdef HAVE_BOOST_REGEX
+#include <boost/regex.hpp>
+#endif
 #include "ticcutils/Tar.h"
 
 using namespace std;
@@ -66,8 +70,32 @@ namespace TiCC {
     return true;
   }
 
+#ifdef HAVE_BOOST_REGEX
+  static string wildToRegExp( const string& wild ){
+    // convert 'shell'-like wildcards into a regexp
+    string result;
+    for ( size_t i=0; i < wild.length(); ++i ){
+      switch( wild[i] ){
+      case '*':
+	result += ".*";
+	break;
+      case '?':
+	result += ".";
+	break;
+      case '.':
+	result += "\\";
+	result += wild[i];
+	break;
+      default:
+	result += wild[i];
+      }
+    }
+    //    cerr << "wild to regexp: " << wild << " ==> " << result << endl;
+    return result;
+  }
+
   bool tar::extract_file_names_match( vector<string>& result,
-				      const string& pat ){
+				      const string& wild ){
     result.clear();
     if ( tarname.empty() ){
       cerr << "no tar opened yet" << endl;
@@ -80,20 +108,36 @@ namespace TiCC {
       cerr << "tar_open(): " << strerror(errno) << endl;
       return false;
     }
-    stat = th_read( local_tar );
-    while ( stat == 0  ) {
-      if ( TH_ISREG( local_tar ) ){
-	string name = local_tar->th_buf.name;
-	if ( name.find( pat ) != string::npos ){
-	  result.push_back( name );
-	}
-	tar_skip_regfile( local_tar );
-      }
+    string pat = wildToRegExp( wild );
+    try {
+      boost::regex rx( pat );
       stat = th_read( local_tar );
+      while ( stat == 0  ) {
+	if ( TH_ISREG( local_tar ) ){
+	  string name = local_tar->th_buf.name;
+	  if ( boost::regex_search( name, rx ) ){
+	    result.push_back( name );
+	  }
+	  tar_skip_regfile( local_tar );
+	}
+	stat = th_read( local_tar );
+      }
+      tar_close( local_tar );
     }
-    tar_close( local_tar );
+    catch( boost::regex_error& e ){
+      cerr << "invalid regexp: " << e.what() << endl;
+      exit(EXIT_FAILURE);
+    }
     return true;
   }
+#else
+  bool tar::extract_file_names_match( vector<string>& result,
+				      const string& pat ){
+    cerr << "tar::extract() REGEXP support not available" << endl;
+    cerr << "  attempting lame extension matching instead" << endl;
+    return extract_file_names( result, pat );
+  }
+#endif
 
   bool tar::extract_ifstream( const string& name, ifstream& result ){
     result.close();

@@ -178,8 +178,13 @@ void test_tar(){
   assertEqual( line, "a testfile." );
   assertNoThrow( mytar.extract_file_names( res, ".xml" ) );
   assertEqual( res.size(), 1 );
-  assertNoThrow( mytar.extract_file_names_match( res, "sub" ) );
+#ifdef HAVE_BOOST_REGEX
+  assertNoThrow( mytar.extract_file_names_match( res, "s*b" ) );
   assertEqual( res.size(), 3 );
+#else
+  assertNoThrow( mytar.extract_file_names_match( res, "txt" ) );
+  assertEqual( res.size(), 4 );
+#endif
 }
 
 void test_fileutils(){

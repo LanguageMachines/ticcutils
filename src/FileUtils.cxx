@@ -5,7 +5,7 @@
   Copyright (c) 1998 - 2013
   ILK   - Tilburg University
   CLiPS - University of Antwerp
- 
+
   This file is part of ticcutils
 
   ticcutils is free software; you can redistribute it and/or modify
@@ -78,8 +78,8 @@ namespace TiCC {
     return S_ISREG (st_buf.st_mode);
   }
 
-  void gatherFilesExt( const string& dirName, const string& ext, 
-		       vector<string>& result, bool recurse ){   
+  void gatherFilesExt( const string& dirName, const string& ext,
+		       vector<string>& result, bool recurse ){
     DIR *dir = opendir( dirName.c_str() );
     if ( !dir ){
       cerr << "unable to open dir" << dirName << endl;
@@ -102,9 +102,9 @@ namespace TiCC {
       entry = readdir( dir );
     }
     closedir( dir );
-  } 
+  }
 
-  vector<string> searchFilesExt( const string& name, 
+  vector<string> searchFilesExt( const string& name,
 				 const string& ext,
 				 bool recurse ){
     vector<string> result;
@@ -117,17 +117,17 @@ namespace TiCC {
       return result;
     }
     else if ( !isDir( name ) ){
-      cerr << "the name '" << name 
+      cerr << "the name '" << name
 	   << "' doesn't match a file or directory." << endl;
       exit(EXIT_FAILURE);
     }
     gatherFilesExt( name, ext, result, recurse );
     return result;
-  } 
+  }
 
 #ifdef HAVE_BOOST_REGEX
   void gatherFilesMatch( const string& dirName, const boost::regex& match,
-			 vector<string>& result, bool recurse ){   
+			 vector<string>& result, bool recurse ){
     DIR *dir = opendir( dirName.c_str() );
     if ( !dir ){
       cerr << "unable to open dir" << dirName << endl;
@@ -149,9 +149,9 @@ namespace TiCC {
       entry = readdir( dir );
     }
     closedir( dir );
-  } 
+  }
 
-  string wildToRegExp( const string& wild ){
+  static string wildToRegExp( const string& wild ){
     // convert 'shell'-like wildcards into a regexp
     string result;
     for ( size_t i=0; i < wild.length(); ++i ){
@@ -174,11 +174,11 @@ namespace TiCC {
     return result;
   }
 
-  vector<string> searchFilesMatch( const string& name, 
+  vector<string> searchFilesMatch( const string& name,
 				   const string& wild,
 				   bool recurse ){
     vector<string> result;
-    string reg = wildToRegExp( wild ); 
+    string reg = wildToRegExp( wild );
     try {
       boost::regex rx( reg );
       if ( isFile( name ) ){
@@ -196,7 +196,7 @@ namespace TiCC {
 	return result;
       }
       else if ( !isDir( name ) ){
-	cerr << "the name '" << name 
+	cerr << "the name '" << name
 	     << "' doesn't match a file or directory." << endl;
 	exit(EXIT_FAILURE);
       }
@@ -207,9 +207,9 @@ namespace TiCC {
       exit(EXIT_FAILURE);
     }
     return result;
-  } 
+  }
 #else
-  vector<string> searchFilesMatch( const string& name, 
+  vector<string> searchFilesMatch( const string& name,
 				   const string& match,
 				   bool recurse ){
     cerr << "REGEXP support not available" << endl;
