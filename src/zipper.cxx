@@ -55,6 +55,18 @@ namespace TiCC {
     outfile << bz2in.rdbuf();
   }
 
+  string bz2ReadStream( istream& is ){
+    bz2istream bz2in(is.rdbuf());
+    istreambuf_iterator<char> inpos( bz2in.rdbuf() );
+    istreambuf_iterator<char> endpos;
+    string result;
+    while ( inpos != endpos ){
+      result += *inpos;
+      ++inpos;
+    }
+    return result;
+  }
+
   string bz2ReadFile( const string& inName ){
     string inname = inName;
     string::size_type pos = inname.rfind( ".bz2" );
@@ -65,17 +77,15 @@ namespace TiCC {
     if ( !infile ){
       throw runtime_error( "bz2: unable to open inputfile: " + inName );
     }
-    bz2istream bz2in(infile.rdbuf());
-    istreambuf_iterator<char> inpos( bz2in.rdbuf() );
-    istreambuf_iterator<char> endpos;
-    string result;
-    while ( inpos != endpos ){
-      result += *inpos;
-      ++inpos;
-    }
-    return result;
+    return bz2ReadStream( infile );
   }
-  
+
+  bool bz2WriteStream( ostream& outfile, const string& buffer ){
+    bz2ostream bzout(outfile.rdbuf());
+    bzout << buffer;
+    return true;
+  }
+
   bool bz2WriteFile( const string& outName, const string& buffer ){
     std::ofstream outfile( outName.c_str(), std::ios::binary);
     if ( !outfile ){
@@ -85,6 +95,14 @@ namespace TiCC {
     bz2ostream bzout(outfile.rdbuf());
     bzout << buffer;
     return true;
+  }
+
+  string gzReadStream( istream& is ){
+    string result;
+    char c;
+    while ( is.get(c) )
+      result += c;
+    return result;
   }
 
   string gzReadFile( const string& inName ){
@@ -97,14 +115,14 @@ namespace TiCC {
     if ( !infile ){
       throw runtime_error( "gz: unable to open inputfile: " + inName );
     }
-    string result;
-    char c;
-    while ( infile.get(c) )
-      result += c;
-    infile.close();
-    return result;
+    return gzReadStream( infile );
   }
-  
+
+  bool gzWriteStream( ostream& outfile, const string& buffer ){
+    outfile << buffer;
+    return true;
+  }
+
   bool gzWriteFile( const string& outName, const string& buffer ){
     ogzstream outfile( outName.c_str(), ios::binary|ios::out );
     if ( !outfile ){

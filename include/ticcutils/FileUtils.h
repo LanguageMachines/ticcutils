@@ -5,7 +5,7 @@
   Copyright (c) 1998 - 2013
   ILK   - Tilburg University
   CLiPS - University of Antwerp
- 
+
   This file is part of ticcutils
 
   ticcutils is free software; you can redistribute it and/or modify
@@ -26,6 +26,8 @@
   or send mail to:
       timbl@uvt.nl
 */
+
+#include <vector>
 
 #ifndef TICC_FILE_UTILS_H
 #define TICC_FILE_UTILS_H

@@ -5,7 +5,7 @@
   Copyright (c) 1998 - 2013
   ILK   - Tilburg University
   CLiPS - University of Antwerp
- 
+
   This file is part of ticcutils
 
   timbl is free software; you can redistribute it and/or modify
@@ -35,12 +35,16 @@ namespace TiCC {
   bool bz2Compress( const std::string&, const std::string& = "" );
   bool bz2Decompress( const std::string&, const std::string& = "" );
   std::string bz2ReadFile( const std::string& );
+  std::string bz2ReadStream( std::istream& );
   bool bz2WriteFile( const std::string&, const std::string& );
+  bool bz2WriteStream( std::ostream& );
 
   bool gzCompress( const std::string&, const std::string& = "" );
   bool gzDecompress( const std::string&, const std::string& = "" );
   std::string gzReadFile( const std::string& );
+  std::string gzReadStream( std::istream& );
   bool gzWriteFile( const std::string&, const std::string& );
+  bool gzWriteStream( std::ostream& );
 
 
 } // namespace TiCC
