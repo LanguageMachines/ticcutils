@@ -22,14 +22,9 @@ fi
 
 # Checks for programs.
 AC_PROG_CXX( [g++] )
-AC_PROG_RANLIB
-# libtool stuff
-# unfortunately, a lot of old libtools hang around.
-# so LT_INIT and LT_PREREQ cannot be used for now
-#LT_PREREQ([2.2.0])
-#LT_INIT
 AC_PROG_LIBTOOL
-AC_SUBST([LIBTOOL_DEPS])
+LT_INIT
+
 
 # when running tests, use CXX
 AC_LANG([C++])
@@ -51,9 +46,11 @@ AC_CHECK_HEADERS([libtar.h],
 AC_C_INLINE
 AC_HEADER_STDBOOL
 AC_TYPE_SIZE_T
+AC_TYPE_PID_T
 
 # Checks for library functions.
-AC_CHECK_FUNCS([localtime_r, gettimeofday])
+AC_CHECK_FUNCS([localtime_r, gettimeofday,memset,strerror])
+AC_FUNC_MALLOC
 
 ACX_PTHREAD([],[AC_MSG_ERROR([We need pthread support!])])
 
