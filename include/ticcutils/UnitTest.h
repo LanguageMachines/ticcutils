@@ -5,7 +5,7 @@
   Copyright (c) 1998 - 2013
   ILK   - Tilburg University
   CLiPS - University of Antwerp
- 
+
   This file is part of ticcutils
 
   ticcutils is free software; you can redistribute it and/or modify
@@ -46,12 +46,14 @@ class MyTSerie {
   bool isDefault() const {return _fun =="default"; };
   int _fails;
   int _tests;
+  int _start_line;
   std::string _fun;
  private:
   void start( const std::string& fun, int lineno, const std::string& line ){
     _fun = fun;
     _fails = 0;
     _tests = 0;
+    _start_line = lineno;
     if ( !isDefault() )
       std::cout << "Serie:\t" << fun << " (" << line << ")" << std::endl;
   };
@@ -69,7 +71,7 @@ bool testSilent = false;
 
 inline void summarize_tests( int expected=0 ){
   summarized = true;
-  std::cout << "TiCC tests performed " << currentTestContext._tests 
+  std::cout << "TiCC tests performed " << currentTestContext._tests
 	    << " tests, with " << currentTestContext._fails << " failures.";
   int diff = currentTestContext._fails - expected;
   if ( diff > 0 ){
@@ -87,7 +89,7 @@ inline void summarize_tests( int expected=0 ){
   exit_status = diff;
 }
 
-void MyTSerie::stop( const std::string& fun, int line ){
+void MyTSerie::stop( const std::string& fun, int ){
   if ( isDefault() ){
     if ( !summarized ){
       summarize_tests( 0 );
@@ -97,7 +99,7 @@ void MyTSerie::stop( const std::string& fun, int line ){
   else {
     currentTestContext._tests += _tests;
     if ( _fails ){
-      std::cout << "\t" << fun << "(): " << _fails 
+      std::cout << "\t" << fun << "(): " << _fails
 		<< " out of " << _tests << " tests" << FAIL << std::endl;
       currentTestContext._fails += _fails;
     }
@@ -136,7 +138,7 @@ void MyTSerie::stop( const std::string& fun, int line ){
     std::cerr << __func__ << "(" << __LINE__ << ") : no exception thrown" << std::endl; \
   }									\
   while( false )							\
-    
+
 #define assertNoThrow( XX )						\
   do { 									\
     ++currentTestContext._tests;					\
@@ -165,7 +167,7 @@ void MyTSerie::stop( const std::string& fun, int line ){
 #define startTestSerie( SS ) MyTSerie currentTestContext( __func__, __LINE__, (SS) )
 
 template <typename T1, typename T2>
-  inline void test_eq( const char* F, int L, 
+  inline void test_eq( const char* F, int L,
 		       const T1& s1, const T2& s2, MyTSerie& T ){
   if ( !testSilent && T.isDefault() )
     std::cout << "test: " << F << "(" << L << "): ";
@@ -174,9 +176,9 @@ template <typename T1, typename T2>
     ++T._fails;
     if ( T.isDefault() )
       std::cout << FAIL << std::endl;
-    else 
+    else
       std::cerr << "\t";
-    std::cerr << F << "(" << L << ") : '" << s1 << "' != '" 
+    std::cerr << F << "(" << L << ") : '" << s1 << "' != '"
 	      << s2 << "'" << std::endl;
   }
   else {
@@ -221,7 +223,7 @@ inline void test_false( const char* F, int L, bool b, MyTSerie& T ){
   }
 }
 
-inline void test_true_message( const char* F, int L, const std::string& m, 
+inline void test_true_message( const char* F, int L, const std::string& m,
 			       bool b, MyTSerie& T ){
   if ( !testSilent && T.isDefault() )
     std::cout << "test: " << F << "(" << L << "): ";
