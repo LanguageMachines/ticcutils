@@ -145,7 +145,6 @@ namespace TiCC {
       cerr << "no tar opened yet" << endl;
       return false;
     }
-    struct stat sbuf;
     pid_t pid = getpid();
     string tmpfile = "/tmp/ticc-tar-" + toString( pid ) + ".tmp";
     TAR local_tar_blob;
@@ -197,7 +196,6 @@ namespace TiCC {
 	return false;
       }
     }
-    struct stat sbuf;
     pid_t pid = getpid();
     string tmpfile = "/tmp/ticc-tar-" + toString( pid ) + ".tmp";
     stat = th_read(tar_file);

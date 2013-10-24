@@ -26,6 +26,7 @@ namespace TiCC {
     }
     bz2ostream bzout(outfile.rdbuf());
     bzout << infile.rdbuf();
+    return true;
   }
 
   bool bz2Decompress( const string& inName, const string& outName ){
@@ -53,6 +54,7 @@ namespace TiCC {
     }
     bz2istream bz2in(infile.rdbuf());
     outfile << bz2in.rdbuf();
+    return true;
   }
 
   string bz2ReadStream( istream& is ){
@@ -154,6 +156,7 @@ namespace TiCC {
     infile.close();
     outfile.flush();
     outfile.close();
+    return true;
   }
 
   bool gzDecompress( const string& inName, const string& outName ){
@@ -182,6 +185,7 @@ namespace TiCC {
     char c;
     while ( infile.get(c))
       outfile << c;
+    return true;
   }
 
 

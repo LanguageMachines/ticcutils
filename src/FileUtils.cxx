@@ -68,6 +68,8 @@ namespace TiCC {
     // is 'name' a directory in sight ?
     struct stat st_buf;
     int status = stat( name.c_str(), &st_buf );
+    if ( status < 0 )
+      return false;
     return S_ISDIR (st_buf.st_mode);
   }
 
@@ -75,6 +77,8 @@ namespace TiCC {
     // is 'name' a file in sight ?
     struct stat st_buf;
     int status = stat( name.c_str(), &st_buf );
+    if ( status < 0 )
+      return false;
     return S_ISREG (st_buf.st_mode);
   }
 
@@ -85,7 +89,6 @@ namespace TiCC {
       cerr << "unable to open dir" << dirName << endl;
       exit(EXIT_FAILURE);
     }
-    struct stat sb;
     struct dirent *entry = readdir( dir );
     while ( entry ){
       string name = entry->d_name;
@@ -133,7 +136,6 @@ namespace TiCC {
       cerr << "unable to open dir" << dirName << endl;
       exit(EXIT_FAILURE);
     }
-    struct stat sb;
     struct dirent *entry = readdir( dir );
     while ( entry ){
       string name = entry->d_name;
