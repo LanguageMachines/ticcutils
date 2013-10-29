@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <unistd.h>
 #include "config.h"
 #include "libtar.h"
 #include <sys/fcntl.h>
