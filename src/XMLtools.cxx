@@ -129,6 +129,16 @@ namespace TiCC {
 
   void register_namespaces( xmlXPathContext* ctxt ){
     map<string,string> m = getNSvalues( ctxt->node );
+#ifdef DEBUG_XPATH
+    {
+      cerr << m.size() << " namespaces for node " << Name( ctxt->node ) << endl;
+      map<string,string>::const_iterator it = m.begin();
+      while ( it != m.end() ){
+	cerr << it->first << ":" << it->second << endl;
+	++it;
+      }
+    }
+#endif
     map<string,string>::const_iterator it = m.begin();
     while ( it != m.end() ){
       if ( it->first.empty() ){
