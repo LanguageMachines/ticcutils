@@ -5,7 +5,7 @@
   Copyright (c) 1998 - 2013
   ILK   - Tilburg University
   CLiPS - University of Antwerp
- 
+
   This file is part of ticcutils
 
   timbl is free software; you can redistribute it and/or modify
@@ -31,6 +31,7 @@
 #include <string>
 #include <stdexcept>
 #include "libxml/xpath.h"
+#include "libxml/xpathInternals.h"
 #include "ticcutils/XMLtools.h"
 
 using namespace std;
@@ -41,28 +42,28 @@ namespace TiCC {
     the_doc = xmlNewDoc( (const xmlChar*)"""1.0""" );
     MakeRoot( elem );
   }
-  
+
   const string XmlDoc::toString() const {
-    xmlChar *buf; 
+    xmlChar *buf;
     int size;
     xmlDocDumpMemory( the_doc, &buf, &size );
     const string result = string( (const char *)buf, size );
     xmlFree( buf );
     return result;
   }
-  
+
   xmlNode *XmlDoc::getRoot() const {
     if ( the_doc )
       return xmlDocGetRootElement(the_doc);
     else
       return 0;
   }
-  
+
   void XmlDoc::setRoot( xmlNode *node ){
     if ( the_doc )
       xmlDocSetRootElement(the_doc, node );
   }
-  
+
   xmlNode *XmlDoc::MakeRoot( const string& elem ){
     xmlNode *root;
     root = xmlNewDocNode( the_doc, 0, (const xmlChar*)elem.c_str(), 0 );
@@ -99,7 +100,9 @@ namespace TiCC {
     return result;
   }
 
-  list<xmlNode*> FindLocal( xmlXPathContext* ctxt, 
+  //#define DEBUG_XPATH
+
+  list<xmlNode*> FindLocal( xmlXPathContext* ctxt,
 			    const string& xpath ){
     list<xmlNode*> nodes;
     xmlXPathObject* result = xmlXPathEval((xmlChar*)xpath.c_str(), ctxt);
@@ -114,9 +117,6 @@ namespace TiCC {
 	for (int i = 0; i != nodeset->nodeNr; ++i)
 	  nodes.push_back(nodeset->nodeTab[i]);
       }
-      else {
-	throw runtime_error( "FindLocal: Missing nodeset" );
-      }
       xmlXPathFreeObject(result);
     }
     else {
@@ -124,19 +124,63 @@ namespace TiCC {
     }
     return nodes;
   }
-  
+
+  const string defaultP = "default";
+
+  void register_namespaces( xmlXPathContext* ctxt ){
+    map<string,string> m = getNSvalues( ctxt->node );
+    map<string,string>::const_iterator it = m.begin();
+    while ( it != m.end() ){
+      if ( it->first.empty() ){
+	xmlXPathRegisterNs( ctxt,
+			    (xmlChar*)defaultP.c_str(),
+			    (xmlChar*)it->second.c_str() );
+      }
+      else {
+	xmlXPathRegisterNs( ctxt,
+			    (xmlChar*)it->first.c_str(),
+			    (xmlChar*)it->second.c_str() );
+      }
+      ++it;
+    }
+  }
+
+  string replaceStarNS( const string& xPath ){
+    string result;
+    string::size_type pos = xPath.find( "*:" );
+    if ( pos == string::npos ){
+      result = xPath;
+    }
+    else {
+      result = xPath.substr( 0, pos ) + defaultP + ":"
+	+ replaceStarNS(xPath.substr( pos+2 ) );
+    }
+    return result;
+  }
+
   list<xmlNode*> FindNodes( xmlNode* node,
-			    const string& xpath ){
+			    const string& xPath ){
+    string xpath = replaceStarNS( xPath );
+#ifdef DEBUG_XPATH
+    cerr << "replaced " << xPath << " by " << xpath << endl;
+#endif
     xmlXPathContext* ctxt = xmlXPathNewContext( node->doc );
     ctxt->node = node;
-    ctxt->namespaces = xmlGetNsList( node->doc, ctxt->node );
-    ctxt->nsNr = 0;
-    if (ctxt->namespaces != 0 ) {
-      while (ctxt->namespaces[ctxt->nsNr] != 0 ){
-	ctxt->nsNr++;
+    register_namespaces( ctxt );
+    list<xmlNode*> nodes = FindLocal( ctxt, xpath );
+    list<xmlNode*>::const_iterator it = nodes.begin();
+#ifdef DEBUG_XPATH
+    if ( it ==  nodes.end() ){
+      cerr << "no " << xPath << " nodes found in " << Name(node) << endl;
+    }
+    else {
+      cerr << "Found " << xPath << " nodes found in " << Name(node) << endl;
+      while ( it != nodes.end() ){
+	cerr << "node " << Name(*it) << endl;
+	++it;
       }
     }
-    list<xmlNode*> nodes = FindLocal( ctxt, xpath );
+#endif
     if (ctxt->namespaces != NULL)
       xmlFree(ctxt->namespaces);
     xmlXPathFreeContext(ctxt);
@@ -154,7 +198,7 @@ namespace TiCC {
     }
     return result;
   }
-      
+
   string serialize( const xmlNode& node ){
     // serialize to a string (XML fragment)
     xmlBuffer *buf = xmlBufferCreate();
@@ -163,5 +207,5 @@ namespace TiCC {
     xmlBufferFree( buf );
     return result;
   }
-  
+
 }
