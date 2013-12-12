@@ -5,7 +5,7 @@
   Copyright (c) 1998 - 2013
   ILK   - Tilburg University
   CLiPS - University of Antwerp
- 
+
   This file is part of ticcutils
 
   timbl is free software; you can redistribute it and/or modify
@@ -40,47 +40,47 @@ namespace TiCC {
   inline xmlNode *XmlNewNode( const std::string& elem ){
     return xmlNewNode( 0, (const xmlChar*)elem.c_str() );
   }
-  
+
   inline xmlNode *XmlNewNode( xmlNs *ns, const std::string& elem ){
     return xmlNewNode( ns, (const xmlChar*)elem.c_str() );
   }
-  
+
   inline xmlNode *XmlNewComment( const std::string& elem ){
     return xmlNewComment( (const xmlChar*)elem.c_str() );
   }
-  
-  inline xmlNode *XmlNewChild( xmlNode *node, 
+
+  inline xmlNode *XmlNewChild( xmlNode *node,
 			       const std::string& elem ){
     xmlNode *chld = xmlNewNode( 0, (const xmlChar*)elem.c_str() );
     return xmlAddChild( node, chld );
   }
 
-  inline xmlNode *XmlNewChild( xmlNode *node, 
+  inline xmlNode *XmlNewChild( xmlNode *node,
 			       xmlNs *ns,
 			       const std::string& elem ){
     xmlNode *chld = xmlNewNode( ns, (const xmlChar*)elem.c_str() );
     return xmlAddChild( node, chld );
   }
 
-  inline xmlNode *XmlNewTextChild( xmlNode *node, 
-				   const std::string& elem, 
+  inline xmlNode *XmlNewTextChild( xmlNode *node,
+				   const std::string& elem,
 				   const std::string& val ){
     if ( val.empty() )
       return xmlNewTextChild( node, 0, (xmlChar*)elem.c_str(), 0 );
-    else 
-      return xmlNewTextChild( node, 0, 
+    else
+      return xmlNewTextChild( node, 0,
 			      (const xmlChar*)elem.c_str(),
 			      (const xmlChar*)val.c_str() );
   }
 
-  inline xmlNode *XmlNewTextChild( xmlNode *node, 
+  inline xmlNode *XmlNewTextChild( xmlNode *node,
 				   xmlNs *ns,
-				   const std::string& elem, 
+				   const std::string& elem,
 				   const std::string& val ){
     if ( val.empty() )
       return xmlNewTextChild( node, ns,
 			      (xmlChar*)elem.c_str(), 0 );
-    else 
+    else
       return xmlNewTextChild( node, ns,
 			      (const xmlChar*)elem.c_str(),
 			      (const xmlChar*)val.c_str() );
@@ -89,16 +89,16 @@ namespace TiCC {
   inline void XmlAddContent( xmlNode *node, const std::string& cont ){
     xmlNodeAddContent( node, (const xmlChar*)cont.c_str() );
   }
-  
-  inline xmlAttr *XmlSetAttribute( xmlNode *node, 
+
+  inline xmlAttr *XmlSetAttribute( xmlNode *node,
 				   const std::string& att,
 				   const std::string& val ){
-    return xmlSetProp( node, 
-		       (const xmlChar*)att.c_str(), 
+    return xmlSetProp( node,
+		       (const xmlChar*)att.c_str(),
 		       (const xmlChar*)val.c_str() );
   }
-  
-  inline std::string getAttribute( const xmlNode *node, 
+
+  inline std::string getAttribute( const xmlNode *node,
 				   const std::string& att ){
     if ( node ){
       xmlAttr *a = node->properties;
@@ -173,6 +173,8 @@ namespace TiCC {
 
   std::list<xmlNode*> FindNodes( xmlNode *, const std::string& );
   xmlNode *xPath( xmlNode *, const std::string& );
+  std::list<xmlNode*> FindNodes( xmlDoc *, const std::string& );
+  xmlNode *xPath( xmlDoc *, const std::string& );
 
 } // namespace TiCC
 

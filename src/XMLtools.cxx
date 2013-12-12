@@ -197,6 +197,12 @@ namespace TiCC {
     return nodes;
   }
 
+  list<xmlNode*> FindNodes( xmlDoc* doc,
+			    const string& xPath ){
+    xmlNode *root = xmlDocGetRootElement( doc );
+    return FindNodes( root, xPath );
+  }
+
   xmlNode *xPath( xmlNode *node, const string& xpath ){
     // try to find a path, but it may not be there...
     // if there are more, just return the first
@@ -207,6 +213,11 @@ namespace TiCC {
       result = srch.front();
     }
     return result;
+  }
+
+  xmlNode *xPath( xmlDoc *doc, const std::string& xpath ){
+    xmlNode *root = xmlDocGetRootElement( doc );
+    return xPath( root, xpath );
   }
 
   string serialize( const xmlNode& node ){
