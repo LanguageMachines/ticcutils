@@ -2,10 +2,10 @@
   $Id$
   $URL$
 
-  Copyright (c) 1998 - 2013
+  Copyright (c) 1998 - 2014
   ILK   - Tilburg University
   CLiPS - University of Antwerp
- 
+
   This file is part of ticcutils
 
   ticcutils is free software; you can redistribute it and/or modify
@@ -39,10 +39,10 @@
 namespace Tries {
   // A node in the generic trie.
   template <class Info> class TrieNode;
-  template <class Info> std::ostream& operator<< ( std::ostream&, 
+  template <class Info> std::ostream& operator<< ( std::ostream&,
 						   const TrieNode<Info> * );
   template <class Info> class TrieNode {
-    friend std::ostream& operator<< LTGT ( std::ostream&, 
+    friend std::ostream& operator<< LTGT ( std::ostream&,
 					   const TrieNode<Info> * );
   public:
     TrieNode( char );
@@ -61,8 +61,8 @@ namespace Tries {
     Info *add_to_tree( Info *, const char * );
     Info *scan_tree( const char * ) const;
   };
-  
-  template <class Info> 
+
+  template <class Info>
     inline Info *TrieNode<Info>::scan_tree( const char *name ) const {
     //
     // returns the info where it is found in the tree or NULL.
@@ -83,15 +83,15 @@ namespace Tries {
     }
     return NULL;
   }
-  
-  template <class Info> 
+
+  template <class Info>
     inline Info *TrieNode<Info>::scan_tree( const std::string& name ) const {
     return scan_tree( name.c_str() );
   }
-  
-  template <class Info> 
-    inline std::ostream& operator << ( std::ostream& os, 
-				       const TrieNode<Info> *tree ){ 
+
+  template <class Info>
+    inline std::ostream& operator << ( std::ostream& os,
+				       const TrieNode<Info> *tree ){
     //
     //  print an TrieNode sorted on Info
     //
@@ -103,9 +103,9 @@ namespace Tries {
     }
     return os;
   }
-  
-  template <class Info> 
-    inline void TrieNode<Info>::Iterate( void F( Info * ) ){ 
+
+  template <class Info>
+    inline void TrieNode<Info>::Iterate( void F( Info * ) ){
     //
     //  Do F on each entry in the Trie
     //
@@ -119,10 +119,10 @@ namespace Tries {
     if ( next_node )
       next_node->Iterate( F );
   }
-  
-  template <class Info> 
-    inline void TrieNode<Info>::Iterate( void F( Info *, void * ), 
-					 void *arg ){ 
+
+  template <class Info>
+    inline void TrieNode<Info>::Iterate( void F( Info *, void * ),
+					 void *arg ){
     //
     //  Do F on each entry in the Trie
     //
@@ -136,7 +136,7 @@ namespace Tries {
     if ( next_node )
       next_node->Iterate( F, arg );
   }
-  
+
   template <class Info>
     inline TrieNode<Info>::TrieNode( char lab ):
     label(lab),
@@ -145,17 +145,17 @@ namespace Tries {
     sub_node(NULL)
     {
     }
-  
+
   template <class Info>
     inline TrieNode<Info>::~TrieNode(){
     delete the_info;
     delete sub_node;
     delete next_node;
   }
-  
-  template <class Info> 
-    inline Info *TrieNode<Info>::add_to_tree( Info *info, 
-					      const char *lab ){ 
+
+  template <class Info>
+    inline Info *TrieNode<Info>::add_to_tree( Info *info,
+					      const char *lab ){
     // If the lab string is empty, we are at the bottom, and
     // we can store the info.
     //
@@ -187,20 +187,20 @@ namespace Tries {
       return (*subNodePtr)->add_to_tree( info, &lab[1] );
     }
   }
-  
-  template <class Info> 
-    inline Info *TrieNode<Info>::add_to_tree( Info *info, 
+
+  template <class Info>
+    inline Info *TrieNode<Info>::add_to_tree( Info *info,
 					      const std::string& lab ){
     return add_to_tree( info, lab.c_str() );
   }
-  
+
   // a generic trie.
   template <class Info> class Trie;
-  template <class Info> std::ostream &operator << ( std::ostream &, 
+  template <class Info> std::ostream &operator << ( std::ostream &,
 						    const Trie<Info> * );
 
   template <class Info> class Trie{
-    friend std::ostream &operator << LTGT ( std::ostream &, 
+    friend std::ostream &operator << LTGT ( std::ostream &,
 					    const Trie<Info> * );
   public:
     Trie():
@@ -217,22 +217,22 @@ namespace Tries {
       return Tree->scan_tree( str ); };
     void ForEachDo( void F( Info *, void * ), void *arg ){
       if ( Tree ) Tree->Iterate( F, arg ); };
-    void ForEachDo( void F( Info * ) ) { 
+    void ForEachDo( void F( Info * ) ) {
       if ( Tree ) Tree->Iterate( F ); };
   protected:
     TrieNode<Info> *Tree;
     Trie( const Trie& );
     Trie& operator=( const Trie& );
   };
-  
+
   template <class Info>
-    inline std::ostream &operator << ( std::ostream &os, 
+    inline std::ostream &operator << ( std::ostream &os,
 				       const Trie<Info> *T ){
     if ( T )
       os << T->Tree;
     return os;
   }
-  
+
 }
 #endif
 

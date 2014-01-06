@@ -2,10 +2,10 @@
   $Id$
   $URL$
 
-  Copyright (c) 1998 - 2013
+  Copyright (c) 1998 - 2014
   ILK   - Tilburg University
   CLiPS - University of Antwerp
- 
+
   This file is part of ticcutils
 
   ticcutils is free software; you can redistribute it and/or modify
@@ -48,14 +48,14 @@ namespace TiCC {
   bool match_front( const std::string&, const std::string& );
   bool match_back( const std::string&, const std::string& );
 
-  size_t split_at( const std::string&, std::vector<std::string>&, 
+  size_t split_at( const std::string&, std::vector<std::string>&,
 		   const std::string& );
-  size_t split_at_first_of( const std::string&, std::vector<std::string>&, 
+  size_t split_at_first_of( const std::string&, std::vector<std::string>&,
 			    const std::string& );
   inline size_t split( const std::string& s, std::vector<std::string>& vec ){
     return split_at_first_of( s, vec, " \r\t\n" );
   }
-  
+
   std::string format_nonascii( const std::string& );
 
   template< typename T >
@@ -68,19 +68,19 @@ namespace TiCC {
     }
     return result;
   }
-  
+
   template<>
-    inline bool stringTo<bool>( const std::string& str ) { 
+    inline bool stringTo<bool>( const std::string& str ) {
     std::string b = TiCC::uppercase( str );
-    if ( b == "YES" || b == "TRUE" || b == "1" ) 
-      return true; 
-    else if ( b == "FALSE" || b == "NO" || b == "0" ) 
-      return false; 
+    if ( b == "YES" || b == "TRUE" || b == "1" )
+      return true;
+    else if ( b == "FALSE" || b == "NO" || b == "0" )
+      return false;
     else
-      throw( std::runtime_error( "conversion from string '" 
-				 + str + "' to bool failed" ) ); 
-  } 
-  
+      throw( std::runtime_error( "conversion from string '"
+				 + str + "' to bool failed" ) );
+  }
+
   template< typename T >
     bool stringTo( const std::string& str, T& result ) {
     try {
@@ -106,7 +106,7 @@ namespace TiCC {
       return false;
     }
   }
-  
+
   template< typename T >
     std::string toString ( const T& obj, bool=false ) {
     std::stringstream dummy;
@@ -115,7 +115,7 @@ namespace TiCC {
     }
    return dummy.str();
   }
-  
+
 }
 
 #endif

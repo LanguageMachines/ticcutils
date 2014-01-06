@@ -2,10 +2,10 @@
   $Id$
   $URL$
 
-  Copyright (c) 1998 - 2013
+  Copyright (c) 1998 - 2014
   ILK   - Tilburg University
   CLiPS - University of Antwerp
- 
+
   This file is part of ticcutils
 
   ticcutils is free software; you can redistribute it and/or modify
@@ -66,7 +66,7 @@ namespace TiCC {
     os << "]";
     return os;
   }
-  
+
   template< typename T >
     inline std::ostream& operator<< ( std::ostream& os, const std::vector<T>& s ){
     os << "[";
@@ -122,6 +122,6 @@ namespace TiCC {
     os << "}";
     return os;
   }
-  
+
 }
 #endif // PRETTY_PRINT_H

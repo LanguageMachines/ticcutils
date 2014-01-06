@@ -2,10 +2,10 @@
   $Id$
   $URL$
 
-  Copyright (c) 1998 - 2013
+  Copyright (c) 1998 - 2014
   ILK   - Tilburg University
   CLiPS - University of Antwerp
- 
+
   This file is part of ticcutils
 
   ticcutils is free software; you can redistribute it and/or modify
@@ -44,7 +44,7 @@ enum LogFlag { NoStamp=0, StampTime=1, StampMessage=2, StampBoth=3 };
 template <class charT, class traits = std::char_traits<charT> >
   class basic_log_buffer : public std::basic_streambuf<charT, traits> {
  public:
- basic_log_buffer( std::basic_ostream<charT,traits>&, const std::string& = "", 
+ basic_log_buffer( std::basic_ostream<charT,traits>&, const std::string& = "",
 		   const LogFlag = StampBoth );
   ~basic_log_buffer();
   //
@@ -80,7 +80,7 @@ typedef basic_log_buffer<wchar_t, std::char_traits<wchar_t> > wLogBuffer;
 
 template <class charT, class traits >
 basic_log_buffer<charT,traits>::basic_log_buffer( std::basic_ostream<charT,traits>& a,
-						  const std::string& mess, 
+						  const std::string& mess,
 						  const LogFlag stamp ) {
   ass_stream = &a;
   ass_mess = mess;
@@ -173,26 +173,26 @@ template <class charT, class traits >
 }
 
 template <class charT, class traits >
-void basic_log_buffer<charT,traits>::Threshold( LogLevel l ){ 
+void basic_log_buffer<charT,traits>::Threshold( LogLevel l ){
   if ( threshold_level != l ){
     threshold_level = l;
   }
 }
 
 template <class charT, class traits >
-LogLevel basic_log_buffer<charT,traits>::Threshold() const { 
+LogLevel basic_log_buffer<charT,traits>::Threshold() const {
   return threshold_level;
 }
 
 template <class charT, class traits >
-void basic_log_buffer<charT,traits>::Level( LogLevel l ){ 
+void basic_log_buffer<charT,traits>::Level( LogLevel l ){
   if ( level != l ){
     level = l;
   }
 }
 
 template <class charT, class traits >
-LogLevel basic_log_buffer<charT,traits>::Level() const { 
+LogLevel basic_log_buffer<charT,traits>::Level() const {
   return level;
 }
 
@@ -207,14 +207,14 @@ void basic_log_buffer<charT,traits>::AssocStream( std::basic_ostream<charT,trait
 }
 
 template <class charT, class traits >
-void basic_log_buffer<charT,traits>::StampFlag( const LogFlag b ){ 
+void basic_log_buffer<charT,traits>::StampFlag( const LogFlag b ){
   if ( stamp_flag != b ){
     stamp_flag = b;
   }
 }
 
 template <class charT, class traits >
-LogFlag basic_log_buffer<charT,traits>::StampFlag() const { 
+LogFlag basic_log_buffer<charT,traits>::StampFlag() const {
   return stamp_flag;
 }
 

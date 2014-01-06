@@ -2,10 +2,10 @@
   $Id$
   $URL$
 
-  Copyright (c) 1998 - 2013
+  Copyright (c) 1998 - 2014
   ILK   - Tilburg University
   CLiPS - University of Antwerp
- 
+
   This file is part of ticcutils
 
   ticcutils is free software; you can redistribute it and/or modify
@@ -33,7 +33,7 @@
 #include <string>
 #include "ticcutils/LogBuffer.h"
 
-#if defined __GNUC__ || __IBMCPP__ 
+#if defined __GNUC__ || __IBMCPP__
 #define LTGT <>
 #else
 #define LTGT
@@ -58,7 +58,7 @@ namespace TiCC {
   };
 
   template<class T>
-    inline std::ostream& operator << (std::ostream& os, 
+    inline std::ostream& operator << (std::ostream& os,
 				      const o_manip<T>& m ){
     return m.func( os, m.l );
   }
@@ -78,9 +78,9 @@ namespace TiCC {
     LogStream( int );
     LogStream( const std::string& ="", LogFlag = StampBoth );
     LogStream( std::ostream&, const std::string& = "",
-	       LogFlag = StampBoth ); 
-    LogStream( const LogStream&, const std::string&, LogFlag ); 
-    LogStream( const LogStream&, const std::string& ); 
+	       LogFlag = StampBoth );
+    LogStream( const LogStream&, const std::string&, LogFlag );
+    LogStream( const LogStream&, const std::string& );
     LogStream( const LogStream * );
     bool set_single_threaded_mode();
     bool single_threaded() const { return single_threaded_mode; };
@@ -96,7 +96,7 @@ namespace TiCC {
     void addmessage( const std::string& );
     void addmessage( const int );
     const std::string& message() const { return buf.Message(); };
-    static bool Problems();  
+    static bool Problems();
   private:
     LogBuffer buf;
     // prohibit assignment

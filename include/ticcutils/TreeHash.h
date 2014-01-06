@@ -2,10 +2,10 @@
   $Id$
   $URL$
 
-  Copyright (c) 1998 - 2013
+  Copyright (c) 1998 - 2014
   ILK   - Tilburg University
   CLiPS - University of Antwerp
- 
+
   This file is part of ticcutils
 
   ticcutils is free software; you can redistribute it and/or modify
@@ -57,7 +57,7 @@ class StringHash {
   StringHash();
   ~StringHash();
   unsigned int NumOfEntries() const { return NumOfTokens; };
-  unsigned int Hash( const std::string& ); 
+  unsigned int Hash( const std::string& );
   unsigned int Lookup( const std::string& ) const;
   const std::string& ReverseLookup( unsigned int ) const;
  private:
