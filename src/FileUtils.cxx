@@ -221,8 +221,12 @@ namespace TiCC {
   }
 #endif
 
-  bool createPath( const string& path ){
-    //attempt to open a path/file
+  bool createTruePath( const string& path ){
+    // attempt to open a path /a/b/c/ from an expression like:
+    // /a/b/c/
+    // or ./a/b/c/ from expressions like
+    // a/b/c/
+
     ofstream os1( path.c_str() );
     if ( !os1.good() ){
       // it fails
@@ -232,20 +236,36 @@ namespace TiCC {
       if ( num > 1 ){
 	string newpath;
 	if ( path[0] == '/' )
-	  newpath += "/";
+	  newpath = "/";
+	else
+	  newpath = "./";
 	for ( size_t i=0; i < parts.size(); ++i ){
 	  newpath += parts[i] + "/";
-	  //	cerr << "mkdir path = " << newpath << endl;
+	  //	  cerr << "mkdir path = " << newpath << endl;
 	  int status = mkdir( newpath.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
 	  if ( status != 0 && errno != EEXIST ){
 	    return false;
 	  }
 	}
       }
+      return isDir( path );
     }
-    // now retry
-    ofstream os2( path.c_str() );
-    if ( !os2 ){
+    return true;
+  }
+
+  bool createPath( const string& name ){
+    string path;
+    string::size_type pos = name.rfind('/');
+    if ( pos == name.length()-1 ){
+      return createTruePath( name );
+    }
+    else if ( pos != string::npos ){
+      path = name.substr( 0, pos+1 );
+      if ( !createTruePath( path ) )
+	return false;
+    }
+    ofstream os( name.c_str() );
+    if ( !os.good() ){
       return false;
     }
     return true;

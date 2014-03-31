@@ -203,9 +203,10 @@ void test_fileutils(){
   assertTrue( res[0] == path+"small.txt" );
   unlink(  "/tmp/test/silly/files/file" );
   assertTrue( createPath( "/tmp/test/silly/files/file" ) );
-  unlink(  "/tmp/test/silly/files/path/" );
-  assertTrue( createPath( "/tmp/test/silly/files/path" ) );
-  assertFalse( createPath( "/tmp/test/silly/files/path/raar" ) );
+  unlink(  "/tmp/test/silly/" );
+  assertTrue( createPath( "/tmp/test/silly/files/path/" ) );
+  assertTrue( createPath( "/tmp/test/silly/files/path/raar" ) );
+  assertFalse( createPath( "/tmp/test/silly/files/path/raar/sub" ) );
 
 #ifdef HAVE_BOOST_REGEX
   assertNoThrow( res = searchFilesMatch( path, "*.txt", false ) );
