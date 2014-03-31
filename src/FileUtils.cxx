@@ -233,7 +233,8 @@ namespace TiCC {
       // attempt to create the path
       vector<string> parts;
       int num = split_at( path, parts, "/" );
-      if ( num > 1 ){
+      if ( num > 0 ){
+	//  at least one /
 	string newpath;
 	if ( path[0] == '/' )
 	  newpath = "/";
