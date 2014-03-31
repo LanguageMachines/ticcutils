@@ -1,6 +1,7 @@
 #include <string>
 #include "config.h"
 #include <iostream>
+#include <unistd.h>
 #include <stdexcept>
 
 #include "ticcutils/StringOps.h"
@@ -200,6 +201,12 @@ void test_fileutils(){
   assertNoThrow( res = searchFiles( path+"small.txt" ) );
   assertEqual( res.size(), 1 );
   assertTrue( res[0] == path+"small.txt" );
+  unlink(  "/tmp/test/silly/files/file" );
+  assertTrue( createPath( "/tmp/test/silly/files/file" ) );
+  unlink(  "/tmp/test/silly/files/path/" );
+  assertTrue( createPath( "/tmp/test/silly/files/path" ) );
+  assertFalse( createPath( "/tmp/test/silly/files/path/raar" ) );
+
 #ifdef HAVE_BOOST_REGEX
   assertNoThrow( res = searchFilesMatch( path, "*.txt", false ) );
   // non recursive. should match small.txt

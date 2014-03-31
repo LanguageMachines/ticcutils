@@ -46,7 +46,7 @@ namespace TiCC {
   const string XmlDoc::toString() const {
     xmlChar *buf;
     int size;
-    xmlDocDumpMemory( the_doc, &buf, &size );
+    xmlDocDumpFormatMemoryEnc( the_doc, &buf, &size, "UTF-8", 1 );
     const string result = string( (const char *)buf, size );
     xmlFree( buf );
     return result;

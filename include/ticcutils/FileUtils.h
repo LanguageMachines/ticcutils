@@ -48,6 +48,7 @@ namespace TiCC {
   bool isDir( const std::string& );
   bool isFile( const std::string& );
 
+  bool createPath( const std::string& );
 }
 
 #endif // TICC_FILE_UTILS_H

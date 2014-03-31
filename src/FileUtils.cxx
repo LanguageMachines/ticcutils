@@ -31,6 +31,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 #include <glob.h>
 #include <sys/types.h>
@@ -219,5 +220,35 @@ namespace TiCC {
     return searchFilesExt( name, match, recurse );
   }
 #endif
+
+  bool createPath( const string& path ){
+    //attempt to open a path/file
+    ofstream os1( path.c_str() );
+    if ( !os1.good() ){
+      // it fails
+      // attempt to create the path
+      vector<string> parts;
+      int num = split_at( path, parts, "/" );
+      if ( num > 1 ){
+	string newpath;
+	if ( path[0] == '/' )
+	  newpath += "/";
+	for ( size_t i=0; i < parts.size(); ++i ){
+	  newpath += parts[i] + "/";
+	  //	cerr << "mkdir path = " << newpath << endl;
+	  int status = mkdir( newpath.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
+	  if ( status != 0 && errno != EEXIST ){
+	    return false;
+	  }
+	}
+      }
+    }
+    // now retry
+    ofstream os2( path.c_str() );
+    if ( !os2 ){
+      return false;
+    }
+    return true;
+  }
 
 } // namespace TiCC
