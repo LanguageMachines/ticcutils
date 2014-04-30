@@ -1,4 +1,4 @@
 #! /bin/sh
 
-./$srcdir/test -f false +t true --test=test -d $topsrcdir/tests/
+./$srcdir/test -ffalse +t true --test=test blaat -d $topsrcdir/tests/ arg1 arg2
 

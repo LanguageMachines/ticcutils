@@ -29,7 +29,7 @@
 #ifndef TICC_COMMANDLINE_H
 #define TICC_COMMANDLINE_H
 
-#include <list>
+#include <vector>
 #include <iosfwd>
 
 namespace TiCC {
@@ -45,7 +45,15 @@ namespace TiCC {
     opt_word( in.opt_word ), option(in.option),
       mood(in.mood), longOpt(in.longOpt){
     };
-    CL_item& operator=( const CL_item& );
+    CL_item& operator=( const CL_item& in ){
+      if ( &in != this ){
+	opt_word = in.opt_word;
+	option = in.option;
+	mood = in.mood;
+	longOpt = in.longOpt;
+      }
+      return *this;
+    }
     bool Mood() const { return mood; };
     char OptChar() const { return opt_word[0]; };
     const std::string& OptWord() const { return opt_word; };
@@ -72,11 +80,18 @@ namespace TiCC {
     bool remove( const std::string& );
     void insert( const char, const std::string&, bool );
     void insert( const std::string&, const std::string& );
+    const std::vector<std::string>& getMassOpts() const { return MassOpts; };
   private:
     void Split_Command_Line( const int, const char * const * );
-    std::list<CL_item> Opts;
+    std::vector<CL_item> Opts;
+    std::vector<std::string> MassOpts;
     CL_Options( const CL_Options& );
     CL_Options& operator=( const CL_Options& );
+  };
+
+  class OptionError: public std::runtime_error {
+  public:
+  OptionError( const std::string& s ): std::runtime_error( "option-error: " + s ){};
   };
 
 }

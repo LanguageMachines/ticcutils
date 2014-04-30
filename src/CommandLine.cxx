@@ -64,7 +64,7 @@ namespace TiCC {
   }
 
   ostream& operator<<( ostream& os, const CL_Options& cl ){
-    list<CL_item>::const_iterator pos = cl.Opts.begin();
+    vector<CL_item>::const_iterator pos = cl.Opts.begin();
     while ( pos != cl.Opts.end() ){
       os << *pos << " ";
       ++pos;
@@ -73,7 +73,7 @@ namespace TiCC {
   }
 
   bool CL_Options::present( const char c ) const {
-    list<CL_item>::const_iterator pos;
+    vector<CL_item>::const_iterator pos;
     for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
       if ( pos->OptChar() == c ){
 	return true;
@@ -83,7 +83,7 @@ namespace TiCC {
   }
 
   bool CL_Options::find( const char c, string &opt, bool& mood ) const {
-    list<CL_item>::const_iterator pos;
+    vector<CL_item>::const_iterator pos;
     for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
       if ( pos->isLong() )
 	continue;
@@ -97,7 +97,7 @@ namespace TiCC {
   }
 
   bool CL_Options::find( const string& w, string &opt ) const {
-    list<CL_item>::const_iterator pos;
+    vector<CL_item>::const_iterator pos;
     for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
       if ( pos->OptWord() == w ){
 	opt = pos->Option();
@@ -108,7 +108,7 @@ namespace TiCC {
   }
 
   bool CL_Options::remove( const char c, bool all ){
-    list<CL_item>::iterator pos;
+    vector<CL_item>::iterator pos;
     for ( pos = Opts.begin(); pos != Opts.end(); ){
       if ( pos->OptChar() == c ){
 	pos = Opts.erase(pos);
@@ -121,7 +121,7 @@ namespace TiCC {
   }
 
   bool CL_Options::remove( const string& w ){
-    list<CL_item>::iterator pos;
+    vector<CL_item>::iterator pos;
     for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
       if ( pos->OptWord() == w ){
 	Opts.erase(pos);
@@ -133,12 +133,12 @@ namespace TiCC {
 
   void CL_Options::insert( const string& s, const string& line ){
     CL_item cl( s, line );
-    Opts.push_front( cl );
+    Opts.push_back( cl );
   }
 
   void CL_Options::insert( const char c, const string& line, bool mood ){
     CL_item cl( c, line, mood );
-    Opts.push_front( cl );
+    Opts.push_back( cl );
   }
 
   inline bool p_or_m( char k )
@@ -213,7 +213,7 @@ namespace TiCC {
 	  longOpt = Option[1] == '-';
 	  if ( longOpt ){
 	    if ( Mood )
-	      throw std::runtime_error("invalid option: " + Option );
+	      throw OptionError("invalid option: " + Option );
 	    string::size_type pos = Option.find( "=" );
 	    if ( pos == string::npos ){
 	      Optword = Option.erase(0,2);
@@ -224,6 +224,12 @@ namespace TiCC {
 	      Option = Option.substr( pos+1 );
 	    }
 	    Optchar = Optword[0];
+	    if ( Option.empty() && arg_ind+1 < local_argc ) {
+	      string tmpOption = local_argv[arg_ind+1];
+	      if ( tmpOption[0] == '=' ) {
+		throw OptionError( "no spaces allowed in long options" );
+	      }
+	    }
 	  }
 	  else {
 	    Optchar = Option[1];
@@ -249,11 +255,14 @@ namespace TiCC {
       }
       if ( longOpt ){
 	CL_item cl( Optword, Option );
-	Opts.push_front( cl );
+	Opts.push_back( cl );
+      }
+      else if (Optchar == '?' ){
+	MassOpts.push_back( Optword );
       }
       else {
 	CL_item cl( Optchar, Option, Mood );
-	Opts.push_front( cl );
+	Opts.push_back( cl );
       }
     }
   }
