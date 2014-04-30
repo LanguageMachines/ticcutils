@@ -11,6 +11,7 @@
 #include "ticcutils/Version.h"
 #include "ticcutils/UnitTest.h"
 #include "ticcutils/FileUtils.h"
+#include "ticcutils/CommandLine.h"
 
 using namespace std;
 using namespace TiCC;
@@ -27,6 +28,20 @@ void test_throw(){
 void test_nothrow(){
   assertNoThrow( helper() );
   assertThrow( helper(), runtime_error );
+}
+
+void test_opts( CL_Options& opts ){
+  startTestSerie( "we testen commandline opties." );
+  string value;
+  bool pol;
+  opts.find( 't', value, pol );
+  assertEqual( value, "true" );
+  assertEqual( pol, true );
+  opts.find( 'f', value, pol );
+  assertEqual( value, "false" );
+  assertEqual( pol, false );
+  opts.find( "test", value );
+  assertEqual( value, "test" );
 }
 
 void test_subtests_fail(){
@@ -133,9 +148,7 @@ void test_lowercase(){
   assertEqual( res, "een camelcapped zin." );
 }
 
-void test_bz2compression(){
-  string path = getenv( "topsrcdir" );
-  path += "/tests/";
+void test_bz2compression( const string& path ){
   assertTrue( bz2Compress( path + "small.txt", "bzout.bz2" ) );
   assertTrue( bz2Decompress( "bzout.bz2", "bzout.txt" ) );
   string buffer;
@@ -145,9 +158,7 @@ void test_bz2compression(){
   assertEqual( system( cmd.c_str() ), 0 );
 }
 
-void test_gzcompression(){
-  string path = getenv( "topsrcdir" );
-  path += "/tests/";
+void test_gzcompression( const string& path ){
   assertTrue( gzCompress( path + "small.txt", "gzout.gz" ) );
   assertTrue( gzDecompress( "gzout.gz", "gzout.txt" ) );
   string buffer;
@@ -157,9 +168,7 @@ void test_gzcompression(){
   assertEqual( system(cmd.c_str()), 0 );
 }
 
-void test_tar(){
-  string path = getenv( "topsrcdir" );
-  path += "/tests/";
+void test_tar( const string& path ){
   tar mytar;
   assertNoThrow( mytar.open( path + "test.tar" ) );
   vector<string> res;
@@ -188,9 +197,7 @@ void test_tar(){
 #endif
 }
 
-void test_fileutils(){
-  string path = getenv( "topsrcdir" );
-  path += "/tests/";
+void test_fileutils( const string& path ){
   vector<string> res;
   assertNoThrow( res = searchFilesExt( path, ".txt", false ) );
   assertEqual( res.size(), 1 );
@@ -224,8 +231,10 @@ void test_fileutils(){
 #endif
 }
 
-int main(){
+int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
+  CL_Options opts( argc, argv );
+  test_opts( opts );
   test_subtests_fail();
   test_subtests_ok();
   test_throw();
@@ -243,9 +252,12 @@ int main(){
   test_to_lower();
   test_uppercase();
   test_lowercase();
-  test_bz2compression();
-  test_gzcompression();
-  test_tar();
-  test_fileutils();
+  string testdir;
+  bool dummy;
+  opts.find( 'd', testdir, dummy );
+  test_bz2compression( testdir );
+  test_gzcompression( testdir );
+  test_tar( testdir );
+  test_fileutils( testdir );
   summarize_tests(3);
 }
