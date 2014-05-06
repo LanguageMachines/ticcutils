@@ -32,7 +32,6 @@
 #include <vector>
 #include <ostream>
 #include <iostream>
-#include <stdexcept>
 
 #include "ticcutils/CommandLine.h"
 

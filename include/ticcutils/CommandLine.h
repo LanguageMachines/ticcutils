@@ -31,6 +31,7 @@
 
 #include <vector>
 #include <iosfwd>
+#include <stdexcept>
 
 namespace TiCC {
 
