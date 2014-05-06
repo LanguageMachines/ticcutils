@@ -29,6 +29,7 @@
 #ifndef TICC_COMMANDLINE_H
 #define TICC_COMMANDLINE_H
 
+#include <set>
 #include <vector>
 #include <iosfwd>
 #include <stdexcept>
@@ -71,16 +72,20 @@ namespace TiCC {
   class CL_Options {
     friend std::ostream& operator<<( std::ostream&, const CL_Options& );
   public:
-    CL_Options( const int, const char * const * );
-    CL_Options( const std::string& );
+    CL_Options( const int, const char * const *, const std::string& = "" );
+    CL_Options( const std::string&, const std::string& = "" );
+    void set_valid( const std::string& s );
     ~CL_Options();
-    bool present( const char ) const;
+    //    bool present( const char ) const;
     bool find( const char, std::string&, bool& ) const;
     bool find( const std::string&, std::string& ) const;
+    bool pull( const char, std::string&, bool& );
+    bool pull( const std::string&, std::string& );
     bool remove( const char, bool = false );
     bool remove( const std::string& );
     void insert( const char, const std::string&, bool );
     void insert( const std::string&, const std::string& );
+    bool empty() const { return Opts.empty(); };
     const std::vector<std::string>& getMassOpts() const { return MassOpts; };
   private:
     void Split_Command_Line( const int, const char * const * );
@@ -88,6 +93,8 @@ namespace TiCC {
     std::vector<std::string> MassOpts;
     CL_Options( const CL_Options& );
     CL_Options& operator=( const CL_Options& );
+    std::set<char> valid_chars;
+    std::set<char> valid_chars_par;
   };
 
   class OptionError: public std::runtime_error {

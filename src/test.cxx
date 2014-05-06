@@ -237,7 +237,8 @@ void test_fileutils( const string& path ){
 
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
-  CL_Options opts( argc, argv );
+  CL_Options opts( argc, argv, "t:qf:d:" );
+  cerr << opts << endl;
   test_opts( opts );
   test_subtests_fail();
   test_subtests_ok();

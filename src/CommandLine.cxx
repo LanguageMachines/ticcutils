@@ -39,11 +39,14 @@ using namespace std;
 
 namespace TiCC {
 
-  CL_Options::CL_Options( const int argc, const char * const *argv ){
+  CL_Options::CL_Options( const int argc, const char * const *argv,
+			  const string& valid ){
+    set_valid( valid );
     Split_Command_Line( argc, argv );
   }
 
-  CL_Options::CL_Options( const string& args ){
+  CL_Options::CL_Options( const string& args, const string& valid ){
+    set_valid( valid );
     const char *argstr = args.c_str();
     Split_Command_Line( 0, &argstr );
   }
@@ -68,18 +71,32 @@ namespace TiCC {
       os << *pos << " ";
       ++pos;
     }
+    for ( size_t i=0; i < cl.MassOpts.size(); ++i ){
+      os << cl.MassOpts[i] << " ";
+    }
+    if ( !cl.valid_chars.empty() ){
+      os << endl;
+      os << "Valid options: ";
+      set<char>::const_iterator it = cl.valid_chars.begin();
+      while ( it != cl.valid_chars.end() ){
+	os << *it;
+	if ( cl.valid_chars_par.find( *it ) != cl.valid_chars_par.end() )
+	  os << ":";
+	++it;
+      }
+    }
     return os;
   }
 
-  bool CL_Options::present( const char c ) const {
-    vector<CL_item>::const_iterator pos;
-    for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
-      if ( pos->OptChar() == c ){
-	return true;
-      }
-    }
-    return false;
-  }
+  // bool CL_Options::present( const char c ) const {
+  //   vector<CL_item>::const_iterator pos;
+  //   for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
+  //     if ( pos->OptChar() == c ){
+  // 	return true;
+  //     }
+  //   }
+  //   return false;
+  // }
 
   bool CL_Options::find( const char c, string &opt, bool& mood ) const {
     vector<CL_item>::const_iterator pos;
@@ -103,6 +120,18 @@ namespace TiCC {
 	return true;
       }
     }
+    return false;
+  }
+
+  bool CL_Options::pull( const char c, string &opt, bool& mood ) {
+    if ( find( c, opt, mood ) )
+      return remove( c );
+    return false;
+  }
+
+  bool CL_Options::pull( const string& w, string &opt ) {
+    if ( find( w, opt ) )
+      return remove( w );
     return false;
   }
 
@@ -257,14 +286,63 @@ namespace TiCC {
 	Opts.push_back( cl );
       }
       else if (Optchar == '?' ){
+	//	cerr << "insert Mass van " << Optword << " !" << endl;
 	MassOpts.push_back( Optword );
       }
-      else {
+      else if ( valid_chars.empty() ){
 	CL_item cl( Optchar, Option, Mood );
 	Opts.push_back( cl );
       }
+      else if ( valid_chars.find( Optchar ) != valid_chars.end() ){
+	//	cerr << "opt-char = " << Optchar << " is valid!" << endl;
+	//	cerr << "Option = '" << Option << "'" << endl;
+	if ( !Option.empty() ){
+	  if ( valid_chars_par.find( Optchar ) != valid_chars_par.end() ){
+	    //	    cerr << "opt-char = " << Optchar << " is valid PAR char" << endl;
+	    CL_item cl( Optchar, Option, Mood );
+	    Opts.push_back( cl );
+	  }
+	  else {
+	    MassOpts.push_back( Option );
+	    //	    cerr << "maak een Mass van " << Option << " !" << endl;
+	    string no;
+	    CL_item cl( Optchar, no, Mood );
+	    Opts.push_back( cl );
+	  }
+	}
+	else if ( valid_chars_par.find( Optchar ) != valid_chars_par.end() ){
+	  string msg = "option '";
+	  msg += Optchar;
+	  msg += "' misses a value";
+	  throw OptionError( msg );
+	}
+	else {
+	  CL_item cl( Optchar, Option, Mood );
+	  Opts.push_back( cl );
+	}
+      }
+      else {
+	string msg = "invalid option '";
+	msg += Optchar;
+	msg += "'";
+	throw OptionError( msg );
+      }
     }
   }
+
+  void CL_Options::set_valid( const string& s ){
+    char last = '\0';
+    for ( size_t i=0; i < s.size(); ++i ){
+      if ( s[i] == ':' && last != '\0' ){
+	valid_chars_par.insert( last );
+      }
+      else {
+	valid_chars.insert( s[i] );
+	last = s[i];
+      }
+    }
+  }
+
 }
 
 
