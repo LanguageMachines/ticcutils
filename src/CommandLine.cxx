@@ -35,7 +35,7 @@
 
 #include "ticcutils/StringOps.h"
 #include "ticcutils/CommandLine.h"
-//#include "ticcutils/PrettyPrint.h"
+#include "ticcutils/PrettyPrint.h"
 
 using namespace std;
 
@@ -195,158 +195,208 @@ namespace TiCC {
     Opts.push_back( cl );
   }
 
-  inline bool p_or_m( char k )
-  { return ( k == '+' || k == '-' ); }
+  //#define DEBUG
 
   bool CL_Options::Split_Command_Line( const int Argc,
 				       const char * const *Argv ){
     Opts.clear();
-    int local_argc = 0;
     vector<string> local_argv;
-    char Optchar;
-    string Optword;
-    string Option;
-    bool Mood = false;
     if ( Argc == 0 )
       if ( Argv != 0 &&
 	   Argv[0] != 0 ){
-	local_argc = split( Argv[0], local_argv );
+	split( Argv[0], local_argv );
       }
       else
 	return false;
     else {
-      local_argc = Argc-1;
       for( int i=1; i < Argc; ++i ){
 	// start at 1 to skip the program name
 	local_argv.push_back( Argv[i] );
       }
     }
-    for ( int arg_ind=0; arg_ind < local_argc; ++arg_ind ){
-      bool longOpt = false;
-      Option = local_argv[arg_ind];
-      if ( !p_or_m(Option[0]) ){
-	Optchar = '?';
-	Optword = Option;
-	Mood = false;
+#ifdef DEBUG
+    cerr << "Option vector:  " << local_argv << endl;
+#endif
+    vector<string> cleaned;
+    for ( size_t i=0; i < local_argv.size(); ++i ){
+      string Option = local_argv[i];
+#ifdef DEBUG
+      cerr << "bekijk Option = " << Option << endl;
+#endif
+      if ( Option.size() == 1 ){
+	string msg = "stray '";
+	msg += Option[0];
+	msg += "'. (maybe it belongs to another option?)";
+	throw OptionError( msg );
       }
-      else {
-	Mood = Option[0] == '+';
-	if ( Option.size() > 1 ){
-	  longOpt = Option[1] == '-';
-	  if ( longOpt ){
-	    if ( Mood )
-	      throw OptionError("invalid option: " + Option );
+      char first = Option[0];
+      switch ( first ){
+      case '+':
+      case '-':
+	if ( Option.size() <= 2 ){
+	  if ( i < local_argv.size()-1 ){
+	    string Option2 = local_argv[++i];
+#ifdef DEBUG
+	    cerr << "bekijk Option2 = " << Option2 << endl;
+#endif
+	    if ( Option2[0] != '+' && Option2[0] != '-' ){
+	      Option += Option2;
+	    }
+	  }
+	}
+	cleaned.push_back( Option );
+	break;
+      case '=':
+	throw OptionError( "stray '='. (maybe it belongs to an long option?)" );
+      default:
+	Option = "?" + Option;
+	if ( Option.size() <= 2 ){
+	  Option += local_argv[++i];
+	}
+	cleaned.push_back( Option );
+      }
+    }
+#ifdef DEBUG
+    cerr << "Cleaned vector: " << cleaned << endl;
+#endif
+
+    map<char,string> min_shortMap;
+    map<char,string> plus_shortMap;
+    map<string,string> longMap;
+    set<string> extra;
+
+    for ( size_t i=0; i < cleaned.size(); ++i ){
+      char OptChar;
+      string Optword;
+      string OptValue;
+      string Option = cleaned[i];
+      char first = Option[0];
+      switch ( first ){
+      case '+':
+	OptChar = Option[1];
+	OptValue = Option.substr(2);
+	plus_shortMap[OptChar] = OptValue;
+	break;
+      case '-':
+	if ( Option[1] == '-' ){
+	  if ( Option.size() > 2 ){
 	    string::size_type pos = Option.find( "=" );
-	    if ( pos == string::npos ){
-	      Optword = Option.erase(0,2);
-	      if ( valid_long_par.find( Optword ) != valid_long_par.end() ) {
-		string msg = "option '" + Optword + "' misses a value, (or =?)";
-		throw OptionError( msg );
-	      }
-	      Option = "";
+	    if ( pos == string::npos ) {
+	      Optword = Option.substr( 2 );
 	    }
 	    else {
 	      Optword = Option.substr( 2, pos-2 );
-	      Option = Option.substr( pos+1 );
-	      if ( valid_long_par.find( Optword ) == valid_long_par.end() ) {
-		MassOpts.push_back( Option );
-		Option = "";
-	      }
+	      OptValue = Option.substr( pos+1 );
 	    }
-	    Optchar = Optword[0];
-	    if ( Option.empty() && arg_ind+1 < local_argc ) {
-	      string tmpOption = local_argv[arg_ind+1];
-	      if ( tmpOption[0] == '=' ) {
-		throw OptionError( "no spaces allowed in long options" );
-	      }
-	    }
+	    longMap[Optword] = OptValue;
 	  }
 	  else {
-	    Optchar = Option[1];
-	    Optword = Optchar;
-	    Option = Option.erase(0,2);
+	    // special: '--'
+	    OptChar = '-';
+	    min_shortMap[OptChar] = OptValue;
 	  }
 	}
 	else {
-	  Optchar = 0;
-	  Optword = Option;
-	  Option = Option.erase(0,1);
+	  OptChar = Option[1];
+	  OptValue = Option.substr(2);
+	  min_shortMap[OptChar] = OptValue;
 	}
-	if ( (!Optchar || Option.empty() ) && arg_ind+1 < local_argc ) {
-	  string tmpOption = local_argv[arg_ind+1];
-	  if ( !p_or_m(tmpOption[0]) ){
-	    Option = tmpOption;
-	    ++arg_ind;
-	    if ( !Optchar ){
-	      Optchar = Optword[0];
-	    }
-	  }
-	}
+	break;
+      case '?':
+	OptChar = Option[0];
+	OptValue = Option.substr(1);
+	extra.insert( OptValue );
+	break;
+      default:
+	//
+	break;
       }
-      if ( longOpt ){
-	if ( valid_long.empty() && valid_chars.empty() ){
-	  CL_item cl( Optword, Option );
-	  Opts.push_back( cl );
-	}
-	else if ( valid_long.find( Optword ) == valid_long.end() ){
-	  string msg = "invalid option '" + Optword + "'";
+    }
+
+
+#ifdef DEBUG
+    cerr << "plus:: " << plus_shortMap << endl;
+    cerr << "min::  " << min_shortMap << endl;
+    cerr << "long:  " << longMap << endl;
+    cerr << "extra: " << extra << endl;
+#endif
+    // there are some options to check?
+    bool doCheck = !( valid_long.empty() && valid_chars.empty() );
+    if ( doCheck ){
+      map<char,string>::const_iterator it=plus_shortMap.begin();
+      while ( it != plus_shortMap.end() ){
+	if ( valid_chars.find( it->first ) == valid_chars.end() ){
+	  string msg = "illegal option '";
+	  msg += it->first;
+	  msg +=  "'";
 	  throw OptionError( msg );
 	}
-	else if ( valid_long_par.find( Optword ) != valid_long_par.end() ){
-	  if ( Option.empty() ){
-	    string msg = "option '" + Optword + "' misses a value";
+	else {
+	  if ( valid_chars_par.find( it->first ) == valid_chars_par.end() ){
+	    if ( !it->second.empty() ){
+	      string msg = "option '";
+	      msg += it->first;
+	      msg += "' may not have a value";
+	      throw OptionError( msg );
+	    }
+	  }
+	  else if ( it->second.empty() ){
+	    string msg = "option '";
+	    msg += it->first;
+	    msg += "' is missing a value";
 	    throw OptionError( msg );
 	  }
 	}
-	else if ( !Option.empty() ){
-	  MassOpts.push_back( Option );
-	  Option = "";
-	}
-	CL_item cl( Optword, Option );
+	CL_item cl( it->first, it->second, true );
 	Opts.push_back( cl );
+	++it;
       }
-      else if (Optchar == '?' ){
-	//	cerr << "insert Mass van " << Optword << " !" << endl;
-	MassOpts.push_back( Optword );
-      }
-      else if ( valid_chars.empty() && valid_long.empty() ){
-	CL_item cl( Optchar, Option, Mood );
-	Opts.push_back( cl );
-      }
-      else if ( valid_chars.find( Optchar ) != valid_chars.end() ){
-	//	cerr << "opt-char = " << Optchar << " is valid!" << endl;
-	//	cerr << "Option = '" << Option << "'" << endl;
-	if ( !Option.empty() ){
-	  if ( valid_chars_par.find( Optchar ) != valid_chars_par.end() ){
-	    //	    cerr << "opt-char = " << Optchar << " is valid PAR char" << endl;
-	    CL_item cl( Optchar, Option, Mood );
-	    Opts.push_back( cl );
-	  }
-	  else {
-	    MassOpts.push_back( Option );
-	    //	    cerr << "maak een Mass van " << Option << " !" << endl;
-	    string no;
-	    CL_item cl( Optchar, no, Mood );
-	    Opts.push_back( cl );
-	  }
-	}
-	else if ( valid_chars_par.find( Optchar ) != valid_chars_par.end() ){
-	  string msg = "option '";
-	  msg += Optchar;
-	  msg += "' misses a value";
+
+      it = min_shortMap.begin();
+      while ( it != min_shortMap.end() ){
+	if ( valid_chars.find( it->first ) == valid_chars.end() ){
+	  string msg = "illegal option '";
+	  msg += it->first;
+	  msg +=  "'";
 	  throw OptionError( msg );
 	}
 	else {
-	  CL_item cl( Optchar, Option, Mood );
-	  Opts.push_back( cl );
+	  if ( valid_chars_par.find( it->first ) == valid_chars_par.end() ){
+	    if ( !it->second.empty() ){
+	      extra.insert( it->second );
+	      CL_item cl( it->first, "", false );
+	      Opts.push_back( cl );
+	      ++it;
+	      continue;
+	    }
+	  }
+	  else if ( it->second.empty() ){
+	    string msg = "option '";
+	    msg += it->first;
+	    msg += "' is missing a value";
+	    throw OptionError( msg );
+	  }
 	}
+	CL_item cl( it->first, it->second, false );
+	Opts.push_back( cl );
+	++it;
       }
-      else {
-	string msg = "invalid option '";
-	msg += Optchar;
-	msg += "'";
-	throw OptionError( msg );
+
+      map<string,string>::const_iterator lit = longMap.begin();
+      while ( lit != longMap.end() ){
+	if ( valid_long.find( lit->first ) == valid_long.end() ){
+	  throw OptionError( "illegal option '" + string(lit->first) + "'" );
+	}
+	CL_item cl( lit->first, lit->second );
+	Opts.push_back( cl );
+	++lit;
       }
+    }
+
+    set<string>::const_iterator sit = extra.begin();
+    while( sit != extra.end() ){
+      MassOpts.push_back( *sit );
+      ++sit;
     }
     return true;
   }

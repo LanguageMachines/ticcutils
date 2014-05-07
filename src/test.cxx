@@ -48,8 +48,8 @@ void test_opts( CL_Options& opts ){
   assertEqual( value, "" );
   vector<string> mo = opts.getMassOpts();
   assertTrue( mo.size() == 3 );
-  assertTrue( mo[0] == "blaat" );
-  assertTrue( mo[2] == "arg2" );
+  assertTrue( mo[1] == "arg2" );
+  assertTrue( mo[2] == "blaat" );
 }
 
 void test_subtests_fail(){
