@@ -16,7 +16,7 @@ libticcutils_la_SOURCES = LogStream.cxx StringOps.cxx TreeHash.cxx \
 check_PROGRAMS = test
 test_SOURCES = test.cxx
 
-AM_TESTS_ENVIRONMENT = topsrcdir=$(top_srcdir)
+TESTS_ENVIRONMENT = topsrcdir=$(top_srcdir)
 TESTS = tst.sh
 EXTRA_DIST = tst.sh
 CLEANFILES = bzout.txt gzout.txt bzout.bz2 gzout.gz
