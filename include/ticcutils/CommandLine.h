@@ -72,11 +72,14 @@ namespace TiCC {
   class CL_Options {
     friend std::ostream& operator<<( std::ostream&, const CL_Options& );
   public:
-    CL_Options( const int, const char * const *, const std::string& = "" );
-    CL_Options( const std::string&, const std::string& = "" );
-    void set_valid( const std::string& s );
+    CL_Options( const std::string& ="", const std::string& ="" );
+    CL_Options( const int, const char * const *,
+		const std::string& = "", const std::string& = "" );
     ~CL_Options();
-    //    bool present( const char ) const;
+    bool init( const int, const char * const * );
+    bool init( const std::string& );
+    void set_short_options( const std::string& s );
+    void set_long_options( const std::string& s );
     bool find( const char, std::string&, bool& ) const;
     bool find( const std::string&, std::string& ) const;
     bool pull( const char, std::string&, bool& );
@@ -88,13 +91,16 @@ namespace TiCC {
     bool empty() const { return Opts.empty(); };
     const std::vector<std::string>& getMassOpts() const { return MassOpts; };
   private:
-    void Split_Command_Line( const int, const char * const * );
+    bool Split_Command_Line( const int, const char * const * );
     std::vector<CL_item> Opts;
     std::vector<std::string> MassOpts;
     CL_Options( const CL_Options& );
     CL_Options& operator=( const CL_Options& );
     std::set<char> valid_chars;
     std::set<char> valid_chars_par;
+    std::set<std::string> valid_long;
+    std::set<std::string> valid_long_par;
+    bool is_init;
   };
 
   class OptionError: public std::runtime_error {

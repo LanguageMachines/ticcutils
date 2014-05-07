@@ -40,8 +40,12 @@ void test_opts( CL_Options& opts ){
   opts.find( 'f', value, pol );
   assertEqual( value, "false" );
   assertEqual( pol, false );
+  opts.find( 'd', value, pol );
+  assertTrue( value != "" );
   opts.find( "test", value );
   assertEqual( value, "test" );
+  opts.find( "raar", value );
+  assertEqual( value, "" );
   vector<string> mo = opts.getMassOpts();
   assertTrue( mo.size() == 3 );
   assertTrue( mo[0] == "blaat" );
@@ -237,9 +241,15 @@ void test_fileutils( const string& path ){
 
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
-  CL_Options opts( argc, argv, "t:qf:d:" );
+  CL_Options opts;
+  opts.set_short_options( "t:qf:d:" );
+  opts.set_long_options( "test:,raar" );
+  opts.init( argc, argv );
   cerr << opts << endl;
   test_opts( opts );
+  CL_Options opts2( "t:qf:d:", "test:,raar" );
+  opts2.init( "-ffalse +t true --test=test --raar  blaat -d iets arg1 -q arg2" );
+  test_opts( opts2 );
   test_subtests_fail();
   test_subtests_ok();
   test_throw();

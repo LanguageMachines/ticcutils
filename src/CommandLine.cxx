@@ -33,25 +33,48 @@
 #include <ostream>
 #include <iostream>
 
+#include "ticcutils/StringOps.h"
 #include "ticcutils/CommandLine.h"
+//#include "ticcutils/PrettyPrint.h"
 
 using namespace std;
 
 namespace TiCC {
 
-  CL_Options::CL_Options( const int argc, const char * const *argv,
-			  const string& valid ){
-    set_valid( valid );
-    Split_Command_Line( argc, argv );
+  CL_Options::CL_Options( const string& short_o, const string& long_o ){
+    is_init  = false;
+    set_short_options( short_o );
+    set_long_options( long_o );
   }
 
-  CL_Options::CL_Options( const string& args, const string& valid ){
-    set_valid( valid );
-    const char *argstr = args.c_str();
-    Split_Command_Line( 0, &argstr );
+  CL_Options::CL_Options( const int argc, const char * const *argv,
+			  const string& valid_s, const string& valid_l ){
+    is_init  = false;
+    set_short_options( valid_s );
+    set_long_options( valid_l );
+    init( argc, argv );
   }
 
   CL_Options::~CL_Options(){
+  }
+
+  bool CL_Options::init( const int argc, const char * const *argv ){
+    if ( is_init ){
+      throw OptionError( "cannot init() an options object twice" );
+    }
+    if ( Split_Command_Line( argc, argv ) )
+      is_init = true;
+    return is_init;
+  }
+
+  bool CL_Options::init( const std::string& args ){
+    if ( is_init ){
+      throw OptionError( "cannot init() an options object twice" );
+    }
+    const char *argstr = args.c_str();
+    if ( Split_Command_Line( 0, &argstr ) )
+      is_init = true;
+    return is_init;
   }
 
   ostream& operator<<( ostream& os, const CL_item& it ){
@@ -76,7 +99,7 @@ namespace TiCC {
     }
     if ( !cl.valid_chars.empty() ){
       os << endl;
-      os << "Valid options: ";
+      os << "Valid short options: ";
       set<char>::const_iterator it = cl.valid_chars.begin();
       while ( it != cl.valid_chars.end() ){
 	os << *it;
@@ -85,18 +108,21 @@ namespace TiCC {
 	++it;
       }
     }
+    if ( !cl.valid_long.empty() ){
+      os << endl;
+      os << "Valid long options: ";
+      set<string>::const_iterator it = cl.valid_long.begin();
+      while ( it != cl.valid_long.end() ){
+	os << *it;
+	if ( cl.valid_long_par.find( *it ) != cl.valid_long_par.end() )
+	  os << ":";
+	++it;
+	if ( it != cl.valid_long.end() )
+	  os << ",";
+      }
+    }
     return os;
   }
-
-  // bool CL_Options::present( const char c ) const {
-  //   vector<CL_item>::const_iterator pos;
-  //   for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
-  //     if ( pos->OptChar() == c ){
-  // 	return true;
-  //     }
-  //   }
-  //   return false;
-  // }
 
   bool CL_Options::find( const char c, string &opt, bool& mood ) const {
     vector<CL_item>::const_iterator pos;
@@ -172,39 +198,7 @@ namespace TiCC {
   inline bool p_or_m( char k )
   { return ( k == '+' || k == '-' ); }
 
-  inline int opt_split( const char *line, vector<string>& new_argv ){
-    int k=0;
-    const char *p = line;
-    int argc = 0;
-    while ( *p ){
-      if ( ( p_or_m(*p) && argc == 0 ) ||
-	   ( isspace(*p++) && p_or_m(*p) ) ){
-	argc++;
-      }
-    }
-    string res;
-    if ( argc != 0 ){
-      new_argv.reserve(argc);
-      p = line;
-      while ( isspace( *p ) ){ p++; };
-      while ( *p ){
-	int skip = 0;
-	while ( isspace( *p ) ){ p++; skip++; };
-	if ( !*p )
-	  break;
-	if ( skip != 0 && p_or_m(*p) && k != 1 ){
-	  new_argv.push_back( res );
-	  k = 0;
-	  res = "";
-	}
-	res += *p++;
-      }
-      new_argv.push_back( res );
-    }
-    return argc;
-  }
-
-  void CL_Options::Split_Command_Line( const int Argc,
+  bool CL_Options::Split_Command_Line( const int Argc,
 				       const char * const *Argv ){
     Opts.clear();
     int local_argc = 0;
@@ -216,10 +210,10 @@ namespace TiCC {
     if ( Argc == 0 )
       if ( Argv != 0 &&
 	   Argv[0] != 0 ){
-	local_argc = opt_split( Argv[0], local_argv );
+	local_argc = split( Argv[0], local_argv );
       }
       else
-	return;
+	return false;
     else {
       local_argc = Argc-1;
       for( int i=1; i < Argc; ++i ){
@@ -245,11 +239,19 @@ namespace TiCC {
 	    string::size_type pos = Option.find( "=" );
 	    if ( pos == string::npos ){
 	      Optword = Option.erase(0,2);
+	      if ( valid_long_par.find( Optword ) != valid_long_par.end() ) {
+		string msg = "option '" + Optword + "' misses a value, (or =?)";
+		throw OptionError( msg );
+	      }
 	      Option = "";
 	    }
 	    else {
 	      Optword = Option.substr( 2, pos-2 );
 	      Option = Option.substr( pos+1 );
+	      if ( valid_long_par.find( Optword ) == valid_long_par.end() ) {
+		MassOpts.push_back( Option );
+		Option = "";
+	      }
 	    }
 	    Optchar = Optword[0];
 	    if ( Option.empty() && arg_ind+1 < local_argc ) {
@@ -282,6 +284,24 @@ namespace TiCC {
 	}
       }
       if ( longOpt ){
+	if ( valid_long.empty() && valid_chars.empty() ){
+	  CL_item cl( Optword, Option );
+	  Opts.push_back( cl );
+	}
+	else if ( valid_long.find( Optword ) == valid_long.end() ){
+	  string msg = "invalid option '" + Optword + "'";
+	  throw OptionError( msg );
+	}
+	else if ( valid_long_par.find( Optword ) != valid_long_par.end() ){
+	  if ( Option.empty() ){
+	    string msg = "option '" + Optword + "' misses a value";
+	    throw OptionError( msg );
+	  }
+	}
+	else if ( !Option.empty() ){
+	  MassOpts.push_back( Option );
+	  Option = "";
+	}
 	CL_item cl( Optword, Option );
 	Opts.push_back( cl );
       }
@@ -289,7 +309,7 @@ namespace TiCC {
 	//	cerr << "insert Mass van " << Optword << " !" << endl;
 	MassOpts.push_back( Optword );
       }
-      else if ( valid_chars.empty() ){
+      else if ( valid_chars.empty() && valid_long.empty() ){
 	CL_item cl( Optchar, Option, Mood );
 	Opts.push_back( cl );
       }
@@ -328,9 +348,10 @@ namespace TiCC {
 	throw OptionError( msg );
       }
     }
+    return true;
   }
 
-  void CL_Options::set_valid( const string& s ){
+  void CL_Options::set_short_options( const string& s ){
     char last = '\0';
     for ( size_t i=0; i < s.size(); ++i ){
       if ( s[i] == ':' && last != '\0' ){
@@ -340,6 +361,19 @@ namespace TiCC {
 	valid_chars.insert( s[i] );
 	last = s[i];
       }
+    }
+  }
+
+  void CL_Options::set_long_options( const string& s ){
+    vector<string> parts;
+    TiCC::split_at( s, parts, "," );
+    for ( size_t i=0; i < parts.size(); ++i ){
+      string value = parts[i];
+      if ( value[value.size()-1] == ':' ){
+	value = value.substr(0,value.size()-1);
+	valid_long_par.insert( value );
+      }
+      valid_long.insert( value );
     }
   }
 
