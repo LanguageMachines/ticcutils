@@ -235,15 +235,19 @@ namespace TiCC {
       case '-':
 	if ( Option.size() <= 2 ){
 	  if ( i < local_argv.size()-1 ){
-	    string Option2 = local_argv[++i];
+	    string Option2 = local_argv[i+1];
 #ifdef DEBUG
 	    cerr << "bekijk Option2 = " << Option2 << endl;
 #endif
 	    if ( Option2[0] != '+' && Option2[0] != '-' ){
 	      Option += Option2;
+	      ++i;
 	    }
 	  }
 	}
+#ifdef DEBUG
+	cerr << "PUSH " << Option << endl;
+#endif
 	cleaned.push_back( Option );
 	break;
       case '=':
@@ -319,6 +323,9 @@ namespace TiCC {
     cerr << "min::  " << min_shortMap << endl;
     cerr << "long:  " << longMap << endl;
     cerr << "extra: " << extra << endl;
+
+    cerr << "Valid chars are: " << valid_chars << endl;
+    cerr << "Valid long are: " << valid_long << endl;
 #endif
     // there are some options to check?
     bool doCheck = !( valid_long.empty() && valid_chars.empty() );
@@ -340,12 +347,12 @@ namespace TiCC {
 	      throw OptionError( msg );
 	    }
 	  }
-	  else if ( it->second.empty() ){
-	    string msg = "option '";
-	    msg += it->first;
-	    msg += "' is missing a value";
-	    throw OptionError( msg );
-	  }
+	  // else if ( it->second.empty() ){
+	  //   string msg = "option '";
+	  //   msg += it->first;
+	  //   msg += "' is missing a value";
+	  //   throw OptionError( msg );
+	  // }
 	}
 	CL_item cl( it->first, it->second, true );
 	Opts.push_back( cl );
@@ -370,18 +377,17 @@ namespace TiCC {
 	      continue;
 	    }
 	  }
-	  else if ( it->second.empty() ){
-	    string msg = "option '";
-	    msg += it->first;
-	    msg += "' is missing a value";
-	    throw OptionError( msg );
-	  }
+	  // else if ( it->second.empty() ){
+	  //   string msg = "option '";
+	  //   msg += it->first;
+	  //   msg += "' is missing a value";
+	  //   throw OptionError( msg );
+	  // }
 	}
 	CL_item cl( it->first, it->second, false );
 	Opts.push_back( cl );
 	++it;
       }
-
       map<string,string>::const_iterator lit = longMap.begin();
       while ( lit != longMap.end() ){
 	if ( valid_long.find( lit->first ) == valid_long.end() ){
@@ -419,6 +425,11 @@ namespace TiCC {
     TiCC::split_at( s, parts, "," );
     for ( size_t i=0; i < parts.size(); ++i ){
       string value = parts[i];
+      string::size_type pos = value.find( ':' );
+      if ( pos != string::npos && pos != value.size()-1){
+	throw OptionError( "':' may only be present at the end of a long option ("
+			   + value + ")" );
+      }
       if ( value[value.size()-1] == ':' ){
 	value = value.substr(0,value.size()-1);
 	valid_long_par.insert( value );
