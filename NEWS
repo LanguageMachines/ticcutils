@@ -1,7 +1,13 @@
+11 june 2014 0.5
+- added CommandLine stuff
+- added FileUtils
+- improved XMLtools
+- added Tar and Bzip stuff
+
 3 april 2013 0.4
 - added XMLtools
 - added Timer
-- added Configuration 
+- added Configuration
 - added more functions to StringOps
 
 11 okt 2012 0.3
