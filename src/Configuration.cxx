@@ -13,7 +13,7 @@
 
   ticcutils is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
@@ -46,10 +46,10 @@ namespace TiCC {
     if ( pos != string::npos ){
       return f.substr( 0, pos+1 );
     }
-    else 
+    else
     return ".";
   }
-  
+
   string fixControl( const string& s, char c ){
     string sString;
     string rString;
@@ -58,11 +58,11 @@ namespace TiCC {
       sString = "\\t";
       rString = "\t";
       break;
-    case 'r': 
+    case 'r':
       sString = "\\r";
       rString = "\r";
       break;
-    case 'n': 
+    case 'n':
       sString = "\\n";
       rString = "\n";
       break;
@@ -87,7 +87,7 @@ namespace TiCC {
       return result;
     }
   }
-  
+
   string fixControls( const string& s ){
     string result = s;
     result = fixControl( result, 'n' );
@@ -95,7 +95,7 @@ namespace TiCC {
     result = fixControl( result, 't' );
     return result;
   }
-  
+
   bool Configuration::fill( const string& fileName ){
     cdir = dirname( fileName );
     //  cerr << "dirname= " << cdir << endl;
@@ -112,7 +112,7 @@ namespace TiCC {
 	continue;
       if ( line[0] == '#' )
 	continue;
-      if ( line.find( "[[") == 0  ) 
+      if ( line.find( "[[") == 0  )
 	if ( line[line.length()-1] == ']' &&
 	     line[line.length()-2] == ']' ){
 	  section = line.substr(2,line.length()-4);
@@ -131,7 +131,7 @@ namespace TiCC {
 	    val = val.substr(1, val.length()-2);
 	  val = fixControls( val );
 	  myMap[section][parts[0]] = val;
-	  if ( section == "global" 
+	  if ( section == "global"
 	       && parts[0] == "configDir" )
 	    cdir = val;
 	}
@@ -143,7 +143,7 @@ namespace TiCC {
     }
     return true;
   }
-  
+
   bool Configuration::fill( const string& fileName, const string& section ){
     ifstream is( fileName.c_str() );
     if ( !is ){
@@ -160,7 +160,7 @@ namespace TiCC {
 	continue;
       if ( line[0] == '#' )
 	continue;
-      if ( line.find( "[[") == 0  ) 
+      if ( line.find( "[[") == 0  )
 	if ( line[line.length()-1] == ']' &&
 	     line[line.length()-2] == ']' ){
 	  localsection = line.substr(2,line.length()-4);
@@ -193,7 +193,7 @@ namespace TiCC {
     }
     return true;
   }
-  
+
   void Configuration::dump( ostream& os ) const {
     sssMap::const_iterator it1 = myMap.find("global");
     if ( it1 == myMap.end() ){
@@ -220,8 +220,8 @@ namespace TiCC {
       ++it1;
     }
   }
-  
-  string Configuration::setatt( const string& att, 
+
+  string Configuration::setatt( const string& att,
 				const string& val,
 				const string& sect ){
     string oldVal;
@@ -238,7 +238,7 @@ namespace TiCC {
     }
     return oldVal;
   }
-  
+
   string Configuration::lookUp( const string& att, const string& section ) const {
     sssMap::const_iterator it1;
     if ( section.empty() )
@@ -277,7 +277,7 @@ namespace TiCC {
     }
     return result;
   }
-  
+
   set<string> Configuration::lookUpSections() const {
     set<string> result;
     result.insert("global");
@@ -288,7 +288,7 @@ namespace TiCC {
     }
     return result;
   }
-  
+
   bool Configuration::hasSection( const string& section ) const {
     if ( !section.empty() ){
       sssMap::const_iterator it1 = myMap.find( section );
@@ -297,5 +297,5 @@ namespace TiCC {
     }
     return false;
   }
-  
+
 }
