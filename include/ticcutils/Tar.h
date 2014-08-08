@@ -30,7 +30,11 @@
 #ifndef TICC_TAR_TOOLS_H
 #define TICC_TAR_TOOLS_H
 
+#ifdef HAVE_LIBTAR_H
 #include "libtar.h"
+#else 
+#define TAR int
+#endif
 #include <fstream>
 #include <vector>
 

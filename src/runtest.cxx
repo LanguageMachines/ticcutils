@@ -190,7 +190,7 @@ void test_tar( const string& path ){
   assertTrue( mytar.next_ifstream( tmp, name ) );
   assertTrue( mytar.next_ifstream( tmp, name ) );
   assertEqual( name, "sub1/sub.txt" );
-  mytar.extract_ifstream( "sub1/sub.txt", tmp );
+  assertNoThrow( mytar.extract_ifstream( "sub1/sub.txt", tmp ) );
   string line;
   assertTrue( getline( tmp, line ) );
   assertEqual( line, "a testfile." );

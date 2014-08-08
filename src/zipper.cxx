@@ -1,15 +1,43 @@
+#include <stdexcept>
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "bzlib.h"
+#include "config.h"
 #include "ticcutils/zipper.h"
+#ifdef HAVE_BZLIB_H
+#include "bzlib.h"
 #include "ticcutils/bz2stream.h"
+#endif
 #include "ticcutils/gzstream.h"
 
 using namespace std;
 
 namespace TiCC {
 
+#ifndef HAVE_BZLIB_H
+  void bz2fail( const string&f ){
+  throw runtime_error( "unable to execute '" + f +"', BZ2 support not enabled." );
+}
+
+  bool bz2Compress( const string& inName, const string& outName ){
+  bz2fail( "bz2Compress()" );
+}
+  bool bz2Decompress( const string& inName, const string& outName ){
+    bz2fail( "bz2Decompress()" );
+}
+  string bz2ReadStream( istream& is ){
+    bz2fail( "bz2ReadStream()" );
+}
+  string bz2ReadFile( const string& inName ){
+    bz2fail( "bz2CReadFile()" );
+}
+  bool bz2WriteStream( ostream& outfile, const string& buffer ){
+    bz2fail( "bz2WriteStream()" );
+}
+  bool bz2WriteFile( const string& outName, const string& buffer ){
+    bz2fail( "bz2WriteFile()" );
+}
+#else
   bool bz2Compress( const string& inName, const string& outName ){
     std::ifstream infile( inName.c_str(), std::ios::binary);
     if ( !infile ){
@@ -98,6 +126,7 @@ namespace TiCC {
     bzout << buffer;
     return true;
   }
+#endif
 
   string gzReadStream( istream& is ){
     string result;

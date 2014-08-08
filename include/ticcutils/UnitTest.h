@@ -137,7 +137,7 @@ void MyTSerie::stop( const std::string& fun, int ){
       std::cerr << "\t";						\
     std::cerr << __func__ << "(" << __LINE__ << ") : no exception thrown" << std::endl; \
   }									\
-  while( false )							\
+  while( false )
 
 #define assertNoThrow( XX )						\
   do { 									\
@@ -152,17 +152,38 @@ void MyTSerie::stop( const std::string& fun, int ){
 	std::cout << FAIL << std::endl;					\
       else								\
 	std::cerr << "\t";						\
-      std::cerr << __func__ << "(" << __LINE__ << ") : throws, what='" << e.what() << "'" << std::endl; \
+      std::cerr << __func__ << "(" << __LINE__ << ") error: '" << e.what() << "'" << std::endl; \
       break;								\
     }									\
     if (  !testSilent && currentTestContext.isDefault() )		\
       std::cout << OK << std::endl;					\
   }									\
-  while( false )							\
+  while( false )
 
-#define assertTrue( YY ) test_true( __func__, __LINE__, (YY), currentTestContext )
-#define assertFalse( YY ) test_false( __func__, __LINE__, (YY), currentTestContext )
-#define assertMessage( MM, YY ) test_true_message( __func__, __LINE__, (MM), (YY), currentTestContext )
+#define assertTrue( YY ) 			                        \
+  try {                                                                 \
+    test_true( __func__, __LINE__, (YY), currentTestContext );		\
+  }									\
+  catch( const std::exception& e ){					\
+    std::cerr << __func__ << "(" << __LINE__ << ") error: '" << e.what() << "'" << std::endl; \
+  }
+
+#define assertFalse( YY )						\
+  try {									\
+  test_false( __func__, __LINE__, (YY), currentTestContext );		\
+  }									\
+  catch( const std::exception& e ){					\
+    std::cerr << __func__ << "(" << __LINE__ << ") error:'" << e.what() << "'" << std::endl; \
+  }
+
+#define assertMessage( MM, YY )						\
+    try {								\
+      test_true_message( __func__, __LINE__, (MM), (YY), currentTestContext ); \
+    }									\
+    catch( const std::exception& e ){					\
+      std::cerr << __func__ << "(" << __LINE__ << ") error: '" << e.what() << "'" << std::endl; \
+    }
+
 
 #define startTestSerie( SS ) MyTSerie currentTestContext( __func__, __LINE__, (SS) )
 

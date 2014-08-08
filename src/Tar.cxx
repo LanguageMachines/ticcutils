@@ -5,7 +5,6 @@
 #include <fstream>
 #include <unistd.h>
 #include "config.h"
-#include "libtar.h"
 #include <sys/fcntl.h>
 #include "ticcutils/StringOps.h"
 #ifdef HAVE_BOOST_REGEX
@@ -17,6 +16,44 @@ using namespace std;
 
 namespace TiCC {
 
+#ifndef HAVE_LIBTAR_H
+
+  void tarfail( const string& s ){
+    throw runtime_error( "unable to execute '" + s + " 'tar support not enabled" );
+  }
+
+  tar::tar(){
+  }
+  
+  tar::~tar(){
+  }
+
+  bool tar::open( const string& ){
+    tarfail( "open()" );
+  }
+
+  bool tar::close() {
+  }
+
+  bool tar::extract_file_names( vector<string>&,
+				const string& ){
+    tarfail( "extract_file_names()" );
+  }
+
+  bool tar::extract_file_names_match( vector<string>&,
+				      const string& ){
+    tarfail( "extract_file_names_match()" );
+  }
+
+  bool tar::extract_ifstream( const string&, ifstream& ){
+    tarfail( "extract_ifstream()" );
+  }
+
+  bool tar::next_ifstream( ifstream&, string&){
+    tarfail( "next_ifstream()" );
+  }
+
+#else
   tar::tar(){
     tar_file = 0;
   }
@@ -237,4 +274,6 @@ namespace TiCC {
     }
     return true;
   }
+#endif
+
 }
