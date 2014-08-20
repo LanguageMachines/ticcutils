@@ -272,7 +272,7 @@ namespace TiCC {
     map<char,string> min_shortMap;
     map<char,string> plus_shortMap;
     map<string,string> longMap;
-    set<string> extra;
+    vector<string> extra;
 
     string lastLong;
     for ( size_t i=0; i < cleaned.size(); ++i ){
@@ -318,13 +318,15 @@ namespace TiCC {
 	break;
       case '?':
 	OptValue = Option.substr(1);
-	if ( is_classic && !lastLong.empty() && longMap[lastLong].empty() ){
+	if ( is_classic && !lastLong.empty()
+	     && longMap[lastLong].empty() &&
+	     valid_long_par.find( lastLong ) != valid_long_par.end() ){
 	  longMap[lastLong] = OptValue;
 	  lastLong = "";
 	}
 	else {
 	  OptChar = Option[0];
-	  extra.insert( OptValue );
+	  extra.push_back( OptValue );
 	}
 	break;
       default:
@@ -343,7 +345,7 @@ namespace TiCC {
     cerr << "Valid chars are: " << valid_chars << endl;
     cerr << "Valid long are: " << valid_long << endl;
 #endif
-    // there are some options to check?
+    // are there some options to check?
     bool doCheck = !( valid_long.empty() && valid_chars.empty() );
     if ( doCheck ){
       map<char,string>::const_iterator it=plus_shortMap.begin();
@@ -363,12 +365,6 @@ namespace TiCC {
 	      throw OptionError( msg );
 	    }
 	  }
-	  // else if ( it->second.empty() ){
-	  //   string msg = "option '";
-	  //   msg += it->first;
-	  //   msg += "' is missing a value";
-	  //   throw OptionError( msg );
-	  // }
 	}
 	CL_item cl( it->first, it->second, true );
 	Opts.push_back( cl );
@@ -386,19 +382,13 @@ namespace TiCC {
 	else {
 	  if ( valid_chars_par.find( it->first ) == valid_chars_par.end() ){
 	    if ( !it->second.empty() ){
-	      extra.insert( it->second );
+	      extra.push_back( it->second );
 	      CL_item cl( it->first, "", false );
 	      Opts.push_back( cl );
 	      ++it;
 	      continue;
 	    }
 	  }
-	  // else if ( it->second.empty() ){
-	  //   string msg = "option '";
-	  //   msg += it->first;
-	  //   msg += "' is missing a value";
-	  //   throw OptionError( msg );
-	  // }
 	}
 	CL_item cl( it->first, it->second, false );
 	Opts.push_back( cl );
@@ -415,11 +405,7 @@ namespace TiCC {
       }
     }
 
-    set<string>::const_iterator sit = extra.begin();
-    while( sit != extra.end() ){
-      MassOpts.push_back( *sit );
-      ++sit;
-    }
+    MassOpts = extra;
     return true;
   }
 
