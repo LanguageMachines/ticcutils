@@ -48,29 +48,34 @@ namespace TiCC {
   }
 
   CL_Options::CL_Options( const int argc, const char * const *argv,
-			  const string& valid_s, const string& valid_l ){
+			  const string& valid_s, const string& valid_l,
+			  bool classic ){
     is_init  = false;
+    is_classic  = classic;
     set_short_options( valid_s );
     set_long_options( valid_l );
-    init( argc, argv );
+    init( argc, argv, classic );
   }
 
   CL_Options::~CL_Options(){
   }
 
-  bool CL_Options::init( const int argc, const char * const *argv ){
+  bool CL_Options::init( const int argc, const char * const *argv,
+			 bool classic ){
     if ( is_init ){
       throw OptionError( "cannot init() an options object twice" );
     }
+    is_classic = classic;
     if ( Split_Command_Line( argc, argv ) )
       is_init = true;
     return is_init;
   }
 
-  bool CL_Options::init( const std::string& args ){
+  bool CL_Options::init( const std::string& args, bool classic ){
     if ( is_init ){
       throw OptionError( "cannot init() an options object twice" );
     }
+    is_classic = classic;
     const char *argstr = args.c_str();
     if ( Split_Command_Line( 0, &argstr ) )
       is_init = true;
@@ -223,7 +228,7 @@ namespace TiCC {
 #ifdef DEBUG
       cerr << "bekijk Option = " << Option << endl;
 #endif
-      if ( Option.size() == 1 ){
+      if ( !is_classic && Option.size() == 1 ){
 	string msg = "stray '";
 	msg += Option[0];
 	msg += "'. (maybe it belongs to another option?)";
@@ -254,7 +259,7 @@ namespace TiCC {
 	throw OptionError( "stray '='. (maybe it belongs to an long option?)" );
       default:
 	Option = "?" + Option;
-	if ( Option.size() <= 2 ){
+	if ( !is_classic && Option.size() <= 2 ){
 	  Option += local_argv[++i];
 	}
 	cleaned.push_back( Option );
@@ -269,6 +274,7 @@ namespace TiCC {
     map<string,string> longMap;
     set<string> extra;
 
+    string lastLong;
     for ( size_t i=0; i < cleaned.size(); ++i ){
       char OptChar;
       string Optword;
@@ -280,6 +286,7 @@ namespace TiCC {
 	OptChar = Option[1];
 	OptValue = Option.substr(2);
 	plus_shortMap[OptChar] = OptValue;
+	lastLong = "";
 	break;
       case '-':
 	if ( Option[1] == '-' ){
@@ -293,23 +300,32 @@ namespace TiCC {
 	      OptValue = Option.substr( pos+1 );
 	    }
 	    longMap[Optword] = OptValue;
+	    lastLong = Optword;
 	  }
 	  else {
 	    // special: '--'
 	    OptChar = '-';
 	    min_shortMap[OptChar] = OptValue;
+	    lastLong = "";
 	  }
 	}
 	else {
+	  lastLong = "";
 	  OptChar = Option[1];
 	  OptValue = Option.substr(2);
 	  min_shortMap[OptChar] = OptValue;
 	}
 	break;
       case '?':
-	OptChar = Option[0];
 	OptValue = Option.substr(1);
-	extra.insert( OptValue );
+	if ( is_classic && !lastLong.empty() && longMap[lastLong].empty() ){
+	  longMap[lastLong] = OptValue;
+	  lastLong = "";
+	}
+	else {
+	  OptChar = Option[0];
+	  extra.insert( OptValue );
+	}
 	break;
       default:
 	//
@@ -439,5 +455,3 @@ namespace TiCC {
   }
 
 }
-
-
