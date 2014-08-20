@@ -52,28 +52,6 @@ void test_opts( CL_Options& opts ){
   assertTrue( mo[2] == "blaat" );
 }
 
-void test_classic_opts( CL_Options& opts ){
-  startTestSerie( "we testen classic ommandline opties." );
-  string value;
-  bool pol;
-  opts.find( 't', value, pol );
-  assertEqual( value, "true" );
-  assertEqual( pol, true );
-  opts.find( 'f', value, pol );
-  assertEqual( value, "false" );
-  assertEqual( pol, false );
-  opts.find( 'd', value, pol );
-  assertTrue( value != "" );
-  opts.find( "test", value );
-  assertEqual( value, "test" );
-  opts.find( "raar", value );
-  assertEqual( value, "blaat" );
-  vector<string> mo = opts.getMassOpts();
-  assertEqual( mo.size(), 2 );
-  assertEqual( mo[0],"arg1" );
-  assertEqual( mo[1], "arg2" );
-}
-
 void test_subtests_fail(){
   startTestSerie( "we testen subtests, met faal." );
   assertThrow( helper(), range_error );
@@ -274,7 +252,7 @@ int main( const int argc, const char* argv[] ){
   test_opts( opts2 );
   CL_Options opts3( "t:qf:d:", "test:,raar" );
   opts3.init( "-ffalse +t true --test test --raar  blaat -d iets arg1 -q arg2", true );
-  test_classic_opts( opts3 );
+  test_opts( opts3 );
   test_subtests_fail();
   test_subtests_ok();
   test_throw();
