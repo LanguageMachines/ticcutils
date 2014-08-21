@@ -62,6 +62,7 @@ namespace TiCC {
     const std::string& Option() const { return option; };
     bool isLong() const { return longOpt; };
     bool getMood() const { return mood; };
+    std::string toString( ) const;
   private:
     std::string opt_word;
     std::string option;
@@ -74,13 +75,12 @@ namespace TiCC {
   public:
     CL_Options( const std::string& ="", const std::string& ="" );
     CL_Options( const int, const char * const *,
-		const std::string& = "", const std::string& = "", bool=false );
+		const std::string& = "", const std::string& = "" );
     ~CL_Options();
-    bool init( const int, const char * const *, bool=false );
-    bool init( const std::string&, bool=false );
+    bool init( const int, const char * const * );
+    bool init( const std::string& );
     void set_short_options( const std::string& s );
     void set_long_options( const std::string& s );
-    void set_classic( bool b ){ is_classic=b; };
     bool find( const char, std::string&, bool& ) const;
     bool find( const std::string&, std::string& ) const;
     bool pull( const char, std::string&, bool& );
@@ -90,6 +90,8 @@ namespace TiCC {
     void insert( const char, const std::string&, bool );
     void insert( const std::string&, const std::string& );
     bool empty() const { return Opts.empty(); };
+    std::string toString() const;
+    std::ostream& dump( std::ostream& );
     const std::vector<std::string>& getMassOpts() const { return MassOpts; };
   private:
     bool Split_Command_Line( const int, const char * const * );
@@ -102,7 +104,6 @@ namespace TiCC {
     std::set<std::string> valid_long;
     std::set<std::string> valid_long_par;
     bool is_init;
-    bool is_classic;
   };
 
   class OptionError: public std::runtime_error {

@@ -30,8 +30,38 @@ void test_nothrow(){
   assertThrow( helper(), runtime_error );
 }
 
+void test_opts_basic(){
+  startTestSerie( "we testen basic commandline opties." );
+  CL_Options opts1( "t:f" );
+  // -t mist een optie
+  assertThrow( opts1.init( "-t -f"), OptionError );
+  // onbekende optie
+  assertThrow( opts1.init( "-a"), OptionError );
+  // -f heeft optie --> massOpts.
+  assertNoThrow( opts1.init( "-t1 -f bla") );
+  CL_Options opts2( "", "true:,false" );
+  // --true mist een optie
+  assertThrow( opts2.init( "--true --false"), OptionError );
+  // --false heeft optie --> massOpts.
+  assertNoThrow( opts2.init( "--true=1 --false 2")  );
+  CL_Options opts3( "", "true:,false" );
+  // - te weinig
+  assertThrow( opts3.init( "-true=false"), OptionError );
+  // onbekende optie
+  assertThrow( opts3.init( "--magniet"), OptionError );
+  CL_Options opts4( "", "true:,false" );
+  // --true heeft optie, OK en
+  // --false heeft optie --> massOpts.
+  assertNoThrow( opts4.init( "--true 1 --false 2")  );
+  string value;
+  opts4.find( "true", value );
+  assertEqual( value, "1" );
+}
+
 void test_opts( CL_Options& opts ){
-  startTestSerie( "we testen commandline opties." );
+  startTestSerie( "we testen nog meer commandline opties." );
+  // opts.dump(cerr);
+  // cerr << endl;
   string value;
   bool pol;
   opts.find( 't', value, pol );
@@ -48,8 +78,9 @@ void test_opts( CL_Options& opts ){
   assertEqual( value, "" );
   vector<string> mo = opts.getMassOpts();
   assertTrue( mo.size() == 3 );
-  assertTrue( mo[1] == "arg2" );
-  assertTrue( mo[2] == "blaat" );
+  assertEqual( mo[0], "blaat" );
+  assertEqual( mo[1], "arg1" );
+  assertEqual( mo[2], "arg2" );
 }
 
 void test_subtests_fail(){
@@ -241,17 +272,17 @@ void test_fileutils( const string& path ){
 
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
+  test_opts_basic();
   CL_Options opts1;
   opts1.set_short_options( "t:qf:d:" );
   opts1.set_long_options( "test:,raar" );
   opts1.init( argc, argv );
-  cerr << opts1 << endl;
   test_opts( opts1 );
   CL_Options opts2( "t:qf:d:", "test:,raar" );
   opts2.init( "-ffalse +t true --test=test --raar  blaat -d iets arg1 -q arg2" );
   test_opts( opts2 );
   CL_Options opts3( "t:qf:d:", "test:,raar" );
-  opts3.init( "-ffalse +t true --test test --raar  blaat -d iets arg1 -q arg2", true );
+  opts3.init( "-ffalse +t true --test=test --raar  blaat -d iets arg1 -q arg2" );
   test_opts( opts3 );
   test_subtests_fail();
   test_subtests_ok();

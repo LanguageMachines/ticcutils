@@ -30,6 +30,7 @@
 #include <cassert>
 #include <string>
 #include <vector>
+#include <map>
 #include <ostream>
 #include <iostream>
 
@@ -48,34 +49,29 @@ namespace TiCC {
   }
 
   CL_Options::CL_Options( const int argc, const char * const *argv,
-			  const string& valid_s, const string& valid_l,
-			  bool classic ){
+			  const string& valid_s, const string& valid_l ){
     is_init  = false;
-    is_classic  = classic;
     set_short_options( valid_s );
     set_long_options( valid_l );
-    init( argc, argv, classic );
+    init( argc, argv );
   }
 
   CL_Options::~CL_Options(){
   }
 
-  bool CL_Options::init( const int argc, const char * const *argv,
-			 bool classic ){
+  bool CL_Options::init( const int argc, const char * const *argv ){
     if ( is_init ){
       throw OptionError( "cannot init() an options object twice" );
     }
-    is_classic = classic;
     if ( Split_Command_Line( argc, argv ) )
       is_init = true;
     return is_init;
   }
 
-  bool CL_Options::init( const std::string& args, bool classic ){
+  bool CL_Options::init( const std::string& args ){
     if ( is_init ){
       throw OptionError( "cannot init() an options object twice" );
     }
-    is_classic = classic;
     const char *argstr = args.c_str();
     if ( Split_Command_Line( 0, &argstr ) )
       is_init = true;
@@ -83,46 +79,65 @@ namespace TiCC {
   }
 
   ostream& operator<<( ostream& os, const CL_item& it ){
-    if ( it.longOpt ){
-      os << "--" << it.opt_word;
-      if ( !it.option.empty() )
-	os << "=" << it.option;
-    }
-    else
-      os << (it.mood ? "+": "-" ) << it.opt_word << it.option;
+    os << it.toString();
     return os;
   }
 
-  ostream& operator<<( ostream& os, const CL_Options& cl ){
-    vector<CL_item>::const_iterator pos = cl.Opts.begin();
-    while ( pos != cl.Opts.end() ){
-      os << *pos << " ";
-      ++pos;
+  string CL_item::toString( ) const {
+    string result;
+    if ( longOpt ){
+      result = "--" + opt_word;
+      if ( !option.empty() ){
+	result += "=";
+      }
+      result += option;
     }
+    else
+      result += (mood ? "+": "-" ) + opt_word + option;
+    return result;
+  }
+
+  ostream& operator<<( ostream& os, const CL_Options& cl ){
+    os << cl.toString() << " ";
     for ( size_t i=0; i < cl.MassOpts.size(); ++i ){
       os << cl.MassOpts[i] << " ";
     }
-    if ( !cl.valid_chars.empty() ){
+    return os;
+  }
+
+  string CL_Options::toString() const {
+    string result;
+    vector<CL_item>::const_iterator pos = Opts.begin();
+    while ( pos != Opts.end() ){
+      result += pos->toString() + " ";
+      ++pos;
+    }
+    return result;
+  }
+
+  ostream& CL_Options::dump( ostream& os ) {
+    os << *this;
+    if ( !valid_chars.empty() ){
       os << endl;
       os << "Valid short options: ";
-      set<char>::const_iterator it = cl.valid_chars.begin();
-      while ( it != cl.valid_chars.end() ){
+      set<char>::const_iterator it = valid_chars.begin();
+      while ( it != valid_chars.end() ){
 	os << *it;
-	if ( cl.valid_chars_par.find( *it ) != cl.valid_chars_par.end() )
+	if ( valid_chars_par.find( *it ) != valid_chars_par.end() )
 	  os << ":";
 	++it;
       }
     }
-    if ( !cl.valid_long.empty() ){
+    if ( !valid_long.empty() ){
       os << endl;
       os << "Valid long options: ";
-      set<string>::const_iterator it = cl.valid_long.begin();
-      while ( it != cl.valid_long.end() ){
+      set<string>::const_iterator it = valid_long.begin();
+      while ( it != valid_long.end() ){
 	os << *it;
-	if ( cl.valid_long_par.find( *it ) != cl.valid_long_par.end() )
+	if ( valid_long_par.find( *it ) != valid_long_par.end() )
 	  os << ":";
 	++it;
-	if ( it != cl.valid_long.end() )
+	if ( it != valid_long.end() )
 	  os << ",";
       }
     }
@@ -202,6 +217,44 @@ namespace TiCC {
 
   //#define DEBUG
 
+  enum argstat { PLUS, MIN, LONG, UNKNOWN };
+  struct arg {
+    arg(): stat(UNKNOWN),c(0){};
+    argstat stat;
+    char c;
+    string s;
+    string val;
+  };
+
+  ostream& operator<<( ostream& os, const arg& a ){
+    switch ( a.stat ){
+    case UNKNOWN:
+      os << a.c;
+      os << a.s;
+      os << "=" << a.val;
+      break;
+    case PLUS:
+      os << "+";
+      os << a.c;
+      os << a.s;
+      os << "=" << a.val;
+      break;
+    case MIN:
+      os << "-";
+      os << a.c;
+      os << a.s;
+      os << "=" << a.val;
+      break;
+    case LONG:
+      os << "L-";
+      os << a.s;
+      os << "=" << a.val;
+      break;
+    }
+    return os;
+  }
+
+
   bool CL_Options::Split_Command_Line( const int Argc,
 				       const char * const *Argv ){
     Opts.clear();
@@ -228,24 +281,27 @@ namespace TiCC {
 #ifdef DEBUG
       cerr << "bekijk Option = " << Option << endl;
 #endif
-      if ( !is_classic && Option.size() == 1 ){
-	string msg = "stray '";
-	msg += Option[0];
-	msg += "'. (maybe it belongs to another option?)";
-	throw OptionError( msg );
+      if ( Option.size() == 1 ){
+	cleaned.push_back( Option );
+	continue;
       }
       char first = Option[0];
       switch ( first ){
       case '+':
       case '-':
-	if ( Option.size() <= 2 ){
+	if ( Option.size() <= 2 || Option[1] == '-' ){
 	  if ( i < local_argv.size()-1 ){
 	    string Option2 = local_argv[i+1];
 #ifdef DEBUG
 	    cerr << "bekijk Option2 = " << Option2 << endl;
 #endif
 	    if ( Option2[0] != '+' && Option2[0] != '-' ){
-	      Option += Option2;
+	      if ( Option[1] == '-' ){
+		Option += "=" + Option2;
+	      }
+	      else {
+		Option += Option2;
+	      }
 	      ++i;
 	    }
 	  }
@@ -259,7 +315,7 @@ namespace TiCC {
 	throw OptionError( "stray '='. (maybe it belongs to an long option?)" );
       default:
 	Option = "?" + Option;
-	if ( !is_classic && Option.size() <= 2 ){
+	if ( Option.size() <= 2 ){
 	  Option += local_argv[++i];
 	}
 	cleaned.push_back( Option );
@@ -269,28 +325,23 @@ namespace TiCC {
     cerr << "Cleaned vector: " << cleaned << endl;
 #endif
 
-    map<char,string> min_shortMap;
-    map<char,string> plus_shortMap;
-    map<string,string> longMap;
-    vector<string> extra;
-
-    string lastLong;
+    vector<arg> arguments;
     for ( size_t i=0; i < cleaned.size(); ++i ){
-      char OptChar;
-      string Optword;
-      string OptValue;
       string Option = cleaned[i];
       char first = Option[0];
+      arg argument;
       switch ( first ){
       case '+':
-	OptChar = Option[1];
-	OptValue = Option.substr(2);
-	plus_shortMap[OptChar] = OptValue;
-	lastLong = "";
+	argument.stat = PLUS;
+	argument.c = Option[1];
+	argument.val = Option.substr(2);
+	arguments.push_back(argument);
 	break;
       case '-':
 	if ( Option[1] == '-' ){
 	  if ( Option.size() > 2 ){
+	    string Optword;
+	    string OptValue;
 	    string::size_type pos = Option.find( "=" );
 	    if ( pos == string::npos ) {
 	      Optword = Option.substr( 2 );
@@ -299,35 +350,29 @@ namespace TiCC {
 	      Optword = Option.substr( 2, pos-2 );
 	      OptValue = Option.substr( pos+1 );
 	    }
-	    longMap[Optword] = OptValue;
-	    lastLong = Optword;
+	    argument.stat = LONG;
+	    argument.s = Optword;
+	    argument.val = OptValue;
+	    arguments.push_back(argument);
 	  }
 	  else {
 	    // special: '--'
-	    OptChar = '-';
-	    min_shortMap[OptChar] = OptValue;
-	    lastLong = "";
+	    argument.stat = MIN;
+	    argument.c = '-';
+	    arguments.push_back(argument);
 	  }
 	}
 	else {
-	  lastLong = "";
-	  OptChar = Option[1];
-	  OptValue = Option.substr(2);
-	  min_shortMap[OptChar] = OptValue;
+	  argument.stat = MIN;
+	  argument.c = Option[1];
+	  argument.val =  Option.substr(2);
+	  arguments.push_back(argument);
 	}
 	break;
       case '?':
-	OptValue = Option.substr(1);
-	if ( is_classic && !lastLong.empty()
-	     && longMap[lastLong].empty() &&
-	     valid_long_par.find( lastLong ) != valid_long_par.end() ){
-	  longMap[lastLong] = OptValue;
-	  lastLong = "";
-	}
-	else {
-	  OptChar = Option[0];
-	  extra.push_back( OptValue );
-	}
+	argument.c = '?';
+	argument.val = Option.substr(1);
+	arguments.push_back(argument);
 	break;
       default:
 	//
@@ -335,77 +380,142 @@ namespace TiCC {
       }
     }
 
-
 #ifdef DEBUG
-    cerr << "plus:: " << plus_shortMap << endl;
-    cerr << "min::  " << min_shortMap << endl;
-    cerr << "long:  " << longMap << endl;
-    cerr << "extra: " << extra << endl;
-
-    cerr << "Valid chars are: " << valid_chars << endl;
-    cerr << "Valid long are: " << valid_long << endl;
+    cerr << "Valid char options are: " << valid_chars << endl;
+    cerr << "Valid long options are: " << valid_long << endl;
 #endif
     // are there some options to check?
     bool doCheck = !( valid_long.empty() && valid_chars.empty() );
     if ( doCheck ){
-      map<char,string>::const_iterator it=plus_shortMap.begin();
-      while ( it != plus_shortMap.end() ){
-	if ( valid_chars.find( it->first ) == valid_chars.end() ){
-	  string msg = "illegal option '";
-	  msg += it->first;
-	  msg +=  "'";
-	  throw OptionError( msg );
-	}
-	else {
-	  if ( valid_chars_par.find( it->first ) == valid_chars_par.end() ){
-	    if ( !it->second.empty() ){
-	      string msg = "option '";
-	      msg += it->first;
-	      msg += "' may not have a value";
-	      throw OptionError( msg );
-	    }
+#ifdef DEBUG
+      cerr << "check ARGUMENTS: " << arguments << endl;
+#endif
+      vector<arg>::iterator it = arguments.begin();
+      while ( it != arguments.end() ){
+	if ( it->stat == LONG ){
+	  if ( valid_long.find( it->s ) == valid_long.end() ){
+	    throw OptionError( "invalid option '" + it->s + "'" );
 	  }
-	}
-	CL_item cl( it->first, it->second, true );
-	Opts.push_back( cl );
-	++it;
-      }
-
-      it = min_shortMap.begin();
-      while ( it != min_shortMap.end() ){
-	if ( valid_chars.find( it->first ) == valid_chars.end() ){
-	  string msg = "illegal option '";
-	  msg += it->first;
-	  msg +=  "'";
-	  throw OptionError( msg );
-	}
-	else {
-	  if ( valid_chars_par.find( it->first ) == valid_chars_par.end() ){
-	    if ( !it->second.empty() ){
-	      extra.push_back( it->second );
-	      CL_item cl( it->first, "", false );
-	      Opts.push_back( cl );
+	  bool has_par = valid_long_par.find( it->s ) != valid_long_par.end();
+#ifdef DEBUG
+	  if ( has_par )
+	    cerr << it->s << " heeft WEL een parameter nodig!" << endl;
+	  else
+	    cerr << it->s << " heeft geen parameter nodig!" << endl;
+#endif
+	  if ( it->val.empty() ){
+	    if ( !has_par ){
 	      ++it;
 	      continue;
 	    }
+	    else {
+	      vector<arg>::iterator it2 = it;
+	      if ( ++it2 != arguments.end() ){
+		if ( it2->stat == UNKNOWN ){
+		  it->val = it2->val;
+		  arguments.erase(it2);
+		  ++it;
+		  continue;
+		}
+		else {
+		  throw OptionError( "missing value for " + it->s );
+		}
+	      }
+	      else {
+		throw OptionError( "missing value for " + it->s );
+	      }
+	    }
+	  }
+	  else if ( has_par ){
+	    ++it;
+	    continue;
+	  }
+	  else {
+	    MassOpts.push_back( it->val );
+	    it->val.clear();
+	    ++it;
 	  }
 	}
-	CL_item cl( it->first, it->second, false );
-	Opts.push_back( cl );
+	else if ( it->stat == MIN || it->stat == PLUS ){
+	  if ( valid_chars.find( it->c ) == valid_chars.end() ){
+	    throw OptionError( "invalid option " + it->c );
+	  }
+	  bool has_par = valid_chars_par.find( it->c ) != valid_chars_par.end();
+#ifdef DEBUG
+	  if ( has_par )
+	    cerr << it->c << " heeft WEL een parameter nodig!" << endl;
+	  else
+	    cerr << it->c << " heeft geen parameter nodig!" << endl;
+#endif
+	  if ( it->val.empty() ){
+	    if ( !has_par ){
+	      ++it;
+	      continue;
+	    }
+	    else {
+#ifdef DEBUG
+	      cerr << "zoek naar een parameter " << endl;
+#endif
+	      vector<arg>::iterator it2 = it;
+	      if ( ++it2 != arguments.end() ){
+		if ( it2->stat == UNKNOWN ){
+		  it->val = it2->val;
+		  arguments.erase(it2);
+		  ++it;
+		  continue;
+		}
+		else {
+		  throw OptionError( "missing value for " + it->c );
+		}
+	      }
+	      else {
+		throw OptionError( "missing value for " + it->c );
+	      }
+	    }
+	  }
+	  else if ( has_par ){
+	    ++it;
+	    continue;
+	  }
+	  else {
+	    MassOpts.push_back( it->val );
+	    it->val.clear();
+	    ++it;
+	  }
+	}
+	else if ( it->stat == UNKNOWN ){
+	  MassOpts.push_back( it->val );
+	  it = arguments.erase(it);
+	}
+      }
+#ifdef DEBUG
+      cerr << "after check ARGUMENTS: " << arguments << endl;
+#endif
+      it = arguments.begin();
+      while ( it != arguments.end() ){
+	if ( it->stat == LONG ){
+	  CL_item cl( it->s, it->val );
+	  Opts.push_back( cl );
+	}
+	else if ( it->stat == PLUS || it->stat == MIN ){
+	  CL_item cl( it->c, it->val, (it->stat == PLUS) );
+	  Opts.push_back( cl );
+	}
+	else {
+	  MassOpts.push_back( it->val );
+	}
 	++it;
       }
-      map<string,string>::const_iterator lit = longMap.begin();
-      while ( lit != longMap.end() ){
-	if ( valid_long.find( lit->first ) == valid_long.end() ){
-	  throw OptionError( "illegal option '" + string(lit->first) + "'" );
-	}
-	CL_item cl( lit->first, lit->second );
-	Opts.push_back( cl );
-	++lit;
-      }
     }
+#ifdef DEBUG
+    cerr << "mass opts: " << MassOpts << endl;
+#endif
 
-    MassOpts = extra;
+#ifdef DEBUG
+    cerr << "After cleanup: " << endl;
+    dump(cerr);
+    cerr << endl;
+#endif
     return true;
   }
 
