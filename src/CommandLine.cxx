@@ -397,9 +397,12 @@ namespace TiCC {
 	    throw OptionError( "invalid option '" + it->s + "'" );
 	  }
 	  bool has_par = valid_long_par.find( it->s ) != valid_long_par.end();
+	  bool has_opt = valid_long_opt.find( it->s ) != valid_long_opt.end();
 #ifdef DEBUG
 	  if ( has_par )
 	    cerr << it->s << " heeft WEL een parameter nodig!" << endl;
+	  else if ( has_opt )
+	    cerr << it->s << " heeft OPTIONEEL een parameter nodig!" << endl;
 	  else
 	    cerr << it->s << " heeft geen parameter nodig!" << endl;
 #endif
@@ -417,16 +420,24 @@ namespace TiCC {
 		  ++it;
 		  continue;
 		}
+		else if ( !has_opt ){
+		  throw OptionError( "missing value for long option: '"
+				     + it->s + "'" );
+		}
 		else {
-		  throw OptionError( "missing value for " + it->s );
+		  ++it;
+		  continue;
 		}
 	      }
-	      else {
-		throw OptionError( "missing value for " + it->s );
+	      else if ( !has_opt ){
+		throw OptionError( "missing value for long option: '"
+				   + it->s + "'" );
+		++it;
+		continue;
 	      }
 	    }
 	  }
-	  else if ( has_par ){
+	  else if ( has_par || has_opt){
 	    ++it;
 	    continue;
 	  }
@@ -438,12 +449,15 @@ namespace TiCC {
 	}
 	else if ( it->stat == MIN || it->stat == PLUS ){
 	  if ( valid_chars.find( it->c ) == valid_chars.end() ){
-	    throw OptionError( "invalid option " + it->c );
+	    throw OptionError( string("invalid option '") + it->c + "'" );
 	  }
 	  bool has_par = valid_chars_par.find( it->c ) != valid_chars_par.end();
+	  bool has_opt = valid_chars_opt.find( it->c ) != valid_chars_opt.end();
 #ifdef DEBUG
 	  if ( has_par )
 	    cerr << it->c << " heeft WEL een parameter nodig!" << endl;
+	  else if ( has_opt )
+	    cerr << it->c << " heeft OPTIONEEL een parameter nodig!" << endl;
 	  else
 	    cerr << it->c << " heeft geen parameter nodig!" << endl;
 #endif
@@ -464,16 +478,26 @@ namespace TiCC {
 		  ++it;
 		  continue;
 		}
+		else if ( !has_opt ){
+		  throw OptionError( string("missing value for option '")
+				     + it->c + "'" );
+		}
 		else {
-		  throw OptionError( "missing value for " + it->c );
+		  ++it;
+		  continue;
 		}
 	      }
+	      else if ( !has_opt ){
+		throw OptionError( string("missing value for option ''")
+				   + it->c + "'" );
+	      }
 	      else {
-		throw OptionError( "missing value for " + it->c );
+		++it;
+		continue;
 	      }
 	    }
 	  }
-	  else if ( has_par ){
+	  else if ( has_par || has_opt ){
 	    ++it;
 	    continue;
 	  }
@@ -523,7 +547,12 @@ namespace TiCC {
     char last = '\0';
     for ( size_t i=0; i < s.size(); ++i ){
       if ( s[i] == ':' && last != '\0' ){
-	valid_chars_par.insert( last );
+	if ( i < s.size()-1 && s[i+1] == ':' ){
+	  valid_chars_opt.insert( last );
+	  ++i;
+	}
+	else
+	  valid_chars_par.insert( last );
       }
       else {
 	valid_chars.insert( s[i] );
@@ -538,13 +567,25 @@ namespace TiCC {
     for ( size_t i=0; i < parts.size(); ++i ){
       string value = parts[i];
       string::size_type pos = value.find( ':' );
-      if ( pos != string::npos && pos != value.size()-1){
-	throw OptionError( "':' may only be present at the end of a long option ("
-			   + value + ")" );
-      }
-      if ( value[value.size()-1] == ':' ){
-	value = value.substr(0,value.size()-1);
-	valid_long_par.insert( value );
+      if ( pos != string::npos ){
+	if ( pos == value.size()-2){
+	  if ( value[value.size()-1] == ':' ){
+	    value = value.substr(0,value.size()-2);
+	    valid_long_opt.insert( value );
+	  }
+	  else {
+	    throw OptionError( "':' may only be present at the end of a long option ("
+			       + value + ")" );
+	  }
+	}
+	else if ( pos == value.size()-1){
+	  value = value.substr(0,value.size()-1);
+	  valid_long_par.insert( value );
+	}
+	else {
+	  throw OptionError( "':' may only be present at the end of a long option ("
+			     + value + ")" );
+	}
       }
       valid_long.insert( value );
     }

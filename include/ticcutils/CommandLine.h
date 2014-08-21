@@ -101,8 +101,10 @@ namespace TiCC {
     CL_Options& operator=( const CL_Options& );
     std::set<char> valid_chars;
     std::set<char> valid_chars_par;
+    std::set<char> valid_chars_opt;
     std::set<std::string> valid_long;
     std::set<std::string> valid_long_par;
+    std::set<std::string> valid_long_opt;
     bool is_init;
   };
 

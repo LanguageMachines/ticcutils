@@ -51,11 +51,42 @@ void test_opts_basic(){
   assertThrow( opts3.init( "--magniet"), OptionError );
   CL_Options opts4( "", "true:,false" );
   // --true heeft optie, OK en
-  // --false heeft optie --> massOpts.
+  // --false heeft geen optie --> massOpts.
   assertNoThrow( opts4.init( "--true 1 --false 2")  );
   string value;
   opts4.find( "true", value );
   assertEqual( value, "1" );
+  CL_Options opts5( "", "true::,false:" );
+  // --true heeft optionele optie,
+  // --false heeft optie
+  assertNoThrow( opts5.init( "--true --false 2")  );
+  opts5.find( "true", value );
+  assertEqual( value, "" );
+  CL_Options opts6( "", "true::,false:" );
+  // --true heeft optionele optie,
+  // --false heeft optie
+  assertNoThrow( opts6.init( "--true ok --false=6")  );
+  opts6.find( "true", value );
+  assertEqual( value, "ok" );
+  opts6.find( "false", value );
+  assertEqual( value, "6" );
+  CL_Options opts7( "t::,f:" );
+  // -t heeft optionele optie,
+  // -f heeft optie
+  assertNoThrow( opts7.init( "-t ok -f6")  );
+  bool mood;
+  opts7.find( 't', value, mood );
+  assertEqual( value, "ok" );
+  opts7.find( 'f', value, mood );
+  assertEqual( value, "6" );
+  CL_Options opts8( "t::,f:" );
+  // -t heeft optionele optie,
+  // -f heeft optie
+  assertNoThrow( opts8.init( "-t -f6")  );
+  opts8.find( 't', value, mood );
+  assertEqual( value, "" );
+  opts8.find( 'f', value, mood );
+  assertEqual( value, "6" );
 }
 
 void test_opts( CL_Options& opts ){
