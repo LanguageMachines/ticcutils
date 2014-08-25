@@ -81,12 +81,12 @@ namespace TiCC {
     bool init( const std::string& );
     void set_short_options( const std::string& s );
     void set_long_options( const std::string& s );
-    bool find( const char, std::string&, bool& ) const;
-    bool find( const std::string&, std::string& ) const;
-    bool pull( const char, std::string&, bool& );
-    bool pull( const std::string&, std::string& );
+    bool is_present( const char, std::string&, bool& ) const;
+    bool is_present( const std::string&, std::string& ) const;
+    bool extract( const char, std::string&, bool& );
+    bool extract( const std::string&, std::string& );
     bool remove( const char, bool = false );
-    bool remove( const std::string& );
+    bool remove( const std::string&, bool = false );
     void insert( const char, const std::string&, bool );
     void insert( const std::string&, const std::string& );
     bool empty() const { return Opts.empty(); };
@@ -94,7 +94,7 @@ namespace TiCC {
     std::ostream& dump( std::ostream& );
     const std::vector<std::string>& getMassOpts() const { return MassOpts; };
   private:
-    bool Split_Command_Line( const int, const char * const * );
+    bool Parse_Command_Line( const int, const char * const * );
     std::vector<CL_item> Opts;
     std::vector<std::string> MassOpts;
     CL_Options( const CL_Options& );

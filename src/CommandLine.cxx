@@ -63,7 +63,7 @@ namespace TiCC {
     if ( is_init ){
       throw OptionError( "cannot init() an options object twice" );
     }
-    if ( Split_Command_Line( argc, argv ) )
+    if ( Parse_Command_Line( argc, argv ) )
       is_init = true;
     return is_init;
   }
@@ -73,7 +73,7 @@ namespace TiCC {
       throw OptionError( "cannot init() an options object twice" );
     }
     const char *argstr = args.c_str();
-    if ( Split_Command_Line( 0, &argstr ) )
+    if ( Parse_Command_Line( 0, &argstr ) )
       is_init = true;
     return is_init;
   }
@@ -144,7 +144,9 @@ namespace TiCC {
     return os;
   }
 
-  bool CL_Options::find( const char c, string &opt, bool& mood ) const {
+//#define DEBUG
+
+  bool CL_Options::is_present( const char c, string &opt, bool& mood ) const {
     vector<CL_item>::const_iterator pos;
     for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
       if ( pos->isLong() )
@@ -152,32 +154,71 @@ namespace TiCC {
       if ( pos->OptChar() == c ){
 	opt = pos->Option();
 	mood = pos->Mood();
+#ifdef DEBUG
+	cerr << "extract '" << c << "' ==> '" << opt << "'" << endl;
+#endif
 	return true;
       }
     }
+#ifdef DEBUG
+    cerr << "extract '" << c << "' FAILS " << endl;
+#endif
     return false;
   }
 
-  bool CL_Options::find( const string& w, string &opt ) const {
+  bool CL_Options::is_present( const string& w, string &opt ) const {
     vector<CL_item>::const_iterator pos;
     for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
       if ( pos->OptWord() == w ){
 	opt = pos->Option();
+#ifdef DEBUG
+	cerr << "extract '" << w << "' ==> '" << opt << "'" << endl;
+#endif
 	return true;
       }
     }
+#ifdef DEBUG
+    cerr << "extract '" << w << "' FAILS " << endl;
+#endif
     return false;
   }
 
-  bool CL_Options::pull( const char c, string &opt, bool& mood ) {
-    if ( find( c, opt, mood ) )
-      return remove( c );
+  bool CL_Options::extract( const char c, string &opt, bool& mood ) {
+    vector<CL_item>::iterator pos;
+    for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
+      if ( !pos->isLong() ){
+	if ( pos->OptChar() == c ){
+	  opt = pos->Option();
+	  mood = pos->Mood();
+	  Opts.erase(pos);
+#ifdef DEBUG
+	  cerr << "extract '" << c << "' ==> '" << opt << "'" << endl;
+#endif
+	  return true;
+	}
+      }
+    }
+#ifdef DEBUG
+    cerr << "extract '" << c << "' FAILS " << endl;
+#endif
     return false;
   }
 
-  bool CL_Options::pull( const string& w, string &opt ) {
-    if ( find( w, opt ) )
-      return remove( w );
+  bool CL_Options::extract( const string& w, string &opt ) {
+    vector<CL_item>::iterator pos;
+    for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
+      if ( pos->OptWord() == w ){
+	opt = pos->Option();
+	Opts.erase(pos);
+#ifdef DEBUG
+	cerr << "extract '" << w << "' ==> '" << opt << "'" << endl;
+#endif
+	return true;
+      }
+    }
+#ifdef DEBUG
+    cerr << "extract '" << w << "' FAILS " << endl;
+#endif
     return false;
   }
 
@@ -189,17 +230,23 @@ namespace TiCC {
 	if ( !all )
 	  return true;
       }
-      ++pos;
+      else {
+	++pos;
+      }
     }
     return false;
   }
 
-  bool CL_Options::remove( const string& w ){
+  bool CL_Options::remove( const string& w, bool all ){
     vector<CL_item>::iterator pos;
-    for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
+    for ( pos = Opts.begin(); pos != Opts.end(); ){
       if ( pos->OptWord() == w ){
-	Opts.erase(pos);
-	return true;
+	pos = Opts.erase(pos);
+	if ( !all )
+	  return true;
+      }
+      else {
+	++pos;
       }
     }
     return false;
@@ -214,8 +261,6 @@ namespace TiCC {
     CL_item cl( c, line, mood );
     Opts.push_back( cl );
   }
-
-  //#define DEBUG
 
   enum argstat { PLUS, MIN, LONG, UNKNOWN };
   struct arg {
@@ -255,7 +300,7 @@ namespace TiCC {
   }
 
 
-  bool CL_Options::Split_Command_Line( const int Argc,
+  bool CL_Options::Parse_Command_Line( const int Argc,
 				       const char * const *Argv ){
     Opts.clear();
     vector<string> local_argv;
@@ -385,7 +430,7 @@ namespace TiCC {
     cerr << "Valid long options are: " << valid_long << endl;
 #endif
     // are there some options to check?
-    bool doCheck = !( valid_long.empty() && valid_chars.empty() );
+    bool doCheck = !valid_long.empty() || !valid_chars.empty();
     if ( doCheck ){
 #ifdef DEBUG
       cerr << "check ARGUMENTS: " << arguments << endl;

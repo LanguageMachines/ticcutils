@@ -54,39 +54,52 @@ void test_opts_basic(){
   // --false heeft geen optie --> massOpts.
   assertNoThrow( opts4.init( "--true 1 --false 2")  );
   string value;
-  opts4.find( "true", value );
+  opts4.is_present( "true", value );
   assertEqual( value, "1" );
   CL_Options opts5( "", "true::,false:" );
   // --true heeft optionele optie,
   // --false heeft optie
   assertNoThrow( opts5.init( "--true --false 2")  );
-  opts5.find( "true", value );
+  opts5.is_present( "true", value );
   assertEqual( value, "" );
   CL_Options opts6( "", "true::,false:" );
   // --true heeft optionele optie,
   // --false heeft optie
   assertNoThrow( opts6.init( "--true ok --false=6")  );
-  opts6.find( "true", value );
+  opts6.is_present( "true", value );
   assertEqual( value, "ok" );
-  opts6.find( "false", value );
+  opts6.is_present( "false", value );
   assertEqual( value, "6" );
   CL_Options opts7( "t::,f:" );
   // -t heeft optionele optie,
   // -f heeft optie
   assertNoThrow( opts7.init( "-t ok -f6")  );
   bool mood;
-  opts7.find( 't', value, mood );
+  opts7.is_present( 't', value, mood );
   assertEqual( value, "ok" );
-  opts7.find( 'f', value, mood );
+  opts7.is_present( 'f', value, mood );
   assertEqual( value, "6" );
   CL_Options opts8( "t::,f:" );
   // -t heeft optionele optie,
   // -f heeft optie
   assertNoThrow( opts8.init( "-t -f6")  );
-  opts8.find( 't', value, mood );
+  opts8.is_present( 't', value, mood );
   assertEqual( value, "" );
-  opts8.find( 'f', value, mood );
+  opts8.is_present( 'f', value, mood );
   assertEqual( value, "6" );
+  CL_Options opts9( "t::q" );
+  // -t heeft optionele optie. q is een stoorzender
+  assertNoThrow( opts9.init( "-t 1 -t2 -t3 -q -t -t4 ")  );
+  vector<string> ts;
+  while ( opts9.extract( 't', value, mood ) ){
+    ts.push_back( value );
+  }
+  assertEqual( ts.size() , 5 );
+  assertEqual( ts[0], "1" );
+  assertEqual( ts[1], "2" );
+  assertEqual( ts[2], "3" );
+  assertEqual( ts[3], "" );
+  assertEqual( ts[4], "4" );
 }
 
 void test_opts( CL_Options& opts ){
@@ -95,17 +108,17 @@ void test_opts( CL_Options& opts ){
   // cerr << endl;
   string value;
   bool pol;
-  opts.find( 't', value, pol );
+  opts.is_present( 't', value, pol );
   assertEqual( value, "true" );
   assertEqual( pol, true );
-  opts.find( 'f', value, pol );
+  opts.is_present( 'f', value, pol );
   assertEqual( value, "false" );
   assertEqual( pol, false );
-  opts.find( 'd', value, pol );
+  opts.is_present( 'd', value, pol );
   assertTrue( value != "" );
-  opts.find( "test", value );
+  opts.is_present( "test", value );
   assertEqual( value, "test" );
-  opts.find( "raar", value );
+  opts.is_present( "raar", value );
   assertEqual( value, "" );
   vector<string> mo = opts.getMassOpts();
   assertTrue( mo.size() == 3 );
@@ -334,7 +347,7 @@ int main( const int argc, const char* argv[] ){
   test_lowercase();
   string testdir;
   bool dummy;
-  opts1.find( 'd', testdir, dummy );
+  opts1.is_present( 'd', testdir, dummy );
   test_bz2compression( testdir );
   test_gzcompression( testdir );
   test_tar( testdir );
