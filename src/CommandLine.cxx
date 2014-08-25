@@ -44,6 +44,7 @@ namespace TiCC {
 
   CL_Options::CL_Options( const string& short_o, const string& long_o ){
     is_init  = false;
+    debug = false;
     set_short_options( short_o );
     set_long_options( long_o );
   }
@@ -51,6 +52,7 @@ namespace TiCC {
   CL_Options::CL_Options( const int argc, const char * const *argv,
 			  const string& valid_s, const string& valid_l ){
     is_init  = false;
+    debug = false;
     set_short_options( valid_s );
     set_long_options( valid_l );
     init( argc, argv );
@@ -144,8 +146,6 @@ namespace TiCC {
     return os;
   }
 
-//#define DEBUG
-
   bool CL_Options::is_present( const char c, string &opt, bool& mood ) const {
     vector<CL_item>::const_iterator pos;
     for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
@@ -154,15 +154,15 @@ namespace TiCC {
       if ( pos->OptChar() == c ){
 	opt = pos->Option();
 	mood = pos->Mood();
-#ifdef DEBUG
-	cerr << "extract '" << c << "' ==> '" << opt << "'" << endl;
-#endif
+	if ( debug ){
+	  cerr << "extract '" << c << "' ==> '" << opt << "'" << endl;
+	}
 	return true;
       }
     }
-#ifdef DEBUG
-    cerr << "extract '" << c << "' FAILS " << endl;
-#endif
+    if ( debug ){
+      cerr << "extract '" << c << "' FAILS " << endl;
+    }
     return false;
   }
 
@@ -171,15 +171,15 @@ namespace TiCC {
     for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
       if ( pos->OptWord() == w ){
 	opt = pos->Option();
-#ifdef DEBUG
-	cerr << "extract '" << w << "' ==> '" << opt << "'" << endl;
-#endif
+	if ( debug ){
+	  cerr << "extract '" << w << "' ==> '" << opt << "'" << endl;
+	}
 	return true;
       }
     }
-#ifdef DEBUG
-    cerr << "extract '" << w << "' FAILS " << endl;
-#endif
+    if ( debug ){
+      cerr << "extract '" << w << "' FAILS " << endl;
+    }
     return false;
   }
 
@@ -191,16 +191,16 @@ namespace TiCC {
 	  opt = pos->Option();
 	  mood = pos->Mood();
 	  Opts.erase(pos);
-#ifdef DEBUG
-	  cerr << "extract '" << c << "' ==> '" << opt << "'" << endl;
-#endif
+	  if ( debug ){
+	    cerr << "extract '" << c << "' ==> '" << opt << "'" << endl;
+	  }
 	  return true;
 	}
       }
     }
-#ifdef DEBUG
-    cerr << "extract '" << c << "' FAILS " << endl;
-#endif
+    if ( debug ){
+      cerr << "extract '" << c << "' FAILS " << endl;
+    }
     return false;
   }
 
@@ -210,15 +210,15 @@ namespace TiCC {
       if ( pos->OptWord() == w ){
 	opt = pos->Option();
 	Opts.erase(pos);
-#ifdef DEBUG
-	cerr << "extract '" << w << "' ==> '" << opt << "'" << endl;
-#endif
+	if ( debug ){
+	  cerr << "extract '" << w << "' ==> '" << opt << "'" << endl;
+	}
 	return true;
       }
     }
-#ifdef DEBUG
-    cerr << "extract '" << w << "' FAILS " << endl;
-#endif
+    if ( debug ){
+      cerr << "extract '" << w << "' FAILS " << endl;
+    }
     return false;
   }
 
@@ -274,7 +274,7 @@ namespace TiCC {
   ostream& operator<<( ostream& os, const arg& a ){
     switch ( a.stat ){
     case UNKNOWN:
-      os << a.c;
+      os << "?";
       os << a.s;
       os << "=" << a.val;
       break;
@@ -291,7 +291,7 @@ namespace TiCC {
       os << "=" << a.val;
       break;
     case LONG:
-      os << "L-";
+      os << "--";
       os << a.s;
       os << "=" << a.val;
       break;
@@ -317,15 +317,15 @@ namespace TiCC {
 	local_argv.push_back( Argv[i] );
       }
     }
-#ifdef DEBUG
-    cerr << "Option vector:  " << local_argv << endl;
-#endif
+    if ( debug ){
+      cerr << "Parse_CommandLine: Option vector:  " << local_argv << endl;
+    }
     vector<string> cleaned;
     for ( size_t i=0; i < local_argv.size(); ++i ){
       string Option = local_argv[i];
-#ifdef DEBUG
-      cerr << "bekijk Option = " << Option << endl;
-#endif
+      if ( debug ){
+	cerr << "examine potential option = " << Option << endl;
+      }
       if ( Option.size() == 1 ){
 	cleaned.push_back( Option );
 	continue;
@@ -337,9 +337,9 @@ namespace TiCC {
 	if ( Option.size() <= 2 || Option[1] == '-' ){
 	  if ( i < local_argv.size()-1 ){
 	    string Option2 = local_argv[i+1];
-#ifdef DEBUG
-	    cerr << "bekijk Option2 = " << Option2 << endl;
-#endif
+	    if ( debug ){
+	      cerr << "examine potential extra option: " << Option2 << endl;
+	    }
 	    if ( Option2[0] != '+' && Option2[0] != '-' ){
 	      if ( Option[1] == '-' ){
 		Option += "=" + Option2;
@@ -351,9 +351,6 @@ namespace TiCC {
 	    }
 	  }
 	}
-#ifdef DEBUG
-	cerr << "PUSH " << Option << endl;
-#endif
 	cleaned.push_back( Option );
 	break;
       case '=':
@@ -366,10 +363,9 @@ namespace TiCC {
 	cleaned.push_back( Option );
       }
     }
-#ifdef DEBUG
-    cerr << "Cleaned vector: " << cleaned << endl;
-#endif
-
+    if ( debug ){
+      cerr << "Cleaned vector: " << cleaned << endl;
+    }
     vector<arg> arguments;
     for ( size_t i=0; i < cleaned.size(); ++i ){
       string Option = cleaned[i];
@@ -415,7 +411,7 @@ namespace TiCC {
 	}
 	break;
       case '?':
-	argument.c = '?';
+	argument.stat = UNKNOWN;
 	argument.val = Option.substr(1);
 	arguments.push_back(argument);
 	break;
@@ -425,16 +421,12 @@ namespace TiCC {
       }
     }
 
-#ifdef DEBUG
-    cerr << "Valid char options are: " << valid_chars << endl;
-    cerr << "Valid long options are: " << valid_long << endl;
-#endif
     // are there some options to check?
     bool doCheck = !valid_long.empty() || !valid_chars.empty();
     if ( doCheck ){
-#ifdef DEBUG
-      cerr << "check ARGUMENTS: " << arguments << endl;
-#endif
+      if ( debug ){
+	cerr << "check ARGUMENTS: " << arguments << endl;
+      }
       vector<arg>::iterator it = arguments.begin();
       while ( it != arguments.end() ){
 	if ( it->stat == LONG ){
@@ -443,14 +435,14 @@ namespace TiCC {
 	  }
 	  bool has_par = valid_long_par.find( it->s ) != valid_long_par.end();
 	  bool has_opt = valid_long_opt.find( it->s ) != valid_long_opt.end();
-#ifdef DEBUG
-	  if ( has_par )
-	    cerr << it->s << " heeft WEL een parameter nodig!" << endl;
-	  else if ( has_opt )
-	    cerr << it->s << " heeft OPTIONEEL een parameter nodig!" << endl;
-	  else
-	    cerr << it->s << " heeft geen parameter nodig!" << endl;
-#endif
+	  if ( debug ){
+	    if ( has_par )
+	      cerr << it->s << " must have a parameter." << endl;
+	    else if ( has_opt )
+	      cerr << it->s << " may have a parameter!" << endl;
+	    else
+	      cerr << it->s << " does'n take a parameter." << endl;
+	  }
 	  if ( it->val.empty() ){
 	    if ( !has_par ){
 	      ++it;
@@ -498,23 +490,23 @@ namespace TiCC {
 	  }
 	  bool has_par = valid_chars_par.find( it->c ) != valid_chars_par.end();
 	  bool has_opt = valid_chars_opt.find( it->c ) != valid_chars_opt.end();
-#ifdef DEBUG
-	  if ( has_par )
-	    cerr << it->c << " heeft WEL een parameter nodig!" << endl;
-	  else if ( has_opt )
-	    cerr << it->c << " heeft OPTIONEEL een parameter nodig!" << endl;
-	  else
-	    cerr << it->c << " heeft geen parameter nodig!" << endl;
-#endif
+	  if ( debug ){
+	    if ( has_par )
+	      cerr << it->c << " must have a parameter." << endl;
+	    else if ( has_opt )
+	      cerr << it->c << " may have a parameter." << endl;
+	    else
+	      cerr << it->c << " does't take a parameter." << endl;
+	  }
 	  if ( it->val.empty() ){
 	    if ( !has_par ){
 	      ++it;
 	      continue;
 	    }
 	    else {
-#ifdef DEBUG
-	      cerr << "zoek naar een parameter " << endl;
-#endif
+	      if ( debug ){
+		cerr << "search a parameter " << endl;
+	      }
 	      vector<arg>::iterator it2 = it;
 	      if ( ++it2 != arguments.end() ){
 		if ( it2->stat == UNKNOWN ){
@@ -557,9 +549,9 @@ namespace TiCC {
 	  it = arguments.erase(it);
 	}
       }
-#ifdef DEBUG
-      cerr << "after check ARGUMENTS: " << arguments << endl;
-#endif
+      if ( debug ){
+	cerr << "arguments after check: " << arguments << endl;
+      }
       it = arguments.begin();
       while ( it != arguments.end() ){
 	if ( it->stat == LONG ){
@@ -576,15 +568,15 @@ namespace TiCC {
 	++it;
       }
     }
-#ifdef DEBUG
-    cerr << "mass opts: " << MassOpts << endl;
-#endif
+    if ( debug ){
+      cerr << "mass opts: " << MassOpts << endl;
+    }
 
-#ifdef DEBUG
-    cerr << "After cleanup: " << endl;
-    dump(cerr);
-    cerr << endl;
-#endif
+    if ( debug ){
+      cerr << "CL_options after Parse " << endl;
+      dump(cerr);
+      cerr << endl;
+    }
     return true;
   }
 

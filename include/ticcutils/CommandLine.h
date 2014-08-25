@@ -90,6 +90,7 @@ namespace TiCC {
     void insert( const char, const std::string&, bool );
     void insert( const std::string&, const std::string& );
     bool empty() const { return Opts.empty(); };
+    void set_debug( bool b ) { debug = b; };
     std::string toString() const;
     std::ostream& dump( std::ostream& );
     const std::vector<std::string>& getMassOpts() const { return MassOpts; };
@@ -106,6 +107,7 @@ namespace TiCC {
     std::set<std::string> valid_long_par;
     std::set<std::string> valid_long_opt;
     bool is_init;
+    bool debug;
   };
 
   class OptionError: public std::runtime_error {
