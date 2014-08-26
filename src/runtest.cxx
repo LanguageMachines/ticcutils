@@ -57,13 +57,15 @@ void test_opts_basic(){
   string value;
   opts4.is_present( "true", value );
   assertEqual( value, "1" );
-  CL_Options opts5( "", "true::,false:" );
+  CL_Options opts5( "", "false:,true::" );
   // --true heeft optionele optie,
   // --false heeft optie
   assertNoThrow( opts5.init( "--true --false 2")  );
   opts5.is_present( "true", value );
   assertEqual( value, "" );
-  CL_Options opts6( "", "true::,false:" );
+  string lo6 = "false:,true::";
+  CL_Options opts6( "", lo6 );
+  assertEqual( opts6.get_long_options(), lo6 );
   // --true heeft optionele optie,
   // --false heeft optie
   assertNoThrow( opts6.init( "--true ok --false=6")  );
@@ -71,7 +73,9 @@ void test_opts_basic(){
   assertEqual( value, "ok" );
   opts6.is_present( "false", value );
   assertEqual( value, "6" );
-  CL_Options opts7( "t::,f:" );
+  string so7 = "f:t::";
+  CL_Options opts7( so7 );
+  assertEqual( opts7.get_short_options(), so7 );
   // -t heeft optionele optie,
   // -f heeft optie
   assertNoThrow( opts7.init( "-t ok -f6")  );

@@ -589,6 +589,8 @@ namespace TiCC {
       result += *it;
       if ( valid_chars_par.find( *it ) != valid_chars_par.end() )
 	result += ":";
+      else if ( valid_chars_opt.find( *it ) != valid_chars_opt.end() )
+	result += "::";
       ++it;
     }
     return result;
@@ -631,6 +633,8 @@ namespace TiCC {
       result += *it;
       if ( valid_long_par.find( *it ) != valid_long_par.end() )
 	result += ":";
+      else if ( valid_long_opt.find( *it ) != valid_long_opt.end() )
+	result += "::";
       ++it;
       if ( it != valid_long.end() )
 	result += ",";
