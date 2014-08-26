@@ -121,27 +121,11 @@ namespace TiCC {
     os << *this;
     if ( !valid_chars.empty() ){
       os << endl;
-      os << "Valid short options: ";
-      set<char>::const_iterator it = valid_chars.begin();
-      while ( it != valid_chars.end() ){
-	os << *it;
-	if ( valid_chars_par.find( *it ) != valid_chars_par.end() )
-	  os << ":";
-	++it;
-      }
+      os << "Valid short options: " << get_short_options();
     }
     if ( !valid_long.empty() ){
       os << endl;
-      os << "Valid long options: ";
-      set<string>::const_iterator it = valid_long.begin();
-      while ( it != valid_long.end() ){
-	os << *it;
-	if ( valid_long_par.find( *it ) != valid_long_par.end() )
-	  os << ":";
-	++it;
-	if ( it != valid_long.end() )
-	  os << ",";
-      }
+      os << "Valid long options: " << get_long_options();
     }
     return os;
   }
@@ -598,6 +582,18 @@ namespace TiCC {
     }
   }
 
+  string CL_Options::get_short_options() const {
+    string result;
+    set<char>::const_iterator it = valid_chars.begin();
+    while ( it != valid_chars.end() ){
+      result += *it;
+      if ( valid_chars_par.find( *it ) != valid_chars_par.end() )
+	result += ":";
+      ++it;
+    }
+    return result;
+  }
+
   void CL_Options::set_long_options( const string& s ){
     vector<string> parts;
     TiCC::split_at( s, parts, "," );
@@ -627,5 +623,20 @@ namespace TiCC {
       valid_long.insert( value );
     }
   }
+
+  string CL_Options::get_long_options() const {
+    string result;
+    set<string>::const_iterator it = valid_long.begin();
+    while ( it != valid_long.end() ){
+      result += *it;
+      if ( valid_long_par.find( *it ) != valid_long_par.end() )
+	result += ":";
+      ++it;
+      if ( it != valid_long.end() )
+	result += ",";
+    }
+    return result;
+  }
+
 
 }

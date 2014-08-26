@@ -123,16 +123,16 @@ namespace TiCC {
 	  return false;
 	}
       else {
-	vector<string> parts;
-	int num = TiCC::split_at( line, parts, "=" );
-	if ( num == 2 ){
-	  string val = parts[1];
+	string::size_type pos = line.find("=");
+	if ( pos != string::npos ){
+	  string att = line.substr(0,pos);
+	  string val = line.substr(pos+1);
 	  if ( val[0] == '"' && val[val.length()-1] == '"' )
 	    val = val.substr(1, val.length()-2);
 	  val = fixControls( val );
-	  myMap[section][parts[0]] = val;
+	  myMap[section][att] = val;
 	  if ( section == "global"
-	       && parts[0] == "configDir" )
+	       && att == "configDir" )
 	    cdir = val;
 	}
 	else {
@@ -172,13 +172,13 @@ namespace TiCC {
 	}
       else if ( localsection == section ){
 	found = true;
-	vector<string> parts;
-	int num = TiCC::split_at( line, parts, "=" );
-	if ( num == 2 ){
-	  string val = parts[1];
+	string::size_type pos = line.find("=");
+	if ( pos != string::npos ){
+	  string att = line.substr(0,pos);
+	  string val = line.substr(pos+1);
 	  if ( val[0] == '"' && val[val.length()-1] == '"' )
 	    val = val.substr(1, val.length()-2);
-	  myMap[section][parts[0]] = val;
+	  myMap[section][att] = val;
 	}
 	else {
 	  cerr << "invalid attribute value pair in line '" << line << "'" << endl;

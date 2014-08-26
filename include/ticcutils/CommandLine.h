@@ -77,10 +77,15 @@ namespace TiCC {
     CL_Options( const int, const char * const *,
 		const std::string& = "", const std::string& = "" );
     ~CL_Options();
+    typedef std::vector<CL_item>::const_iterator const_iterator;
+    const_iterator begin() const { return Opts.begin(); };
+    const_iterator end() const { return Opts.end(); };
     bool init( const int, const char * const * );
     bool init( const std::string& );
     void set_short_options( const std::string& s );
     void set_long_options( const std::string& s );
+    std::string get_short_options() const;
+    std::string get_long_options() const;
     bool is_present( const char, std::string&, bool& ) const;
     bool is_present( const std::string&, std::string& ) const;
     bool extract( const char, std::string&, bool& );

@@ -12,6 +12,7 @@
 #include "ticcutils/UnitTest.h"
 #include "ticcutils/FileUtils.h"
 #include "ticcutils/CommandLine.h"
+#include "ticcutils/Configuration.h"
 
 using namespace std;
 using namespace TiCC;
@@ -314,6 +315,22 @@ void test_fileutils( const string& path ){
 #endif
 }
 
+void test_configuration( const string& path ){
+  Configuration c;
+  assertTrue( c.fill( path + "testconfig.cfg" ) );
+  assertTrue( c.hasSection("test") );
+  string att = c.lookUp( "jan" );
+  assertEqual( att, "gek" );
+  att = c.lookUp( "piet" );
+  assertEqual( att, "" );
+  att = c.lookUp( "piet", "test" );
+  assertEqual( att, "ook gek" );
+  att = c.lookUp( "kees", "test" );
+  assertEqual( att, "een jongen" );
+  att = c.lookUp( "klara", "test" );
+  assertEqual( att, "speciaal=raar" );
+}
+
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
   test_opts_basic();
@@ -352,5 +369,6 @@ int main( const int argc, const char* argv[] ){
   test_gzcompression( testdir );
   test_tar( testdir );
   test_fileutils( testdir );
+  test_configuration( testdir );
   summarize_tests(3);
 }
