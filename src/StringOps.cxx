@@ -186,4 +186,20 @@ namespace TiCC {
     return os.str();
   }
 
+  std::string basename( const std::string& path ){
+    string::size_type pos = path.rfind( "/" );
+    if ( pos != string::npos )
+      return path.substr(pos+1);
+    else
+      return path;
+  }
+
+  std::string dirname( const std::string& path ){
+    string::size_type pos = path.rfind( "/" );
+    if ( pos != string::npos )
+      return path.substr(0,pos);
+    else
+      return ".";
+  }
+
 } // namespace TiCC

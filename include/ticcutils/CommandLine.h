@@ -84,12 +84,39 @@ namespace TiCC {
     bool init( const std::string& );
     void set_short_options( const std::string& s );
     void set_long_options( const std::string& s );
+    std::string prog_name() const { return _prog_name; };
     std::string get_short_options() const;
     std::string get_long_options() const;
     bool is_present( const char, std::string&, bool& ) const;
+    bool is_present( const char c, std::string& s ) const {
+      bool b;
+      return is_present( c, s, b );
+    }
+    bool is_present( const char c ) const {
+      bool b;
+      std::string v;
+      return is_present( c, v, b );
+    }
     bool is_present( const std::string&, std::string& ) const;
+    bool is_present( const std::string& s ) const {
+      std::string v;
+      return is_present( s, v );
+    }
     bool extract( const char, std::string&, bool& );
+    bool extract( const char c, std::string& s ){
+      bool b;
+      return extract( c, s, b );
+    };
+    bool extract( const char c ){
+      bool b;
+      std::string v;
+      return extract( c, v, b );
+    };
     bool extract( const std::string&, std::string& );
+    bool extract( const std::string& s ){
+      std::string v;
+      return extract( s, v );
+    }
     bool remove( const char, bool = false );
     bool remove( const std::string&, bool = false );
     void insert( const char, const std::string&, bool );
@@ -111,6 +138,7 @@ namespace TiCC {
     std::set<std::string> valid_long;
     std::set<std::string> valid_long_par;
     std::set<std::string> valid_long_opt;
+    std::string _prog_name;
     bool is_init;
     bool debug;
   };

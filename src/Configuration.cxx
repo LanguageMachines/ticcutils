@@ -41,15 +41,6 @@ namespace TiCC {
     myMap["global"] = ssMap();
   }
 
-  string dirname( const string& f ){
-    string::size_type pos = f.find_last_of("/");
-    if ( pos != string::npos ){
-      return f.substr( 0, pos+1 );
-    }
-    else
-    return ".";
-  }
-
   string fixControl( const string& s, char c ){
     string sString;
     string rString;

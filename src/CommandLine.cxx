@@ -139,13 +139,13 @@ namespace TiCC {
 	opt = pos->Option();
 	mood = pos->Mood();
 	if ( debug ){
-	  cerr << "extract '" << c << "' ==> '" << opt << "'" << endl;
+	  cerr << "is_present '" << c << "' ==> '" << opt << "'" << endl;
 	}
 	return true;
       }
     }
     if ( debug ){
-      cerr << "extract '" << c << "' FAILS " << endl;
+      cerr << "is_present '" << c << "' FAILS " << endl;
     }
     return false;
   }
@@ -156,13 +156,13 @@ namespace TiCC {
       if ( pos->OptWord() == w ){
 	opt = pos->Option();
 	if ( debug ){
-	  cerr << "extract '" << w << "' ==> '" << opt << "'" << endl;
+	  cerr << "is_present '" << w << "' ==> '" << opt << "'" << endl;
 	}
 	return true;
       }
     }
     if ( debug ){
-      cerr << "extract '" << w << "' FAILS " << endl;
+      cerr << "is_present '" << w << "' FAILS " << endl;
     }
     return false;
   }
@@ -296,6 +296,7 @@ namespace TiCC {
       else
 	return false;
     else {
+      _prog_name = basename(Argv[0]);
       for( int i=1; i < Argc; ++i ){
 	// start at 1 to skip the program name
 	local_argv.push_back( Argv[i] );

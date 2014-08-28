@@ -105,6 +105,9 @@ void test_opts_basic(){
   assertEqual( ts[2], "3" );
   assertEqual( ts[3], "" );
   assertEqual( ts[4], "4" );
+  assertTrue( opts9.is_present('q') );
+  assertTrue( opts9.extract('q') );
+  assertFalse( opts9.extract('q') );
 }
 
 void test_opts( CL_Options& opts ){
@@ -234,6 +237,19 @@ void test_lowercase(){
   string line = "Een CamelCapped Zin.";
   string res = lowercase( line );
   assertEqual( res, "een camelcapped zin." );
+}
+
+void test_base_dir(){
+  assertEqual( basename("/foo/bar" ), "bar" );
+  assertEqual( dirname("/foo/bar" ), "/foo" );
+  assertEqual( basename("foo/bar" ), "bar" );
+  assertEqual( dirname("foo/bar" ), "foo" );
+  assertEqual( basename("foobar" ), "foobar" );
+  assertEqual( dirname("foobar" ), "." );
+  assertEqual( basename("/" ), "/" );
+  assertEqual( dirname("/" ), "/" );
+  assertEqual( basename("." ), "." );
+  assertEqual( dirname("." ), "." );
 }
 
 void test_bz2compression( const string& path ){

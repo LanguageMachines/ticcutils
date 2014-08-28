@@ -116,6 +116,9 @@ namespace TiCC {
    return dummy.str();
   }
 
+  std::string basename( const std::string& );
+  std::string dirname( const std::string& );
+
 }
 
 #endif
