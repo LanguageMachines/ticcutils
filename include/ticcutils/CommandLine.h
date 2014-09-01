@@ -103,6 +103,8 @@ namespace TiCC {
       return is_present( s, v );
     }
     bool extract( const char, std::string&, bool& );
+    bool pull( const char c, std::string& s, bool& b){
+      return extract( c, s, b ); };
     bool extract( const char c, std::string& s ){
       bool b;
       return extract( c, s, b );
@@ -113,6 +115,8 @@ namespace TiCC {
       return extract( c, v, b );
     };
     bool extract( const std::string&, std::string& );
+    bool pull( const std::string& w, std::string& s) {
+      return extract( w, s ); };
     bool extract( const std::string& s ){
       std::string v;
       return extract( s, v );

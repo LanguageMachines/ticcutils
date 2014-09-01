@@ -31,7 +31,6 @@
 
 #ifndef TICC_FILE_UTILS_H
 #define TICC_FILE_UTILS_H
-#include "config.h"
 
 namespace TiCC {
   std::vector<std::string> glob( const std::string&);
