@@ -88,6 +88,9 @@ namespace TiCC {
     std::string get_short_options() const;
     std::string get_long_options() const;
     bool is_present( const char, std::string&, bool& ) const;
+    bool find( const char c, std::string& s, bool& b ) const {
+      return is_present( c, s, b );
+    }
     bool is_present( const char c, std::string& s ) const {
       bool b;
       return is_present( c, s, b );
@@ -98,6 +101,9 @@ namespace TiCC {
       return is_present( c, v, b );
     }
     bool is_present( const std::string&, std::string& ) const;
+    bool find( const std::string& w, std::string& s ) const {
+      return is_present( w, s );
+    }
     bool is_present( const std::string& s ) const {
       std::string v;
       return is_present( s, v );
