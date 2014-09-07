@@ -50,7 +50,12 @@ namespace TiCC {
 			const std::string&, 
 			const std::string& = "" );
     void dump( std::ostream& ) const;
-    std::string configDir() const { return cdir; };
+    std::string configDir() const { 
+        if ((cdir.size() > 0) && (cdir[cdir.size()-1] == '/'))
+            return cdir;
+        else
+            return cdir + "/";
+    };
   private:
     sssMap myMap;
     std::string cdir;
