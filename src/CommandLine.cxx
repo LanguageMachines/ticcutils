@@ -319,7 +319,8 @@ namespace TiCC {
       switch ( first ){
       case '+':
       case '-':
-	if ( Option.size() <= 2 || Option[1] == '-' ){
+	if ( (Option.size() <= 2 || Option[1] == '-' )
+	     && Option.find("=") == string::npos ) {
 	  if ( i < local_argv.size()-1 ){
 	    string Option2 = local_argv[i+1];
 	    if ( debug ){

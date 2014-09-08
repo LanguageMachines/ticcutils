@@ -365,6 +365,11 @@ int main( const int argc, const char* argv[] ){
   CL_Options opts3( "t:qf:d:", "test:,raar" );
   opts3.init( "-ffalse +t true --test=test --raar  blaat -d iets arg1 -q arg2" );
   test_opts( opts3 );
+  CL_Options opts4( "", "test:" );
+  opts4.init( "--test=test/a arg1" );
+  string ex;
+  opts4.extract( "test", ex );
+  assertEqual( ex, "test/a" );
   test_subtests_fail();
   test_subtests_ok();
   test_throw();
