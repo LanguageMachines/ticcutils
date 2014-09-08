@@ -76,7 +76,7 @@ namespace TiCC {
   public:
     LogStream();
     LogStream( int );
-    LogStream( const std::string& ="", LogFlag = StampBoth );
+    LogStream( const std::string&, LogFlag = StampBoth );
     LogStream( std::ostream&, const std::string& = "",
 	       LogFlag = StampBoth );
     LogStream( const LogStream&, const std::string&, LogFlag );
