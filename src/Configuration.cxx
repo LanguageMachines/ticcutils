@@ -88,7 +88,7 @@ namespace TiCC {
   }
 
   bool Configuration::fill( const string& fileName ){
-    cdir = dirname( fileName );
+    cdir = dirname( fileName ) + "/";
     //  cerr << "dirname= " << cdir << endl;
     ifstream is( fileName.c_str() );
     if ( !is ){

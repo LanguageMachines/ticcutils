@@ -14,7 +14,7 @@
 
   ticcutils is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
@@ -46,16 +46,11 @@ namespace TiCC {
     std::string lookUp( const std::string&, const std::string& = "" ) const;
     ssMap lookUpAll( const std::string& ) const;
     std::set<std::string> lookUpSections() const;
-    std::string setatt( const std::string&, 
-			const std::string&, 
+    std::string setatt( const std::string&,
+			const std::string&,
 			const std::string& = "" );
     void dump( std::ostream& ) const;
-    std::string configDir() const { 
-        if ((cdir.size() > 0) && (cdir[cdir.size()-1] == '/'))
-            return cdir;
-        else
-            return cdir + "/";
-    };
+    std::string configDir() const { return cdir; };
   private:
     sssMap myMap;
     std::string cdir;
