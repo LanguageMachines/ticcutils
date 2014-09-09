@@ -108,6 +108,27 @@ void test_opts_basic(){
   assertTrue( opts9.is_present('q') );
   assertTrue( opts9.extract('q') );
   assertFalse( opts9.extract('q') );
+  CL_Options opts10( "", "test::,qed" );
+  opts10.set_debug(true);
+  // --test heeft optionele optie. qed is een stoorzender
+  assertNoThrow( opts10.init( "--test 1 --test=2 --qed --test --test=3 ")  );
+  ts.clear();
+  while ( opts10.extract( "test", value ) ){
+    ts.push_back( value );
+  }
+  assertEqual( ts.size() , 4 );
+  assertEqual( ts[0], "1" );
+  assertEqual( ts[1], "2" );
+  assertEqual( ts[2], "" );
+  assertEqual( ts[3], "3" );
+  assertTrue( opts10.is_present("qed") );
+  assertTrue( opts10.extract("qed") );
+  assertFalse( opts10.extract("q") );
+  CL_Options opts11( "", "test:" );
+  opts11.init( "--test=test/a arg1" );
+  string ex;
+  opts11.extract( "test", ex );
+  assertEqual( ex, "test/a" );
 }
 
 void test_opts( CL_Options& opts ){
@@ -365,11 +386,6 @@ int main( const int argc, const char* argv[] ){
   CL_Options opts3( "t:qf:d:", "test:,raar" );
   opts3.init( "-ffalse +t true --test=test --raar  blaat -d iets arg1 -q arg2" );
   test_opts( opts3 );
-  CL_Options opts4( "", "test:" );
-  opts4.init( "--test=test/a arg1" );
-  string ex;
-  opts4.extract( "test", ex );
-  assertEqual( ex, "test/a" );
   test_subtests_fail();
   test_subtests_ok();
   test_throw();
