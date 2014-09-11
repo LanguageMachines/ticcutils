@@ -60,7 +60,7 @@ namespace TiCC {
 
   LogStream::LogStream() : 
     ostream( &buf ),
-    buf( cerr, NULL, StampBoth ),
+    buf( cerr, "", StampBoth ),
     single_threaded_mode(false) {
   }
 
