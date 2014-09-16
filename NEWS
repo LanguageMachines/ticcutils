@@ -1,3 +1,11 @@
+16 sept 2014 0.6
+[Ko vd Sloot]
+- small bug fixes in LogStream, FileUtils
+- improved UnitTest
+- better 'make check' and 'make distcheck'
+- reworked CommandLine stuff
+- added basename() and dirname()to StringOps
+
 11 june 2014 0.5
 - added CommandLine stuff
 - added FileUtils

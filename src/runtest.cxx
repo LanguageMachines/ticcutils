@@ -109,7 +109,7 @@ void test_opts_basic(){
   assertTrue( opts9.extract('q') );
   assertFalse( opts9.extract('q') );
   CL_Options opts10( "", "test::,qed" );
-  opts10.set_debug(true);
+  //  opts10.set_debug(true);
   // --test heeft optionele optie. qed is een stoorzender
   assertNoThrow( opts10.init( "--test 1 --test=2 --qed --test --test=3 ")  );
   ts.clear();

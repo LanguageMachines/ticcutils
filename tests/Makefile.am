@@ -2,4 +2,4 @@
 # $URL$
 
 SUBDIRS = sub1
-EXTRA_DIST = small.txt test.tar
+EXTRA_DIST = small.txt test.tar testconfig.cfg
