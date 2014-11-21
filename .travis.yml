@@ -4,7 +4,7 @@ compiler:
     - clang
 before_install:
     - sudo apt-get update
-    - sudo apt-get install pkg-config autoconf-archive libicu-dev libxml2-dev libbz2-dev zlib1g-dev
+    - sudo apt-get install pkg-config autoconf-archive libicu-dev libxml2-dev libbz2-dev zlib1g-dev boost-test-dev libtar-dev
 install:
     - bash bootstrap.sh
     - ./configure
