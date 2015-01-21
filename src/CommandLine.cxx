@@ -2,7 +2,7 @@
   $Id: CommandLine.cxx 16820 2014-01-06 10:12:30Z sloot $
   $URL: https://ilk.uvt.nl/svn/trunk/sources/Timbl6/src/CommandLine.cxx $
 
-  Copyright (c) 1998 - 2014
+  Copyright (c) 1998 - 2015
   ILK   - Tilburg University
   CLiPS - University of Antwerp
 

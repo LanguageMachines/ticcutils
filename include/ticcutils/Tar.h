@@ -2,7 +2,7 @@
   $Id: zipper.h 15968 2013-04-09 13:49:51Z sloot $
   $URL: https://ilk.uvt.nl/svn/sources/libticcutils/trunk/include/ticcutils/zipper.h $
 
-  Copyright (c) 1998 - 2013
+  Copyright (c) 1998 - 2015
   ILK   - Tilburg University
   CLiPS - University of Antwerp
 
@@ -32,7 +32,7 @@
 
 #ifdef HAVE_LIBTAR_H
 #include "libtar.h"
-#else 
+#else
 #define TAR int
 #endif
 #include <fstream>
