@@ -1,6 +1,6 @@
 /*
-  $Id: zipper.h 15968 2013-04-09 13:49:51Z sloot $
-  $URL: https://ilk.uvt.nl/svn/sources/libticcutils/trunk/include/ticcutils/zipper.h $
+  $Id$
+  $URL$
 
   Copyright (c) 1998 - 2015
   ILK   - Tilburg University

@@ -1,6 +1,6 @@
 /*
-  $Id: CommandLine.h 16820 2014-01-06 10:12:30Z sloot $
-  $URL: https://ilk.uvt.nl/svn/trunk/sources/Timbl6/include/timbl/CommandLine.h $
+  $Id$
+  $URL$
 
   Copyright (c) 1998 - 2015
   ILK   - Tilburg University
