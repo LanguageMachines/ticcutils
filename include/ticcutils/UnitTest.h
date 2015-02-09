@@ -108,7 +108,7 @@ void MyTSerie::stop( const std::string& fun, int ){
   };
 }
 
-#define assertEqual( XX , YY ) test_eq<typeof XX, typeof YY>( __func__, __LINE__, (XX), (YY), currentTestContext )
+#define assertEqual( XX , YY ) test_eq<decltype(XX), decltype(YY)>( __func__, __LINE__, (XX), (YY), currentTestContext )
 #define assertThrow( XX, EE )						\
   do { 									\
     ++currentTestContext._tests;					\
@@ -145,7 +145,7 @@ void MyTSerie::stop( const std::string& fun, int ){
     if (  !testSilent && currentTestContext.isDefault() )		\
       std::cout << "test: " << __func__ << "(" << __LINE__ << "): ";	\
     try {								\
-      XX; }								\
+      (void)(XX); }							\
     catch ( const std::exception& e ){					\
       ++currentTestContext._fails;					\
       if ( currentTestContext.isDefault() )				\
