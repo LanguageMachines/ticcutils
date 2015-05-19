@@ -59,7 +59,7 @@ if test x"$acx_pthread_ok" = xyes; then
    CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 fi
 
-if test "$CXX" = "c++" ; then
+if test "$CXX" = "clang++" ; then
    AC_MSG_NOTICE([using CLANG, skip Boost stuff])
 else
 	AX_BOOST_BASE([1.40])
