@@ -324,7 +324,7 @@ void test_tar( const string& path ){
   assertEqual( res.size(), 3 );
 #else
   assertNoThrow( mytar.extract_file_names_match( res, "txt" ) );
-  assertEqual( res.size(), 4 );
+  assertEqual( res.size(), 3 );
 #endif
 }
 
