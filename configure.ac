@@ -49,7 +49,7 @@ AC_TYPE_SIZE_T
 AC_TYPE_PID_T
 
 # Checks for library functions.
-AC_CHECK_FUNCS([localtime_r gettimeofday memset strerror])
+AC_CHECK_FUNCS([localtime_r gettimeofday memset strerror mkdir])
 AC_FUNC_MALLOC
 
 ACX_PTHREAD([],[AC_MSG_ERROR([We need pthread support!])])
