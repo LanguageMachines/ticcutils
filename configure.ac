@@ -59,9 +59,13 @@ if test x"$acx_pthread_ok" = xyes; then
    CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 fi
 
-AX_BOOST_BASE([1.40])
-AX_BOOST_REGEX
-LIBS="$LIBS $BOOST_REGEX_LIB"
+if test "$CXX" = "c++" ; then
+   AC_MSG_NOTICE([using CLANG, skip Boost stuff])
+else
+	AX_BOOST_BASE([1.40])
+	AX_BOOST_REGEX
+	LIBS="$LIBS $BOOST_REGEX_LIB"
+fi
 
 # ugly hack when PKG_CONFIG_PATH isn't defined.
 # couldn't get it to work otherwise
