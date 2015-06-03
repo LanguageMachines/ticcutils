@@ -20,4 +20,4 @@ runtest_SOURCES = runtest.cxx
 TESTS_ENVIRONMENT = topsrcdir=$(top_srcdir)
 TESTS = tst.sh
 EXTRA_DIST = tst.sh
-CLEANFILES = bzout.txt gzout.txt bzout.bz2 gzout.gz
+CLEANFILES = bzout.txt gzout.txt bzout.bz2 gzout.gz nasty.txt

@@ -46,17 +46,11 @@ class MyTSerie {
   bool isDefault() const {return _fun =="default"; };
   int _fails;
   int _tests;
+  int _series;
   int _start_line;
   std::string _fun;
  private:
-  void start( const std::string& fun, int lineno, const std::string& line ){
-    _fun = fun;
-    _fails = 0;
-    _tests = 0;
-    _start_line = lineno;
-    if ( !isDefault() )
-      std::cout << "Serie:\t" << fun << " (" << line << ")" << std::endl;
-  };
+  void start( const std::string& fun, int lineno, const std::string& line );
   void stop( const std::string& fun, int line );
 };
 
@@ -69,21 +63,32 @@ bool testSilent = false;
 #define TEST_SILENT_ON() testSilent = true;
 #define TEST_SILENT_OFF() testSilent = false;
 
+void MyTSerie::start( const std::string& fun, int lineno, const std::string& line ){
+  _fun = fun;
+  _fails = 0;
+  _tests = 0;
+  _series = 0;
+  _start_line = lineno;
+  if ( !isDefault() ){
+    ++currentTestContext._series;
+    std::cout << "Serie:\t" << fun << " (" << line << ")" << std::endl;
+  }
+}
+
 inline void summarize_tests( int expected=0 ){
   summarized = true;
-  std::cout << "TiCC tests performed " << currentTestContext._tests
-	    << " tests, with " << currentTestContext._fails << " failures.";
+  std::cout << "TiCC tests performed " << currentTestContext._series
+	    << " testseries, with a total of " << currentTestContext._tests
+	    << " tests. " << std::endl
+	    << "There were " << currentTestContext._fails << " failures.";
   int diff = currentTestContext._fails - expected;
-  if ( diff > 0 ){
-    std::cout << " We expected " << expected << " failures." << std::endl;
-    std::cout << "overall " << FAIL << std::endl;
-  }
-  else if ( diff < 0 ){
-    std::cout << " This is less than the " << expected << " we expected." << std::endl;
-    std::cout << "overall: " << FAIL << std::endl;
+  if ( diff != 0 ){
+    std::cout << " Unfortunately, we expected " << expected << " failures."
+	      << std::endl;
+    std::cout << "overall result: " << FAIL << std::endl;
   }
   else {
-    std::cout << " that was what we expected." << std::endl;
+    std::cout << " That was what we expected." << std::endl;
     std::cout << "overall: " << OK << std::endl;
   }
   exit_status = diff;

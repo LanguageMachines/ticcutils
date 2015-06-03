@@ -90,7 +90,7 @@ namespace TiCC {
   bool Configuration::fill( const string& fileName ){
     cdir = dirname( fileName ) + "/";
     //  cerr << "dirname= " << cdir << endl;
-    ifstream is( fileName.c_str() );
+    ifstream is( fileName );
     if ( !is ){
       cerr << "unable to read configuration from " << fileName << endl;
       return false;
@@ -136,7 +136,7 @@ namespace TiCC {
   }
 
   bool Configuration::fill( const string& fileName, const string& section ){
-    ifstream is( fileName.c_str() );
+    ifstream is( fileName );
     if ( !is ){
       cerr << "unable to read configuration from " << fileName << endl;
       return false;
@@ -186,14 +186,14 @@ namespace TiCC {
   }
 
   void Configuration::dump( ostream& os ) const {
-    sssMap::const_iterator it1 = myMap.find("global");
+    auto it1 = myMap.find("global");
     if ( it1 == myMap.end() ){
       os << "empty" << endl;
       return;
     }
     os << "[global]" << endl;
     os << "configDir=" << cdir << endl;
-    ssMap::const_iterator it2 = it1->second.begin();
+    auto it2 = it1->second.begin();
     while ( it2 != it1->second.end() ){
       os << it2->first << "=" << it2->second << endl;
       ++it2;
@@ -219,9 +219,9 @@ namespace TiCC {
     string section = sect;
     if ( section.empty() )
       section = "global";
-    sssMap::iterator it1 = myMap.find( section );
+    auto it1 = myMap.find( section );
     if ( it1 != myMap.end() ){
-      ssMap::iterator it2 = it1->second.find( att );
+      auto const& it2 = it1->second.find( att );
       if ( it2 != it1->second.end() ){
 	oldVal = it2->second;
       }
@@ -240,7 +240,7 @@ namespace TiCC {
       return "";
     }
     else {
-      ssMap::const_iterator it2 = it1->second.find( att );
+      auto const& it2 = it1->second.find( att );
       if ( it2 == it1->second.end() ){
 	if ( section.empty() || section == "global" )
 	  return "";
@@ -260,7 +260,7 @@ namespace TiCC {
     else
       it1 = myMap.find( section );
     if ( it1 != myMap.end() ){
-      ssMap::const_iterator it2 = it1->second.begin();
+      auto it2 = it1->second.begin();
       while ( it2 != it1->second.end() ){
 	result[it2->first] = it2->second;
 	++it2;
@@ -272,7 +272,7 @@ namespace TiCC {
   set<string> Configuration::lookUpSections() const {
     set<string> result;
     result.insert("global");
-    sssMap::const_iterator it = myMap.begin();
+    auto it = myMap.begin();
     while ( it != myMap.end() ){
       result.insert( it->first );
       ++it;
@@ -282,8 +282,8 @@ namespace TiCC {
 
   bool Configuration::hasSection( const string& section ) const {
     if ( !section.empty() ){
-      sssMap::const_iterator it1 = myMap.find( section );
-      if ( it1 != myMap.end() )
+      auto const it = myMap.find( section );
+      if ( it != myMap.end() )
 	return true;
     }
     return false;
