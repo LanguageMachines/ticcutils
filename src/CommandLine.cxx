@@ -109,10 +109,8 @@ namespace TiCC {
 
   string CL_Options::toString() const {
     string result;
-    vector<CL_item>::const_iterator pos = Opts.begin();
-    while ( pos != Opts.end() ){
-      result += pos->toString() + " ";
-      ++pos;
+    for( const auto& pos : Opts ){
+      result += pos.toString() + " ";
     }
     return result;
   }
@@ -131,13 +129,12 @@ namespace TiCC {
   }
 
   bool CL_Options::is_present( const char c, string &opt, bool& mood ) const {
-    vector<CL_item>::const_iterator pos;
-    for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
-      if ( pos->isLong() )
+    for ( auto const& pos : Opts ){
+      if ( pos.isLong() )
 	continue;
-      if ( pos->OptChar() == c ){
-	opt = pos->Option();
-	mood = pos->Mood();
+      if ( pos.OptChar() == c ){
+	opt = pos.Option();
+	mood = pos.Mood();
 	if ( debug ){
 	  cerr << "is_present '" << c << "' ==> '" << opt << "'" << endl;
 	}
@@ -151,10 +148,9 @@ namespace TiCC {
   }
 
   bool CL_Options::is_present( const string& w, string &opt ) const {
-    vector<CL_item>::const_iterator pos;
-    for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
-      if ( pos->OptWord() == w ){
-	opt = pos->Option();
+    for ( const auto& pos : Opts ){
+      if ( pos.OptWord() == w ){
+	opt = pos.Option();
 	if ( debug ){
 	  cerr << "is_present '" << w << "' ==> '" << opt << "'" << endl;
 	}
@@ -168,8 +164,7 @@ namespace TiCC {
   }
 
   bool CL_Options::extract( const char c, string &opt, bool& mood ) {
-    vector<CL_item>::iterator pos;
-    for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
+    for ( auto pos = Opts.begin(); pos != Opts.end(); ++pos ){
       if ( !pos->isLong() ){
 	if ( pos->OptChar() == c ){
 	  opt = pos->Option();
@@ -189,8 +184,7 @@ namespace TiCC {
   }
 
   bool CL_Options::extract( const string& w, string &opt ) {
-    vector<CL_item>::iterator pos;
-    for ( pos = Opts.begin(); pos != Opts.end(); ++pos ){
+    for ( auto pos = Opts.begin(); pos != Opts.end(); ++pos ){
       if ( pos->OptWord() == w ){
 	opt = pos->Option();
 	Opts.erase(pos);
@@ -207,8 +201,7 @@ namespace TiCC {
   }
 
   bool CL_Options::remove( const char c, bool all ){
-    vector<CL_item>::iterator pos;
-    for ( pos = Opts.begin(); pos != Opts.end(); ){
+    for ( auto pos = Opts.begin(); pos != Opts.end(); ){
       if ( pos->OptChar() == c ){
 	pos = Opts.erase(pos);
 	if ( !all )
@@ -222,8 +215,7 @@ namespace TiCC {
   }
 
   bool CL_Options::remove( const string& w, bool all ){
-    vector<CL_item>::iterator pos;
-    for ( pos = Opts.begin(); pos != Opts.end(); ){
+    for ( auto pos = Opts.begin(); pos != Opts.end(); ){
       if ( pos->OptWord() == w ){
 	pos = Opts.erase(pos);
 	if ( !all )
@@ -413,7 +405,7 @@ namespace TiCC {
       if ( debug ){
 	cerr << "check ARGUMENTS: " << arguments << endl;
       }
-      vector<arg>::iterator it = arguments.begin();
+      auto it = arguments.begin();
       while ( it != arguments.end() ){
 	if ( it->stat == LONG ){
 	  if ( valid_long.find( it->s ) == valid_long.end() ){
@@ -435,7 +427,7 @@ namespace TiCC {
 	      continue;
 	    }
 	    else {
-	      vector<arg>::iterator it2 = it;
+	      auto it2 = it;
 	      if ( ++it2 != arguments.end() ){
 		if ( it2->stat == UNKNOWN ){
 		  it->val = it2->val;
@@ -493,7 +485,7 @@ namespace TiCC {
 	      if ( debug ){
 		cerr << "search a parameter " << endl;
 	      }
-	      vector<arg>::iterator it2 = it;
+	      auto it2 = it;
 	      if ( ++it2 != arguments.end() ){
 		if ( it2->stat == UNKNOWN ){
 		  it->val = it2->val;
@@ -586,14 +578,12 @@ namespace TiCC {
 
   string CL_Options::get_short_options() const {
     string result;
-    set<char>::const_iterator it = valid_chars.begin();
-    while ( it != valid_chars.end() ){
-      result += *it;
-      if ( valid_chars_par.find( *it ) != valid_chars_par.end() )
+    for ( auto const& it : valid_chars ){
+      result += it;
+      if ( valid_chars_par.find( it ) != valid_chars_par.end() )
 	result += ":";
-      else if ( valid_chars_opt.find( *it ) != valid_chars_opt.end() )
+      else if ( valid_chars_opt.find( it ) != valid_chars_opt.end() )
 	result += "::";
-      ++it;
     }
     return result;
   }
@@ -630,17 +620,16 @@ namespace TiCC {
 
   string CL_Options::get_long_options() const {
     string result;
-    set<string>::const_iterator it = valid_long.begin();
-    while ( it != valid_long.end() ){
-      result += *it;
-      if ( valid_long_par.find( *it ) != valid_long_par.end() )
+    for ( auto const& s : valid_long ){
+      result += s;
+      if ( valid_long_par.find( s ) != valid_long_par.end() )
 	result += ":";
-      else if ( valid_long_opt.find( *it ) != valid_long_opt.end() )
+      else if ( valid_long_opt.find( s ) != valid_long_opt.end() )
 	result += "::";
-      ++it;
-      if ( it != valid_long.end() )
-	result += ",";
+      result += ",";
     }
+    if ( !result.empty() )
+      result = result.substr(0,result.size()-1);
     return result;
   }
 
