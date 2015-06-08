@@ -132,26 +132,22 @@ namespace TiCC {
 #ifdef DEBUG_XPATH
     {
       cerr << m.size() << " namespaces for node " << Name( ctxt->node ) << endl;
-      map<string,string>::const_iterator it = m.begin();
-      while ( it != m.end() ){
-	cerr << it->first << ":" << it->second << endl;
-	++it;
+      for ( auto const& it : m ){
+	cerr << it.first << ":" << it.second << endl;
       }
     }
 #endif
-    map<string,string>::const_iterator it = m.begin();
-    while ( it != m.end() ){
-      if ( it->first.empty() ){
+    for ( auto const& it : m ){
+      if ( it.first.empty() ){
 	xmlXPathRegisterNs( ctxt,
 			    (xmlChar*)defaultP.c_str(),
-			    (xmlChar*)it->second.c_str() );
+			    (xmlChar*)it.second.c_str() );
       }
       else {
 	xmlXPathRegisterNs( ctxt,
-			    (xmlChar*)it->first.c_str(),
-			    (xmlChar*)it->second.c_str() );
+			    (xmlChar*)it.first.c_str(),
+			    (xmlChar*)it.second.c_str() );
       }
-      ++it;
     }
   }
 
@@ -178,16 +174,14 @@ namespace TiCC {
     ctxt->node = node;
     register_namespaces( ctxt );
     list<xmlNode*> nodes = FindLocal( ctxt, xpath );
-    list<xmlNode*>::const_iterator it = nodes.begin();
 #ifdef DEBUG_XPATH
-    if ( it ==  nodes.end() ){
+    if ( nodes.empty() ){
       cerr << "no " << xPath << " nodes found in " << Name(node) << endl;
     }
     else {
       cerr << "Found " << xPath << " nodes found in " << Name(node) << endl;
-      while ( it != nodes.end() ){
-	cerr << "node " << Name(*it) << endl;
-	++it;
+      for ( auto const& it : nodes ){
+	cerr << "node " << Name(it) << endl;
       }
     }
 #endif

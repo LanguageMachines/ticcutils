@@ -231,11 +231,10 @@ namespace TiCC {
   }
 
   string Configuration::lookUp( const string& att, const string& section ) const {
-    sssMap::const_iterator it1;
-    if ( section.empty() )
-      it1 = myMap.find( "global" );
-    else
-      it1 = myMap.find( section );
+    string key = section;
+    if ( key.empty() )
+      key = "global";
+    auto const& it1 = myMap.find( key );
     if ( it1 == myMap.end() ){
       return "";
     }
@@ -254,11 +253,10 @@ namespace TiCC {
 
   map<string,string> Configuration::lookUpAll( const string& section ) const {
     map<string,string> result;
-    sssMap::const_iterator it1;
-    if ( section.empty() )
-      it1 = myMap.find( "global" );
-    else
-      it1 = myMap.find( section );
+    string key = section;
+    if ( key.empty() )
+      key = "global";
+    auto const& it1 = myMap.find( key );
     if ( it1 != myMap.end() ){
       auto it2 = it1->second.begin();
       while ( it2 != it1->second.end() ){
