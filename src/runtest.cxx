@@ -92,9 +92,9 @@ void test_opts_basic(){
   assertEqual( value, "" );
   opts8.is_present( 'f', value, mood );
   assertEqual( value, "6" );
-  CL_Options opts9( "t::qp:" );
+  CL_Options opts9( "t::qp:r:" );
   // -t heeft optionele optie. q is een stoorzender
-  assertNoThrow( opts9.init( "-t 1 -t2 -t3 -q -t -t4 -p5")  );
+  assertNoThrow( opts9.init( "-t 1 -t2 -t3 -q -t -t4 -p5 -r appel ")  );
   vector<string> ts;
   while ( opts9.extract( 't', value, mood ) ){
     ts.push_back( value );
@@ -111,6 +111,7 @@ void test_opts_basic(){
   int myint = -1;
   assertTrue( opts9.extract('p', myint ) );
   assertEqual( myint, 5 );
+  assertThrow( opts9.extract('r', myint ), OptionError );
   CL_Options opts10( "", "test::,qed,data:" );
   //  opts10.set_debug(true);
   // --test heeft optionele optie. qed is een stoorzender

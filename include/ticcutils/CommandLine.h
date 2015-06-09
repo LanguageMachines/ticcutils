@@ -132,7 +132,10 @@ namespace TiCC {
       if ( extract( c, v ) ){
 	if ( TiCC::stringTo( v, val ) )
 	  return true;
-	throw OptionError( "cannot convert " + v + " to desired type" );
+	std::string msg = "wrong type for value of -";
+	msg += c;
+	msg += " " + v;
+	throw OptionError( msg );
       }
       return false;
     }
@@ -149,7 +152,7 @@ namespace TiCC {
       if ( extract( s, v ) ){
 	if ( TiCC::stringTo( v, val ) )
 	  return true;
-	throw OptionError( "cannot convert " + v + " to desired type" );
+	throw OptionError( "wrong type for value of --" + s + "=" + v );
       }
       return false;
     }
