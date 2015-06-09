@@ -92,9 +92,9 @@ void test_opts_basic(){
   assertEqual( value, "" );
   opts8.is_present( 'f', value, mood );
   assertEqual( value, "6" );
-  CL_Options opts9( "t::q" );
+  CL_Options opts9( "t::qp:" );
   // -t heeft optionele optie. q is een stoorzender
-  assertNoThrow( opts9.init( "-t 1 -t2 -t3 -q -t -t4 ")  );
+  assertNoThrow( opts9.init( "-t 1 -t2 -t3 -q -t -t4 -p5")  );
   vector<string> ts;
   while ( opts9.extract( 't', value, mood ) ){
     ts.push_back( value );
@@ -108,10 +108,13 @@ void test_opts_basic(){
   assertTrue( opts9.is_present('q') );
   assertTrue( opts9.extract('q') );
   assertFalse( opts9.extract('q') );
-  CL_Options opts10( "", "test::,qed" );
+  int myint = -1;
+  assertTrue( opts9.extract('p', myint ) );
+  assertEqual( myint, 5 );
+  CL_Options opts10( "", "test::,qed,data:" );
   //  opts10.set_debug(true);
   // --test heeft optionele optie. qed is een stoorzender
-  assertNoThrow( opts10.init( "--test 1 --test=2 --qed --test --test=3 ")  );
+  assertNoThrow( opts10.init( "--test 1 --test=2 --qed --test --test=3 --data=5.6 --data=appel")  );
   ts.clear();
   while ( opts10.extract( "test", value ) ){
     ts.push_back( value );
@@ -124,6 +127,10 @@ void test_opts_basic(){
   assertTrue( opts10.is_present("qed") );
   assertTrue( opts10.extract("qed") );
   assertFalse( opts10.extract("q") );
+  double mydouble;
+  assertTrue( opts10.extract("data", mydouble ) );
+  assertEqual( mydouble, 5.6 );
+  assertThrow( opts10.extract("data", mydouble ), OptionError );
   CL_Options opts11( "", "test:" );
   opts11.init( "--test=test/a arg1" );
   string ex;

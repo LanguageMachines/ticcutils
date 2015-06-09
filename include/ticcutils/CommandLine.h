@@ -33,8 +33,14 @@
 #include <vector>
 #include <iosfwd>
 #include <stdexcept>
+#include <ticcutils/StringOps.h>
 
 namespace TiCC {
+
+  class OptionError: public std::runtime_error {
+  public:
+  OptionError( const std::string& s ): std::runtime_error( "option-error: " + s ){};
+  };
 
   class CL_item {
     friend std::ostream& operator<<( std::ostream&, const CL_item& );
@@ -120,12 +126,32 @@ namespace TiCC {
       std::string v;
       return extract( c, v, b );
     };
+    template <class T>
+      inline bool extract( const char c, T& val ){
+      std::string v;
+      if ( extract( c, v ) ){
+	if ( TiCC::stringTo( v, val ) )
+	  return true;
+	throw OptionError( "cannot convert " + v + " to desired type" );
+      }
+      return false;
+    }
     bool extract( const std::string&, std::string& );
     bool pull( const std::string& w, std::string& s) {
       return extract( w, s ); };
     bool extract( const std::string& s ){
       std::string v;
       return extract( s, v );
+    }
+    template <class T>
+      inline bool extract( const std::string& s, T& val ){
+      std::string v;
+      if ( extract( s, v ) ){
+	if ( TiCC::stringTo( v, val ) )
+	  return true;
+	throw OptionError( "cannot convert " + v + " to desired type" );
+      }
+      return false;
     }
     bool remove( const char, bool = false );
     bool remove( const std::string&, bool = false );
@@ -153,10 +179,6 @@ namespace TiCC {
     bool debug;
   };
 
-  class OptionError: public std::runtime_error {
-  public:
-  OptionError( const std::string& s ): std::runtime_error( "option-error: " + s ){};
-  };
 
 }
 #endif
