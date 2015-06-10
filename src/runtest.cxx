@@ -109,6 +109,9 @@ void test_opts_basic(){
   assertTrue( opts9.extract('q') );
   assertFalse( opts9.extract('q') );
   int myint = -1;
+  assertTrue( opts9.is_present('p', myint ) );
+  assertEqual( myint, 5 );
+  myint = -1;
   assertTrue( opts9.extract('p', myint ) );
   assertEqual( myint, 5 );
   assertThrow( opts9.extract('r', myint ), OptionError );
@@ -128,7 +131,10 @@ void test_opts_basic(){
   assertTrue( opts10.is_present("qed") );
   assertTrue( opts10.extract("qed") );
   assertFalse( opts10.extract("q") );
-  double mydouble;
+  double mydouble = -3.14;
+  assertTrue( opts10.is_present("data", mydouble ) );
+  assertEqual( mydouble, 5.6 );
+  mydouble = -3.14;
   assertTrue( opts10.extract("data", mydouble ) );
   assertEqual( mydouble, 5.6 );
   assertThrow( opts10.extract("data", mydouble ), OptionError );

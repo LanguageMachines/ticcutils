@@ -93,43 +93,22 @@ namespace TiCC {
     std::string prog_name() const { return _prog_name; };
     std::string get_short_options() const;
     std::string get_long_options() const;
-    bool is_present( const char, std::string&, bool& ) const;
     bool find( const char c, std::string& s, bool& b ) const {
-      return is_present( c, s, b );
+      return is_present_internal( c, s, b );
     }
-    bool is_present( const char c, std::string& s ) const {
-      bool b;
-      return is_present( c, s, b );
+    bool is_present( const char c, std::string& v, bool& b ) const {
+      return is_present_internal( c, v, b );
     }
     bool is_present( const char c ) const {
       bool b;
       std::string v;
-      return is_present( c, v, b );
+      return is_present_internal( c, v, b );
     }
-    bool is_present( const std::string&, std::string& ) const;
-    bool find( const std::string& w, std::string& s ) const {
-      return is_present( w, s );
-    }
-    bool is_present( const std::string& s ) const {
-      std::string v;
-      return is_present( s, v );
-    }
-    bool extract( const char, std::string&, bool& );
-    bool pull( const char c, std::string& s, bool& b){
-      return extract( c, s, b ); };
-    bool extract( const char c, std::string& s ){
-      bool b;
-      return extract( c, s, b );
-    };
-    bool extract( const char c ){
-      bool b;
-      std::string v;
-      return extract( c, v, b );
-    };
     template <class T>
-      inline bool extract( const char c, T& val ){
+      inline bool is_present( const char c, T& val ) const {
       std::string v;
-      if ( extract( c, v ) ){
+      bool b;
+      if ( is_present_internal( c, v, b ) ){
 	if ( TiCC::stringTo( v, val ) )
 	  return true;
 	std::string msg = "wrong type for value of -";
@@ -139,23 +118,70 @@ namespace TiCC {
       }
       return false;
     }
-    bool extract( const std::string&, std::string& );
-    bool pull( const std::string& w, std::string& s) {
-      return extract( w, s ); };
-    bool extract( const std::string& s ){
+
+    bool find( const std::string& w, std::string& s ) const {
+      return is_present_internal( w, s );
+    }
+    bool is_present( const std::string& s ) const {
       std::string v;
-      return extract( s, v );
+      return is_present_internal( s, v );
     }
     template <class T>
-      inline bool extract( const std::string& s, T& val ){
+      inline bool is_present( const std::string& s, T& val ) const {
       std::string v;
-      if ( extract( s, v ) ){
+      if ( is_present_internal( s, v ) ){
 	if ( TiCC::stringTo( v, val ) )
 	  return true;
 	throw OptionError( "wrong type for value of --" + s + "=" + v );
       }
       return false;
     }
+    bool extract( const char c, std::string& v, bool& b){
+      return extract_internal( c, v, b);
+    }
+    bool pull( const char c, std::string& s, bool& b){
+      return extract_internal( c, s, b ); };
+    bool extract( const char c, std::string& s ){
+      bool b;
+      return extract_internal( c, s, b );
+    };
+    bool extract( const char c ){
+      bool b;
+      std::string v;
+      return extract_internal( c, v, b );
+    };
+    template <class T>
+      inline bool extract( const char c, T& val ){
+      std::string v;
+      bool b;
+      if ( extract_internal( c, v, b ) ){
+	if ( TiCC::stringTo( v, val ) )
+	  return true;
+	std::string msg = "wrong type for value of -";
+	msg += c;
+	msg += " " + v;
+	throw OptionError( msg );
+      }
+      return false;
+    }
+
+    bool pull( const std::string& w, std::string& s) {
+      return extract_internal( w, s ); };
+    bool extract( const std::string& s ){
+      std::string v;
+      return extract_internal( s, v );
+    }
+    template <class T>
+      inline bool extract( const std::string& s, T& val ){
+      std::string v;
+      if ( extract_internal( s, v ) ){
+	if ( TiCC::stringTo( v, val ) )
+	  return true;
+	throw OptionError( "wrong type for value of --" + s + "=" + v );
+      }
+      return false;
+    }
+
     bool remove( const char, bool = false );
     bool remove( const std::string&, bool = false );
     void insert( const char, const std::string&, bool );
@@ -167,6 +193,10 @@ namespace TiCC {
     const std::vector<std::string>& getMassOpts() const { return MassOpts; };
   private:
     bool Parse_Command_Line( const int, const char * const * );
+    bool is_present_internal( const char, std::string&, bool& ) const;
+    bool is_present_internal( const std::string&, std::string& ) const;
+    bool extract_internal( const char, std::string&, bool& );
+    bool extract_internal( const std::string&, std::string& );
     std::vector<CL_item> Opts;
     std::vector<std::string> MassOpts;
     CL_Options( const CL_Options& );
@@ -182,6 +212,27 @@ namespace TiCC {
     bool debug;
   };
 
+  template <>
+    inline bool CL_Options::is_present( const char c, std::string& s ) const {
+    bool b;
+    return is_present_internal( c, s, b );
+  }
+
+  template <>
+    inline bool CL_Options::is_present( const std::string& s, std::string& v ) const {
+    return is_present_internal( s, v );
+  }
+
+  template <>
+    inline bool CL_Options::extract( const char c, std::string& v ){
+    bool b;
+    return extract_internal( c, v, b );
+  }
+
+  template <>
+    inline bool CL_Options::extract( const std::string& s, std::string& v ){
+    return extract_internal( s, v );
+  }
 
 }
 #endif
