@@ -31,6 +31,7 @@
 #define TICC_UNITTEST_H
 
 #include <cstdlib>
+#include <type_traits>
 
 const std::string OK = "\033[1;32m OK  \033[0m";
 const std::string FAIL = "\033[1;31m  FAILED  \033[0m";
@@ -198,7 +199,9 @@ template <typename T1, typename T2>
   if ( !testSilent && T.isDefault() )
     std::cout << "test: " << F << "(" << L << "): ";
   ++T._tests;
-  if ( s1 != s2 ){
+  typename std::common_type<T1,T2>::type s11 = s1;
+  typename std::common_type<T1,T2>::type s22 = s2;
+  if ( s11 != s22 ){
     ++T._fails;
     if ( T.isDefault() )
       std::cout << FAIL << std::endl;
