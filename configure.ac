@@ -29,6 +29,15 @@ LT_INIT
 # when running tests, use CXX
 AC_LANG([C++])
 
+# check OpenMP support
+AC_OPENMP
+if test "x$ac_cv_prog_cxx_openmp" != "xunsupported"; then
+   CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
+   AC_DEFINE(HAVE_OPENMP, 1 , Define to 1 if you have OpenMP )
+else
+   AC_MSG_NOTICE(We don't have OpenMP. Multithreaded operation is disabled)
+fi
+
 #checks for libraries.
 
 # Checks for header files.
@@ -75,14 +84,6 @@ PKG_PROG_PKG_CONFIG
 PKG_CHECK_MODULES([XML2], [libxml-2.0 >= 2.6.16] )
 CXXFLAGS="$CXXFLAGS $XML2_CFLAGS"
 LIBS="$LIBS $XML2_LIBS"
-
-AC_OPENMP
-if test "x$ac_cv_prog_cxx_openmp" != "xunsupported"; then
-   CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
-   AC_DEFINE(HAVE_OPENMP, 1 , Define to 1 if you have OpenMP )
-else
-   AC_MSG_NOTICE(We don't have OpenMP. Multithreaded operation is disabled)
-fi
 
 AC_CONFIG_FILES([
   Makefile
