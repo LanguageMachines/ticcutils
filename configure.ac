@@ -21,7 +21,7 @@ if $cxx_flags_were_set; then
 fi
 
 # Checks for programs.
-AC_PROG_CXX([g++ c++] )
+AC_PROG_CXX([g++] )
 AC_PROG_LIBTOOL
 LT_INIT
 
@@ -76,11 +76,13 @@ PKG_CHECK_MODULES([XML2], [libxml-2.0 >= 2.6.16] )
 CXXFLAGS="$CXXFLAGS $XML2_CFLAGS"
 LIBS="$LIBS $XML2_LIBS"
 
-OPENMP_CHECK( [CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
-	       AC_DEFINE(HAVE_OPENMP, 1 , Define to 1 if you have OpenMP )],
-	      [AC_MSG_NOTICE(We don't have OpenMP. Multithreaded testing is disabled)] )
-
-AC_SUBST([OPENMPFLAGS],[$OPENMP_CXXFLAGS])
+AC_OPENMP
+if test "x$ac_cv_prog_cxx_openmp" != "xunsupported"; then
+   CXXFLAGS="$CXXFLAGS $OPENMP_CXXFLAGS"
+   AC_DEFINE(HAVE_OPENMP, 1 , Define to 1 if you have OpenMP )
+else
+   AC_MSG_NOTICE(We don't have OpenMP. Multithreaded operation is disabled)
+fi
 
 AC_CONFIG_FILES([
   Makefile
