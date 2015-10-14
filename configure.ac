@@ -4,7 +4,7 @@
 # $URL $
 
 AC_PREREQ(2.61)
-AC_INIT([ticcutils],[0.8],[timbl@uvt.nl])
+AC_INIT([ticcutils],[0.9],[timbl@uvt.nl])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([.])
 AC_CONFIG_MACRO_DIR([m4])
@@ -41,7 +41,7 @@ fi
 #checks for libraries.
 
 # Checks for header files.
-AC_CHECK_HEADERS([sys/time.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h sys/socket.h unistd.h sys/time.h])
 
 AC_CHECK_HEADERS([bzlib.h],
 		[LIBS="$LIBS -lbz2"],
@@ -55,11 +55,15 @@ AC_CHECK_HEADERS([libtar.h],
 AC_C_INLINE
 AC_HEADER_STDBOOL
 AC_TYPE_SIZE_T
+AC_TYPE_SSIZE_T
 AC_TYPE_PID_T
+AX_LIB_SOCKET_NSL
+AX_TYPE_SOCKLEN_T
 
 # Checks for library functions.
-AC_CHECK_FUNCS([localtime_r gettimeofday memset strerror mkdir])
+AC_CHECK_FUNCS([localtime_r gettimeofday mkdir getaddrinfo gethostbyaddr gethostbyname inet_ntoa memset socket strerror dup2 memmove ])
 AC_FUNC_MALLOC
+AC_FUNC_FORK
 
 ACX_PTHREAD([],[AC_MSG_ERROR([We need pthread support!])])
 
