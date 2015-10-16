@@ -34,6 +34,7 @@
 #include "ticcutils/Configuration.h"
 #include "ticcutils/CommandLine.h"
 #include "ticcutils/SocketBasics.h"
+#include "ticcutils/FdStream.h"
 
 namespace TimblServer {
 
@@ -75,8 +76,8 @@ namespace TimblServer {
     childArgs( ServerBase *, Sockets::ServerSocket * );
     ~childArgs();
     int id() const { return _id; };
-    fdostream& os() { return _os; };
-    fdistream& is() { return _is; };
+    std::ostream& os() { return _os; };
+    std::istream& is() { return _is; };
     ServerBase *mother() const { return _mother; };
     TiCC::LogStream& logstream() { return _mother->myLog; }
     Sockets::ServerSocket *socket() const { return _socket; };
