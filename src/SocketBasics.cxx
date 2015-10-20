@@ -39,8 +39,8 @@
 #include <fcntl.h>
 
 #include "config.h"
-#include "ticcutils/SocketBasics.h"
 #include "ticcutils/StringOps.h"
+#include "ticcutils/SocketBasics.h"
 
 using namespace std;
 
@@ -435,7 +435,7 @@ namespace Sockets {
   }
 
   bool ClientSocket::connect( const string& host, const string& portNum ){
-    int port = stringTo<int>(portNum );
+    int port = TiCC::stringTo<int>(portNum );
     if (port == -1) {
       mess = "ClientSocket connect: invalid port number";
       return false;
@@ -488,7 +488,7 @@ namespace Sockets {
       memset((char *) &serv_addr, 0, sizeof(serv_addr));
       serv_addr.sin_family = AF_INET;
       serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-      int TCP_PORT = stringTo<int>(port);
+      int TCP_PORT = TiCC::stringTo<int>(port);
       serv_addr.sin_port = htons(TCP_PORT);
       if ( bind( sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr) ) < 0 ){
 	mess = string( "ServerSocket connect: bind failed (" )
