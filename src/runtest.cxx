@@ -367,7 +367,7 @@ void test_tar( const string& path ){
   assertEqual( name, "sub1/sub.txt" );
   assertNoThrow( mytar.extract_ifstream( "sub1/sub.txt", tmp ) );
   string line;
-  assertTrue( getline( tmp, line ) );
+  assertTrue( getline( tmp, line ).good() );
   assertEqual( line, "a testfile." );
   assertNoThrow( mytar.extract_file_names( res, ".xml" ) );
   assertEqual( res.size(), 1 );
