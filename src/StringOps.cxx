@@ -155,20 +155,16 @@ namespace TiCC {
     // silently skip empty entries (e.g. when two or more seperators co-incide)
     // unless exact=true;
     results.clear();
-    cerr << "split_at_first_of(" << seps << "," << src << endl;
     string::size_type s = 0;
     while ( s != string::npos ){
       string res;
       string::size_type e = src.find_first_of( seps, s );
-      cerr << "next sep found at: " << e << endl;
       if ( e == string::npos ){
 	res = src.substr( s );
-	cerr << "AT END: res=" << res << endl;
 	s = e;
       }
       else {
 	res = src.substr( s, e - s );
-	cerr << "next res=" << res << endl;
 	s = e+1;
       }
       if ( !res.empty() || exact ){
