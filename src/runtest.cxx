@@ -33,13 +33,13 @@ void test_nothrow(){
 
 void test_opts_basic(){
   startTestSerie( "we testen basic commandline opties." );
-  CL_Options opts1( "t:f" );
+  CL_Options opts1( "t:fh" );
   // -t mist een optie
-  assertThrow( opts1.init( "-t -f"), OptionError );
+  assertThrow( opts1.init( "-t -f -h" ), OptionError );
   // onbekende optie
-  assertThrow( opts1.init( "-a"), OptionError );
+  assertThrow( opts1.init( "-a" ), OptionError );
   // -f heeft optie --> massOpts.
-  assertNoThrow( opts1.init( "-t1 -f bla") );
+  assertNoThrow( opts1.init( "-t1 -f bla -h") );
   CL_Options opts2( "", "true:,false" );
   // --true mist een optie
   assertThrow( opts2.init( "--true --false"), OptionError );
@@ -143,6 +143,16 @@ void test_opts_basic(){
   string ex;
   opts11.extract( "test", ex );
   assertEqual( ex, "test/a" );
+  CL_Options opts12( "a:", "a:" );
+  opts12.init( "-a 1 a --a=2 aa" );
+  opts12.extract( 'a', ex );
+  assertEqual( ex, "1" );
+  opts12.extract( "a", ex );
+  assertEqual( ex, "2" );
+  vector<string> mo = opts12.getMassOpts();
+  assertEqual( mo.size(), 2 );
+  assertNoThrow( mo[0] == "a" );
+  assertNoThrow( mo[0] == "aa" );
 }
 
 void test_opts( CL_Options& opts ){

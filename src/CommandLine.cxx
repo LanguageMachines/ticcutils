@@ -129,6 +129,7 @@ namespace TiCC {
   }
 
   bool CL_Options::is_present_internal( const char c, string &opt, bool& mood ) const {
+    mood = false;
     for ( auto const& pos : Opts ){
       if ( pos.isLong() )
 	continue;
@@ -164,6 +165,7 @@ namespace TiCC {
   }
 
   bool CL_Options::extract_internal( const char c, string &opt, bool& mood ) {
+    mood = false;
     for ( auto pos = Opts.begin(); pos != Opts.end(); ++pos ){
       if ( !pos->isLong() ){
 	if ( pos->OptChar() == c ){
@@ -238,7 +240,7 @@ namespace TiCC {
     Opts.push_back( cl );
   }
 
-  enum argstat { PLUS, MIN, LONG, UNKNOWN };
+  enum argstat { PLUS, MIN, LONG, MASS, UNKNOWN };
   struct arg {
     arg(): stat(UNKNOWN),c(0){};
     argstat stat;
@@ -253,6 +255,9 @@ namespace TiCC {
       os << "?";
       os << a.s;
       os << "=" << a.val;
+      break;
+    case MASS:
+      os << a.val;
       break;
     case PLUS:
       os << "+";
@@ -334,10 +339,6 @@ namespace TiCC {
       case '=':
 	throw OptionError( "stray '='. (maybe it belongs to an long option?)" );
       default:
-	Option = "?" + Option;
-	if ( Option.size() <= 2 ){
-	  Option += local_argv[++i];
-	}
 	cleaned.push_back( Option );
       }
     }
@@ -388,13 +389,13 @@ namespace TiCC {
 	  arguments.push_back(argument);
 	}
 	break;
-      case '?':
-	argument.stat = UNKNOWN;
-	argument.val = Option.substr(1);
-	arguments.push_back(argument);
-	break;
       default:
-	//
+	argument.stat = MASS;
+	if ( debug ){
+	  cerr << "OPTION=" << Option << endl;
+	}
+	argument.val = Option;
+	arguments.push_back(argument);
 	break;
       }
     }
@@ -415,36 +416,45 @@ namespace TiCC {
 	  bool has_opt = valid_long_opt.find( it->s ) != valid_long_opt.end();
 	  if ( debug ){
 	    if ( has_par )
-	      cerr << it->s << " must have a parameter." << endl;
+	      cerr << "\"" << it->s << "\" must have a parameter." << endl;
 	    else if ( has_opt )
-	      cerr << it->s << " may have a parameter!" << endl;
+	      cerr << "\"" << it->s << "\" may have a parameter!" << endl;
 	    else
-	      cerr << it->s << " does'n take a parameter." << endl;
+	      cerr << "\"" << it->s << "\" doesn't take a parameter." << endl;
 	  }
 	  if ( it->val.empty() ){
 	    if ( !has_par ){
+	      if ( debug ){
+		cerr << "no parameter: OK" << endl;
+	      }
 	      ++it;
 	      continue;
 	    }
 	    else {
+	      if ( debug ){
+		cerr << "search a parameter: ";
+	      }
 	      auto it2 = it;
 	      if ( ++it2 != arguments.end() ){
-		if ( it2->stat == UNKNOWN ){
-		  it->val = it2->val;
-		  arguments.erase(it2);
-		  ++it;
-		  continue;
-		}
-		else if ( !has_opt ){
+		if ( !has_opt ){
+		  if ( debug ){
+		    cerr << " FAILED " << endl;
+		  }
 		  throw OptionError( "missing value for long option: '"
 				     + it->s + "'" );
 		}
 		else {
+		  if ( debug ){
+		    cerr << "OK: " << it->val << endl;
+		  }
 		  ++it;
 		  continue;
 		}
 	      }
 	      else if ( !has_opt ){
+		if ( debug ){
+		  cerr << " OHO FAILED " << endl;
+		}
 		throw OptionError( "missing value for long option: '"
 				   + it->s + "'" );
 		++it;
@@ -453,6 +463,9 @@ namespace TiCC {
 	    }
 	  }
 	  else if ( has_par || has_opt){
+	    if ( debug ){
+	      cerr << "found a parameter: " <<  it->val << endl;
+	    }
 	    ++it;
 	    continue;
 	  }
@@ -470,39 +483,45 @@ namespace TiCC {
 	  bool has_opt = valid_chars_opt.find( it->c ) != valid_chars_opt.end();
 	  if ( debug ){
 	    if ( has_par )
-	      cerr << it->c << " must have a parameter." << endl;
+	      cerr << "'" << it->c << "' must have a parameter." << endl;
 	    else if ( has_opt )
-	      cerr << it->c << " may have a parameter." << endl;
+	      cerr << "'" << it->c << "' may have a parameter." << endl;
 	    else
-	      cerr << it->c << " does't take a parameter." << endl;
+	      cerr << "'" << it->c << "' doesn't take a parameter." << endl;
 	  }
 	  if ( it->val.empty() ){
 	    if ( !has_par ){
+	      if ( debug ){
+		cerr << "no parameter: OK" << endl;
+	      }
 	      ++it;
 	      continue;
 	    }
 	    else {
 	      if ( debug ){
-		cerr << "search a parameter " << endl;
+		cerr << "search a parameter: ";
 	      }
 	      auto it2 = it;
 	      if ( ++it2 != arguments.end() ){
-		if ( it2->stat == UNKNOWN ){
-		  it->val = it2->val;
-		  arguments.erase(it2);
-		  ++it;
-		  continue;
-		}
-		else if ( !has_opt ){
+		if ( !has_opt ){
+		  if ( debug ){
+		    cerr << " FAILED " << endl;
+		  }
 		  throw OptionError( string("missing value for option '")
 				     + it->c + "'" );
 		}
 		else {
+		  if ( debug ){
+		    cerr << "OK: " << it->val << endl;
+		  }
 		  ++it;
 		  continue;
 		}
 	      }
 	      else if ( !has_opt ){
+		if ( debug ){
+		  cerr << " AHA FAILED " << endl;
+		}
 		throw OptionError( string("missing value for option ''")
 				   + it->c + "'" );
 	      }
@@ -513,6 +532,9 @@ namespace TiCC {
 	    }
 	  }
 	  else if ( has_par || has_opt ){
+	    if ( debug ){
+	      cerr << "found a parameter: " <<  it->val << endl;
+	    }
 	    ++it;
 	    continue;
 	  }
@@ -522,7 +544,7 @@ namespace TiCC {
 	    ++it;
 	  }
 	}
-	else if ( it->stat == UNKNOWN ){
+	else if ( it->stat == MASS ){
 	  MassOpts.push_back( it->val );
 	  it = arguments.erase(it);
 	}
