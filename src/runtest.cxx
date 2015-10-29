@@ -151,8 +151,8 @@ void test_opts_basic(){
   assertEqual( ex, "2" );
   vector<string> mo = opts12.getMassOpts();
   assertEqual( mo.size(), 2 );
-  assertNoThrow( mo[0] == "a" );
-  assertNoThrow( mo[0] == "aa" );
+  assertEqual( mo[0], "a" );
+  assertEqual( mo[1], "aa" );
 }
 
 void test_opts( CL_Options& opts ){
