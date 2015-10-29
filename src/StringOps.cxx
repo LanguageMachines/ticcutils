@@ -125,14 +125,15 @@ namespace TiCC {
   }
 
   size_t split_at( const string& src, vector<string>& results,
-		   const string& sep ){
-    // split a string into substrings, using seps as seperator
-    // silently skip empty entries (e.g. when two or more seperators co-incide)
+		   const string& sep, bool exact ){
+    // split a string into substrings, using seps as separator
+    // silently skip empty entries (e.g. when two or more separators co-incide)
+    // unless exact=true;
     results.clear();
-    string::size_type pos = 0, p;
-    string res;
+    string::size_type pos = 0;
     while ( pos != string::npos ){
-      p = src.find( sep, pos );
+      string res;
+      string::size_type p = src.find( sep, pos );
       if ( p == string::npos ){
 	res = src.substr( pos );
 	pos = p;
@@ -141,32 +142,38 @@ namespace TiCC {
 	res = src.substr( pos, p - pos );
 	pos = p + sep.length();
       }
-      if ( !res.empty() )
+      if ( !res.empty() || exact )
 	results.push_back( res );
     }
     return results.size();
   }
 
   size_t split_at_first_of( const string& src, vector<string>& results,
-			    const string& seps ){
+			    const string& seps, bool exact ){
     // split a string into substrings, using the characters in seps
     // as seperators
     // silently skip empty entries (e.g. when two or more seperators co-incide)
+    // unless exact=true;
     results.clear();
-    string::size_type e, s = src.find_first_not_of( seps );
-    string res;
+    cerr << "split_at_first_of(" << seps << "," << src << endl;
+    string::size_type s = 0;
     while ( s != string::npos ){
-      e = src.find_first_of( seps, s );
+      string res;
+      string::size_type e = src.find_first_of( seps, s );
+      cerr << "next sep found at: " << e << endl;
       if ( e == string::npos ){
 	res = src.substr( s );
+	cerr << "AT END: res=" << res << endl;
 	s = e;
       }
       else {
 	res = src.substr( s, e - s );
-	s = src.find_first_not_of( seps, e );
+	cerr << "next res=" << res << endl;
+	s = e+1;
       }
-      if ( !res.empty() )
+      if ( !res.empty() || exact ){
 	results.push_back( res );
+      }
     }
     return results.size();
   }

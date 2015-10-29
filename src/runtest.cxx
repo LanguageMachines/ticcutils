@@ -242,6 +242,24 @@ void test_split(){
   assertEqual( res[5], "van" );
 }
 
+void test_split_exact(){
+  string line = "1 2  4    8  10";
+  vector<string> res;
+  int cnt = split( line, res, true );
+  //  cerr << "after split: " << res << endl;
+  assertEqual( cnt, 10 );
+  assertEqual( res[5], "" );
+}
+
+void test_split_at_exact(){
+  string line = "1/2//4////8//10";
+  vector<string> res;
+  int cnt = split_at( line, res, "/", true );
+  //  cerr << "after split: " << res << endl;
+  assertEqual( cnt, 10 );
+  assertEqual( res[5], "" );
+}
+
 void test_split_at(){
   string line = "Derarekatrarekrabtrarederarekrullen\nrarevanrarederaretrap.";
   vector<string> res;
@@ -258,6 +276,16 @@ void test_split_at_first(){
   assertEqual( cnt, 8 );
   //  cerr << "after split: " << res << endl;
   assertEqual( res[5], "van" );
+}
+
+void test_split_at_first_exact(){
+  string line = "De.kat,krabt:de;krullen?van.,;.;de!trap.";
+  vector<string> res;
+  int cnt = split_at_first_of( line, res, ".,?!:;", true );
+  assertEqual( cnt, 13 );
+  //  cerr << "after split: " << res << endl;
+  assertEqual( res[5], "van" );
+  assertEqual( res[9], "" );
 }
 
 void test_to_upper(){
@@ -427,8 +455,11 @@ int main( const int argc, const char* argv[] ){
   test_match_back();
   test_format_non_ascii();
   test_split();
+  test_split_exact();
   test_split_at();
+  test_split_at_exact();
   test_split_at_first();
+  test_split_at_first_exact();
   test_to_upper();
   test_to_lower();
   test_uppercase();
