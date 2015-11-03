@@ -155,6 +155,12 @@ void test_opts_basic(){
   assertEqual( mo.size(), 2 );
   assertEqual( mo[0], "a" );
   assertEqual( mo[1], "aa" );
+  CL_Options opts13;
+  opts13.set_debug(true);
+  opts13.init( "-a b -a c oke -dfiets --appel peer --fout=goed toch" );
+  assertEqual( opts13.toString(), "-ab -ac -dfiets --appel=peer --fout=goed" );
+  auto v = opts13.getMassOpts();
+  assertEqual( v.size(), 2 );
 }
 
 void test_opts( CL_Options& opts ){
@@ -438,7 +444,6 @@ int main( const int argc, const char* argv[] ){
   CL_Options opts1;
   opts1.set_short_options( "t:qf:d:" );
   opts1.set_long_options( "test:,raar" );
-  opts1.set_debug(true);
   opts1.init( argc, argv );
   test_opts( opts1 );
   CL_Options opts2( "t:qf:d:", "test:,raar" );

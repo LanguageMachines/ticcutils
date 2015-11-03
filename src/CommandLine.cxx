@@ -112,6 +112,8 @@ namespace TiCC {
     for( const auto& pos : Opts ){
       result += pos.toString() + " ";
     }
+    if ( !result.empty() )
+      result.erase(result.length()-1);
     return result;
   }
 
@@ -400,11 +402,15 @@ namespace TiCC {
       }
     }
 
+    if ( debug ){
+      cerr << "ARGUMENTS list: " << arguments << endl;
+    }
+
     // are there some options to check?
     bool doCheck = !valid_long.empty() || !valid_chars.empty();
     if ( doCheck ){
       if ( debug ){
-	cerr << "check ARGUMENTS: " << arguments << endl;
+	cerr << "we must check those " << endl;
       }
       auto it = arguments.begin();
       while ( it != arguments.end() ){
@@ -584,23 +590,21 @@ namespace TiCC {
 	  }
 	}
       }
-      if ( debug ){
-	cerr << "arguments after check: " << arguments << endl;
+    }
+    if ( debug ){
+      cerr << "arguments after check: " << arguments << endl;
+    }
+    for ( const auto& it : arguments ){
+      if ( it.stat == LONG ){
+	CL_item cl( it.s, it.val );
+	Opts.push_back( cl );
       }
-      it = arguments.begin();
-      while ( it != arguments.end() ){
-	if ( it->stat == LONG ){
-	  CL_item cl( it->s, it->val );
-	  Opts.push_back( cl );
-	}
-	else if ( it->stat == PLUS || it->stat == MIN ){
-	  CL_item cl( it->c, it->val, (it->stat == PLUS) );
-	  Opts.push_back( cl );
-	}
-	else {
-	  MassOpts.push_back( it->val );
-	}
-	++it;
+      else if ( it.stat == PLUS || it.stat == MIN ){
+	CL_item cl( it.c, it.val, (it.stat == PLUS) );
+	Opts.push_back( cl );
+      }
+      else {
+	MassOpts.push_back( it.val );
       }
     }
     if ( debug ){
