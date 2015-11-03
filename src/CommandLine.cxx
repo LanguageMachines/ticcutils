@@ -257,7 +257,7 @@ namespace TiCC {
       os << "=" << a.val;
       break;
     case MASS:
-      os << a.val;
+      os << "mass:" + a.val;
       break;
     case PLUS:
       os << "+";
@@ -408,6 +408,9 @@ namespace TiCC {
       }
       auto it = arguments.begin();
       while ( it != arguments.end() ){
+	if ( debug ){
+	  cerr << "ARGUMENT: " << *it << endl;
+	}
 	if ( it->stat == LONG ){
 	  if ( valid_long.find( it->s ) == valid_long.end() ){
 	    throw OptionError( "invalid option '" + it->s + "'" );
@@ -470,8 +473,19 @@ namespace TiCC {
 	    continue;
 	  }
 	  else {
-	    MassOpts.push_back( it->val );
-	    it->val.clear();
+	    auto next = it+1;
+	    while ( next != arguments.end() && next->stat == MASS ){
+	      ++next;
+	    }
+	    if ( next != arguments.end() ){
+	      throw OptionError( string("option '") + it->s
+				 + "' may not have a value. (found "
+				 + it->val + ")" );
+	    }
+	    else {
+	      MassOpts.push_back( it->val );
+	      it->val.clear();
+	    }
 	    ++it;
 	  }
 	}
@@ -539,14 +553,35 @@ namespace TiCC {
 	    continue;
 	  }
 	  else {
-	    MassOpts.push_back( it->val );
-	    it->val.clear();
+	    auto next = it+1;
+	    while ( next != arguments.end() && next->stat == MASS ){
+	      ++next;
+	    }
+	    if ( next != arguments.end() ){
+	      throw OptionError( string("option '") + it->c
+				 + "' may not have a value. (found "
+				 + it->val + ")" );
+	    }
+	    else {
+	      MassOpts.push_back( it->val );
+	      it->val.clear();
+	    }
 	    ++it;
 	  }
 	}
 	else if ( it->stat == MASS ){
-	  MassOpts.push_back( it->val );
-	  it = arguments.erase(it);
+	  auto next = it+1;
+	  while ( next != arguments.end() && next->stat == MASS ){
+	    ++next;
+	  }
+	  if ( next != arguments.end() ){
+	    throw OptionError( "spurious value: '" + it->val +
+			       "' in options" );
+	  }
+	  else {
+	    MassOpts.push_back( it->val );
+	    it = arguments.erase(it);
+	  }
 	}
       }
       if ( debug ){

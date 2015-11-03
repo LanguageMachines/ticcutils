@@ -1,2 +1,2 @@
 #! /bin/sh
-./runtest -ffalse +t true --test=test --raar blaat -d $topsrcdir/tests/ arg1 -q arg2
+./runtest -ffalse +t true --test=test -d $topsrcdir/tests/  -q --raar blaat arg1 arg2

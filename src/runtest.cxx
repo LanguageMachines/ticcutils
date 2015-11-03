@@ -38,8 +38,10 @@ void test_opts_basic(){
   assertThrow( opts1.init( "-t -f -h" ), OptionError );
   // onbekende optie
   assertThrow( opts1.init( "-a" ), OptionError );
-  // -f heeft optie --> massOpts.
-  assertNoThrow( opts1.init( "-t1 -f bla -h") );
+  // -f heeft onterecht een parameter
+  assertThrow( opts1.init( "-t1 -f bla -h"), OptionError );
+  // parameters aan einde ==> massopts.
+  assertNoThrow( opts1.init( "-t1 -f -h bla") );
   CL_Options opts2( "", "true:,false" );
   // --true mist een optie
   assertThrow( opts2.init( "--true --false"), OptionError );
@@ -144,7 +146,7 @@ void test_opts_basic(){
   opts11.extract( "test", ex );
   assertEqual( ex, "test/a" );
   CL_Options opts12( "a:", "a:" );
-  opts12.init( "-a 1 a --a=2 aa" );
+  opts12.init( "-a 1 --a=2 a aa" );
   opts12.extract( 'a', ex );
   assertEqual( ex, "1" );
   opts12.extract( "a", ex );
@@ -436,14 +438,12 @@ int main( const int argc, const char* argv[] ){
   CL_Options opts1;
   opts1.set_short_options( "t:qf:d:" );
   opts1.set_long_options( "test:,raar" );
+  opts1.set_debug(true);
   opts1.init( argc, argv );
   test_opts( opts1 );
   CL_Options opts2( "t:qf:d:", "test:,raar" );
-  opts2.init( "-ffalse +t true --test=test --raar  blaat -d iets arg1 -q arg2" );
+  opts2.init( "-ffalse +t true --test=test -d iets -q --raar blaat arg1 arg2" );
   test_opts( opts2 );
-  CL_Options opts3( "t:qf:d:", "test:,raar" );
-  opts3.init( "-ffalse +t true --test=test --raar  blaat -d iets arg1 -q arg2" );
-  test_opts( opts3 );
   test_subtests_fail();
   test_subtests_ok();
   test_throw();
