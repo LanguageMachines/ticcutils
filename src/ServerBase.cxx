@@ -46,6 +46,10 @@ using namespace TiCC;
 
 namespace TimblServer {
 
+  const string serv_short_opts = "hVS:f:i:u:";
+  const string serv_long_opts =
+    ",pidfile:,logfile:,daemonize::,debug:,config:,matrixin:";
+
   string Version() { return VERSION; }
   string VersionName() { return PACKAGE_STRING; }
 

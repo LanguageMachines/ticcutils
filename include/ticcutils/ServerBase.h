@@ -38,6 +38,9 @@
 
 namespace TimblServer {
 
+  extern const std::string serv_short_opts;
+  extern const std::string serv_long_opts;
+
   class childArgs;
 
   class ServerBase {
