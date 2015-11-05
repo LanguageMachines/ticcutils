@@ -42,37 +42,35 @@ using namespace std;
 
 namespace TiCC {
 
-  CL_Options::CL_Options( const string& short_o, const string& long_o ){
-    is_init  = false;
-    debug = false;
-    set_short_options( short_o );
-    set_long_options( long_o );
+  CL_Options::CL_Options( const string& valid_s, const string& valid_l ):
+    is_init(false),
+    debug(false){
+    allow_args( valid_s, valid_l );
   }
 
-  CL_Options::CL_Options( const int argc, const char * const *argv,
-			  const string& valid_s, const string& valid_l ){
-    is_init  = false;
-    debug = false;
-    set_short_options( valid_s );
-    set_long_options( valid_l );
-    init( argc, argv );
+  CL_Options::CL_Options( ): is_init(false),debug(false){
   }
 
   CL_Options::~CL_Options(){
   }
 
-  bool CL_Options::init( const int argc, const char * const *argv ){
+  void CL_Options::allow_args( const string& valid_s, const string& valid_l ){
+    set_short_options( valid_s );
+    set_long_options( valid_l );
+  }
+
+  bool CL_Options::parse_args( const int argc, const char * const *argv ){
     if ( is_init ){
-      throw OptionError( "cannot init() an options object twice" );
+      throw OptionError( "cannot parse() a commandline twice" );
     }
     if ( Parse_Command_Line( argc, argv ) )
       is_init = true;
     return is_init;
   }
 
-  bool CL_Options::init( const std::string& args ){
+  bool CL_Options::parse_args( const std::string& args ){
     if ( is_init ){
-      throw OptionError( "cannot init() an options object twice" );
+      throw OptionError( "cannot parse() a commansline twice" );
     }
     const char *argstr = args.c_str();
     if ( Parse_Command_Line( 0, &argstr ) )

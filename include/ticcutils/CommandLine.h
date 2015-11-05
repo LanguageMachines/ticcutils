@@ -79,15 +79,21 @@ namespace TiCC {
   class CL_Options {
     friend std::ostream& operator<<( std::ostream&, const CL_Options& );
   public:
-    CL_Options( const std::string& ="", const std::string& ="" );
-    CL_Options( const int, const char * const *,
-		const std::string& = "", const std::string& = "" );
-    ~CL_Options();
     typedef std::vector<CL_item>::const_iterator const_iterator;
+    CL_Options();
+    CL_Options( const std::string&, const std::string& );
+    void allow_args( const std::string& = "", const std::string& = "" );
+    ~CL_Options();
     const_iterator begin() const { return Opts.begin(); };
     const_iterator end() const { return Opts.end(); };
-    bool init( const int, const char * const * );
-    bool init( const std::string& );
+    bool parse_args( const int, const char * const * );
+    bool parse_args( const std::string& );
+    bool init( const int i, const char * const * a ){
+      return parse_args( i, a );
+    }
+    bool init( const std::string& s ){
+      return parse_args( s );
+    }
     void set_short_options( const std::string& s );
     void set_long_options( const std::string& s );
     std::string prog_name() const { return _prog_name; };
@@ -139,8 +145,6 @@ namespace TiCC {
     bool extract( const char c, std::string& v, bool& b){
       return extract_internal( c, v, b);
     }
-    bool pull( const char c, std::string& s, bool& b){
-      return extract_internal( c, s, b ); };
     bool extract( const char c, std::string& s ){
       bool b;
       return extract_internal( c, s, b );
@@ -165,8 +169,6 @@ namespace TiCC {
       return false;
     }
 
-    bool pull( const std::string& w, std::string& s) {
-      return extract_internal( w, s ); };
     bool extract( const std::string& s ){
       std::string v;
       return extract_internal( s, v );

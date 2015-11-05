@@ -33,70 +33,77 @@ void test_nothrow(){
 
 void test_opts_basic(){
   startTestSerie( "we testen basic commandline opties." );
-  CL_Options opts1( "t:fh" );
+  CL_Options opts1;
+  opts1.allow_args( "t:fh" );
   // -t mist een optie
-  assertThrow( opts1.init( "-t -f -h" ), OptionError );
+  assertThrow( opts1.parse_args( "-t -f -h" ), OptionError );
   // onbekende optie
   assertThrow( opts1.init( "-a" ), OptionError );
   // -f heeft onterecht een parameter
-  assertThrow( opts1.init( "-t1 -f bla -h"), OptionError );
+  assertThrow( opts1.parse_args( "-t1 -f bla -h"), OptionError );
   // parameters aan einde ==> massopts.
-  assertNoThrow( opts1.init( "-t1 -f -h bla") );
-  CL_Options opts2( "", "true:,false" );
+  assertNoThrow( opts1.parse_args( "-t1 -f -h bla") );
+  CL_Options opts2;
+  opts2.allow_args( "", "true:,false" );
   // --true mist een optie
-  assertThrow( opts2.init( "--true --false"), OptionError );
+  assertThrow( opts2.parse_args( "--true --false"), OptionError );
   // --false heeft optie --> massOpts.
-  assertNoThrow( opts2.init( "--true=1 --false 2")  );
-  CL_Options opts3( "", "true:,false" );
+  assertNoThrow( opts2.parse_args( "--true=1 --false 2")  );
+  CL_Options opts3;
+  opts3.allow_args( "", "true:,false" );
   // - te weinig
-  assertThrow( opts3.init( "-true=false"), OptionError );
+  assertThrow( opts3.parse_args( "-true=false"), OptionError );
   // onbekende optie
-  assertThrow( opts3.init( "--magniet"), OptionError );
-  CL_Options opts4( "", "true:,false" );
+  assertThrow( opts3.parse_args( "--magniet"), OptionError );
+  CL_Options opts4;
+  opts4.allow_args( "", "true:,false" );
   // --true heeft optie, OK en
   // --false heeft geen optie --> massOpts.
-  assertNoThrow( opts4.init( "--true 1 --false 2")  );
+  assertNoThrow( opts4.parse_args( "--true 1 --false 2")  );
   string value;
   opts4.is_present( "true", value );
   assertEqual( value, "1" );
   CL_Options opts5( "", "false:,true::" );
   // --true heeft optionele optie,
   // --false heeft optie
-  assertNoThrow( opts5.init( "--true --false 2")  );
+  assertNoThrow( opts5.parse_args( "--true --false 2")  );
   opts5.is_present( "true", value );
   assertEqual( value, "" );
   string lo6 = "false:,true::";
-  CL_Options opts6( "", lo6 );
+  CL_Options opts6;
+  opts6.allow_args( "", lo6 );
   assertEqual( opts6.get_long_options(), lo6 );
   // --true heeft optionele optie,
   // --false heeft optie
-  assertNoThrow( opts6.init( "--true ok --false=6")  );
+  assertNoThrow( opts6.parse_args( "--true ok --false=6")  );
   opts6.is_present( "true", value );
   assertEqual( value, "ok" );
   opts6.is_present( "false", value );
   assertEqual( value, "6" );
   string so7 = "f:t::";
-  CL_Options opts7( so7 );
+  CL_Options opts7;
+  opts7.allow_args( so7 );
   assertEqual( opts7.get_short_options(), so7 );
   // -t heeft optionele optie,
   // -f heeft optie
-  assertNoThrow( opts7.init( "-t ok -f6")  );
+  assertNoThrow( opts7.parse_args( "-t ok -f6")  );
   bool mood;
   opts7.is_present( 't', value, mood );
   assertEqual( value, "ok" );
   opts7.is_present( 'f', value, mood );
   assertEqual( value, "6" );
-  CL_Options opts8( "t::,f:" );
+  CL_Options opts8( "t::,f:", "" );
   // -t heeft optionele optie,
   // -f heeft optie
-  assertNoThrow( opts8.init( "-t -f6")  );
+  assertNoThrow( opts8.parse_args( "-t -f6")  );
   opts8.is_present( 't', value, mood );
   assertEqual( value, "" );
   opts8.is_present( 'f', value, mood );
   assertEqual( value, "6" );
-  CL_Options opts9( "t::qp:r:" );
+  CL_Options opts9;
+  opts9.allow_args( "t::qp:r:" );
   // -t heeft optionele optie. q is een stoorzender
-  assertNoThrow( opts9.init( "-t 1 -t2 -t3 -q -t -t4 -p5 -r appel ")  );
+  assertNoThrow( opts9.parse_args( "-t 1 -t2 -t3 -q -t -t4 -p5 -r appel ")  );
   vector<string> ts;
   while ( opts9.extract( 't', value, mood ) ){
     ts.push_back( value );
@@ -117,10 +124,11 @@ void test_opts_basic(){
   assertTrue( opts9.extract('p', myint ) );
   assertEqual( myint, 5 );
   assertThrow( opts9.extract('r', myint ), OptionError );
-  CL_Options opts10( "", "test::,qed,data:" );
+  CL_Options opts10;
+  opts10.allow_args( "", "test::,qed,data:" );
   //  opts10.set_debug(true);
   // --test heeft optionele optie. qed is een stoorzender
-  assertNoThrow( opts10.init( "--test 1 --test=2 --qed --test --test=3 --data=5.6 --data=appel")  );
+  assertNoThrow( opts10.parse_args( "--test 1 --test=2 --qed --test --test=3 --data=5.6 --data=appel")  );
   ts.clear();
   while ( opts10.extract( "test", value ) ){
     ts.push_back( value );
@@ -140,13 +148,15 @@ void test_opts_basic(){
   assertTrue( opts10.extract("data", mydouble ) );
   assertEqual( mydouble, 5.6 );
   assertThrow( opts10.extract("data", mydouble ), OptionError );
-  CL_Options opts11( "", "test:" );
-  opts11.init( "--test=test/a arg1" );
+  CL_Options opts11;
+  opts11.allow_args( "", "test:" );
+  opts11.parse_args( "--test=test/a arg1" );
   string ex;
   opts11.extract( "test", ex );
   assertEqual( ex, "test/a" );
-  CL_Options opts12( "a:", "a:" );
-  opts12.init( "-a 1 --a=2 a aa" );
+  CL_Options opts12;
+  opts12.allow_args( "a:", "a:" );
+  opts12.parse_args( "-a 1 --a=2 a aa" );
   opts12.extract( 'a', ex );
   assertEqual( ex, "1" );
   opts12.extract( "a", ex );
@@ -157,7 +167,7 @@ void test_opts_basic(){
   assertEqual( mo[1], "aa" );
   CL_Options opts13;
   opts13.set_debug(true);
-  opts13.init( "-a b -a c oke -dfiets --appel peer --fout=goed toch" );
+  opts13.parse_args( "-a b -a c oke -dfiets --appel peer --fout=goed toch" );
   assertEqual( opts13.toString(), "-ab -ac -dfiets --appel=peer --fout=goed" );
   auto v = opts13.getMassOpts();
   assertEqual( v.size(), 2 );
@@ -446,8 +456,9 @@ int main( const int argc, const char* argv[] ){
   opts1.set_long_options( "test:,raar" );
   opts1.init( argc, argv );
   test_opts( opts1 );
-  CL_Options opts2( "t:qf:d:", "test:,raar" );
-  opts2.init( "-ffalse +t true --test=test -d iets -q --raar blaat arg1 arg2" );
+  CL_Options opts2;
+  opts2.allow_args( "t:qf:d:", "test:,raar" );
+  opts2.parse_args( "-ffalse +t true --test=test -d iets -q --raar blaat arg1 arg2" );
   test_opts( opts2 );
   test_subtests_fail();
   test_subtests_ok();
