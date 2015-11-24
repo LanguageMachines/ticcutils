@@ -12,7 +12,7 @@ This software has been tested on:
 - Intel/AMD platforms running several versions of Linux, including Ubuntu,
   Debian and Fedora.
 - both 32 and 64 bits
-- MAC platform running OS X 10.5
+- MAC platform running OS X 10.10
 
 Compilers:
 - GCC (4.0.0 - 4.6.0). It is highly recommended to upgrade to at least GCC 4.1
@@ -30,7 +30,15 @@ following pakages:
 - autotools
 - autoconf-archive
 
-Installation instructions (see INSTALL for more details):
+Installation Instructions
+--------------------------------
+
+To install libfolia, first consult whether your distribution's package manager
+has an up-to-date package.  If not, for easy installation of ticcutils, it is
+included as part of our software distribution LaMachine:
+https://proycon.github.io/LaMachine . 
+
+To compile from source instead:
 1) sh bootstrap
 2) configure
 3) make
