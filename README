@@ -1,9 +1,9 @@
-TiCC utils 0.1 (c) ILK/CLiPS 1998 - 2013
+TiCC utils 0.10 (c) ILK/CLiPS 1998 - 2015
 
 Tilburg centre for Cognition and Communication, Tilburg University.
 Centre for Dutch Language and Speech, University of Antwerp
 
-This module contains useful functions for general use in the TiCC software 
+This module contains useful functions for general use in the TiCC software
 stack and beyond.
 
 TiCC utils is distributed under the GNU Public Licence (see the file COPYING).
@@ -15,7 +15,8 @@ This software has been tested on:
 - MAC platform running OS X 10.10
 
 Compilers:
-- GCC (4.0.0 - 4.6.0). It is highly recommended to upgrade to at least GCC 4.1
+- GCC (4.8 - 5.2). It is highly recommended to upgrade to at least GCC 4.8
+- CLANG. Preferrable a recent version which supporte OpenMP
 
 Contents of this distribution:
 - Sources
@@ -29,6 +30,8 @@ To be able to succesfully build libticcl from the tarball, you need the
 following pakages:
 - autotools
 - autoconf-archive
+- libxml2-dev
+- preferably also: libtar-dev, libbz2-dev, libboost-dev, libboost-regex-dev
 
 Installation Instructions
 --------------------------------
@@ -36,11 +39,11 @@ Installation Instructions
 To install libfolia, first consult whether your distribution's package manager
 has an up-to-date package.  If not, for easy installation of ticcutils, it is
 included as part of our software distribution LaMachine:
-https://proycon.github.io/LaMachine . 
+https://proycon.github.io/LaMachine .
 
 To compile from source instead:
 1) sh bootstrap
 2) configure
 3) make
 4) make install
-
+5) optional: make check
