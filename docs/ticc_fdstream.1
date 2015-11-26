@@ -1,0 +1,58 @@
+.TH ticc_fdstream 1 "2015 November 26"
+
+.SH NAME
+ticc_fdstream - Implementation of iostreams tied to File Descriptors
+
+.SH DESCRIPTION
+
+Short description. Needs work...
+
+The main functions are:
+
+.B fdostream( int fd );
+.RS
+Open an ouput stream connected to the
+.B socket
+with the id:
+.B fd
+.RE
+
+.B fdistream( int fd );
+.RS
+Open an input stream connected to the
+.B socket
+with the id:
+.B fd
+
+Both
+.B fdostream
+and
+.B fdistream
+can be used as normal
+.B ostream
+and
+.B istream
+streams for output/input respectively.
+.RE
+
+.B bool nb_getline( istream& stream, string& s, int& timeout );
+.B bool nb_putline( ostream& stream, const string& s, int& timeout );
+.RS
+read/write a string
+.B s
+from/to a
+.I non-blocking
+stream
+.B stream
+using
+.B timeout
+to terminate the operation when it fails to complete within
+.B timeout
+
+This only works for streams connected to a socket for which the operation mode
+is set to non_blocking, using
+.B fcntl( sock, F_SETFL, O_NONBLOCK );
+or the like.
+
+.SH AUTHORS
+Ko van der Sloot lamasoftware@science.ru.nl

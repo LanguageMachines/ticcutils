@@ -1,4 +1,4 @@
-.TH ticc_string 1 "2012 August 21"
+.TH ticc_string 1 "2015 November 26"
 
 .SH NAME
 ticc_string - A collection of C++ string manipulating utilities.
@@ -9,8 +9,8 @@ ticc_string - A collection of C++ string manipulating utilities.
 .B using namespace TiCC;
 
 .SH DESCRIPTION
-Ticc String Utilities provides a few convenient functions for manipulating 
-C++ 'string' objects. These functions are widely used in the TiCC software 
+Ticc String Utilities provides a few convenient functions for manipulating
+C++ 'string' objects. These functions are widely used in the TiCC software
 stack , but are of general use too.
 
 .SH List of Functions
@@ -74,7 +74,7 @@ Return a string that contains the uppercase of the characters in
 .BR in .
 .RE
 
-.B  size_t split_at( const string& s, vector<string>& vec, const string& sep );
+.B  size_t split_at( const string& s, vector<string>& vec, const string& sep, bool exact=false );
 .RS
 split the input string
 .B s
@@ -85,36 +85,41 @@ and return the parts in the string vector
 
 consecutive occurrences of
 .B sep
-are all skipped, so 
+are all skipped, so
 .B vec
-will never contain empty strings.
+will never contain empty strings, except when
+.B exact
+is set to true.
 
 .B return value:
 The size of
 .BR vec .
 .RE
 
-.B size_t split_at_first_of( const string& s, vector<string>& vec, const string& filter );
+.B size_t split_at_first_of( const string& s, vector<string>& vec, const string& filter, bool exact=false );
 .RS
 split the input string
 .B s
-at every occurrence of a character from
+at every occurrence of one of the characters from
 .B filter
 and return the parts in the string vector
 .BR vec .
 
 consecutive occurrences of
 .B filter
-characters are all skipped, so 
+characters are all skipped, so
 .B vec
-will never contain empty strings.
+will never contain empty strings, except when
+.B exact
+is set to true.
+
 
 .B return value:
 The size of
 .BR vec .
 .RE
 
-.B  inline size_t split( const string& s, vector<string>& vec ){
+.B  inline size_t split( const string& s, vector<string>& vec, bool exact=false
 .B    return split_at_first_of( s, vec, """ \et\er\en""" );
 .B  }
 .RS
@@ -125,26 +130,137 @@ at every occurrence of a whitespace character, and return the parts in the strin
 
 consecutive occurrences of
 .B filter
-characters are all skipped, so 
+characters are all skipped, so
 .B vec
-will never contain empty strings.
+will never contain empty strings, except when
+.B exact
+is set to true.
 
 .B return value:
 The size of
 .B vec
 .RE
-  
+
+.B  bool match_front( const string& s, const string& f );
+.RS
+does the string
+.B s
+start with the string
+.B f
+?
+.RE
+
+.B  bool match_back( const string& s, const string& b );
+.RS
+does the string
+.B s
+end with the string
+.B b
+?
+.RE
+
+.B template< typename T > T stringTo( const std::string& s )
+.RS
+convert the string
+.B s
+into a value of type
+.B T
+
+Might throw when the conversion fails.
+.RE
+
+.B template< typename T > bool stringTo( const std::string& s, T& result )
+.RS
+convert the string
+.B s
+into a
+.B result
+value of type
+.B T
+return
+.B false
+when the conversion fails, otherwise returns
+.B true
+.RE
+
+.B template<> bool stringTo( const std::string& s )
+.RS
+convert the string
+.B s
+into a value of type
+.B bool
+
+The string values:
+.B YES
+,
+.B TRUE
+,
+.B 1
+yield
+.B true
+(case insensitive)
+The string values:
+.B NO
+,
+.B FALSE
+,
+.B 0
+yield
+.B false
+(case insensitive)
+
+Will throw when conversion fails.
+.RE
+
+.B template< typename T > string toString ( const T& obj );
+.RS
+convert the
+.B obj
+of type
+.B T
+to a string. It uses the
+.B <<
+output operator for
+.B obj
+so it will fail if that operator is unavailable
+.RE
+
+.B string basename( const string& f );
+.RS
+returns the basename for filename
+.BR f.
+The basename is defined as the string after the last
+.B /
+in
+.BR f.
+If there is no
+.B /
+present, it will return the input string
+.BR f .
+.RE
+
+.B string dirname( const string& f );
+.RS
+returns the pathname for filename
+.B f.
+The pathname is defined as the string before the last
+.B /
+in
+.BR f.
+If there is no
+.B /
+present, it will return
+.BR ".".
+.RE
+
 .B  string format_nonascii( const string& s );
 .RS
 given a string
 .B s
-with possibly unprintable (non-ascii) characters, produce a string where these 
+with possibly unprintable (non-ascii) characters, produce a string where these
 are replaced by hexadecimal representations.
-
-Useful for debugging.
+Useful for debugging Unicode stuff.
 .RE
 
 .SH AUTHORS
-Ko van der Sloot Timbl@uvt.nl
-
-
+Ko van der Sloot lamasoftware@science.ru.nl
