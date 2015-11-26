@@ -36,6 +36,7 @@ streams for output/input respectively.
 .RE
 
 .B bool nb_getline( istream& stream, string& s, int& timeout );
+
 .B bool nb_putline( ostream& stream, const string& s, int& timeout );
 .RS
 read/write a string
@@ -51,7 +52,7 @@ to terminate the operation when it fails to complete within
 
 This only works for streams connected to a socket for which the operation mode
 is set to non_blocking, using
-.B fcntl( sock, F_SETFL, O_NONBLOCK );
+.B fcntl( sock, F_SETFL, O_NONBLOCK )
 or the like.
 
 .SH AUTHORS
