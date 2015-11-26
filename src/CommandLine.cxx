@@ -99,8 +99,8 @@ namespace TiCC {
 
   ostream& operator<<( ostream& os, const CL_Options& cl ){
     os << cl.toString() << " ";
-    for ( size_t i=0; i < cl.MassOpts.size(); ++i ){
-      os << cl.MassOpts[i] << " ";
+    for ( const auto& opt : cl.MassOpts ){
+      os << opt << " ";
     }
     return os;
   }
@@ -346,8 +346,7 @@ namespace TiCC {
       cerr << "Cleaned vector: " << cleaned << endl;
     }
     vector<arg> arguments;
-    for ( size_t i=0; i < cleaned.size(); ++i ){
-      string Option = cleaned[i];
+    for ( auto const& Option : cleaned ){
       char first = Option[0];
       arg argument;
       switch ( first ){
@@ -650,8 +649,7 @@ namespace TiCC {
   void CL_Options::set_long_options( const string& s ){
     vector<string> parts;
     TiCC::split_at( s, parts, "," );
-    for ( size_t i=0; i < parts.size(); ++i ){
-      string value = parts[i];
+    for ( auto value: parts ){
       string::size_type pos = value.find( ':' );
       if ( pos != string::npos ){
 	if ( pos == value.size()-2){
