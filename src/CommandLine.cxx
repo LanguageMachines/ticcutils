@@ -70,7 +70,7 @@ namespace TiCC {
 
   bool CL_Options::parse_args( const std::string& args ){
     if ( is_init ){
-      throw OptionError( "cannot parse() a commansline twice" );
+      throw OptionError( "cannot parse() a commandline twice" );
     }
     const char *argstr = args.c_str();
     if ( Parse_Command_Line( 0, &argstr ) )
@@ -280,6 +280,34 @@ namespace TiCC {
     return os;
   }
 
+  vector<string> fix_quotes( const vector<string>& argv ){
+    // handle only balanced quotes, and 1 quote per option
+    vector<string> result;
+    bool q_found = false;
+    for( auto str : argv ){
+      if ( !q_found ){
+	string::size_type pos = str.find("\"");
+	if ( pos != string::npos ){
+	  q_found = true;
+	  str.erase( pos, 1 );
+	}
+	result.push_back( str );
+      }
+      else {
+	string::size_type pos = str.find("\"");
+	if ( pos != string::npos ){
+	  // balanced
+	  q_found = false;
+	  str.erase( pos, 1 );
+	}
+	result.back() += " " + str;
+      }
+    }
+    if ( q_found ){
+      throw OptionError( "unbalanced double quotes (\") in commandline" );
+    }
+    return result;
+  }
 
   bool CL_Options::Parse_Command_Line( const int Argc,
 				       const char * const *Argv ){
@@ -289,6 +317,7 @@ namespace TiCC {
       if ( Argv != 0 &&
 	   Argv[0] != 0 ){
 	split( Argv[0], local_argv );
+	local_argv = fix_quotes( local_argv );
       }
       else
 	return false;
