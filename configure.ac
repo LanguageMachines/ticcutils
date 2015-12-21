@@ -4,7 +4,7 @@
 # $URL $
 
 AC_PREREQ(2.61)
-AC_INIT([ticcutils],[0.10],[timbl@uvt.nl])
+AC_INIT([ticcutils],[0.11],[timbl@uvt.nl])
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([.])
 AC_CONFIG_MACRO_DIR([m4])
