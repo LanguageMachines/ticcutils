@@ -1,11 +1,8 @@
 /*
-  $Id$
-  $URL$
-
-  Copyright (c) 1998 - 2015
+  Copyright (c) 2006 - 2016
+  CLST  - Radboud University
   ILK   - Tilburg University
-  CLiPS - University of Antwerp
- 
+
   This file is part of ticcutils
 
   ticcutils is free software; you can redistribute it and/or modify
@@ -22,9 +19,9 @@
   along with this program; if not, see <http://www.gnu.org/licenses/>.
 
   For questions and suggestions, see:
-      http://ilk.uvt.nl/software.html
+      https://github.com/LanguageMachines/ticcutils/issues
   or send mail to:
-      timbl@uvt.nl
+      lamasoftware (at ) science.ru.nl
 */
 
 #include <iostream>
@@ -39,7 +36,7 @@ namespace TiCC {
   void Timer::stop(){
     timeval now;
     gettimeofday( &now, 0 );
-    long usecs = (myTime.tv_sec + now.tv_sec - startTime.tv_sec) * 1000000 
+    long usecs = (myTime.tv_sec + now.tv_sec - startTime.tv_sec) * 1000000
       + myTime.tv_usec + now.tv_usec - startTime.tv_usec;
     ldiv_t div = ldiv( usecs, 1000000 );
     myTime.tv_sec = div.quot;
@@ -58,7 +55,7 @@ namespace TiCC {
        << div.rem << " microseconds";
     return os;
   }
-  
+
   string Timer::toString(){
     stringstream os;
     os << *this;

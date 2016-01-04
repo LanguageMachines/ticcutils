@@ -1,11 +1,9 @@
 /*
-  $Id$
-  $URL$
+  Copyright (c) 2006 - 2016
+  CLST  - Radboud University
+  ILK   - Tilburg University
 
-  Copyright (c) 2006 - 2015
-  Tilburg University
-
-  This file is part of ticcutils.
+  This file is part of ticcutils
 
   ticcutils is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -18,12 +16,12 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  along with this program; if not, see <http://www.gnu.org/licenses/>.
 
   For questions and suggestions, see:
-      http://ilk.uvt.nl/software.html
+      https://github.com/LanguageMachines/ticcutils/issues
   or send mail to:
-      timbl@uvt.nl
+      lamasoftware (at ) science.ru.nl
 */
 
 #ifndef TICC_CONFIGURATION_H

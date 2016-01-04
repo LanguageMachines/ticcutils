@@ -1,7 +1,7 @@
-TiCC utils 0.10 (c) ILK/CLiPS 1998 - 2015
+TiCC utils 0.11 (c) ILK/CLST 1998 - 2016
 
 Tilburg centre for Cognition and Communication, Tilburg University.
-Centre for Dutch Language and Speech, University of Antwerp
+Centre for Language and Speach Technology, Radboud University
 
 This module contains useful functions for general use in the TiCC software
 stack and beyond.
@@ -36,7 +36,7 @@ following pakages:
 Installation Instructions
 --------------------------------
 
-To install libfolia, first consult whether your distribution's package manager
+To install ticcutils, first consult whether your distribution's package manager
 has an up-to-date package.  If not, for easy installation of ticcutils, it is
 included as part of our software distribution LaMachine:
 https://proycon.github.io/LaMachine .

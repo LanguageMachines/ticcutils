@@ -1,11 +1,8 @@
 /*
-  $Id$
-  $URL$
-
-  Copyright (c) 1998 - 2015
+  Copyright (c) 2006 - 2016
+  CLST  - Radboud University
   ILK   - Tilburg University
-  CLiPS - University of Antwerp
- 
+
   This file is part of ticcutils
 
   ticcutils is free software; you can redistribute it and/or modify
@@ -22,9 +19,10 @@
   along with this program; if not, see <http://www.gnu.org/licenses/>.
 
   For questions and suggestions, see:
-      http://ilk.uvt.nl/software.html
+      https://github.com/LanguageMachines/ticcutils/issues
   or send mail to:
-      timbl@uvt.nl
+      lamasoftware (at ) science.ru.nl
+
 */
 
 #include <ctime>
@@ -50,37 +48,37 @@ using std::bad_cast;
 using std::string;
 
 namespace TiCC {
-  LogStream::LogStream( int ) : 
-    ostream( static_cast<streambuf *>(0) ), 
+  LogStream::LogStream( int ) :
+    ostream( static_cast<streambuf *>(0) ),
     buf( cerr ),
     single_threaded_mode(false){
   }
 
   LogStream null_stream( 0 );
 
-  LogStream::LogStream() : 
+  LogStream::LogStream() :
     ostream( &buf ),
     buf( cerr, "", StampBoth ),
     single_threaded_mode(false) {
   }
 
-  LogStream::LogStream( const string& message, LogFlag stamp ) : 
+  LogStream::LogStream( const string& message, LogFlag stamp ) :
     ostream( &buf ),
     buf( cerr, message, stamp ),
     single_threaded_mode(false) {
   }
 
-  LogStream::LogStream( ostream& as, const string& message, LogFlag stamp ) : 
-    ostream( &buf ), 
+  LogStream::LogStream( ostream& as, const string& message, LogFlag stamp ) :
+    ostream( &buf ),
     buf( as, message, stamp ),
     single_threaded_mode(false){
   }
 
-  LogStream::LogStream( const LogStream& ls, 
-			const string& message, LogFlag stamp ): 
-    ostream( &buf ),  
-    buf( ls.buf.AssocStream(), 
-	 ls.buf.Message(), 
+  LogStream::LogStream( const LogStream& ls,
+			const string& message, LogFlag stamp ):
+    ostream( &buf ),
+    buf( ls.buf.AssocStream(),
+	 ls.buf.Message(),
 	 stamp ),
     single_threaded_mode( ls.single_threaded_mode ){
     buf.Level( ls.buf.Level() );
@@ -88,10 +86,10 @@ namespace TiCC {
     addmessage( message );
   }
 
-  LogStream::LogStream( const LogStream& ls, const string& message ): 
-    ostream( &buf ), 
-    buf( ls.buf.AssocStream(), 
-	 ls.buf.Message(), 
+  LogStream::LogStream( const LogStream& ls, const string& message ):
+    ostream( &buf ),
+    buf( ls.buf.AssocStream(),
+	 ls.buf.Message(),
 	 ls.buf.StampFlag() ),
     single_threaded_mode( ls.single_threaded_mode ){
     buf.Level( ls.buf.Level() );
@@ -102,9 +100,9 @@ namespace TiCC {
 
   LogStream::LogStream( const LogStream *ls ):
     ostream( &buf ),
-    buf( ls->buf.AssocStream(), 
-	 ls->buf.Message(), 
-	 ls->buf.StampFlag() ), 
+    buf( ls->buf.AssocStream(),
+	 ls->buf.Message(),
+	 ls->buf.StampFlag() ),
     single_threaded_mode( ls->single_threaded_mode ){
     buf.Level( ls->buf.Level() );
     buf.Threshold( ls->buf.Threshold() );
@@ -248,7 +246,7 @@ namespace TiCC {
 	result = true;
 	cerr << "ALERT" << endl;
 	cerr << "ALERT" << endl;
-	cerr << "Thread " << locks[i].id 
+	cerr << "Thread " << locks[i].id
 	     << "is blocking our LogStreams since " << lTime - locks[i].tim
 	     << " seconds!" << endl;
 	cerr << "ALERT" << endl;
@@ -301,14 +299,14 @@ namespace TiCC {
     if ( locks[pos].cnt == 0 ){
       pthread_mutex_lock( &global_logging_mutex );
 #ifdef LSDEBUG
-      cerr << "Thread " << pthread_self()  << " locked [" << pos 
+      cerr << "Thread " << pthread_self()  << " locked [" << pos
 	   << "]" << endl;
 #endif
     }
     locks[pos].cnt++;
 #ifdef LSDEBUG
     if ( locks[pos].cnt > 1 ){
-      cerr << "Thread " << pthread_self()  << " regained [" << pos 
+      cerr << "Thread " << pthread_self()  << " regained [" << pos
 	   << "] cnt = " << locks[pos].cnt << endl;
     }
 #endif
@@ -326,7 +324,7 @@ namespace TiCC {
     }
 #ifdef LSDEBUG
     if ( locks[pos].cnt > 0 ){
-      cerr << "Thread " << pthread_self()  << " still owns [" << pos 
+      cerr << "Thread " << pthread_self()  << " still owns [" << pos
 	   << "] cnt = "<< locks[pos].cnt << endl;
     }
 #endif
@@ -380,12 +378,12 @@ namespace TiCC {
     my_stream->setthreshold( my_level );
     if ( !my_stream->single_threaded() )
       mutex_release();
-  } 
+  }
 
   LogStream& Log::operator *(){
 #ifdef DARE_TO_OPTIMIZE
     if ( my_stream->getlevel() > my_stream->getthreshold() )
-      return *my_stream; 
+      return *my_stream;
     else
       return null_stream;
 #else
@@ -419,10 +417,10 @@ namespace TiCC {
       mutex_release();
   }
 
-  LogStream& Dbg::operator *() { 
+  LogStream& Dbg::operator *() {
 #ifdef DARE_TO_OPTIMIZE
     if ( my_stream->getlevel() > my_stream->getthreshold() )
-      return *my_stream; 
+      return *my_stream;
     else
       return null_stream;
 #else
@@ -454,12 +452,12 @@ namespace TiCC {
     my_stream->setthreshold( my_level );
     if ( !my_stream->single_threaded() )
       mutex_release();
-  } 
+  }
 
   LogStream& xDbg::operator *(){
 #ifdef DARE_TO_OPTIMIZE
     if ( my_stream->getlevel() > my_stream->getthreshold() )
-      return *my_stream; 
+      return *my_stream;
     else
       return null_stream;
 #else
@@ -492,11 +490,11 @@ namespace TiCC {
     if ( !my_stream->single_threaded() )
       mutex_release();
   }
- 
+
   LogStream& xxDbg::operator *(){
 #ifdef DARE_TO_OPTIMIZE
     if ( my_stream->getlevel() > my_stream->getthreshold() )
-      return *my_stream; 
+      return *my_stream;
     else
       return null_stream;
 #else

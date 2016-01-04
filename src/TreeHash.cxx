@@ -1,11 +1,8 @@
 /*
-  $Id$
-  $URL$
-
-  Copyright (c) 1998 - 2015
+  Copyright (c) 2006 - 2016
+  CLST  - Radboud University
   ILK   - Tilburg University
-  CLiPS - University of Antwerp
- 
+
   This file is part of ticcutils
 
   ticcutils is free software; you can redistribute it and/or modify
@@ -22,9 +19,9 @@
   along with this program; if not, see <http://www.gnu.org/licenses/>.
 
   For questions and suggestions, see:
-      http://ilk.uvt.nl/software.html
+      https://github.com/LanguageMachines/ticcutils/issues
   or send mail to:
-      timbl@uvt.nl
+      lamasoftware (at ) science.ru.nl
 */
 
 #include <iostream>
@@ -38,14 +35,14 @@ using namespace std;
 namespace Hash {
 
   using namespace Tries;
-  
+
   HashInfo::HashInfo( const string& Tname, unsigned int Indx ):
     name(Tname), ID(Indx){}
-  
+
   HashInfo::~HashInfo(){
   }
-  
-  ostream& operator<<( ostream& os, const HashInfo& tok ){ 
+
+  ostream& operator<<( ostream& os, const HashInfo& tok ){
     os << tok.ID << " " << tok.name;
     return os;
   }
@@ -74,40 +71,40 @@ namespace Hash {
     }
     return idx;
   }
-  
+
   unsigned int StringHash::Lookup( const string& name ) const {
     HashInfo *info = StringTree.Retrieve( name );
     if ( info )
-      return info->Index(); 
+      return info->Index();
     else
       return 0;
   }
-  
+
   const string& StringHash::ReverseLookup( unsigned int index ) const {
     return rev_index[index]->Name();
   }
-  
+
   ostream& operator << ( ostream& os, const StringHash& S){
     return os << &S.StringTree; }
-  
+
   LexInfo::LexInfo( const string& Tname, const string& Tran ):
     name(Tname),trans(Tran){}
-  
+
   LexInfo::~LexInfo(){}
-  
-  ostream& operator<<( ostream& os, const LexInfo& LI ){ 
+
+  ostream& operator<<( ostream& os, const LexInfo& LI ){
     os << " " << LI.name << " - " << LI.trans;
     return os;
   }
-  
+
   Lexicon::Lexicon(){}
- 
+
   Lexicon::~Lexicon(){}
-  
+
   LexInfo *Lexicon::Lookup( const string& name ) const {
-    return (LexInfo *)LexTree.Retrieve( name ); 
+    return (LexInfo *)LexTree.Retrieve( name );
   }
-  
+
   LexInfo *Lexicon::Store( const string& name, const string& translation ){
     LexInfo *info = 0;
 #pragma omp critical(tree_mod)
@@ -120,8 +117,8 @@ namespace Hash {
     }
     return info;
   }
-  
+
   ostream& operator<<( ostream& os, const Lexicon& L )
   { return os << &L.LexTree; }
-  
-} 
+
+}

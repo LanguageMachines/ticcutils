@@ -1,19 +1,16 @@
 /*
-  $Id: FdStream.cxx 17982 2015-01-21 13:39:58Z sloot $
-  $URL: https://ilk.uvt.nl/svn/trunk/sources/TimblServer/src/FdStream.cxx $
-
-  Copyright (c) 1998 - 2015
+  Copyright (c) 2006 - 2016
+  CLST  - Radboud University
   ILK   - Tilburg University
-  CLiPS - University of Antwerp
 
-  This file is part of timblserver
+  This file is part of ticcutils
 
-  timblserver is free software; you can redistribute it and/or modify
+  ticcutils is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 3 of the License, or
   (at your option) any later version.
 
-  timblserver is distributed in the hope that it will be useful,
+  ticcutils is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
@@ -22,9 +19,9 @@
   along with this program; if not, see <http://www.gnu.org/licenses/>.
 
   For questions and suggestions, see:
-      http://ilk.uvt.nl/software.html
+      https://github.com/LanguageMachines/ticcutils/issues
   or send mail to:
-      timbl@uvt.nl
+      lamasoftware (at ) science.ru.nl
 */
 
 #include <cstring>
