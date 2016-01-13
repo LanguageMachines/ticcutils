@@ -253,6 +253,12 @@ void test_trim(){
   assertEqual( "A", trim("A") );
   assertEqual( "AHA", trim("AHA") );
   assertEqual( "AHA", trim("AHA\r\n") );
+  res = trim(val,"a");
+  assertEqual( res, " aha " );
+  res = trim(val,"a ");
+  assertEqual( res, "h" );
+  res = trim( " \"test\""," \"");
+  assertEqual( res, "test" );
 }
 
 void test_trim_front(){
