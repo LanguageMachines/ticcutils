@@ -8,4 +8,4 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ticcutils.pc
 
 ChangeLog: NEWS
-	svn update; git2cl > ChangeLog
+	git pull; git2cl > ChangeLog
