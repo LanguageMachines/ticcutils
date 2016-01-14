@@ -1,3 +1,13 @@
+14 jan 2016 0.11
+[Ko vd Sloot]
+A lot is done since 0.7
+- the repository is moved to GitHub
+- added travis support
+- overhauled CommandLine stuff
+- added basic server stuff
+- added more tests
+- lots of bug fixes
+
 23 sept 2014 0.7
 [Ko vd Sloot]
 - release
