@@ -372,6 +372,14 @@ namespace TiCC {
       mutex_release();
   }
 
+  Log::Log( LogStream& os ):  my_stream(0), my_level(LogSilent){
+    if ( os.single_threaded() || init_mutex() ){
+      my_stream = &os;
+      my_level = os.getthreshold();
+      os.setthreshold( LogNormal );
+    }
+  }
+
   LogStream& Log::operator *(){
 #ifdef DARE_TO_OPTIMIZE
     if ( my_stream->getlevel() > my_stream->getthreshold() )
@@ -391,6 +399,14 @@ namespace TiCC {
       my_stream = os;
       my_level = os->getthreshold();
       os->setthreshold( LogNormal );
+    }
+  }
+
+  Dbg::Dbg( LogStream& os ):  my_stream(0), my_level(LogSilent){
+    if ( os.single_threaded() || init_mutex() ){
+      my_stream = &os;
+      my_level = os.getthreshold();
+      os.setthreshold( LogNormal );
     }
   }
 
@@ -423,6 +439,14 @@ namespace TiCC {
     }
   }
 
+  xDbg::xDbg( LogStream& os ):  my_stream(0), my_level(LogSilent){
+    if ( os.single_threaded() || init_mutex() ){
+      my_stream = &os;
+      my_level = os.getthreshold();
+      os.setthreshold( LogNormal );
+    }
+  }
+
   xDbg::~xDbg(){
     my_stream->flush();
     my_stream->setthreshold( my_level );
@@ -449,6 +473,14 @@ namespace TiCC {
       my_stream = os;
       my_level = os->getthreshold();
       os->setthreshold( LogHeavy );
+    }
+  }
+
+  xxDbg::xxDbg( LogStream& os ):  my_stream(0), my_level(LogSilent){
+    if ( os.single_threaded() || init_mutex() ){
+      my_stream = &os;
+      my_level = os.getthreshold();
+      os.setthreshold( LogNormal );
     }
   }
 
