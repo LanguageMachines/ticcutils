@@ -354,7 +354,7 @@ namespace TiCC {
   }
 
 
-  Log::Log( LogStream *os ){
+  Log::Log( LogStream *os ): my_stream(0), my_level(LogSilent){
     if ( !os ){
       throw( "LogStreams FATAL error: No Stream supplied! " );
     }
@@ -362,14 +362,6 @@ namespace TiCC {
       my_level = os->getthreshold();
       my_stream = os;
       os->setthreshold( LogSilent );
-    }
-  }
-
-  Log::Log( LogStream& os ){
-    if ( os.single_threaded() || init_mutex() ){
-      my_level = os.getthreshold();
-      my_stream = &os;
-      os.setthreshold( LogSilent );
     }
   }
 
@@ -391,7 +383,7 @@ namespace TiCC {
 #endif
   }
 
-  Dbg::Dbg( LogStream *os ){
+  Dbg::Dbg( LogStream *os ): my_stream(0), my_level(LogSilent){
     if ( !os ){
       throw( "LogStreams FATAL error: No Stream supplied! " );
     }
@@ -399,14 +391,6 @@ namespace TiCC {
       my_stream = os;
       my_level = os->getthreshold();
       os->setthreshold( LogNormal );
-    }
-  }
-
-  Dbg::Dbg( LogStream& os ){
-    if ( os.single_threaded() || init_mutex() ){
-      my_stream = &os;
-      my_level = os.getthreshold();
-      os.setthreshold( LogNormal );
     }
   }
 
@@ -428,7 +412,7 @@ namespace TiCC {
 #endif
   }
 
-  xDbg::xDbg( LogStream *os ){
+  xDbg::xDbg( LogStream *os ): my_stream(0), my_level(LogSilent){
     if ( !os ){
       throw( "LogStreams FATAL error: No Stream supplied! " );
     }
@@ -436,14 +420,6 @@ namespace TiCC {
       my_stream = os;
       my_level = os->getthreshold();
       os->setthreshold( LogDebug );
-    }
-  }
-
-  xDbg::xDbg( LogStream& os ){
-    if ( os.single_threaded() || init_mutex() ){
-      my_stream = &os;
-      my_level = os.getthreshold();
-      os.setthreshold( LogDebug );
     }
   }
 
@@ -465,7 +441,7 @@ namespace TiCC {
 #endif
   }
 
-  xxDbg::xxDbg( LogStream *os ){
+  xxDbg::xxDbg( LogStream *os ): my_stream(0), my_level(LogSilent){
     if ( !os ){
       throw( "LogStreams FATAL error: No Stream supplied! " );
     }
@@ -473,14 +449,6 @@ namespace TiCC {
       my_stream = os;
       my_level = os->getthreshold();
       os->setthreshold( LogHeavy );
-    }
-  }
-
-  xxDbg::xxDbg( LogStream& os ){
-    if ( os.single_threaded() || init_mutex() ){
-      my_stream = &os;
-      my_level = os.getthreshold();
-      os.setthreshold( LogHeavy );
     }
   }
 

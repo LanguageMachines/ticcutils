@@ -42,8 +42,16 @@ enum LogFlag { NoStamp=0, StampTime=1, StampMessage=2, StampBoth=3 };
 template <class charT, class traits = std::char_traits<charT> >
   class basic_log_buffer : public std::basic_streambuf<charT, traits> {
  public:
- basic_log_buffer( std::basic_ostream<charT,traits>&, const std::string& = "",
-		   const LogFlag = StampBoth );
+ basic_log_buffer( std::basic_ostream<charT,traits>& a,
+		   const std::string& mess = "",
+		   const LogFlag flag = StampBoth ):
+ ass_stream( &a ),
+ stamp_flag( flag ),
+ in_sync(false),
+ level(LogNormal),
+ threshold_level(LogSilent),
+ ass_mess( mess )
+ {};
   ~basic_log_buffer();
   //
   // setters/getters
@@ -76,17 +84,6 @@ template <class charT, class traits = std::char_traits<charT> >
 typedef basic_log_buffer<char, std::char_traits<char> > LogBuffer;
 typedef basic_log_buffer<wchar_t, std::char_traits<wchar_t> > wLogBuffer;
 
-template <class charT, class traits >
-basic_log_buffer<charT,traits>::basic_log_buffer( std::basic_ostream<charT,traits>& a,
-						  const std::string& mess,
-						  const LogFlag stamp ) {
-  ass_stream = &a;
-  ass_mess = mess;
-  stamp_flag = stamp;
-  in_sync = true;
-  level = LogNormal;
-  threshold_level = LogSilent;
-}
 
 template <class charT, class traits >
 basic_log_buffer<charT,traits>::~basic_log_buffer(){

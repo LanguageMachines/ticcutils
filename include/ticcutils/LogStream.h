@@ -107,8 +107,10 @@ namespace TiCC {
 
   class Log{
   public:
-    Log( LogStream *l );
-    Log( LogStream& l );
+    Log( LogStream * );
+  Log( LogStream& l ): Log( &l )
+      {};
+
     ~Log();
     LogStream& operator *();
   private:
@@ -121,7 +123,8 @@ namespace TiCC {
   class Dbg{
   public:
     Dbg( LogStream * );
-    Dbg( LogStream&  );
+  Dbg( LogStream& l ): Dbg( &l )
+      {};
     ~Dbg();
     LogStream& operator *();
   private:
@@ -134,7 +137,9 @@ namespace TiCC {
   class xDbg{
   public:
     xDbg( LogStream * );
-    xDbg( LogStream&  );
+  xDbg( LogStream& l ): xDbg( &l )
+      {};
+
     ~xDbg();
     LogStream& operator *();
   private:
@@ -147,7 +152,9 @@ namespace TiCC {
   class xxDbg{
   public:
     xxDbg( LogStream * );
-    xxDbg( LogStream&  );
+  xxDbg( LogStream& l ): xxDbg( &l )
+      {};
+
     ~xxDbg();
     LogStream& operator *();
   private:
