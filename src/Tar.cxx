@@ -48,7 +48,7 @@ namespace TiCC {
     throw runtime_error( "unable to execute '" + s + " 'tar support not enabled" );
   }
 
-  tar::tar(){
+  tar::tar() {
   }
 
   tar::~tar(){
@@ -80,9 +80,8 @@ namespace TiCC {
   }
 
 #else
-  tar::tar(){
-    tar_file = 0;
-  }
+  tar::tar() : tar_file(0)
+  {}
 
   tar::~tar(){
     close();

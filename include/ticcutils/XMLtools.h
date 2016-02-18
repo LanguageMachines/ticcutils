@@ -150,6 +150,8 @@ namespace TiCC {
     xmlNode *MakeRoot( const std::string& );
     const std::string toString() const;
   private:
+    XmlDoc( const XmlDoc& ); // no copies please
+    XmlDoc& operator= ( const XmlDoc& ); // no copies please
     xmlDoc *the_doc;
   };
 

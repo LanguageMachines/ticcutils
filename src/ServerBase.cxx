@@ -74,11 +74,15 @@ namespace TimblServer {
 
   ServerBase::ServerBase( const Configuration *c ):
     myLog("BasicServer"),
+    doDaemon( true ),
+    debug( false ),
+    _maxConn( 25 ),
+    serverPort( 7000 ),
+    callback_data( 0 ),
     config(c)
   {
-    debug = false;
     string value = config->lookUp( "port" );
-    if ( !value. empty() ){
+    if ( !value.empty() ){
       if ( !stringTo( value, serverPort ) ){
 	cerr << "config:invalid value '" << value << "' for port" << endl;
 	exit(1);
@@ -94,9 +98,6 @@ namespace TimblServer {
 	cerr << "config: invalid value '" << value << "' for maxconn" << endl;
 	exit(1);
       }
-    }
-    else {
-      _maxConn = 25;
     }
     value = config->lookUp( "protocol" );
     if ( !value.empty() ){
@@ -115,9 +116,6 @@ namespace TimblServer {
 	cerr << "config: invalid value '" << value << "' for --daemonize" << endl;
 	exit(1);
       }
-    }
-    else {
-      doDaemon = true;
     }
     value = config->lookUp( "logfile" );
     if ( !value.empty() )

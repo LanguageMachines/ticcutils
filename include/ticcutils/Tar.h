@@ -52,6 +52,8 @@ namespace TiCC {
   private:
     TAR *tar_file;
     std::string tarname;
+    tar( const tar& ); // no copies
+    tar& operator=( const tar& ); // no copies
   };
 
 } // namespace TiCC

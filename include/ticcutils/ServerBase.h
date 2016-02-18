@@ -41,6 +41,9 @@ namespace TimblServer {
   class childArgs;
 
   class ServerBase {
+  private:
+    ServerBase( const ServerBase& ); // no copies allowed
+    ServerBase& operator=( const ServerBase& );  // no copies allowed
   public:
     bool doDebug() { return debug; };
     virtual ~ServerBase(){};
@@ -55,6 +58,7 @@ namespace TimblServer {
     virtual void socketChild( childArgs * );
     virtual void callback( childArgs* ) = 0;
     virtual void sendReject( std::ostream& os ) const;
+
     TiCC::LogStream myLog;
     std::string logFile;
     std::string pidFile;
@@ -88,6 +92,8 @@ namespace TimblServer {
     int _id;
     fdistream _is;
     fdostream _os;
+    childArgs( const childArgs& ); // no copies allowed
+    childArgs& operator=( const childArgs& ); // no copies allowed
   };
 
   class TcpServerBase : public ServerBase {
