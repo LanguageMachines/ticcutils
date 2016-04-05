@@ -123,7 +123,9 @@ namespace TiCC {
 	string::size_type pos = line.find("=");
 	if ( pos != string::npos ){
 	  string att = line.substr(0,pos);
+	  att = TiCC::trim(att);
 	  string val = line.substr(pos+1);
+	  val = TiCC::trim(val);
 	  if ( val[0] == '"' && val[val.length()-1] == '"' )
 	    val = val.substr(1, val.length()-2);
 	  val = fixControls( val );
@@ -172,7 +174,9 @@ namespace TiCC {
 	string::size_type pos = line.find("=");
 	if ( pos != string::npos ){
 	  string att = line.substr(0,pos);
+	  att = TiCC::trim(att);
 	  string val = line.substr(pos+1);
+	  val = TiCC::trim(val);
 	  if ( val[0] == '"' && val[val.length()-1] == '"' )
 	    val = val.substr(1, val.length()-2);
 	  myMap[section][att] = val;
