@@ -204,7 +204,7 @@ namespace TiCC {
     it1 = myMap.begin();
     while ( it1 != myMap.end() ){
       if ( it1->first != "global" ){
-	os << "[[" << it1->first << "]]" << endl;
+	os << endl << "[[" << it1->first << "]]" << endl;
 	it2 = it1->second.begin();
 	while ( it2 != it1->second.end() ){
 	  os << it2->first << "=" << it2->second << endl;
