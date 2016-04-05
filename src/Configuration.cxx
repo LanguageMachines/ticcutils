@@ -244,6 +244,23 @@ namespace TiCC {
     return oldVal;
   }
 
+  string Configuration::clearatt( const string& att,
+				  const string& sect ){
+    string oldVal;
+    string section = sect;
+    if ( section.empty() )
+      section = "global";
+    auto it1 = myMap.find( section );
+    if ( it1 != myMap.end() ){
+      auto const& it2 = it1->second.find( att );
+      if ( it2 != it1->second.end() ){
+	oldVal = it2->second;
+      }
+      it1->second.erase( att );
+    }
+    return oldVal;
+  }
+
   string Configuration::lookUp( const string& att, const string& section ) const {
     string key = section;
     if ( key.empty() )

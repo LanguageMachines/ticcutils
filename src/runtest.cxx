@@ -484,8 +484,10 @@ void test_configuration( const string& path ){
   assertEqual( att, "een jongen" );
   att = c.lookUp( "klara", "test" );
   assertEqual( att, "speciaal=raar" );
-  c.setatt( "jan", "normaal" );
+  string oud = c.setatt( "jan", "normaal" );
+  assertEqual( oud, "gek" );
   c.setatt( "pief", "paf", "poef" );
+  c.clearatt( "piet", "test" );
   assertNoThrow( c.create_configfile( "/tmp/test.cfg" ) );
   Configuration c2;
   assertTrue( c2.fill( "/tmp/test.cfg" ) );
@@ -493,10 +495,12 @@ void test_configuration( const string& path ){
   assertEqual( att, "normaal" );
   att = c2.lookUp( "klara", "test" );
   assertEqual( att, "speciaal=raar" );
-  att = c.lookUp( "kees", "test" );
+  att = c2.lookUp( "kees", "test" );
   assertEqual( att, "een jongen" );
-  att = c.lookUp( "pief", "poef" );
+  att = c2.lookUp( "pief", "poef" );
   assertEqual( att, "paf" );
+  att = c2.lookUp( "piet", "test" );
+  assertEqual( att, "" );
 }
 
 int main( const int argc, const char* argv[] ){

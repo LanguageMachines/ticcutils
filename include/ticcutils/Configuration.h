@@ -47,6 +47,8 @@ namespace TiCC {
     std::string setatt( const std::string&,
 			const std::string&,
 			const std::string& = "" );
+    std::string clearatt( const std::string&,
+			  const std::string& = "" );
     void dump( std::ostream& ) const;
     void create_configfile( const std::string& ) const;
     std::string configDir() const { return cdir; };
