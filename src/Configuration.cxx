@@ -191,17 +191,20 @@ namespace TiCC {
       os << "empty" << endl;
       return;
     }
-    os << "[global]" << endl;
-    os << "configDir=" << cdir << endl;
+    os << "[[global]]" << endl;
+    if ( !cdir.empty() ){
+      os << "configDir=" << cdir << endl;
+    }
     auto it2 = it1->second.begin();
     while ( it2 != it1->second.end() ){
+      string out = it2->second;
       os << it2->first << "=" << it2->second << endl;
       ++it2;
     }
     it1 = myMap.begin();
     while ( it1 != myMap.end() ){
       if ( it1->first != "global" ){
-	os << "[" << it1->first << "]" << endl;
+	os << "[[" << it1->first << "]]" << endl;
 	it2 = it1->second.begin();
 	while ( it2 != it1->second.end() ){
 	  os << it2->first << "=" << it2->second << endl;
@@ -210,6 +213,14 @@ namespace TiCC {
       }
       ++it1;
     }
+  }
+
+  void Configuration::create_configfile( const string& name ) const {
+    ofstream os( name );
+    if ( !os ){
+      throw runtime_error( "unable to create outputfile: " + name );
+    }
+    dump( os );
   }
 
   string Configuration::setatt( const string& att,

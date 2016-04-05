@@ -48,6 +48,7 @@ namespace TiCC {
 			const std::string&,
 			const std::string& = "" );
     void dump( std::ostream& ) const;
+    void create_configfile( const std::string& ) const;
     std::string configDir() const { return cdir; };
   private:
     sssMap myMap;

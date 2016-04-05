@@ -484,6 +484,13 @@ void test_configuration( const string& path ){
   assertEqual( att, "een jongen" );
   att = c.lookUp( "klara", "test" );
   assertEqual( att, "speciaal=raar" );
+  assertNoThrow( c.create_configfile( "/tmp/test.cfg" ) );
+  Configuration c2;
+  assertTrue( c2.fill( "/tmp/test.cfg" ) );
+  att = c2.lookUp( "klara", "test" );
+  assertEqual( att, "speciaal=raar" );
+  att = c.lookUp( "kees", "test" );
+  assertEqual( att, "een jongen" );
 }
 
 int main( const int argc, const char* argv[] ){
