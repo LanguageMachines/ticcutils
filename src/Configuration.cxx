@@ -238,6 +238,9 @@ namespace TiCC {
       }
       it1->second[att] = val;
     }
+    else {
+      myMap[section].insert( make_pair( att, val ) );
+    }
     return oldVal;
   }
 
