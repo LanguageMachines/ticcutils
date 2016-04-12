@@ -88,7 +88,12 @@ namespace TiCC {
   }
 
   bool Configuration::fill( const string& fileName ){
-    cdir = dirname( fileName );
+    ifstream is( fileName );
+    if ( !is ){
+      cerr << "unable to read configuration from " << fileName << endl;
+      return false;
+    }
+    string cdir = dirname( fileName );
     if ( cdir == "." ){
       cdir = "";
     }
@@ -96,11 +101,7 @@ namespace TiCC {
       cdir += "/";
     }
     //  cerr << "dirname= " << cdir << endl;
-    ifstream is( fileName );
-    if ( !is ){
-      cerr << "unable to read configuration from " << fileName << endl;
-      return false;
-    }
+    myMap["global"]["configDir"] = cdir; // can be overidden below
     string inLine;
     string section = "global";
     while ( getline( is, inLine ) ){
@@ -130,9 +131,6 @@ namespace TiCC {
 	    val = val.substr(1, val.length()-2);
 	  val = fixControls( val );
 	  myMap[section][att] = val;
-	  if ( section == "global"
-	       && att == "configDir" )
-	    cdir = val;
 	}
 	else {
 	  cerr << "invalid attribute value pair in line '" << line << "'" << endl;
@@ -143,7 +141,7 @@ namespace TiCC {
     return true;
   }
 
-  bool Configuration::fill( const string& fileName, const string& section ){
+  bool Configuration::fill( const string& fileName, const string& insect ){
     ifstream is( fileName );
     if ( !is ){
       cerr << "unable to read configuration from " << fileName << endl;
@@ -152,7 +150,8 @@ namespace TiCC {
     bool found = false;
     string inLine;
     string localsection;
-    //  cerr << "looking for section = " << section << endl;
+    string section = TiCC::trim(insect);
+    //  cerr << "looking for section = " << insection << endl;
     while ( getline( is, inLine ) ){
       string line = TiCC::trim(inLine);
       if ( line.empty() )
@@ -163,6 +162,7 @@ namespace TiCC {
 	if ( line[line.length()-1] == ']' &&
 	     line[line.length()-2] == ']' ){
 	  localsection = line.substr(2,line.length()-4);
+	  localsection = TiCC::trim(localsection);
 	  //	cerr << "GOT section = " << localsection << endl;
 	}
 	else {
@@ -202,9 +202,6 @@ namespace TiCC {
       return;
     }
     os << "[[global]]" << endl;
-    if ( !cdir.empty() ){
-      os << "configDir=" << cdir << endl;
-    }
     auto it2 = it1->second.begin();
     while ( it2 != it1->second.end() ){
       string out = it2->second;
@@ -233,14 +230,16 @@ namespace TiCC {
     dump( os );
   }
 
-  string Configuration::setatt( const string& att,
-				const string& val,
-				const string& sect ){
+  string Configuration::setatt( const string& inatt,
+				const string& inval,
+				const string& insect ){
     string oldVal;
-    string section = sect;
-    if ( section.empty() )
-      section = "global";
-    auto it1 = myMap.find( section );
+    string att = TiCC::trim(inatt);
+    string val = TiCC::trim(inval);
+    string sect = TiCC::trim(insect);
+    if ( sect.empty() )
+      sect = "global";
+    auto it1 = myMap.find( sect );
     if ( it1 != myMap.end() ){
       auto const& it2 = it1->second.find( att );
       if ( it2 != it1->second.end() ){
@@ -249,30 +248,44 @@ namespace TiCC {
       it1->second[att] = val;
     }
     else {
-      myMap[section].insert( make_pair( att, val ) );
+      myMap[sect].insert( make_pair( att, val ) );
     }
     return oldVal;
   }
 
-  string Configuration::clearatt( const string& att,
-				  const string& sect ){
+  string Configuration::clearatt( const string& inatt,
+				  const string& insect ){
+    //    cerr << "clear att: '" << inatt << "' in [" << insect << "]" << endl;
     string oldVal;
-    string section = sect;
-    if ( section.empty() )
-      section = "global";
-    auto it1 = myMap.find( section );
+    string sect = TiCC::trim(insect);
+    string att = TiCC::trim(inatt);
+    if ( sect.empty() )
+      sect = "global";
+    //    cerr << "clear sect [" << sect << "]" << endl;
+    auto it1 = myMap.find( sect );
     if ( it1 != myMap.end() ){
+      //      cerr << "found sect [" << sect << "]" << endl;
       auto const& it2 = it1->second.find( att );
       if ( it2 != it1->second.end() ){
+	//	cerr << "found att [" << att << "]" << endl;
 	oldVal = it2->second;
+      }
+      else {
+	//	cerr << "missed att [" << att << "]" << endl;
       }
       it1->second.erase( att );
     }
+    else {
+      //      cerr << "MISSED sect [" << sect << "]" << endl;
+    }
     return oldVal;
   }
 
-  string Configuration::lookUp( const string& att, const string& section ) const {
-    string key = section;
+  string Configuration::lookUp( const string& inatt,
+				const string& insect ) const {
+    string sect = TiCC::trim(insect);
+    string att = TiCC::trim(inatt);
+    string key = sect;
     if ( key.empty() )
       key = "global";
     auto const& it1 = myMap.find( key );
@@ -282,7 +295,7 @@ namespace TiCC {
     else {
       auto const& it2 = it1->second.find( att );
       if ( it2 == it1->second.end() ){
-	if ( section.empty() || section == "global" )
+	if ( sect.empty() || sect == "global" )
 	  return "";
 	else
 	  return lookUp( att, "global" );
@@ -292,12 +305,13 @@ namespace TiCC {
     }
   }
 
-  map<string,string> Configuration::lookUpAll( const string& section ) const {
+  map<string,string> Configuration::lookUpAll( const string& insect ) const {
     map<string,string> result;
-    string key = section;
-    if ( key.empty() )
-      key = "global";
-    auto const& it1 = myMap.find( key );
+    string sect = TiCC::trim(insect);
+    if ( sect.empty() ){
+      sect = "global";
+    }
+    auto const& it1 = myMap.find( sect );
     if ( it1 != myMap.end() ){
       auto it2 = it1->second.begin();
       while ( it2 != it1->second.end() ){
@@ -319,9 +333,10 @@ namespace TiCC {
     return result;
   }
 
-  bool Configuration::hasSection( const string& section ) const {
-    if ( !section.empty() ){
-      auto const it = myMap.find( section );
+  bool Configuration::hasSection( const string& insect ) const {
+    string sect = TiCC::trim( insect );
+    if ( !sect.empty() ){
+      auto const it = myMap.find( sect );
       if ( it != myMap.end() )
 	return true;
     }

@@ -51,10 +51,10 @@ namespace TiCC {
 			  const std::string& = "" );
     void dump( std::ostream& ) const;
     void create_configfile( const std::string& ) const;
-    std::string configDir() const { return cdir; };
+    std::string configDir() const { return lookUp( "configDir" ); };
   private:
     sssMap myMap;
-    std::string cdir;
+    std::string cdir; // not used. left here for binary compatibility
   };
 }
 #endif
