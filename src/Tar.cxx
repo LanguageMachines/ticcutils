@@ -56,27 +56,33 @@ namespace TiCC {
 
   bool tar::open( const string& ){
     tarfail( "open()" );
+    return false;
   }
 
   bool tar::close() {
+    return false;
   }
 
   bool tar::extract_file_names( vector<string>&,
 				const string& ){
     tarfail( "extract_file_names()" );
+    return false;
   }
 
   bool tar::extract_file_names_match( vector<string>&,
 				      const string& ){
     tarfail( "extract_file_names_match()" );
+    return false;
   }
 
   bool tar::extract_ifstream( const string&, ifstream& ){
     tarfail( "extract_ifstream()" );
+    return false;
   }
 
   bool tar::next_ifstream( ifstream&, string&){
     tarfail( "next_ifstream()" );
+    return false;
   }
 
 #else
