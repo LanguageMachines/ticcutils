@@ -97,6 +97,22 @@ namespace TiCC {
     return result;
   }
 
+  map<string,string> getDefinedNS( const xmlNode *node ){
+    map<string,string> result;
+    xmlNs *p = node->nsDef;
+    while ( p ){
+      string pre;
+      string val;
+  if ( p->prefix ){
+	pre = (char *)p->prefix;
+      }
+      val = (char *)p->href;
+      result[pre] = val;
+      p = p->next;
+    }
+    return result;
+  }
+
   //#define DEBUG_XPATH
 
   list<xmlNode*> FindLocal( xmlXPathContext* ctxt,
@@ -163,9 +179,9 @@ namespace TiCC {
 
   list<xmlNode*> FindNodes( xmlNode* node,
 			    const string& xPath ){
-    string xpath = replaceStarNS( xPath );
+  string xpath = replaceStarNS( xPath );
 #ifdef DEBUG_XPATH
-    cerr << "replaced " << xPath << " by " << xpath << endl;
+  cerr << "replaced " << xPath << " by " << xpath << endl;
 #endif
     xmlXPathContext* ctxt = xmlXPathNewContext( node->doc );
     ctxt->node = node;
@@ -176,10 +192,7 @@ namespace TiCC {
       cerr << "no " << xPath << " nodes found in " << Name(node) << endl;
     }
     else {
-      cerr << "Found " << xPath << " nodes found in " << Name(node) << endl;
-      for ( auto const& it : nodes ){
-	cerr << "node " << Name(it) << endl;
-      }
+  cerr << "Found " << nodes.size() << " nodes in " << Name(node) << endl;
     }
 #endif
     if (ctxt->namespaces != NULL)

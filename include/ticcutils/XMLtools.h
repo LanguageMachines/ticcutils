@@ -115,6 +115,7 @@ namespace TiCC {
   }
 
   std::map<std::string,std::string> getNSvalues( const xmlNode * );
+  std::map<std::string,std::string> getDefinedNS( const xmlNode * );
 
   std::string serialize( const xmlNode& node );
 
