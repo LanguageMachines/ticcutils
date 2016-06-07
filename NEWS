@@ -1,4 +1,4 @@
-7 jun 2016 0,12
+7 jun 2016 0.12
 [Ko vd Sloot]
 Bug fix release.
 - fixed compiler warnings  when libtar-dev is missing
