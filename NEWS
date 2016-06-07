@@ -1,3 +1,16 @@
+7 jun 2016 0,12
+[Ko vd Sloot]
+Bug fix release.
+- fixed compiler warnings  when libtar-dev is missing
+- in Config code:
+  - trim spaces in entries
+  - don't add more then 1 configDir option
+  - Config::dump() is fixed
+  - added a clearatt() function
+- added and updated tests.
+- XMLtools:
+  - added a function to poll ALL Defines namespaces on a node
+
 14 jan 2016 0.11
 [Ko vd Sloot]
 A lot is done since 0.7

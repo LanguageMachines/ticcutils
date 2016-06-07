@@ -192,7 +192,7 @@ namespace TiCC {
       cerr << "no " << xPath << " nodes found in " << Name(node) << endl;
     }
     else {
-  cerr << "Found " << nodes.size() << " nodes in " << Name(node) << endl;
+      cerr << "Found " << nodes.size() << " nodes in " << Name(node) << endl;
     }
 #endif
     if (ctxt->namespaces != NULL)
