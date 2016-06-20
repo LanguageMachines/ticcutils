@@ -43,8 +43,9 @@ using namespace TiCC;
 
 namespace TimblServer {
 
-  const string serv_short_opts = "hVS:f:i:u:";
+  const string serv_short_opts = "S:C:";
   const string serv_long_opts =
+    // leave the , below!. This string is appended
     ",pidfile:,logfile:,daemonize::,debug:,config:";
 
   string Version() { return VERSION; }
