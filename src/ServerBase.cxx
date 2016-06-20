@@ -45,7 +45,7 @@ namespace TimblServer {
 
   const string serv_short_opts = "S:C:";
   const string serv_long_opts =
-    // leave the , below!. This string is appended
+    // leave the , below!. This string is appended later
     ",pidfile:,logfile:,daemonize::,debug:,config:";
 
   string Version() { return VERSION; }
