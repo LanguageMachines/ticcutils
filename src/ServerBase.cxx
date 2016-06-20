@@ -45,7 +45,7 @@ namespace TimblServer {
 
   const string serv_short_opts = "hVS:f:i:u:";
   const string serv_long_opts =
-    ",pidfile:,logfile:,daemonize::,debug:,config:,matrixin:";
+    ",pidfile:,logfile:,daemonize::,debug:,config:";
 
   string Version() { return VERSION; }
   string VersionName() { return PACKAGE_STRING; }
