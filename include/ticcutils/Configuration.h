@@ -56,5 +56,21 @@ namespace TiCC {
     sssMap myMap;
     std::string cdir; // not used. left here for binary compatibility
   };
+
+  inline std::ostream& operator<<( std::ostream& os, const Configuration& c ){
+    c.dump(os);
+    return os;
+  }
+
+  inline std::ostream& operator<<( std::ostream& os, const Configuration* c ){
+    if ( c ){
+      c->dump(os);
+    }
+    else {
+      os << "empty config";
+    }
+    return os;
+  }
+
 }
 #endif
