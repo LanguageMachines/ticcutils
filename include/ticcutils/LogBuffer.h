@@ -47,7 +47,7 @@ template <class charT, class traits = std::char_traits<charT> >
 		   const LogFlag flag = StampBoth ):
  ass_stream( &a ),
  stamp_flag( flag ),
- in_sync(false),
+ in_sync(true),
  level(LogNormal),
  threshold_level(LogSilent),
  ass_mess( mess )
