@@ -40,6 +40,7 @@
 #include "ticcutils/FileUtils.h"
 #include "ticcutils/CommandLine.h"
 #include "ticcutils/Configuration.h"
+#include "ticcutils/LogStream.h"
 
 using namespace std;
 using namespace TiCC;
@@ -503,6 +504,38 @@ void test_configuration( const string& path ){
   assertEqual( att, "" );
 }
 
+void test_logstream( const string& path ){
+  ofstream uit( path + "testls.1" );
+  LogStream ls( uit );
+  ls.setstamp( NoStamp );
+  *Log( ls ) << "test 1 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
+  *Dbg( ls ) << "debug 1" << endl;
+  *xDbg( ls ) << "x_debug 1" << endl;
+  *xxDbg( ls ) << "xx_debug 1" << endl;
+  ls.setlevel( LogSilent );
+  *Log( ls ) << "test 2 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
+  *Dbg( ls ) << "debug 2" << endl;
+  *xDbg( ls ) << "x_debug 2" << endl;
+  *xxDbg( ls ) << "xx_debug 2" << endl;
+  ls.setlevel( LogDebug );
+  *Log( ls ) << "test 3 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
+  *Dbg( ls ) << "debug 3" << endl;
+  *xDbg( ls ) << "x_debug 3" << endl;
+  *xxDbg( ls ) << "xx_debug 3" << endl;
+  ls.setlevel( LogExtreme );
+  *Log( ls ) << "test 4 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
+  *Dbg( ls ) << "debug 4" << endl;
+  *xDbg( ls ) << "x_debug 4" << endl;
+  *xxDbg( ls ) << "xx_debug 4" << endl;
+  ls.setlevel( LogHeavy );
+  *Log( ls ) << "test 5 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
+  *Dbg( ls ) << "debug 5" << endl;
+  *xDbg( ls ) << "x_debug 5" << endl;
+  *xxDbg( ls ) << "xx_debug 5" << endl;
+  string cmd = "diff " + path + "testls.1 " + path + "testls.1.ok";
+  assertEqual( system( cmd.c_str() ), 0 );
+}
+
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
   test_opts_basic();
@@ -543,5 +576,6 @@ int main( const int argc, const char* argv[] ){
   test_tar( testdir );
   test_fileutils( testdir );
   test_configuration( testdir );
+  test_logstream( testdir );
   summarize_tests(3);
 }

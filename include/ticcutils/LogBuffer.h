@@ -49,7 +49,7 @@ template <class charT, class traits = std::char_traits<charT> >
  stamp_flag( flag ),
  in_sync(true),
  level(LogNormal),
- threshold_level(LogSilent),
+ threshold_level(LogNormal),
  ass_mess( mess )
  {};
   ~basic_log_buffer();
@@ -117,7 +117,9 @@ inline std::string time_stamp(){
 template <class charT, class traits >
 int basic_log_buffer<charT,traits>::overflow( int c ) {
   buffer_out();
-  if ( level > threshold_level && c != '\r' ){
+  if ( level >= threshold_level && c != '\r' ){
+    //    std::cerr << "overflow OK: " << level << " >= " << threshold_level
+    //	      << "(" << char(c) << ")" << std::endl;
     if ( c != EOF ){
       char z = static_cast<char>(c);
       ass_stream->put( z );
@@ -137,7 +139,8 @@ int basic_log_buffer<charT,traits>::sync() {
 
 template <class charT, class traits >
 void basic_log_buffer<charT,traits>::buffer_out(){
-  if ( level > threshold_level ){
+  if ( level >= threshold_level ){
+    //    std::cerr << "buffer_out OK: " << level << " >= " << threshold_level << std::endl;
     // only output when we are on a high enough level
     if ( in_sync ) {
       // stamps and messages are only displayed when in sync
