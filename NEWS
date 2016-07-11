@@ -1,3 +1,9 @@
+11 jul 2016 0.13
+Bug fix release
+- LogSteam: fixed init and LogLevel stuff. Added tests
+- Configuration: add ooutput operators
+- Serverbase: removed unsupported options. (some Timbl remains)
+
 7 jun 2016 0.12
 [Ko vd Sloot]
 Bug fix release.
