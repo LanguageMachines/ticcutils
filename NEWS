@@ -1,4 +1,5 @@
 11 jul 2016 0.13
+[Ko vd Sloot]
 Bug fix release
 - LogSteam: fixed init and LogLevel stuff. Added tests
 - Configuration: add ooutput operators
