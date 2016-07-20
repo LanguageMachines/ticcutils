@@ -5,7 +5,7 @@
 
 AC_PREREQ(2.61)
 AC_INIT([ticcutils],[0.14],[lamasoftware@science.ru.nl])
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([.])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADER([config.h])
