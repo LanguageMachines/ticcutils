@@ -57,6 +57,8 @@ namespace Sockets {
     }
   }
 
+  // #define KEEP // experiment with keep-alive
+
   bool Socket::read( string& line ) {
     if ( !isValid() ){
       mess = "read: socket invalid";
@@ -66,7 +68,13 @@ namespace Sockets {
     long int total_count = 0;
     char last_read = 0;
     long int bytes_read = -1;
-    while ( last_read != 10 ) { // read 1 character at a time upto \lf
+#ifdef KEEP
+    val = 1;
+    setsockopt( sock, SOL_SOCKET, SO_KEEPALIVE, (void *)&val, sizeof(val) );
+    val = 20;
+    setsockopt( sock, SOL_TCP, TCP_KEEPIDLE, (void *)&val, sizeof(val) );
+#endif
+    while ( last_read != 10 ) { // read 1 character at a time upto \n
       bytes_read = ::read( sock, &last_read, 1 );
       if ( bytes_read <= 0) {
 	// The other side may have closed unexpectedly
