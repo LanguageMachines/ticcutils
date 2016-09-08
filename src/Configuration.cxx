@@ -281,7 +281,7 @@ namespace TiCC {
     return oldVal;
   }
 
-  string Configuration::lookUp( const string& inatt,
+  string Configuration::getatt( const string& inatt,
 				const string& insect ) const {
     string sect = TiCC::trim(insect);
     string att = TiCC::trim(inatt);
