@@ -1,3 +1,15 @@
+18 oct 2016
+[Ko van der Sloot]
+- fixed pthread checking in configure
+- added	getatt() member to Configuration class, to get in line with setatt()
+        and clearatt(). lookUp() still supported
+
+- added code to use TCP_KEEPALIVE. Not used and little tested.
+
+26 jul 2016
+[Maarten van Gompel]
+- Very minor release update to facilitate debian packaging
+
 11 jul 2016 0.13
 [Ko vd Sloot]
 Bug fix release
