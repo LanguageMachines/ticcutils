@@ -502,7 +502,7 @@ void test_configuration( const string& path ){
 }
 
 void test_logstream( const string& path ){
-  ofstream uit( path + "testls.1" );
+  ofstream uit( "/tmp/testls.1" );
   LogStream ls( uit );
   ls.setstamp( NoStamp );
   *Log( ls ) << "test 1 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
@@ -529,7 +529,7 @@ void test_logstream( const string& path ){
   *Dbg( ls ) << "debug 5" << endl;
   *xDbg( ls ) << "x_debug 5" << endl;
   *xxDbg( ls ) << "xx_debug 5" << endl;
-  string cmd = "diff " + path + "testls.1 " + path + "testls.1.ok";
+  string cmd = "diff /tmp/testls.1 " + path + "testls.1.ok";
   assertEqual( system( cmd.c_str() ), 0 );
 }
 
