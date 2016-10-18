@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/LanguageMachines/ticcutils.svg?branch=master)](https://travis-ci.org/LanguageMachines/ticcutils) [![Language Machines Badge](http://applejack.science.ru.nl/lamabadge.php/ticcutils)](http://applejack.science.ru.nl/languagemachines/) 
+[![Build Status](https://travis-ci.org/LanguageMachines/ticcutils.svg?branch=master)](https://travis-ci.org/LanguageMachines/ticcutils) [![Language Machines Badge](http://applejack.science.ru.nl/lamabadge.php/ticcutils)](http://applejack.science.ru.nl/languagemachines/)
 
 ==============
 TiCC utils
@@ -38,7 +38,7 @@ following pakages:
 - ``autotools``
 - ``autoconf-archive``
 - ``libxml2-dev``
-- preferably also: ``libtar-dev``, ``libbz2-dev``, ``libboost-dev``, ``libboost-regex-dev``
+- preferably also: ``libtar-dev``, ``libbz2-dev``, ``zlib1g-dev``, ``libboost-dev``, ``libboost-regex-dev``
 
 --------------------------------
 Installation Instructions

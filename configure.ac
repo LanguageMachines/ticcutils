@@ -39,6 +39,8 @@ else
 fi
 
 #checks for libraries.
+AX_CHECK_ZLIB( [],
+	       [AC_MSG_NOTICE([libzlib1g-dev not found. gz support disabled.])] )
 
 # Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h sys/socket.h unistd.h sys/time.h])

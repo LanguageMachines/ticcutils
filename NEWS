@@ -1,12 +1,14 @@
-18 oct 2016
+18 oct 2016 0.14
 [Ko van der Sloot]
+- fixed dependecy on zlib1g-dev in configure
 - fixed pthread checking in configure
+- fixed tests.
 - added	getatt() member to Configuration class, to get in line with setatt()
         and clearatt(). lookUp() still supported
 
 - added code to use TCP_KEEPALIVE. Not used and little tested.
 
-26 jul 2016
+26 jul 2016 0.13.1
 [Maarten van Gompel]
 - Very minor release update to facilitate debian packaging
 

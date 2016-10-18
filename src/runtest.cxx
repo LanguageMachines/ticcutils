@@ -390,9 +390,6 @@ void test_bz2compression( const string& path ){
   assertEqual( buffer.substr(0,4), "This" );
   string cmd = "diff " + path + "small.txt bzout.txt";
   assertEqual( system( cmd.c_str() ), 0 );
-  assertTrue( gzDecompress( path + "nasty.bz2", "nasty.txt" ) );
-  cmd = "diff " + path + "nasty.bz2 nasty.txt";
-  assertEqual( system(cmd.c_str()), 0 );
 }
 
 void test_gzcompression( const string& path ){
@@ -571,9 +568,15 @@ int main( const int argc, const char* argv[] ){
   string testdir;
   bool dummy;
   opts1.is_present( 'd', testdir, dummy );
+#ifdef HAVE_BZLIB_H
   test_bz2compression( testdir );
+#endif
+#ifdef HAVE_LIBZ
   test_gzcompression( testdir );
+#endif
+#ifdef HAVE_LIBTAR_H
   test_tar( testdir );
+#endif
   test_fileutils( testdir );
   test_configuration( testdir );
   test_logstream( testdir );
