@@ -1,3 +1,4 @@
+ChangeLog
 Makefile
 Makefile.in
 aclocal.m4
@@ -45,3 +46,4 @@ tests/Makefile.in
 tests/sub1/Makefile
 tests/sub1/Makefile.in
 ticcutils.pc
+*.gz
