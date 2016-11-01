@@ -570,12 +570,18 @@ int main( const int argc, const char* argv[] ){
   opts1.is_present( 'd', testdir, dummy );
 #ifdef HAVE_BZLIB_H
   test_bz2compression( testdir );
+#else
+  cerr << "no BZ2 support available" << endl;
 #endif
 #ifdef HAVE_LIBZ
   test_gzcompression( testdir );
+#else
+  cerr << "no GZ support available" << endl;
 #endif
 #ifdef HAVE_LIBTAR_H
   test_tar( testdir );
+#else
+  cerr << "no tar support available" << endl;
 #endif
   test_fileutils( testdir );
   test_configuration( testdir );
