@@ -41,6 +41,8 @@
 using namespace std;
 using namespace TiCC;
 
+#define LOG *Log(myLog)
+
 namespace TimblServer {
 
   const string serv_short_opts = "S:C:";
@@ -85,19 +87,19 @@ namespace TimblServer {
     string value = config->lookUp( "port" );
     if ( !value.empty() ){
       if ( !stringTo( value, serverPort ) ){
-	cerr << "config:invalid value '" << value << "' for port" << endl;
-	exit(1);
+	string mess = "ServerBase: invalid value '" + value + "' for port";
+	throw runtime_error( mess );
       }
     }
     else {
-      cerr << "missing 'port' in config " << endl;
-      exit(1);
+      string mess = "ServerBase:missing 'port' in config ";
+      throw runtime_error( mess );
     }
     value = config->lookUp( "maxconn" );
     if ( !value.empty() ){
       if ( !stringTo( value, _maxConn ) ){
-	cerr << "config: invalid value '" << value << "' for maxconn" << endl;
-	exit(1);
+	string mess = "ServerBase: invalid value '" + value + "' for maxconn";
+	throw runtime_error( mess );
       }
     }
     value = config->lookUp( "protocol" );
@@ -114,8 +116,9 @@ namespace TimblServer {
       else if ( value == "yes" )
 	doDaemon = true;
       else {
-	cerr << "config: invalid value '" << value << "' for --daemonize" << endl;
-	exit(1);
+	string mess = "ServerBase: invalid value '" + value
+	  + "' for --daemonize";
+	throw runtime_error( mess );
       }
     }
     value = config->lookUp( "logfile" );
@@ -137,8 +140,8 @@ namespace TimblServer {
       else if ( value == "yes" )
 	debug = true;
       else {
-	cerr << "config: invalid value '" << value << "' for --debug" << endl;
-	exit(1);
+	string mess = "ServerBase: invalid value '" + value + "' for --debug";
+	throw runtime_error( mess );
       }
     }
     tcp_socket = 0;
@@ -316,8 +319,8 @@ namespace TimblServer {
   // ***** This is the routine that is executed from a new TCP thread *******
   void ServerBase::socketChild( childArgs *args ){
     signal( SIGPIPE, BrokenPipeChildFun );
-    *Log(myLog) << "Thread " << (uintptr_t)pthread_self() << " on socket "
-		<< args->id() << ", started at: " << Timer::now();
+    LOG << "Thread " << (uintptr_t)pthread_self() << " on socket "
+	<< args->id() << ", started at: " << Timer::now();
     static int service_count=0;
     static pthread_mutex_t my_lock = PTHREAD_MUTEX_INITIALIZER;
     pthread_mutex_lock(&my_lock);
@@ -325,8 +328,8 @@ namespace TimblServer {
     if ( service_count >= maxConn() ){
       sendReject( args->os() );
       pthread_mutex_unlock( &my_lock );
-      *Log(myLog) << "Thread " << (uintptr_t)pthread_self()
-		  << " refused " << endl;
+      LOG << "Thread " << (uintptr_t)pthread_self()
+	  << " refused " << endl;
     }
     else {
       ++service_count;
@@ -334,12 +337,12 @@ namespace TimblServer {
       callback( args );
       pthread_mutex_lock(&my_lock);
       // use a mutex to update and display the global service counter
-      *Log(myLog) << "Socket total = " << --service_count << endl;
+      LOG << "Socket total = " << --service_count << endl;
       pthread_mutex_unlock(&my_lock);
     }
     // close the socket and exit this thread
-    *Log(myLog) << "Thread " << (uintptr_t)pthread_self()
-		<< ", terminated at: " << Timer::now();
+    LOG << "Thread " << (uintptr_t)pthread_self()
+	<< ", terminated at: " << Timer::now();
     delete args;
   }
 
@@ -354,8 +357,8 @@ namespace TimblServer {
   }
 
   int ServerBase::Run(){
-    *Log(myLog) << "Starting a " << serverProtocol
-		<< " server on port " << serverPort << endl;
+    LOG << "Starting a " << serverProtocol
+	<< " server on port " << serverPort << endl;
     if ( !pidFile.empty() ){
       // check validity of pidfile
       if ( doDaemon && pidFile[0] != '/' ) // make sure the path is absolute
@@ -363,8 +366,8 @@ namespace TimblServer {
       unlink( pidFile.c_str() ) ;
       ofstream pid_file( pidFile ) ;
       if ( !pid_file ){
-	*Log(myLog)<< "unable to create pidfile:"<< pidFile << endl;
-	*Log(myLog)<< "not Started" << endl;
+	LOG<< "unable to create pidfile:"<< pidFile << endl;
+	LOG<< "not Started" << endl;
 	return EXIT_FAILURE;
       }
     }
@@ -374,22 +377,22 @@ namespace TimblServer {
 	logFile = '/' + logFile;
       logS = new ofstream( logFile );
       if ( logS && logS->good() ){
-	*Log(myLog) << "switching logging to file " << logFile << endl;
+	LOG << "switching logging to file " << logFile << endl;
 	myLog.associate( *logS );
-	*Log(myLog)  << "Started logging " << endl;
-	*Log(myLog)  << "debugging is " << (doDebug()?"on":"off") << endl;
+	LOG  << "Started logging " << endl;
+	LOG  << "debugging is " << (doDebug()?"on":"off") << endl;
       }
       else {
 	delete logS;
-	*Log(myLog) << "unable to create logfile: " << logFile << endl;
-	*Log(myLog) << "not started" << endl;
+	LOG << "unable to create logfile: " << logFile << endl;
+	LOG << "not started" << endl;
 	return EXIT_FAILURE;
       }
     }
 
     int start = 1;
     if ( doDaemon ){
-      *Log(myLog) << "running as a dæmon" << endl;
+      LOG << "running as a dæmon" << endl;
       signal( SIGCHLD, AfterDaemonFun );
       start = daemonize( 0, logFile.empty() );
     }
@@ -402,37 +405,37 @@ namespace TimblServer {
       // signal it to the world
       ofstream pid_file( pidFile ) ;
       if ( !pid_file ){
-	*Log(myLog) << "unable to create pidfile:"<< pidFile << endl;
-	*Log(myLog) << "server NOT Started" << endl;
+	LOG << "unable to create pidfile:"<< pidFile << endl;
+	LOG << "server NOT Started" << endl;
 	return EXIT_FAILURE;
       }
       else {
 	pid_t pid = getpid();
 	pid_file << pid << endl;
-	*Log(myLog) << "wrote PID=" << pid << " to " << pidFile << endl;
+	LOG << "wrote PID=" << pid << " to " << pidFile << endl;
       }
     }
     // set the attributes
     pthread_attr_t attr;
     if ( pthread_attr_init(&attr) ||
 	 pthread_attr_setdetachstate( &attr, PTHREAD_CREATE_DETACHED ) ){
-      *Log(myLog) << "Threads: couldn't set attributes" << endl;
+      LOG << "Threads: couldn't set attributes" << endl;
       return EXIT_FAILURE;
     }
-    *Log(myLog) << "Starting Server on port:" << serverPort << endl;
+    LOG << "Starting Server on port:" << serverPort << endl;
 
     pthread_t chld_thr;
 
     Sockets::ServerSocket server;
     string portString = toString<int>(serverPort);
     if ( !server.connect( portString ) ){
-      *Log(myLog) << "failed to start Server: " << server.getMessage() << endl;
+      LOG << "failed to start Server: " << server.getMessage() << endl;
       return EXIT_FAILURE;
     }
 
     if ( !server.listen( 5 ) ) {
       // maximum of 5 pending requests
-      *Log(myLog) << server.getMessage() << endl;
+      LOG << server.getMessage() << endl;
       return EXIT_FAILURE;
     }
 
@@ -448,10 +451,10 @@ namespace TimblServer {
       if ( !server.accept( *newSocket ) ){
 	cerr << "accept failed: " + server.getMessage() << endl;
 	delete newSocket;
-	*Log(myLog) << server.getMessage() << endl;
+	LOG << server.getMessage() << endl;
 	if ( ++failcount > 20 ){
-	  *Log(myLog) << "accept failcount > 20 " << endl;
-	  *Log(myLog) << "server stopped." << endl;
+	  LOG << "accept failcount > 20 " << endl;
+	  LOG << "server stopped." << endl;
 	  return EXIT_FAILURE;
 	}
 	else {
@@ -461,10 +464,10 @@ namespace TimblServer {
       else {
 	if ( !keepGoing ) break;
 	failcount = 0;
-	*Log(myLog) << "Accepting Connection #"
-		    << newSocket->getSockId()
-		    << " from remote host: "
-		    << newSocket->getClientName() << endl;
+	LOG << "Accepting Connection #"
+	    << newSocket->getSockId()
+	    << " from remote host: "
+	    << newSocket->getClientName() << endl;
 	// create a new thread to process the incoming request
 	// (The thread will terminate itself when done processing
 	// and release its socket handle)

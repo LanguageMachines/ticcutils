@@ -54,8 +54,9 @@ namespace TiCC {
       return result;
     }
     else if ( res != 0 ){
-      cerr << "TiCC::glob:" << strerror( errno ) << endl;
-      exit(EXIT_FAILURE);
+      string mess = "TiCC::glob: ";
+      mess += strerror( errno );
+      throw runtime_error( mess );
     }
     for(unsigned int i=0;i<glob_result.gl_pathc;++i){
       result.push_back(string(glob_result.gl_pathv[i]));
@@ -86,8 +87,8 @@ namespace TiCC {
 		       vector<string>& result, bool recurse ){
     DIR *dir = opendir( dirName.c_str() );
     if ( !dir ){
-      cerr << "unable to open dir" << dirName << endl;
-      exit(EXIT_FAILURE);
+      string mess = "TiCC::gatherFilesExt: unable to open dir " + dirName;
+      throw runtime_error( mess );
     }
     struct dirent *entry = readdir( dir );
     while ( entry ){
@@ -120,9 +121,9 @@ namespace TiCC {
       return result;
     }
     else if ( !isDir( name ) ){
-      cerr << "the name '" << name
-	   << "' doesn't match a file or directory." << endl;
-      exit(EXIT_FAILURE);
+      string mess = "TiCC::searchFilesExt: the name '" + name
+	+ "' doesn't match a file or directory.";
+      throw runtime_error( mess );
     }
     gatherFilesExt( name, ext, result, recurse );
     return result;
@@ -133,8 +134,8 @@ namespace TiCC {
 			 vector<string>& result, bool recurse ){
     DIR *dir = opendir( dirName.c_str() );
     if ( !dir ){
-      cerr << "unable to open dir" << dirName << endl;
-      exit(EXIT_FAILURE);
+      string mess = "TiCC::gatherFilesMatch: unable to open dir " + dirName;
+      throw runtime_error( mess );
     }
     struct dirent *entry = readdir( dir );
     while ( entry ){
@@ -198,15 +199,19 @@ namespace TiCC {
 	return result;
       }
       else if ( !isDir( name ) ){
-	cerr << "the name '" << name
-	     << "' doesn't match a file or directory." << endl;
-	exit(EXIT_FAILURE);
+	string mess = "TiCC::searchFilesMatch: the name '" + name
+	  + "' doesn't match a file or directory.";
+	throw runtime_error( mess );
       }
       gatherFilesMatch( name, rx, result, recurse );
     }
     catch( boost::regex_error& e ){
-      cerr << "invalid regexp: " << e.what() << endl;
-      exit(EXIT_FAILURE);
+      string mess = "TiCC::searchFilesMatch: invalid regexp: ";
+      mess += e.what();
+      throw runtime_error( mess );
+    }
+    catch( ... ){
+      throw;
     }
     return result;
   }

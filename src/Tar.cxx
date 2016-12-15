@@ -194,8 +194,9 @@ namespace TiCC {
       tar_close( local_tar );
     }
     catch( boost::regex_error& e ){
-      cerr << "invalid regexp: " << e.what() << endl;
-      exit(EXIT_FAILURE);
+      string mess = "tar:extract_file_names_match() invalid regexp: ";
+      mess += e.what();
+      throw runtime_error( mess );
     }
     return true;
   }
