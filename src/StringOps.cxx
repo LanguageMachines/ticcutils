@@ -127,6 +127,9 @@ namespace TiCC {
     // split a string into substrings, using seps as separator
     // silently skip empty entries (e.g. when two or more separators co-incide)
     // unless exact=true;
+    if ( sep.empty() ){
+      throw runtime_error( "TiCC::split_at(): separator is empty!" );
+    }
     results.clear();
     string::size_type pos = 0;
     while ( pos != string::npos ){
@@ -152,6 +155,9 @@ namespace TiCC {
     // as seperators
     // silently skip empty entries (e.g. when two or more seperators co-incide)
     // unless exact=true;
+    if ( seps.empty() ){
+      throw runtime_error( "TiCC::split_at_first_of(): separators are empty!" );
+    }
     results.clear();
     string::size_type s = 0;
     while ( s != string::npos ){
