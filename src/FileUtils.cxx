@@ -244,8 +244,8 @@ namespace TiCC {
 	  newpath = "/";
 	else
 	  newpath = "./";
-	for ( size_t i=0; i < parts.size(); ++i ){
-	  newpath += parts[i] + "/";
+	for ( auto const& p : parts ){
+	  newpath += p + "/";
 	  //	  cerr << "mkdir path = " << newpath << endl;
 	  int status = mkdir( newpath.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
 	  if ( status != 0 && errno != EEXIST ){
