@@ -41,6 +41,11 @@ using namespace std;
 
 namespace TiCC {
 
+  class ImplementationError: public std::logic_error {
+  public:
+    ImplementationError( const std::string& s ): std::logic_error( "CommandLine: implementation error." + s ){};
+  };
+
   CL_Options::CL_Options( const string& valid_s, const string& valid_l ):
     is_init(false),
     debug(false){
@@ -60,7 +65,7 @@ namespace TiCC {
 
   bool CL_Options::parse_args( const int argc, const char * const *argv ){
     if ( is_init ){
-      throw OptionError( "cannot parse() a commandline twice" );
+      throw ImplementationError( "cannot parse() a commandline twice" );
     }
     if ( Parse_Command_Line( argc, argv ) )
       is_init = true;
@@ -69,7 +74,7 @@ namespace TiCC {
 
   bool CL_Options::parse_args( const std::string& args ){
     if ( is_init ){
-      throw OptionError( "cannot parse() a commandline twice" );
+      throw ImplementationError( "cannot parse() a commandline twice" );
     }
     const char *argstr = args.c_str();
     if ( Parse_Command_Line( 0, &argstr ) )
@@ -686,7 +691,7 @@ namespace TiCC {
 	    valid_long_opt.insert( value );
 	  }
 	  else {
-	    throw OptionError( "':' may only be present at the end of a long option ("
+	    throw ImplementationError( "':' may only be present at the end of a long option specification ("
 			       + value + ")" );
 	  }
 	}
@@ -695,8 +700,8 @@ namespace TiCC {
 	  valid_long_par.insert( value );
 	}
 	else {
-	  throw OptionError( "':' may only be present at the end of a long option ("
-			     + value + ")" );
+	  throw ImplementationError( "':' may only be present at the end of a long option specification ("
+				     + value + ")" );
 	}
       }
       valid_long.insert( value );
