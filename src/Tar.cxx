@@ -143,8 +143,8 @@ namespace TiCC {
   static string wildToRegExp( const string& wild ){
     // convert 'shell'-like wildcards into a regexp
     string result;
-    for ( size_t i=0; i < wild.length(); ++i ){
-      switch( wild[i] ){
+    for ( auto const& c : wild ){
+      switch( c ){
       case '*':
 	result += ".*";
 	break;
@@ -152,11 +152,10 @@ namespace TiCC {
 	result += ".";
 	break;
       case '.':
-	result += "\\";
-	result += wild[i];
+	result += "\\.";
 	break;
       default:
-	result += wild[i];
+	result += c;
       }
     }
     //    cerr << "wild to regexp: " << wild << " ==> " << result << endl;
@@ -233,7 +232,7 @@ namespace TiCC {
 	    cerr << "tar_extract_regfile(): " << strerror(errno) << endl;
 	    return false;
 	  }
-	  result.open(tmpfile.c_str() );
+	  result.open( tmpfile );
 	  if ( result.good() ){
 	    return true;
 	  }
@@ -281,7 +280,7 @@ namespace TiCC {
 	  cerr << "tar_extract_regfile(): " << strerror(errno) << endl;
 	  return false;
 	}
-	result.open(tmpfile.c_str() );
+	result.open( tmpfile );
 	if ( result.good() ){
 	  name = tar_file->th_buf.name;
 	  return true;
