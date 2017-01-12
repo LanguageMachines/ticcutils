@@ -21,7 +21,7 @@
 // Revision      : $Revision: 16571 $
 // Revision_date : $Date: 2013-10-09 10:33:53 +0200 (Wed, 09 Oct 2013) $
 // Author(s)     : Deepak Bandyopadhyay, Lutz Kettner
-//
+// Modernized    : Ko vd Sloot (12-01-2017)
 // Standard streambuf implementation following Nicolai Josuttis, "The
 // Standard C++ Library".
 // ============================================================================
@@ -66,7 +66,7 @@ namespace GZSTREAM_NAMESPACE {
       // ASSERT: both input & output capabilities will not be used together
     }
     int is_open() { return opened; }
-    gzstreambuf* open( const char* name, int open_mode);
+    gzstreambuf* open( const std::string &name, int open_mode );
     gzstreambuf* close();
     ~gzstreambuf() { close(); }
 
@@ -80,9 +80,9 @@ namespace GZSTREAM_NAMESPACE {
     gzstreambuf buf;
   public:
     gzstreambase() { init(&buf); }
-    gzstreambase( const char* name, int open_mode);
+    gzstreambase( const std::string&, int );
     ~gzstreambase();
-    void open( const char* name, int open_mode);
+    void open( const std::string&, int );
     void close();
     gzstreambuf* rdbuf() { return &buf; }
   };
@@ -96,10 +96,10 @@ namespace GZSTREAM_NAMESPACE {
   class igzstream : public gzstreambase, public std::istream {
   public:
   igzstream() : std::istream( &buf) {}
-  igzstream( const char* name, int open_mode = std::ios::in)
-    : gzstreambase( name, open_mode), std::istream( &buf) {}
+  igzstream( const std::string& name, int open_mode = std::ios::in )
+    : gzstreambase( name, open_mode ), std::istream( &buf ) {}
     gzstreambuf* rdbuf() { return gzstreambase::rdbuf(); }
-    void open( const char* name, int open_mode = std::ios::in) {
+    void open( const std::string& name, int open_mode = std::ios::in ) {
       gzstreambase::open( name, open_mode);
     }
   };
@@ -107,15 +107,15 @@ namespace GZSTREAM_NAMESPACE {
   class ogzstream : public gzstreambase, public std::ostream {
   public:
   ogzstream() : std::ostream( &buf) {}
-  ogzstream( const char* name, int mode = std::ios::out)
-    : gzstreambase( name, mode), std::ostream( &buf) {}
+  ogzstream( const std::string& name, int mode = std::ios::out )
+    : gzstreambase( name, mode ), std::ostream( &buf ) {}
     gzstreambuf* rdbuf() { return gzstreambase::rdbuf(); }
-    void open( const char* name, int open_mode = std::ios::out) {
-      gzstreambase::open( name, open_mode);
+    void open( const std::string& name, int open_mode = std::ios::out ) {
+      gzstreambase::open( name, open_mode );
     }
   };
 
-  gzstreambuf* gzstreambuf::open( const char* name, int open_mode) {
+  gzstreambuf* gzstreambuf::open( const std::string& name, int open_mode) {
     if ( is_open())
       return (gzstreambuf*)0;
     mode = open_mode;
@@ -129,7 +129,7 @@ namespace GZSTREAM_NAMESPACE {
     else if ( mode & std::ios::out)
       fmode += 'w';
     fmode += 'b';
-    file = gzopen( name, fmode.c_str() );
+    file = gzopen( name.c_str(), fmode.c_str() );
     if (file == 0){
       return (gzstreambuf*)0;
     }
@@ -209,23 +209,23 @@ namespace GZSTREAM_NAMESPACE {
   // class gzstreambase:
   // --------------------------------------
 
-  gzstreambase::gzstreambase( const char* name, int mode) {
-    init( &buf);
-    open( name, mode);
+  gzstreambase::gzstreambase( const std::string& name, int mode ) {
+    init( &buf );
+    open( name, mode );
   }
 
   gzstreambase::~gzstreambase() {
     buf.close();
   }
 
-  void gzstreambase::open( const char* name, int open_mode) {
-    if ( ! buf.open( name, open_mode))
-      clear( rdstate() | std::ios::badbit);
+  void gzstreambase::open( const std::string& name, int open_mode ) {
+    if ( ! buf.open( name, open_mode ) )
+      clear( rdstate() | std::ios::badbit );
   }
 
   void gzstreambase::close() {
-    if ( buf.is_open())
-      if ( ! buf.close())
+    if ( buf.is_open() )
+      if ( ! buf.close() )
 	clear( rdstate() | std::ios::badbit);
   }
 

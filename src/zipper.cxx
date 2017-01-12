@@ -202,7 +202,7 @@ namespace TiCC {
     if ( pos == string::npos ){
       throw runtime_error( "gz: expected an inputfile name with .gz extension" );
     }
-    igzstream infile( inname.c_str(), ios::binary|ios::in );
+    igzstream infile( inname, ios::binary|ios::in );
     if ( !infile ){
       throw runtime_error( "gz: unable to open inputfile: " + inName );
     }
@@ -215,7 +215,7 @@ namespace TiCC {
   }
 
   bool gzWriteFile( const string& outName, const string& buffer ){
-    ogzstream outfile( outName.c_str(), ios::binary|ios::out );
+    ogzstream outfile( outName, ios::binary|ios::out );
     if ( !outfile ){
       cerr << "gz: unable to open outputfile: " << outName << endl;
       return false;
@@ -233,7 +233,7 @@ namespace TiCC {
     string outname = outName;
     if ( outname.empty() )
       outname = inName + ".gz";
-    ogzstream outfile( outname.c_str(), ios::binary|ios::out );
+    ogzstream outfile( outname, ios::binary|ios::out );
     if ( !outfile ){
       cerr << "gz: unable to open outputfile: " << outname << endl;
       return false;
@@ -249,7 +249,7 @@ namespace TiCC {
   }
 
   bool gzDecompress( const string& inName, const string& outName ){
-    igzstream infile( inName.c_str(), std::ios::binary|ios::in);
+    igzstream infile( inName, std::ios::binary|ios::in);
     if ( !infile ){
       cerr << "gz: unable to open inputfile: " << inName << endl;
       return false;
