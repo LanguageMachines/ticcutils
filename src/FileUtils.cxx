@@ -157,8 +157,8 @@ namespace TiCC {
   static string wildToRegExp( const string& wild ){
     // convert 'shell'-like wildcards into a regexp
     string result;
-    for ( size_t i=0; i < wild.length(); ++i ){
-      switch( wild[i] ){
+    for ( const auto& c : wild ){
+      switch( c ){
       case '*':
 	result += ".*";
 	break;
@@ -166,11 +166,10 @@ namespace TiCC {
 	result += ".";
 	break;
       case '.':
-	result += "\\";
-	result += wild[i];
+	result += "\\.";
 	break;
       default:
-	result += wild[i];
+	result += c;
       }
     }
     //    cerr << "wild to regexp: " << wild << " ==> " << result << endl;
@@ -231,7 +230,7 @@ namespace TiCC {
     // or ./a/b/c/ from expressions like
     // a/b/c/
 
-    ofstream os1( path.c_str() );
+    ofstream os1( path );
     if ( !os1.good() ){
       // it fails
       // attempt to create the path
@@ -269,7 +268,7 @@ namespace TiCC {
       if ( !createTruePath( path ) )
 	return false;
     }
-    ofstream os( name.c_str() );
+    ofstream os( name );
     if ( !os.good() ){
       return false;
     }
