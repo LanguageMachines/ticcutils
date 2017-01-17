@@ -110,7 +110,7 @@ namespace TiCC {
 	continue;
       if ( line[0] == '#' )
 	continue;
-      if ( line.find( "[[") == 0  )
+      if ( line.find( "[[" ) == 0  )
 	if ( line[line.length()-1] == ']' &&
 	     line[line.length()-2] == ']' ){
 	  section = line.substr(2,line.length()-4);
@@ -158,7 +158,7 @@ namespace TiCC {
 	continue;
       if ( line[0] == '#' )
 	continue;
-      if ( line.find( "[[") == 0  )
+      if ( line.find( "[[" ) == 0  )
 	if ( line[line.length()-1] == ']' &&
 	     line[line.length()-2] == ']' ){
 	  localsection = line.substr(2,line.length()-4);
@@ -204,7 +204,6 @@ namespace TiCC {
     os << "[[global]]" << endl;
     auto it2 = it1->second.begin();
     while ( it2 != it1->second.end() ){
-      string out = it2->second;
       os << it2->first << "=" << it2->second << endl;
       ++it2;
     }

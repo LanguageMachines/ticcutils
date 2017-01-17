@@ -221,9 +221,10 @@ namespace Sockets {
       m = "socket " + TiCC::toString(sock);
     else
       m = "invalid socket ";
-    if ( !mess.empty() )
+    if ( !mess.empty() ){
       m += ": " + mess;
-    return mess;
+    }
+    return m;
   }
 
   bool Socket::setBlocking( ) {
@@ -308,7 +309,7 @@ namespace Sockets {
     }
     else {
       aip = res;
-      while( aip ){
+      while ( aip ){
 	sock = socket( aip->ai_family, aip->ai_socktype, aip->ai_protocol);
 	if ( sock > 0 )
 	  break;

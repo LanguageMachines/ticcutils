@@ -56,7 +56,7 @@ namespace Hash {
 
   unsigned int StringHash::Hash( const string& name ){
     unsigned int idx = 0;
-#pragma omp critical(tree_mod)
+#pragma omp critical (tree_mod)
     {
       HashInfo *info = StringTree.Retrieve( name );
       if ( !info ){
@@ -107,7 +107,7 @@ namespace Hash {
 
   LexInfo *Lexicon::Store( const string& name, const string& translation ){
     LexInfo *info = 0;
-#pragma omp critical(tree_mod)
+#pragma omp critical (tree_mod)
     {
       info = LexTree.Retrieve( name );
       if ( !info ){

@@ -43,7 +43,7 @@ namespace TiCC {
 
   class ImplementationError: public std::logic_error {
   public:
-    ImplementationError( const std::string& s ): std::logic_error( "CommandLine: implementation error." + s ){};
+    explicit ImplementationError( const std::string& s ): std::logic_error( "CommandLine: implementation error." + s ){};
   };
 
   CL_Options::CL_Options( const string& valid_s, const string& valid_l ):
@@ -496,8 +496,6 @@ namespace TiCC {
 		}
 		throw OptionError( "missing value for long option: '"
 				   + it->s + "'" );
-		++it;
-		continue;
 	      }
 	    }
 	  }

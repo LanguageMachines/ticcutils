@@ -46,7 +46,10 @@ namespace TiCC {
   string Timer::now() {
     time_t now;
     time( &now );
-    return asctime( localtime( &now ) );
+    //return asctime( localtime( &now ) );
+    char buffer[256];
+    strftime( buffer, 100, "%c", localtime( &now ) );
+    return buffer;
   }
 
   ostream& operator << ( ostream& os, const Timer& T ){

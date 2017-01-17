@@ -37,7 +37,7 @@ namespace TiCC {
 
   class OptionError: public std::runtime_error {
   public:
-  OptionError( const std::string& s ): std::runtime_error( "option-error: " + s ){};
+    explicit OptionError( const std::string& s ): std::runtime_error( "option-error: " + s ){};
   };
 
   class CL_item {
