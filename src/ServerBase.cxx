@@ -161,11 +161,13 @@ namespace TimblServer {
       }
       if ( !old ){
 	cerr << "missing --config option" << endl;
+	delete config;
 	return 0;
       }
     }
     else if ( !config->fill( value ) ){
       cerr << "unable to read a configuration from " << value << endl;
+      delete config;
       return 0;
     }
     if ( opts.extract( "pidfile", value ) ){
