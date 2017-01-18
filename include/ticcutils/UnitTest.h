@@ -112,6 +112,7 @@ void MyTSerie::stop( const std::string& fun, int ){
 }
 
 #define assertEqual( XX , YY ) test_eq<decltype(XX), decltype(YY)>( __func__, __LINE__, (XX), (YY), currentTestContext )
+
 #define assertThrow( XX, EE )						\
   do { 									\
     ++currentTestContext._tests;					\

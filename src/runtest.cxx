@@ -370,16 +370,16 @@ void test_lowercase(){
 }
 
 void test_base_dir(){
-  assertEqual( basename("/foo/bar" ), "bar" );
-  assertEqual( dirname("/foo/bar" ), "/foo" );
-  assertEqual( basename("foo/bar" ), "bar" );
-  assertEqual( dirname("foo/bar" ), "foo" );
-  assertEqual( basename("foobar" ), "foobar" );
-  assertEqual( dirname("foobar" ), "." );
-  assertEqual( basename("/" ), "/" );
-  assertEqual( dirname("/" ), "/" );
-  assertEqual( basename("." ), "." );
-  assertEqual( dirname("." ), "." );
+  assertEqual( TiCC::basename("/foo/bar" ), "bar" );
+  assertEqual( TiCC::dirname("/foo/bar" ), "/foo" );
+  assertEqual( TiCC::basename("foo/bar" ), "bar" );
+  assertEqual( TiCC::dirname("foo/bar" ), "foo" );
+  assertEqual( TiCC::basename("foobar" ), "foobar" );
+  assertEqual( TiCC::dirname("foobar" ), "." );
+  assertEqual( TiCC::basename("/" ), "" );
+  assertEqual( TiCC::dirname("/" ), "" );
+  assertEqual( TiCC::basename("." ), "." );
+  assertEqual( TiCC::dirname("." ), "." );
 }
 
 void test_bz2compression( const string& path ){
@@ -583,6 +583,7 @@ int main( const int argc, const char* argv[] ){
 #else
   cerr << "no tar support available" << endl;
 #endif
+  test_base_dir();
   test_fileutils( testdir );
   test_configuration( testdir );
   test_logstream( testdir );
