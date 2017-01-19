@@ -71,14 +71,14 @@ namespace TiCC {
     friend bool IsActive( LogStream & );
     friend bool IsActive( LogStream * );
   public:
-    LogStream();
-    LogStream( int );
+    explicit LogStream();
+    explicit LogStream( int );
     LogStream( const std::string&, LogFlag = StampBoth );
     LogStream( std::ostream&, const std::string& = "",
 	       LogFlag = StampBoth );
     LogStream( const LogStream&, const std::string&, LogFlag );
     LogStream( const LogStream&, const std::string& );
-    LogStream( const LogStream * );
+    explicit LogStream( const LogStream * );
     bool set_single_threaded_mode();
     bool single_threaded() const { return single_threaded_mode; };
     void setthreshold( LogLevel t ){ buf.Threshold( t ); };
@@ -107,8 +107,8 @@ namespace TiCC {
 
   class Log{
   public:
-    Log( LogStream * );
-    Log( LogStream& l );
+    explicit Log( LogStream * );
+    explicit Log( LogStream& l );
     ~Log();
     LogStream& operator *();
   private:
@@ -120,8 +120,8 @@ namespace TiCC {
 
   class Dbg{
   public:
-    Dbg( LogStream * );
-    Dbg( LogStream& l );
+    explicit Dbg( LogStream * );
+    explicit Dbg( LogStream& l );
     ~Dbg();
     LogStream& operator *();
   private:
@@ -133,8 +133,8 @@ namespace TiCC {
 
   class xDbg{
   public:
-    xDbg( LogStream * );
-    xDbg( LogStream& l );
+    explicit xDbg( LogStream * );
+    explicit xDbg( LogStream& l );
     ~xDbg();
     LogStream& operator *();
   private:
@@ -146,8 +146,8 @@ namespace TiCC {
 
   class xxDbg{
   public:
-    xxDbg( LogStream * );
-    xxDbg( LogStream& l );
+    explicit xxDbg( LogStream * );
+    explicit xxDbg( LogStream& l );
     ~xxDbg();
     LogStream& operator *();
   private:

@@ -61,7 +61,7 @@ namespace Hash {
       HashInfo *info = StringTree.Retrieve( name );
       if ( !info ){
 	info = new HashInfo( name, ++NumOfTokens );
-	info = (HashInfo *)StringTree.Store( name, info );
+	info = reinterpret_cast<HashInfo *>(StringTree.Store( name, info ));
       }
       idx = info->Index();
       if ( idx >= rev_index.size() ){
@@ -102,7 +102,7 @@ namespace Hash {
   Lexicon::~Lexicon(){}
 
   LexInfo *Lexicon::Lookup( const string& name ) const {
-    return (LexInfo *)LexTree.Retrieve( name );
+    return reinterpret_cast<LexInfo *>(LexTree.Retrieve( name ));
   }
 
   LexInfo *Lexicon::Store( const string& name, const string& translation ){

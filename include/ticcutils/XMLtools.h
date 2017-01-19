@@ -142,7 +142,7 @@ namespace TiCC {
   class XmlDoc {
     friend std::ostream& operator << ( std::ostream& , const XmlDoc& );
   public:
-    XmlDoc( const std::string& );
+    explicit XmlDoc( const std::string& );
     ~XmlDoc(){
       xmlFreeDoc( the_doc );
     }

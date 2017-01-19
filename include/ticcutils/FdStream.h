@@ -32,7 +32,7 @@
 
 class fdoutbuf: public std::streambuf {
  public:
-  fdoutbuf( int _fd );
+  explicit fdoutbuf( int _fd );
   fdoutbuf();
   bool connect( int );
  protected:
@@ -45,7 +45,7 @@ class fdostream: public std::ostream {
  protected:
   fdoutbuf buf;
  public:
- fdostream( int fd ): std::ostream(&buf), buf(fd) {};
+ explicit fdostream( int fd ): std::ostream(&buf), buf(fd) {};
  fdostream(): std::ostream(&buf) {};
   bool open( int fd );
 };
@@ -53,7 +53,7 @@ class fdostream: public std::ostream {
 class fdinbuf: public std::streambuf {
  public:
   fdinbuf();
-  fdinbuf( int);
+  explicit fdinbuf( int);
   bool connect( int );
  protected:
   virtual int underflow();
@@ -67,7 +67,7 @@ class fdistream: public std::istream {
  protected:
   fdinbuf buf;
  public:
- fdistream( int fd ): std::istream(&buf), buf(fd) {};
+  explicit fdistream( int fd ): std::istream(&buf), buf(fd) {};
  fdistream(): std::istream(&buf) {};
   bool open( int fd );
 };

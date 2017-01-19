@@ -50,7 +50,7 @@ namespace TimblServer {
     static std::string VersionInfo( bool );
     static int daemonize( int , int );
     int maxConn() const { return _maxConn; };
-    ServerBase( const TiCC::Configuration * );
+    explicit ServerBase( const TiCC::Configuration * );
     void setDebug( bool d ){ debug = d; };
     Sockets::ServerSocket *TcpSocket() const { return tcp_socket; };
     static void *callChild( void * );
@@ -98,14 +98,14 @@ namespace TimblServer {
 
   class TcpServerBase : public ServerBase {
   public:
-  TcpServerBase( const TiCC::Configuration *c ):ServerBase( c ){};
+    explicit TcpServerBase( const TiCC::Configuration *c ):ServerBase( c ){};
   };
 
   class HttpServerBase : public ServerBase {
   public:
     void socketChild( childArgs * );
     virtual void sendReject( std::ostream& os ) const;
-  HttpServerBase( const TiCC::Configuration *c ): ServerBase( c ){};
+    explicit HttpServerBase( const TiCC::Configuration *c ): ServerBase( c ){};
   };
 
   std::string Version();

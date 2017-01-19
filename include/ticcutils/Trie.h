@@ -42,7 +42,7 @@ namespace Tries {
     friend std::ostream& operator<< LTGT ( std::ostream&,
 					   const TrieNode<Info> * );
   public:
-    TrieNode( char );
+    explicit TrieNode( char );
     ~TrieNode();
     Info *add_to_tree( Info *, const std::string& );
     Info *scan_tree( const std::string& ) const;

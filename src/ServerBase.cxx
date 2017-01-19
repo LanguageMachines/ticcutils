@@ -232,7 +232,7 @@ namespace TimblServer {
   }
 
   void *ServerBase::callChild( void *a ) {
-    childArgs* ca = (childArgs*)a;
+    childArgs* ca = reinterpret_cast<childArgs*>(a);
     ca->mother()->socketChild( ca );
     return 0;
   }
