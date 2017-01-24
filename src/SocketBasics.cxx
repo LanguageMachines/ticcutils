@@ -316,7 +316,7 @@ namespace Sockets {
 	sock = -1;
 	aip = aip->ai_next;
       }
-      if ( sock < 0 ){
+      if ( sock < 0 || aip == 0 ){
 	mess = string( "ClientSocket: Socket could not be created: (" )
 	  + strerror(errno) + ")";
       }

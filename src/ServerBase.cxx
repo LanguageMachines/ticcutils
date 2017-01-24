@@ -344,7 +344,7 @@ namespace TimblServer {
     }
     // close the socket and exit this thread
     LOG << "Thread " << (uintptr_t)pthread_self()
-	<< ", terminated at: " << Timer::now();
+	<< ", terminated at: " << Timer::now() << endl;
     delete args;
   }
 
