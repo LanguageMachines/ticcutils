@@ -1,7 +1,5 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
-# $Id$
-# $URL $
 
 AC_PREREQ(2.61)
 AC_INIT([ticcutils],[0.15],[lamasoftware@science.ru.nl])
@@ -73,12 +71,6 @@ if test x"$ax_pthread_ok" = xyes; then
    LIBS="$PTHREAD_LIBS $LIBS" \
    CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 fi
-
-AX_BOOST_BASE([1.50],
-	[AX_BOOST_REGEX
-	 LIBS="$LIBS $BOOST_REGEX_LIB"],
-	 [AC_MSG_NOTICE([No Boost support]) ])
-
 
 # ugly hack when PKG_CONFIG_PATH isn't defined.
 # couldn't get it to work otherwise

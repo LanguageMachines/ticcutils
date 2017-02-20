@@ -29,13 +29,11 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <regex>
 #include <unistd.h>
 #include "config.h"
 #include <sys/fcntl.h>
 #include "ticcutils/StringOps.h"
-#ifdef HAVE_BOOST_REGEX
-#include <boost/regex.hpp>
-#endif
 #include "ticcutils/Tar.h"
 
 using namespace std;
@@ -139,7 +137,6 @@ namespace TiCC {
     return true;
   }
 
-#ifdef HAVE_BOOST_REGEX
   static string wildToRegExp( const string& wild ){
     // convert 'shell'-like wildcards into a regexp
     string result;
@@ -178,12 +175,12 @@ namespace TiCC {
     }
     string pat = wildToRegExp( wild );
     try {
-      boost::regex rx( pat );
+      regex rx( pat );
       stat = th_read( local_tar );
       while ( stat == 0  ) {
 	if ( TH_ISREG( local_tar ) ){
 	  string name = local_tar->th_buf.name;
-	  if ( boost::regex_search( name, rx ) ){
+	  if ( regex_search( name, rx ) ){
 	    result.push_back( name );
 	  }
 	  tar_skip_regfile( local_tar );
@@ -192,21 +189,13 @@ namespace TiCC {
       }
       tar_close( local_tar );
     }
-    catch( boost::regex_error& e ){
+    catch( regex_error& e ){
       string mess = "tar:extract_file_names_match() invalid regexp: ";
       mess += e.what();
       throw runtime_error( mess );
     }
     return true;
   }
-#else
-  bool tar::extract_file_names_match( vector<string>& result,
-				      const string& pat ){
-    cerr << "tar::extract() REGEXP support not available" << endl;
-    cerr << "  attempting lame extension matching instead" << endl;
-    return extract_file_names( result, pat );
-  }
-#endif
 
   bool tar::extract_ifstream( const string& name, ifstream& result ){
     result.close();
