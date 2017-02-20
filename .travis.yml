@@ -34,10 +34,10 @@ before_install:
 install:
   - bash bootstrap.sh
   - ./configure
-  - CXX=$COMPILERmake
-  - CXX=$COMPILER sudo make install
+  - make CXX=$COMPILER
+  - sudo make CXX=$COMPILER install
 script:
-  - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib CXX=$COMPILER make check
+  - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib make CXX=$COMPILER check
 after_failure:
   - cat src/test-suite.log
   - cat config.log
