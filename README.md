@@ -38,7 +38,7 @@ following pakages:
 - ``autotools``
 - ``autoconf-archive``
 - ``libxml2-dev``
-- preferably also: ``libtar-dev``, ``libbz2-dev``, ``zlib1g-dev``, ``libboost-dev``, ``libboost-regex-dev``
+- preferably also: ``libtar-dev``, ``libbz2-dev``, ``zlib1g-dev``
 
 --------------------------------
 Installation Instructions
