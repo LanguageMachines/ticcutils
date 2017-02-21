@@ -46,7 +46,7 @@ namespace TiCC {
   CL_item( const std::string& s, const std::string& o ):
     opt_word(s), option( o ), mood( false ), longOpt(true) {};
   CL_item( char c, const std::string& o, bool m=false ):
-    option( o ), mood( m ), longOpt(false){ opt_word = c; };
+    opt_word(1,c),option( o ), mood( m ), longOpt(false){};
   CL_item( const CL_item& in ):
     opt_word( in.opt_word ), option(in.option),
       mood(in.mood), longOpt(in.longOpt){

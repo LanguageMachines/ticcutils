@@ -22,7 +22,7 @@ This software has been tested on:
 - MAC platform running OS X 10.10
 
 Compilers:
-- GCC (4.8 - 5.2). It is highly recommended to upgrade to at least GCC 4.8
+- GCC (4.9 - 5.2). It is highly recommended to upgrade to at least GCC 5.0
 - CLANG. Preferrable a recent version which supporte OpenMP
 
 Contents of this distribution:
