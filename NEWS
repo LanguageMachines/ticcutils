@@ -1,3 +1,12 @@
+4 april 2017 0.15
+[Ko van der Sloot]
+- small bug fixes:
+  - added newline in logging
+  - check on 0 pointer in SocketBasics
+  - added more safeguards against abus of CommandLine ans StringOps
+  - added more tests tot runtest
+
+- code refactoring based on static analysis with CPPCHECK
 18 oct 2016 0.14
 [Ko van der Sloot]
 - fixed dependecy on zlib1g-dev in configure
