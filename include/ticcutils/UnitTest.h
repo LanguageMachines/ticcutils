@@ -111,7 +111,18 @@ void MyTSerie::stop( const std::string& fun, int ){
   };
 }
 
-#define assertEqual( XX , YY ) test_eq<decltype(XX), decltype(YY)>( __func__, __LINE__, (XX), (YY), currentTestContext )
+#define assertEqual( XX , YY )						\
+  try {									\
+    test_eq<decltype(XX), decltype(YY)>( __func__, __LINE__, (XX), (YY), currentTestContext ); \
+      }									\
+  catch ( const std::exception& e ){					\
+    ++currentTestContext._fails;					\
+    if ( currentTestContext.isDefault() )				\
+      std::cout << FAIL << std::endl;					\
+    else								\
+      std::cerr << "\t";						\
+    std::cerr << __func__ << "(" << __LINE__ << ") : caucht exception, what='" << e.what() << "'" << std::endl; \
+  }
 
 #define assertThrow( XX, EE )						\
   do { 									\
@@ -174,19 +185,19 @@ void MyTSerie::stop( const std::string& fun, int ){
 
 #define assertFalse( YY )						\
   try {									\
-  test_false( __func__, __LINE__, (YY), currentTestContext );		\
+    test_false( __func__, __LINE__, (YY), currentTestContext );		\
   }									\
   catch( const std::exception& e ){					\
     std::cerr << __func__ << "(" << __LINE__ << ") error:'" << e.what() << "'" << std::endl; \
   }
 
 #define assertMessage( MM, YY )						\
-    try {								\
-      test_true_message( __func__, __LINE__, (MM), (YY), currentTestContext ); \
-    }									\
-    catch( const std::exception& e ){					\
-      std::cerr << __func__ << "(" << __LINE__ << ") error: '" << e.what() << "'" << std::endl; \
-    }
+  try {									\
+    test_true_message( __func__, __LINE__, (MM), (YY), currentTestContext ); \
+  }									\
+  catch( const std::exception& e ){					\
+    std::cerr << __func__ << "(" << __LINE__ << ") error: '" << e.what() << "'" << std::endl; \
+  }
 
 
 #define startTestSerie( SS ) MyTSerie currentTestContext( __func__, __LINE__, (SS) )

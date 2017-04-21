@@ -49,6 +49,11 @@ void helper(){
   throw runtime_error("fout");
 }
 
+int helper2(){
+  throw runtime_error("mis");
+  return 8;
+}
+
 void test_throw(){
   assertThrow( helper(), runtime_error );
   assertNoThrow( 4==7 );
@@ -234,6 +239,7 @@ void test_opts( CL_Options& opts ){
 void test_subtests_fail(){
   startTestSerie( "we testen subtests, met faal." );
   assertThrow( helper(), range_error );
+  assertEqual( helper2(), 4 );
   assertEqual( (1 + 2), (2 + 1) );
   assertEqual( 4, 5 );
 }
@@ -587,5 +593,5 @@ int main( const int argc, const char* argv[] ){
   test_fileutils( testdir );
   test_configuration( testdir );
   test_logstream( testdir );
-  summarize_tests(3);
+  summarize_tests(4);
 }
