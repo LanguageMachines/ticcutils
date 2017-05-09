@@ -5,6 +5,7 @@ notifications:
   irc:
     channels:
       - "irc.uvt.nl#gitlama"
+    skip_join: true
 
 language: cpp
 matrix:
