@@ -1,6 +1,11 @@
 sudo: required
 dist: trusty
 
+notifications:
+  irc:
+    channels:
+      - "irc.uvt.nl#gitlama"
+
 language: cpp
 matrix:
   include:
