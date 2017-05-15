@@ -209,6 +209,15 @@ void test_opts_basic(){
   assertEqual( opts14.toString(), "-ab -ac -d-fiets --appel peer  --fout=goed" );
   v = opts14.getMassOpts();
   assertEqual( v.size(), 2 );
+  CL_Options opts15;
+  opts15.set_debug(true);
+  opts15.parse_args( "--fout=goed=mis --jan=gek" );
+  assertEqual( opts15.toString(), "--fout=goed=mis --jan=gek" );
+  string res;
+  opts15.extract("fout", res );
+  assertEqual( res, "goed=mis" );
+  opts15.extract("jan", res );
+  assertEqual( res, "gek" );
 }
 
 void test_opts( CL_Options& opts ){
