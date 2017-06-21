@@ -58,7 +58,7 @@ namespace TiCC {
   std::string format_nonascii( const std::string& );
 
   template< typename T >
-    T stringTo( const std::string& str ) {
+    inline T stringTo( const std::string& str ) {
     T result;
     std::stringstream dummy ( str );
     if ( !( dummy >> result ) ) {
@@ -81,7 +81,7 @@ namespace TiCC {
   }
 
   template< typename T >
-    bool stringTo( const std::string& str, T& result ) {
+    inline bool stringTo( const std::string& str, T& result ) {
     try {
       result = stringTo<T>( str );
       return true;
@@ -92,7 +92,7 @@ namespace TiCC {
   }
 
   template <typename T>
-    bool stringTo( const std::string& s, T &answer, T low, T upp ){
+    inline bool stringTo( const std::string& s, T &answer, T low, T upp ){
     try {
       T tmp = stringTo<T>( s );
       if ( (tmp >= low) && (tmp <= upp) ){
@@ -107,7 +107,7 @@ namespace TiCC {
   }
 
   template< typename T >
-    std::string toString ( const T& obj, bool=false ) {
+    inline std::string toString ( const T& obj, bool=false ) {
     std::stringstream dummy;
     if ( !( dummy << obj ) ) {
       throw( std::runtime_error( "conversion failed" ) );

@@ -34,7 +34,7 @@ namespace TiCC {
   std::vector<std::string> searchFilesExt( const std::string&,
 					   const std::string&,
 					   bool = true );
-  std::vector<std::string> searchFiles( const std::string& name,
+  inline std::vector<std::string> searchFiles( const std::string& name,
 					bool recurse = true ){
     return searchFilesExt( name, "", recurse );
   }
