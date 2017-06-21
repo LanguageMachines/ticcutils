@@ -96,7 +96,7 @@ ax_pthread_ok=no
 
 # hack for Clang analyzer
 SUBST="cc-analyzer"
-if test "${CC#*$SUBST}" != $CC; then
+if test "${CC#*$SUBST}" != "${CC}"; then
    OLDCC=${CC}
    CC=clang
 fi
@@ -490,7 +490,7 @@ else
 fi
 
 # undo hack for Clang analyzer
-if test "${OLDCC#*$SUBST}" != ${OLDCC}; then
+if test "${OLDCC#*$SUBST}" != "${OLDCC}"; then
    CC=${OLDCC}
 fi
 
