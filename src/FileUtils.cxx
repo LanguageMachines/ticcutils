@@ -37,12 +37,8 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include "config.h"
-#if HAVE_WORKING_REGEX == 2
-#  include <boost/regex.hpp>
-#  define regex boost::regex
-#  define regex_error boost::regex_error
-#else
-#  include <regex>
+#ifdef HAVE_BOOST_REGEX
+#include <boost/regex.hpp>
 #endif
 #include "ticcutils/StringOps.h"
 #include "ticcutils/FileUtils.h"
@@ -133,7 +129,8 @@ namespace TiCC {
     return result;
   }
 
-  void gatherFilesMatch( const string& dirName, const regex& match,
+#ifdef HAVE_BOOST_REGEX
+  void gatherFilesMatch( const string& dirName, const boost::regex& match,
 			 vector<string>& result, bool recurse ){
     DIR *dir = opendir( dirName.c_str() );
     if ( !dir ){
@@ -149,7 +146,7 @@ namespace TiCC {
 	  gatherFilesMatch( fullName, match, result, recurse );
 	}
       }
-      else if ( regex_search( name, match ) ){
+      else if ( boost::regex_search( name, match ) ){
 	result.push_back( fullName );
       }
       entry = readdir( dir );
@@ -185,7 +182,7 @@ namespace TiCC {
     vector<string> result;
     string reg = wildToRegExp( wild );
     try {
-      regex rx( reg );
+      boost::regex rx( reg );
       if ( isFile( name ) ){
 	// it is just 1 file
 	string::size_type pos = name.rfind( "/" );
@@ -196,7 +193,7 @@ namespace TiCC {
 	else {
 	  fname = name;
 	}
-	if ( regex_search( fname, rx ) )
+	if ( boost::regex_search( fname, rx ) )
 	  result.push_back( name );
 	return result;
       }
@@ -207,7 +204,7 @@ namespace TiCC {
       }
       gatherFilesMatch( name, rx, result, recurse );
     }
-    catch( regex_error& e ){
+    catch( boost::regex_error& e ){
       string mess = "TiCC::searchFilesMatch: invalid regexp: ";
       mess += e.what();
       throw runtime_error( mess );
@@ -217,6 +214,15 @@ namespace TiCC {
     }
     return result;
   }
+#else
+  vector<string> searchFilesMatch( const string& name,
+				   const string& match,
+				   bool recurse ){
+    cerr << "REGEXP support not available" << endl;
+    cerr << "  attempting lame extension matching instead" << endl;
+    return searchFilesExt( name, match, recurse );
+  }
+#endif
 
   bool createTruePath( const string& path ){
     // attempt to open a path /a/b/c/ from an expression like:
