@@ -62,7 +62,6 @@ AX_TYPE_SOCKLEN_T
 
 # Checks for library functions.
 AC_CHECK_FUNCS([localtime_r gettimeofday mkdir getaddrinfo gethostbyaddr gethostbyname inet_ntoa memset socket strerror dup2 memmove ])
-AC_FUNC_MALLOC
 AC_FUNC_FORK
 
 AX_PTHREAD([],[AC_MSG_ERROR([We need pthread support!])])
