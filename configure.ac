@@ -73,8 +73,9 @@ if test x"$ax_pthread_ok" = xyes; then
 fi
 
 # only require boost for OLD gcc compilers
-AX_COMPILER_VERSION
+AX_COMPILER_VENDOR
 if test x"$ax_cv_cxx_compiler_vendor" = xgnu; then
+  AX_COMPILER_VERSION
   AX_COMPARE_VERSION( [$ax_cv_cxx_compiler_version], [lt], [4.9],
 		      [AX_BOOST_BASE( [1.50],
 				     [AX_BOOST_REGEX
