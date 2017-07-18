@@ -34,7 +34,8 @@ matrix:
       compiler: clang
       addons:
           packages: ['libiomp-dev']
-      env: COMPILER="clang++ -fopenmp=libiomp5"
+      env: COMPILER=clang++ CXXFLAGS="-fopenmp=libiomp5"
+
 
 before_install:
   - sudo apt-get update
