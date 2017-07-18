@@ -33,13 +33,11 @@ matrix:
     - os: linux
       compiler: clang
       addons:
-        apt:
-          packages: ['libomp-dev']
       env: COMPILER=clang++
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get install pkg-config autoconf-archive libicu-dev libxml2-dev libbz2-dev zlib1g-dev libtar-dev libboost-dev libboost-regex-dev
+  - sudo apt-get install pkg-config autoconf-archive libicu-dev libxml2-dev libbz2-dev zlib1g-dev libtar-dev libboost-dev libboost-regex-dev libomp-dev
 install:
   - bash bootstrap.sh
   - ./configure
