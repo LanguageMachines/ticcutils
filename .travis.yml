@@ -33,8 +33,9 @@ matrix:
     - os: linux
       compiler: clang
       addons:
-        packages:
-          - libiomp-dev
+        apt:
+          packages:
+            - libiomp-dev
       env:
        - COMPILER=clang++
 # libiomp is a very strange abberation in trusty
