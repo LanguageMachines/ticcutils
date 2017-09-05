@@ -329,7 +329,9 @@ namespace TiCC {
     }
 #endif
     if ( locks[pos].cnt == 0 ){
+      pthread_mutex_lock( &global_lock_mutex );
       locks[pos].id = 0;
+      pthread_mutex_unlock( &global_lock_mutex );
 #ifdef LSDEBUG
       cerr << "Thread " << pthread_self()  << " unlocked [" << pos << "]" << endl;
 #endif
