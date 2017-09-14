@@ -218,6 +218,18 @@ void test_opts_basic(){
   assertEqual( res, "goed\\mis" );
   opts15.extract("jan", res );
   assertEqual( res, "gek" );
+  CL_Options opts16;
+  opts16.allow_args( "", "test:" );
+  opts16.set_debug(true);
+  opts16.parse_args( "--test goed --test=prima --test niet=eens --test=wel=eens" );
+  opts16.extract("test", res );
+  assertEqual( res, "goed" );
+  opts16.extract("test", res );
+  assertEqual( res, "prima" );
+  opts16.extract("test", res );
+  assertEqual( res, "niet=eens" );
+  opts16.extract("test", res );
+  assertEqual( res, "wel=eens" );
 }
 
 void test_opts( CL_Options& opts ){
