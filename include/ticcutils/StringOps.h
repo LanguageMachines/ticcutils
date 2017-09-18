@@ -55,6 +55,17 @@ namespace TiCC {
     return split_at_first_of( s, vec, " \r\t\n", exact );
   }
 
+  std::vector<std::string> split_at( const std::string&,
+				     const std::string&,
+				     size_t = 0 );
+  std::vector<std::string> split_at_first_of( const std::string&,
+					      const std::string&,
+					      size_t = 0 );
+  inline std::vector<std::string> split( const std::string& s,
+					 size_t num = 0 ){
+    return split_at_first_of( s, " \r\t\n", num );
+  }
+
   std::string format_nonascii( const std::string& );
 
   template< typename T >

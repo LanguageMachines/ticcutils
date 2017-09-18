@@ -149,6 +149,42 @@ namespace TiCC {
     return results.size();
   }
 
+  vector<string> split_at( const string& src,
+			   const string& sep,
+			   size_t max ){
+    // split a string into substrings, using seps as separator
+    // silently skip empty entries (e.g. when two or more separators co-incide)
+    // if max > 0, limit the size off the result to max,
+    // leaving the remainder in the last part of the result
+    if ( sep.empty() ){
+      throw runtime_error( "TiCC::split_at(): separator is empty!" );
+    }
+    vector<string> results;
+    size_t cnt = 0;
+    string::size_type pos = 0;
+    while ( pos != string::npos ){
+      string res;
+      string::size_type p = src.find( sep, pos );
+      if ( p == string::npos ){
+	res = src.substr( pos );
+	pos = p;
+      }
+      else {
+	res = src.substr( pos, p - pos );
+	pos = p + sep.length();
+      }
+      if ( !res.empty() ){
+	++cnt;
+	results.push_back( res );
+      }
+      if ( max != 0 && cnt >= max-1 ){
+	results.push_back( src.substr( pos ) );
+	break;
+      }
+    }
+    return results;
+  }
+
   size_t split_at_first_of( const string& src, vector<string>& results,
 			    const string& seps, bool exact ){
     // split a string into substrings, using the characters in seps
@@ -176,6 +212,43 @@ namespace TiCC {
       }
     }
     return results.size();
+  }
+
+  vector<string> split_at_first_of( const string& src,
+				    const string& seps,
+				    size_t max ){
+    // split a string into substrings, using the characters in seps
+    // as seperators
+    // silently skip empty entries (e.g. when two or more seperators co-incide)
+    // if max > 0, limit the size of the result to max,
+    // leaving the remainder in the last part of the result
+    if ( seps.empty() ){
+      throw runtime_error( "TiCC::split_at_first_of(): separators are empty!" );
+    }
+    vector<string> results;
+    size_t cnt = 0;
+    string::size_type s = 0;
+    while ( s != string::npos ){
+      string res;
+      string::size_type e = src.find_first_of( seps, s );
+      if ( e == string::npos ){
+	res = src.substr( s );
+	s = e;
+      }
+      else {
+	res = src.substr( s, e - s );
+	s = e+1;
+      }
+      if ( !res.empty() ){
+	results.push_back( res );
+	++cnt;
+      }
+      if ( max != 0 && cnt >= max-1 ){
+	results.push_back( src.substr( s ) );
+	break;
+      }
+    }
+    return results;
   }
 
   // format weird strings (like UTF8, LATIN1) printable
