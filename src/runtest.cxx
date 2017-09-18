@@ -321,16 +321,21 @@ void test_split(){
   string line = "De kat krabt de krullen\n van de   trap.";
   vector<string> res;
   int cnt = split( line, res );
-  //  cerr << "after split: " << res << endl;
   assertEqual( cnt, 8 );
   assertEqual( res[5], "van" );
+  vector<string> res2 = split( line );
+  assertEqual( res2.size(), 8 );
+  assertEqual( res2[6], "de" );
+  vector<string> res3 = split( line, 3 );
+  assertEqual( res3.size(), 3 );
+  assertEqual( res3[1], "kat" );
+  assertEqual( res3[2], "krabt de krullen\n van de   trap." );
 }
 
 void test_split_exact(){
   string line = "1 2  4    8  10";
   vector<string> res;
   int cnt = split( line, res, true );
-  //  cerr << "after split: " << res << endl;
   assertEqual( cnt, 10 );
   assertEqual( res[5], "" );
 }
@@ -339,7 +344,6 @@ void test_split_at_exact(){
   string line = "1/2//4////8//10";
   vector<string> res;
   int cnt = split_at( line, res, "/", true );
-  //  cerr << "after split: " << res << endl;
   assertEqual( cnt, 10 );
   assertEqual( res[5], "" );
 }
@@ -349,8 +353,14 @@ void test_split_at(){
   vector<string> res;
   int cnt = split_at( line, res, "rare" );
   assertEqual( cnt, 8 );
-  //  cerr << "after split: " << res << endl;
   assertEqual( res[5], "van" );
+  vector<string> res2 = split_at( line, "rare" );
+  assertEqual( res2.size(), 8 );
+  assertEqual( res2[6], "de" );
+  vector<string> res3 = split_at( line, "rare", 4 );
+  assertEqual( res3.size(), 4 );
+  assertEqual( res3[2], "krabt" );
+  assertEqual( res3[3], "derarekrullen\nrarevanrarederaretrap." );
 }
 
 void test_split_at_first(){
@@ -358,8 +368,14 @@ void test_split_at_first(){
   vector<string> res;
   int cnt = split_at_first_of( line, res, ".,?!:;" );
   assertEqual( cnt, 8 );
-  //  cerr << "after split: " << res << endl;
   assertEqual( res[5], "van" );
+  vector<string> res2 = split_at_first_of( line, ".,?!:;" );
+  assertEqual( res2.size(), 8 );
+  assertEqual( res2[6], "de" );
+  vector<string> res3 = split_at_first_of( line, ".,?!:;", 7 );
+  assertEqual( res3.size(), 7 );
+  assertEqual( res3[4], "krullen" );
+  assertEqual( res3[6], ",;.;de!trap." );
 }
 
 void test_split_at_first_exact(){
