@@ -330,6 +330,18 @@ void test_split(){
   assertEqual( res3.size(), 3 );
   assertEqual( res3[1], "kat" );
   assertEqual( res3[2], "krabt de krullen\n van de   trap." );
+  vector<string> res4 = split( line, 24 );
+  assertEqual( res4.size(), 8 );
+  assertEqual( res4[1], "kat" );
+  assertEqual( res4[2], "krabt" );
+  vector<string> res5 = split( line, -1 );
+  assertEqual( res5.size(), 8 );
+  assertEqual( res5[1], "kat" );
+  assertEqual( res5[2], "krabt" );
+  vector<string> res6 = split( line, 0 );
+  assertEqual( res6.size(), 8 );
+  assertEqual( res6[1], "kat" );
+  assertEqual( res6[2], "krabt" );
 }
 
 void test_split_exact(){
