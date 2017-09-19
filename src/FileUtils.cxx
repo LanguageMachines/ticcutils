@@ -63,7 +63,7 @@ namespace TiCC {
       mess += strerror( errno );
       throw runtime_error( mess );
     }
-    for(unsigned int i=0;i<glob_result.gl_pathc;++i){
+    for( unsigned int i=0; i<glob_result.gl_pathc; ++i ){
       result.push_back(string(glob_result.gl_pathv[i]));
     }
     globfree(&glob_result);
@@ -229,9 +229,8 @@ namespace TiCC {
     if ( !os1.good() ){
       // it fails
       // attempt to create the path
-      vector<string> parts;
-      int num = split_at( path, parts, "/" );
-      if ( num > 0 ){
+      vector<string> parts = split_at( path, "/" );
+      if ( parts.size() > 0 ){
 	//  at least one /
 	string newpath;
 	if ( path[0] == '/' )

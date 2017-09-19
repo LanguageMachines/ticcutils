@@ -256,12 +256,14 @@ namespace TiCC {
   string format_nonascii( const string& s ){
     stringstream os;
     os << showbase << hex;
-    unsigned int i;
-    for ( i=0; i < s.length(); ++i )
-      if ( isprint(s[i]) && (int)s[i] > 31 )
-	os << s[i];
-      else
-	os << "-" << (short int)s[i] << "-";
+    for ( const auto& c : s ){
+      if ( isprint(c) && (int)c > 31 ){
+	os << c;
+      }
+      else {
+	os << "-" << (short int)c << "-";
+      }
+    }
     os << noshowbase << dec;
     return os.str();
   }

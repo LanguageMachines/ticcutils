@@ -678,8 +678,7 @@ namespace TiCC {
   }
 
   void CL_Options::set_long_options( const string& s ){
-    vector<string> parts;
-    TiCC::split_at( s, parts, "," );
+    vector<string> parts = TiCC::split_at( s, "," );
     for ( auto value: parts ){
       string::size_type pos = value.find( ':' );
       if ( pos != string::npos ){
