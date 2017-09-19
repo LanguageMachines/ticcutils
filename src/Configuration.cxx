@@ -87,6 +87,22 @@ namespace TiCC {
     return result;
   }
 
+  bool Configuration::get_att_val( const string& line, const string& section ){
+    string::size_type pos = line.find("=");
+    if ( pos != string::npos ){
+      string att = line.substr(0,pos);
+      att = TiCC::trim(att);
+      string val = line.substr(pos+1);
+      val = TiCC::trim(val);
+      if ( val[0] == '"' && val[val.length()-1] == '"' )
+	val = val.substr(1, val.length()-2);
+      val = fixControls( val );
+      myMap[section][att] = val;
+      return true;
+    }
+    return false;
+  }
+
   bool Configuration::fill( const string& fileName ){
     ifstream is( fileName );
     if ( !is ){
@@ -121,19 +137,9 @@ namespace TiCC {
 	  return false;
 	}
       else {
-	string::size_type pos = line.find("=");
-	if ( pos != string::npos ){
-	  string att = line.substr(0,pos);
-	  att = TiCC::trim(att);
-	  string val = line.substr(pos+1);
-	  val = TiCC::trim(val);
-	  if ( val[0] == '"' && val[val.length()-1] == '"' )
-	    val = val.substr(1, val.length()-2);
-	  val = fixControls( val );
-	  myMap[section][att] = val;
-	}
-	else {
-	  cerr << "invalid attribute value pair in line '" << line << "'" << endl;
+	if ( !get_att_val ( line, section ) ){
+	  cerr << "invalid attribute value pair in line '"
+	       << line << "'" << endl;
 	  return false;
 	}
       }
@@ -171,18 +177,9 @@ namespace TiCC {
 	}
       else if ( localsection == section ){
 	found = true;
-	string::size_type pos = line.find("=");
-	if ( pos != string::npos ){
-	  string att = line.substr(0,pos);
-	  att = TiCC::trim(att);
-	  string val = line.substr(pos+1);
-	  val = TiCC::trim(val);
-	  if ( val[0] == '"' && val[val.length()-1] == '"' )
-	    val = val.substr(1, val.length()-2);
-	  myMap[section][att] = val;
-	}
-	else {
-	  cerr << "invalid attribute value pair in line '" << line << "'" << endl;
+	if ( !get_att_val( line, section ) ){
+	  cerr << "invalid attribute value pair in line '"
+	       << line << "'" << endl;
 	  return false;
 	}
       }
@@ -193,6 +190,23 @@ namespace TiCC {
       return false;
     }
     return true;
+  }
+
+  string encode_ctrl( const string& in ){
+    string out;
+    for ( const auto& c : in ){
+      switch ( c ){
+      case '\n': out += "\\n";
+	break;
+      case '\r': out += "\\r";
+	break;
+      case '\t': out += "\\t";
+	break;
+      default:
+	out += c;
+      }
+    }
+    return out;
   }
 
   void Configuration::dump( ostream& os ) const {
@@ -213,7 +227,7 @@ namespace TiCC {
 	os << endl << "[[" << it1->first << "]]" << endl;
 	it2 = it1->second.begin();
 	while ( it2 != it1->second.end() ){
-	  os << it2->first << "=" << it2->second << endl;
+	  os << it2->first << "=" << encode_ctrl(it2->second) << endl;
 	  ++it2;
 	}
       }

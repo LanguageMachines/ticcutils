@@ -60,6 +60,7 @@ namespace TiCC {
   private:
     sssMap myMap;
     std::string cdir; // not used. left here for binary compatibility
+    bool get_att_val( const std::string&, const std::string& );
   };
 
   inline std::ostream& operator<<( std::ostream& os, const Configuration& c ){

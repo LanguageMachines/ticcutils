@@ -534,6 +534,8 @@ void test_configuration( const string& path ){
   assertEqual( oud, "gek" );
   c.setatt( "pief", "paf", "poef" );
   c.clearatt( "piet", "test" );
+  att = c.lookUp( "Truus", "test" );
+  assertEqual( att, "met een \n er in en een \r!" );
   assertNoThrow( c.create_configfile( "/tmp/test.cfg" ) );
   Configuration c2;
   assertTrue( c2.fill( "/tmp/test.cfg" ) );
@@ -547,6 +549,8 @@ void test_configuration( const string& path ){
   assertEqual( att, "paf" );
   att = c2.lookUp( "piet", "test" );
   assertEqual( att, "" );
+  att = c.lookUp( "Truus", "test" );
+  assertEqual( att, "met een \n er in en een \r!" );
 }
 
 void test_logstream( const string& path ){
