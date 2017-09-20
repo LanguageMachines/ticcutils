@@ -322,7 +322,7 @@ namespace TimblServer {
   void ServerBase::socketChild( childArgs *args ){
     signal( SIGPIPE, BrokenPipeChildFun );
     LOG << "Thread " << (uintptr_t)pthread_self() << " on socket "
-	<< args->id() << ", started at: " << Timer::now();
+	<< args->id() << ", started at: " << Timer::now() << endl;
     static int service_count=0;
     static pthread_mutex_t my_lock = PTHREAD_MUTEX_INITIALIZER;
     pthread_mutex_lock(&my_lock);
