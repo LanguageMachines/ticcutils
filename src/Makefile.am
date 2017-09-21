@@ -1,5 +1,5 @@
 AM_CPPFLAGS = -I@top_srcdir@/include
-AM_CXXFLAGS = -std=c++11 # -Weffc++
+AM_CXXFLAGS = -g -std=c++11 -O3 -W -Wall -pedantic
 
 LDADD = libticcutils.la
 
