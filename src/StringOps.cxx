@@ -39,7 +39,7 @@ using namespace std;
 namespace TiCC {
 
   string BuildInfo() {
-    // cannot be defined in the header becaus otherwise __DATE__ ans
+    // cannot be defined in the header because otherwise __DATE__ and
     // __TIME__ would be dynamic. (changing every time it is included)
     return VersionName() + "-" + Version() + ". Compiled on "
       + __DATE__ + " " + __TIME__;
