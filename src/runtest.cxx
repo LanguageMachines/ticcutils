@@ -342,6 +342,9 @@ void test_split(){
   assertEqual( res6.size(), 8 );
   assertEqual( res6[1], "kat" );
   assertEqual( res6[2], "krabt" );
+  vector<string> res7 = split( "APPELTAART", 2 );
+  assertEqual( res7.size(), 1 );
+  assertEqual( res7[0], "APPELTAART" );
 }
 
 void test_split_exact(){

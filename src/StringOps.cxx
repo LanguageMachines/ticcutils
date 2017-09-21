@@ -178,7 +178,9 @@ namespace TiCC {
 	results.push_back( res );
       }
       if ( max != 0 && cnt >= max-1 ){
-	results.push_back( src.substr( pos ) );
+	if ( pos != string::npos ){
+	  results.push_back( src.substr( pos ) );
+	}
 	break;
       }
     }
@@ -227,24 +229,26 @@ namespace TiCC {
     }
     vector<string> results;
     size_t cnt = 0;
-    string::size_type s = 0;
-    while ( s != string::npos ){
+    string::size_type pos = 0;
+    while ( pos != string::npos ){
       string res;
-      string::size_type e = src.find_first_of( seps, s );
+      string::size_type e = src.find_first_of( seps, pos );
       if ( e == string::npos ){
-	res = src.substr( s );
-	s = e;
+	res = src.substr( pos );
+	pos = e;
       }
       else {
-	res = src.substr( s, e - s );
-	s = e+1;
+	res = src.substr( pos, e - pos );
+	pos = e+1;
       }
       if ( !res.empty() ){
 	results.push_back( res );
 	++cnt;
       }
       if ( max != 0 && cnt >= max-1 ){
-	results.push_back( src.substr( s ) );
+	if ( pos != string::npos ){
+	  results.push_back( src.substr( pos ) );
+	}
 	break;
       }
     }
