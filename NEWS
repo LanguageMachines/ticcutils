@@ -1,9 +1,16 @@
+26 oct 2017 0.16
+[Ko van der Sloot]
+* update autoconfig stuff
+* added more and enhanced split() functions, including JAVA like variants
+* refactoring and cleanup
+* improved assertEqual()
+
 4 april 2017 0.15
 [Ko van der Sloot]
 - small bug fixes:
   - added newline in logging
   - check on 0 pointer in SocketBasics
-  - added more safeguards against abus of CommandLine ans StringOps
+  - added more safeguards against abuse of CommandLine and StringOps
   - added more tests tot runtest
 
 - code refactoring based on static analysis with CPPCHECK
