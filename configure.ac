@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.61)
-AC_INIT([ticcutils],[0.16],[lamasoftware@science.ru.nl])
+AC_INIT([ticcutils],[0.17],[lamasoftware@science.ru.nl])
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([.])
 AC_CONFIG_MACRO_DIR([m4])
