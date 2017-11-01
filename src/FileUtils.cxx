@@ -25,6 +25,8 @@
 
 */
 
+#include "ticcutils/FileUtils.h"
+
 #include <cerrno>
 #include <cstring>
 #include <vector>
@@ -46,7 +48,6 @@
 #  include <regex>
 #endif
 #include "ticcutils/StringOps.h"
-#include "ticcutils/FileUtils.h"
 
 using namespace std;
 namespace TiCC {

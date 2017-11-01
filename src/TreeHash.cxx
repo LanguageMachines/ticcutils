@@ -24,11 +24,11 @@
       lamasoftware (at ) science.ru.nl
 */
 
+#include "ticcutils/TreeHash.h"
+
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
-
-#include "ticcutils/TreeHash.h"
 
 using namespace std;
 

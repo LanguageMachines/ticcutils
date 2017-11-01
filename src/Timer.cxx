@@ -24,10 +24,11 @@
       lamasoftware (at ) science.ru.nl
 */
 
+#include <ticcutils/Timer.h>
+
 #include <iostream>
 #include <sstream>
 #include <string>
-#include <ticcutils/Timer.h>
 
 using namespace std;
 

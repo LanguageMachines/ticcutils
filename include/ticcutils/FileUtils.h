@@ -25,6 +25,7 @@
 */
 
 #include <vector>
+#include <string>
 
 #ifndef TICC_FILE_UTILS_H
 #define TICC_FILE_UTILS_H

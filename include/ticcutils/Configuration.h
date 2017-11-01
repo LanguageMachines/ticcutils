@@ -30,7 +30,7 @@
 #include <string>
 #include <map>
 #include <set>
-#include <iosfwd>
+#include <iostream>
 
 namespace TiCC {
   class Configuration {

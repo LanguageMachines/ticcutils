@@ -24,6 +24,8 @@
       lamasoftware (at ) science.ru.nl
 */
 
+#include "ticcutils/SocketBasics.h"
+
 #include <string>
 #include <stdexcept>
 #include <iostream>
@@ -37,7 +39,6 @@
 
 #include "config.h"
 #include "ticcutils/StringOps.h"
-#include "ticcutils/SocketBasics.h"
 
 using namespace std;
 

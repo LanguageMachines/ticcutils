@@ -24,6 +24,8 @@
       lamasoftware (at ) science.ru.nl
 */
 
+#include "ticcutils/ServerBase.h"
+
 #ifndef HAVE_DAEMON
 #include <fcntl.h> // for implementing daemon
 #endif
@@ -36,7 +38,6 @@
 #include "ticcutils/StringOps.h"
 #include "config.h"
 #include "ticcutils/FdStream.h"
-#include "ticcutils/ServerBase.h"
 
 using namespace std;
 using namespace TiCC;

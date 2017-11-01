@@ -24,6 +24,8 @@
       lamasoftware (at ) science.ru.nl
 */
 
+#include "ticcutils/FdStream.h"
+
 #include <cstring>
 #include <cstdio>
 #include <cerrno>
@@ -33,7 +35,6 @@
 #include <stdexcept>
 #include <unistd.h>
 #include <cstdlib>
-#include "ticcutils/FdStream.h"
 
 using namespace std;
 

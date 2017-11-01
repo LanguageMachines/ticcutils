@@ -27,6 +27,8 @@
 #ifndef SOCKET_BASICS_H
 #define SOCKET_BASICS_H
 
+#include <string>
+
 #ifdef _WIN32
 #include <winsock.h>
 #else

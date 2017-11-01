@@ -25,6 +25,8 @@
 
 */
 
+#include "ticcutils/Configuration.h"
+
 #include <string>
 #include <map>
 #include <set>
@@ -32,7 +34,6 @@
 #include <stdexcept>
 #include <iostream>
 #include "ticcutils/StringOps.h"
-#include "ticcutils/Configuration.h"
 
 using namespace std;
 

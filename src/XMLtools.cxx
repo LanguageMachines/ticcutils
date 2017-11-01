@@ -24,12 +24,13 @@
       lamasoftware (at ) science.ru.nl
 */
 
+#include "ticcutils/XMLtools.h"
+
 #include <iostream>
 #include <string>
 #include <stdexcept>
 #include "libxml/xpath.h"
 #include "libxml/xpathInternals.h"
-#include "ticcutils/XMLtools.h"
 
 using namespace std;
 

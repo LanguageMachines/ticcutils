@@ -28,6 +28,7 @@
 #define TICC_TREE_H
 
 #include <vector>
+#include <ostream>
 #include "ticcutils/Trie.h"
 
 namespace Hash {

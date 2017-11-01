@@ -23,12 +23,12 @@
   or send mail to:
       lamasoftware (at ) science.ru.nl
 */
+
+#include "ticcutils/zipper.h"
+
 #include <stdexcept>
-#include <string>
-#include <iostream>
 #include <fstream>
 #include "config.h"
-#include "ticcutils/zipper.h"
 #ifdef HAVE_BZLIB_H
 #include "bzlib.h"
 #include "ticcutils/bz2stream.h"

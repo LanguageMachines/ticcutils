@@ -28,6 +28,7 @@
 
 #include <cstdlib>
 #include <sys/time.h>
+#include <iostream>
 
 namespace TiCC {
   class Timer {

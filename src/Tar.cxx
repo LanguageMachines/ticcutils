@@ -24,13 +24,15 @@
       lamasoftware (at ) science.ru.nl
 */
 
+#include "config.h"
+#include "ticcutils/Tar.h"
+
 #include <cstring>
 #include <cerrno>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <unistd.h>
-#include "config.h"
 #include <sys/fcntl.h>
 #include "ticcutils/StringOps.h"
 #if HAVE_WORKING_REGEX == 2
@@ -41,7 +43,6 @@
 #else
 #  include <regex>
 #endif
-#include "ticcutils/Tar.h"
 
 using namespace std;
 

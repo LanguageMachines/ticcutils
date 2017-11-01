@@ -27,6 +27,9 @@
 #ifndef TICC_ZIP_TOOLS_H
 #define TICC_ZIP_TOOLS_H
 
+#include <string>
+#include <iostream>
+
 namespace TiCC {
 
   bool bz2Compress( const std::string&, const std::string& = "" );

@@ -26,6 +26,8 @@
 
 */
 
+#include "ticcutils/CommandLine.h"
+
 #include <cassert>
 #include <string>
 #include <vector>
@@ -34,7 +36,6 @@
 #include <iostream>
 
 #include "ticcutils/StringOps.h"
-#include "ticcutils/CommandLine.h"
 #include "ticcutils/PrettyPrint.h"
 
 using namespace std;
