@@ -25,15 +25,16 @@
 
 */
 
+#include "ticcutils/StringOps.h"
+
+#include <cerrno>
+#include <cfloat>
+#include <cstdlib>
 #include <algorithm>
 #include <string>
 #include <iostream>
 #include <sstream>
-
-#include <cerrno>
-#include <cfloat>
 #include "ticcutils/Version.h"
-#include "ticcutils/StringOps.h"
 
 using namespace std;
 namespace TiCC {
@@ -272,7 +273,7 @@ namespace TiCC {
     return os.str();
   }
 
-  std::string basename( const std::string& path ){
+  string basename( const string& path ){
     string::size_type pos = path.rfind( "/" );
     if ( pos != string::npos ){
       return path.substr(pos+1);
@@ -282,7 +283,7 @@ namespace TiCC {
     }
   }
 
-  std::string dirname( const std::string& path ){
+  string dirname( const string& path ){
     string::size_type pos = path.rfind( "/" );
     if ( pos != string::npos ){
       return path.substr(0,pos);
@@ -290,6 +291,14 @@ namespace TiCC {
     else {
       return ".";
     }
+  }
+
+  string realpath( const string& path ){
+    const char *in = path.c_str();
+    char *out = 0;
+    string result = ::realpath( in, out );
+    free( out );
+    return result;
   }
 
 } // namespace TiCC

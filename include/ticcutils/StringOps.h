@@ -128,6 +128,7 @@ namespace TiCC {
 
   std::string basename( const std::string& );
   std::string dirname( const std::string& );
+  std::string realpath( const std::string& );
 
 }
 
