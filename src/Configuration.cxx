@@ -357,4 +357,17 @@ namespace TiCC {
     return false;
   }
 
+  void Configuration::merge( const Configuration& in ) {
+    // get al sections from in;
+    set<string> sections = in.lookUpSections();
+    for ( const auto& s : sections ){
+      // for every section, get all at-val pairs
+      auto avs = in.lookUpAll( s );
+      for ( const auto av : avs ){
+	// merge every at-val in the wanted section
+	setatt( av.first, av.second, s );
+      }
+    }
+  }
+
 }

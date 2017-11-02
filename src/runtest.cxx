@@ -554,6 +554,21 @@ void test_configuration( const string& path ){
   assertEqual( att, "" );
   att = c.lookUp( "Truus", "test" );
   assertEqual( att, "met een \n er in en een \r!" );
+  Configuration c3;
+  assertTrue( c3.fill( path + "testconfig.cfg" ) );
+  att = c3.lookUp( "jan" );
+  assertEqual( att, "gek" );
+  att = c3.lookUp( "pief", "poef" );
+  assertEqual( att, "" );
+  att = c3.lookUp( "piet", "test" );
+  assertEqual( att, "ook gek" );
+  c3.merge( c2 );
+  att = c3.lookUp( "jan" );
+  assertEqual( att, "normaal" );
+  att = c3.lookUp( "pief", "poef" );
+  assertEqual( att, "paf" );
+  att = c3.lookUp( "piet", "test" ); // empty in c2, not changed in c3
+  assertEqual( att, "ook gek" );
 }
 
 void test_logstream( const string& path ){
