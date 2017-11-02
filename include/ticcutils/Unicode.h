@@ -33,9 +33,10 @@
 
 namespace TiCC {
 
+  std::string UnicodeToUTF8( const UnicodeString&  );
+
   UnicodeString UnicodeFromEnc( const std::string& ,
 				const std::string& = "UTF8" );
-  std::string UnicodeToUTF8( const UnicodeString&  );
 
   inline UnicodeString UnicodeFromUTF8( const std::string& s ){
     return UnicodeString::fromUTF8( s );
