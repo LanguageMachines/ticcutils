@@ -41,6 +41,7 @@
 #include "ticcutils/CommandLine.h"
 #include "ticcutils/Configuration.h"
 #include "ticcutils/LogStream.h"
+#include "ticcutils/Unicode.h"
 
 using namespace std;
 using namespace TiCC;
@@ -603,6 +604,25 @@ void test_logstream( const string& path ){
   assertEqual( system( cmd.c_str() ), 0 );
 }
 
+void test_unicode( const string& path ){
+  UnicodeString u1 = L'私';
+  UChar32 uc1 = U'\U00007981';
+  UChar32 uc2 = U'\U00007982';
+  UnicodeString u2 = uc1;
+  u2 += UnicodeString( uc2 );
+  string s1 = UnicodeToUTF8( u1 );
+  assertEqual( s1 , "私" );
+  string s2 = UnicodeToUTF8( u2 );
+  assertEqual( s2 , "禁禂" );
+  ifstream in( path + "utf16bom.nl" );
+  string line;
+  getline( in, line );
+  assertFalse( line == "Hier staat een BOM voor. æ en ™ om te testen." );
+  UnicodeString u3 = UnicodeFromEnc( line, "UTF16" );
+  string s3 = UnicodeToUTF8(  u3 );
+  assertEqual( s3, "Hier staat een BOM voor. æ en ™ om te testen." );
+}
+
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
   test_opts_basic();
@@ -657,5 +677,6 @@ int main( const int argc, const char* argv[] ){
   test_fileutils( testdir );
   test_configuration( testdir );
   test_logstream( testdir );
+  test_unicode( testdir );
   summarize_tests(4);
 }
