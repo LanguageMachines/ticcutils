@@ -3,18 +3,18 @@
 .SH NAME
 ticc_prettyprint - format C++ containers
 
-.SH SYNOPSYS
+.SH SYNOPSIS
 .B #include "ticcutils/PrettyPrint.h"
 
 .B using namespace TiCC;
 
 .SH DESCRIPTION
-TiCC Pretty Print provides some C++ templates to output C++ containers in an 
+TiCC Pretty Print provides some C++ templates to output C++ containers in an
 orderly fashion. It's not rocket science, nor complete. But for instance for
 .B debugging
 it is convenient to be able to output containers a bit readable.
 
-To get usefull output, a well defined output operator is required for the 
+To get usefull output, a well defined output operator is required for the
 elements in the container too.
 
 TiCC output operators are currenly defined for:
@@ -32,9 +32,9 @@ TiCC output operators are currenly defined for:
 .B multimap<S,T>
 
 To get usefull output, it is needed that an output operator is defined for
-the elements 
+the elements
 .B S
-and 
+and
 .B T
 in the container too.
 
@@ -146,11 +146,11 @@ Or something similar.
 .RE
 Why is this so? Well, we
 .B didn't
-provide an output operator for 
+provide an output operator for
 .B myClass
 pointers!
 
-To fix this we have to change de definition of the output operator for 
+To fix this we have to change de definition of the output operator for
 .B myClass
 or just add a second definition, e.g. add:
 
@@ -177,5 +177,3 @@ The output now indeed is what we expected:
 .RE
 .SH AUTHORS
 Ko van der Sloot Timbl@uvt.nl
-
-
