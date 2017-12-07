@@ -357,7 +357,7 @@ namespace TiCC {
     return false;
   }
 
-  void Configuration::merge( const Configuration& in ) {
+  void Configuration::merge( const Configuration& in, bool override ) {
     // get al sections from in;
     set<string> sections = in.lookUpSections();
     for ( const auto& s : sections ){
@@ -365,6 +365,10 @@ namespace TiCC {
       auto avs = in.lookUpAll( s );
       for ( const auto av : avs ){
 	// merge every at-val in the wanted section
+	if ( !override
+	     &&  myMap[s].find( av.first ) != myMap[s].end() ){
+	  continue;
+	}
 	setatt( av.first, av.second, s );
       }
     }

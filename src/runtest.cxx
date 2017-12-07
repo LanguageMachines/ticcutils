@@ -563,12 +563,17 @@ void test_configuration( const string& path ){
   assertEqual( att, "" );
   att = c3.lookUp( "piet", "test" );
   assertEqual( att, "ook gek" );
-  c3.merge( c2 );
+  c3.merge( c2 ); //default is NOT to override what is already there
   att = c3.lookUp( "jan" );
-  assertEqual( att, "normaal" );
+  assertEqual( att, "gek" ); // not overridden ?
   att = c3.lookUp( "pief", "poef" );
   assertEqual( att, "paf" );
   att = c3.lookUp( "piet", "test" ); // empty in c2, not changed in c3
+  assertEqual( att, "ook gek" );
+  c3.merge( c2, true ); // Now override
+  att = c3.lookUp( "jan" );
+  assertEqual( att, "normaal" ); // is overridden now?
+  att = c3.lookUp( "piet", "test" ); // empty in c2, still not changed in c3
   assertEqual( att, "ook gek" );
 }
 
