@@ -60,7 +60,6 @@ namespace TiCC {
     std::string configDir() const { return lookUp( "configDir" ); };
   private:
     sssMap myMap;
-    std::string cdir; // not used. left here for binary compatibility
     bool get_att_val( const std::string&, const std::string& );
   };
 
