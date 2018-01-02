@@ -98,10 +98,12 @@ AX_BOOST_BASE( [1.50],
 PKG_PROG_PKG_CONFIG
 
 if test "x$PKG_CONFIG_PATH" = x; then
-    export PKG_CONFIG_PATH="$prefix/lib/pkgconfig"
+  echo export PKG_CONFIG_PATH="$prefix/lib/pkgconfig"
 else
     export PKG_CONFIG_PATH="$prefix/lib/pkgconfig:$PKG_CONFIG_PATH"
 fi
+
+AC_MSG_NOTICE([pkg-config: PATH=$PKG_CONFIG_PATH])
 
 PKG_CHECK_MODULES([XML2], [libxml-2.0 >= 2.6.16] )
 CXXFLAGS="$CXXFLAGS $XML2_CFLAGS"
