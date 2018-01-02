@@ -47,10 +47,10 @@ before_install:
     brew update;
     brew install pkg-config;
     brew install autoconf-archive;
-    brew install icu4c;
-    brew install libxml2;
-    brew install bzip2;
-    brew install zlib;
+    brew outdated || brew upgrade icu4c;
+    brew outdated || brew upgrade libxml2;
+    brew outdated || brew install bzip2;
+    brew outdated || brew install zlib;
     brew install gnu-tar;
     brew outdated boost || brew upgrade boost;
     fi

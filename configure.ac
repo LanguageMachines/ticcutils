@@ -97,10 +97,14 @@ AX_BOOST_BASE( [1.50],
 
 PKG_PROG_PKG_CONFIG
 
+if test "x$prefix" = "xNONE"; then
+   prefix="/usr/local"
+fi
+
 if test "x$PKG_CONFIG_PATH" = x; then
-  echo export PKG_CONFIG_PATH="$prefix/lib/pkgconfig"
+   export PKG_CONFIG_PATH="$prefix/lib/pkgconfig"
 else
-    export PKG_CONFIG_PATH="$prefix/lib/pkgconfig:$PKG_CONFIG_PATH"
+   export PKG_CONFIG_PATH="$prefix/lib/pkgconfig:$PKG_CONFIG_PATH"
 fi
 
 AC_MSG_NOTICE([pkg-config: PATH=$PKG_CONFIG_PATH])
