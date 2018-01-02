@@ -39,8 +39,17 @@ matrix:
 
 
 before_install:
-  - sudo apt-get update
-  - sudo apt-get install pkg-config autoconf-archive libicu-dev libxml2-dev libbz2-dev zlib1g-dev libtar-dev libboost-dev libboost-regex-dev
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update; else brew uodate; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install pkg-config; else brew install pkg-config; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install autoconf-archive; else brew install autoconf-archive; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libicu-dev; else brew install libicu-dev; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libxml2-dev; else brew install libxml2-dev; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libbz2-dev; else brew install libbz2-dev; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install zlibg1-dev; else brew install zlibg1-dev; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libtar-dev; else brew install libtar-dev; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libboost-dev; else brew install libboost-dev; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libboost-regex-dev; else brew install libboost-regex-dev; fi
+
 install:
   - bash bootstrap.sh
   - ./configure
