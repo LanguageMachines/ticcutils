@@ -108,24 +108,7 @@ else
    export PKG_CONFIG_PATH="$prefix/lib/pkgconfig:$PKG_CONFIG_PATH"
 fi
 
-AC_CANONICAL_HOST
-AC_MSG_NOTICE([host OS:${host_os}])
-
-case ${host_os} in
- linux*)
- # linux is wellbehaved
-    ;;
- darwin*)
-    for i in `ls /usr/local/opt/`
-    do
-      if test -d "/usr/local/opt/$i/lib/pkgconfig"
-      then
-        export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/opt/$i/lib/pkgconfig"
-      fi
-    done
-    ;;
-esac
-
+AC_OSX_PKG
 AC_MSG_NOTICE([pkg-config: PATH=$PKG_CONFIG_PATH])
 
 PKG_CHECK_MODULES([XML2], [libxml-2.0 >= 2.6.16] )
