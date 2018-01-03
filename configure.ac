@@ -108,7 +108,8 @@ else
    export PKG_CONFIG_PATH="$prefix/lib/pkgconfig:$PKG_CONFIG_PATH"
 fi
 
-AC_OSX_PKG
+#AC_OSX_PKGS
+AC_OSX_PKG( [icu4c libxml2] )
 AC_MSG_NOTICE([pkg-config: PATH=$PKG_CONFIG_PATH])
 
 PKG_CHECK_MODULES([XML2], [libxml-2.0 >= 2.6.16] )

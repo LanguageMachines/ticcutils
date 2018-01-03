@@ -52,7 +52,7 @@ before_install:
     brew outdated || brew upgrade libxml2;
     brew outdated || brew install bzip2;
     brew outdated || brew install zlib;
-    brew install gnu-tar;
+    brew install libtar;
     brew outdated boost || brew upgrade boost;
     fi
 
