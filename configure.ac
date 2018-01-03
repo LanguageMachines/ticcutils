@@ -118,7 +118,7 @@ case ${host_os} in
  darwin*)
     for i in `ls /usr/local/opt/`
     do
-      if [ -d "/usr/local/opt/$i/lib/pkgconfig" ]
+      if test -d "/usr/local/opt/$i/lib/pkgconfig"
       then
         export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/opt/$i/lib/pkgconfig"
       fi
