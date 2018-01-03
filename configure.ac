@@ -111,16 +111,20 @@ fi
 AC_CANONICAL_HOST
 AC_MSG_NOTICE([host OS:${host_os}])
 
-if test "${host_os}" = "osx"
-then
-  for i in `ls /usr/local/opt/`
-  do
-    if [ -d "/usr/local/opt/$i/lib/pkgconfig" ]
-    then
-      export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/opt/$i/lib/pkgconfig"
-    fi
-  done
-fi
+case ${host_os} in
+ linux*)
+ # linux is wellbehaved
+    ;;
+ darwin*)
+    for i in `ls /usr/local/opt/`
+    do
+      if [ -d "/usr/local/opt/$i/lib/pkgconfig" ]
+      then
+        export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/opt/$i/lib/pkgconfig"
+      fi
+    done
+    ;;
+esac
 
 AC_MSG_NOTICE([pkg-config: PATH=$PKG_CONFIG_PATH])
 
