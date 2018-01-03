@@ -101,22 +101,26 @@ if test "x$prefix" = "xNONE"; then
    prefix="/usr/local"
 fi
 
-if test "x$PKG_CONFIG_PATH" = x; then
+if test "x$PKG_CONFIG_PATH" = x
+then
    export PKG_CONFIG_PATH="$prefix/lib/pkgconfig"
 else
    export PKG_CONFIG_PATH="$prefix/lib/pkgconfig:$PKG_CONFIG_PATH"
 fi
 
 AC_CANONICAL_HOST
-AC_MSG_NOTICE([host OS:$(host_os)])
-if test "$(host_os)" = "osx"; then
-for i in `ls /usr/local/opt/`;
-do
-    if [ -d "/usr/local/opt/$i/lib/pkgconfig" ];
-    then export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:"/usr/local/opt/$i/lib/pkgconf\
-ig";
-    fi;
-done
+AC_MSG_NOTICE([host OS:${host_os}])
+
+if test "${host_os}" = "osx"
+then
+  for i in `ls /usr/local/opt/`
+  do
+    if [ -d "/usr/local/opt/$i/lib/pkgconfig" ]
+    then
+      export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/opt/$i/lib/pkgconfig"
+    fi
+  done
+fi
 
 AC_MSG_NOTICE([pkg-config: PATH=$PKG_CONFIG_PATH])
 
