@@ -23,16 +23,16 @@ matrix:
       env: COMPILER=g++-4.9
 
     - os: linux
-      compiler: clang++
-#      addons:
-#        apt:
-#          packages:
-#            - libiomp-dev
+      compiler: clang
+      addons:
+        apt:
+          packages:
+            - libiomp-dev
       env:
        - COMPILER=clang++
 # libiomp is a very strange abberation in trusty
 # changed to libomp in newer Ubuntu versions.
-       - CXXFLAGS="-fopenmp"
+       - CXXFLAGS="-fopenmp=libiomp5"
 
     - os: osx
       compiler: gcc
