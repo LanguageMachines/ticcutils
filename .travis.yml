@@ -23,7 +23,7 @@ matrix:
       env: COMPILER=g++-4.9
 
     - os: linux
-      compiler: clang
+      compiler: clang++
 #      addons:
 #        apt:
 #          packages:
@@ -32,7 +32,7 @@ matrix:
        - COMPILER=clang++
 # libiomp is a very strange abberation in trusty
 # changed to libomp in newer Ubuntu versions.
-       - CXXFLAGS=-fopenmp
+       - CXXFLAGS="-fopenmp5"
 
     - os: osx
       compiler: gcc
