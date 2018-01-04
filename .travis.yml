@@ -32,7 +32,7 @@ matrix:
        - COMPILER=clang++
 # libiomp is a very strange abberation in trusty
 # changed to libomp in newer Ubuntu versions.
-       - CXXFLAGS="-fopenmp5"
+       - CXXFLAGS="-fopenmp"
 
     - os: osx
       compiler: gcc
