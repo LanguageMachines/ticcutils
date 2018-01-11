@@ -44,19 +44,46 @@ namespace TiCC {
     return result;
   }
 
-  UnicodeNormalizer::UnicodeNormalizer( const std::string& enc ){
-    UErrorCode err = U_ZERO_ERROR;
-    if ( enc == ""
-	 || enc == "NFC" )
-      _normalizer = Normalizer2::getNFCInstance( err );
-    else if ( enc == "NFD" )
-      _normalizer = Normalizer2::getNFDInstance( err );
-    else if ( enc == "NFKC" )
-      _normalizer = Normalizer2::getNFKCInstance( err );
-    else if ( enc == "NFKD" )
-      _normalizer = Normalizer2::getNFKDInstance( err );
+  UnicodeNormalizer::UnicodeNormalizer( const string& enc ): _normalizer(0) {
+    string mode = enc;
+    if ( mode.empty() ){
+      mode = "NFC";
+    }
+    setMode(mode);
+  }
+
+  UnicodeNormalizer::~UnicodeNormalizer(){
+    // NEVER EVER delete _normalizer!
+  }
+
+  const string UnicodeNormalizer::setMode( const string& enc ){
+    if ( enc == mode
+	 || (enc.empty() && mode == "NFC") ){
+      return mode;
+    }
     else {
-      throw std::logic_error( "invalid normalization mode: " + enc );
+      // NEVER EVER delete _normalizer! it is static
+      UErrorCode err = U_ZERO_ERROR;
+      if ( enc == ""
+	   || enc == "NFC" )
+	_normalizer = Normalizer2::getNFCInstance( err );
+      else if ( enc == "NONE" )
+	_normalizer = 0;
+      else if ( enc == "NFD" )
+	_normalizer = Normalizer2::getNFDInstance( err );
+      else if ( enc == "NFKC" )
+	_normalizer = Normalizer2::getNFKCInstance( err );
+      else if ( enc == "NFKD" )
+	_normalizer = Normalizer2::getNFKDInstance( err );
+      else {
+	throw std::logic_error( "invalid normalization mode: " + enc );
+      }
+      string tmp = mode;
+      mode = enc;
+      if ( mode.empty() ){
+	mode = "NFC";
+      }
+      return tmp;
     }
   }
 

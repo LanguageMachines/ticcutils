@@ -633,6 +633,10 @@ void test_unicode( const string& path ){
   UnicodeString ng1 = N.normalize( greek1 );
   UnicodeString ng2 = N.normalize( greek2 );
   assertEqual( UnicodeToUTF8(ng1), UnicodeToUTF8(ng2) );
+  N.setMode("NFD");
+  UnicodeString ng11 = N.normalize( greek1 );
+  UnicodeString ng12 = N.normalize( greek2 );
+  assertEqual( UnicodeToUTF8(ng11), UnicodeToUTF8(ng12) );
 }
 
 int main( const int argc, const char* argv[] ){
