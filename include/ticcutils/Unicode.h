@@ -30,6 +30,7 @@
 
 #include <string>
 #include "unicode/unistr.h"
+#include "unicode/normalizer2.h"
 
 namespace TiCC {
 
@@ -41,6 +42,15 @@ namespace TiCC {
   inline UnicodeString UnicodeFromUTF8( const std::string& s ){
     return UnicodeString::fromUTF8( s );
   }
+
+  class UnicodeNormalizer {
+  public:
+    UnicodeNormalizer( const std::string& = "" );
+    UnicodeString normalize( const UnicodeString& );
+  private:
+    const Normalizer2 *_normalizer;
+  };
+
 
 }
 #endif // TICC_UNICODE_H

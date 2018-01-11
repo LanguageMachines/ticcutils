@@ -626,6 +626,13 @@ void test_unicode( const string& path ){
   UnicodeString u3 = UnicodeFromEnc( line, "UTF16" );
   string s3 = UnicodeToUTF8(  u3 );
   assertEqual( s3, "Hier staat een BOM voor. æ en ™ om te testen." );
+  UnicodeString greek1 = "ἀντιϰειμένου";
+  UnicodeString greek2 = "ἀντιϰειμένου";
+  assertFalse( greek1 == greek2 ); // different normalizations!
+  UnicodeNormalizer N;
+  UnicodeString ng1 = N.normalize( greek1 );
+  UnicodeString ng2 = N.normalize( greek2 );
+  assertEqual( UnicodeToUTF8(ng1), UnicodeToUTF8(ng2) );
 }
 
 int main( const int argc, const char* argv[] ){
