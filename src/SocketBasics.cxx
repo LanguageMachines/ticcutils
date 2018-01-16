@@ -59,7 +59,7 @@ namespace Sockets {
   }
 
   // #define KEEP // experiment with keep-alive
-#define DEBUG
+  //#define DEBUG
 
   bool Socket::read( string& line ) {
     if ( !isValid() ){
@@ -108,8 +108,6 @@ namespace Sockets {
       return true;
     }
   }
-
-  //#define DEBUG
 
   bool Socket::read( string& result, unsigned int timeout ) {
     // a getline for nonblocking connections.
