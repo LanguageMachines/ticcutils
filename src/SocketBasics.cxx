@@ -59,10 +59,14 @@ namespace Sockets {
   }
 
   // #define KEEP // experiment with keep-alive
+#define DEBUG
 
   bool Socket::read( string& line ) {
     if ( !isValid() ){
       mess = "read: socket invalid";
+#ifdef DEBUG
+      cerr << mess << endl;
+#endif
       return false;
     }
     line = "";
@@ -78,6 +82,9 @@ namespace Sockets {
     while ( last_read != 10 ) { // read 1 character at a time upto \n
       bytes_read = ::read( sock, &last_read, 1 );
       if ( bytes_read <= 0) {
+#ifdef DEBUG
+	cerr << "read res = " << bytes_read  << " ( " << strerror(bytes_read) << ")" << endl;
+#endif
 	// The other side may have closed unexpectedly
 	break;
       }
@@ -88,6 +95,10 @@ namespace Sockets {
     }
     if ( bytes_read < 0 ) {
       mess = string("connection closed ") + strerror( bytes_read );
+#ifdef DEBUG
+      cerr << mess << endl;
+#endif
+
       return false;
     }
     else if ( bytes_read == 0 ) {
