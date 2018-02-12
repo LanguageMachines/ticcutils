@@ -29,8 +29,10 @@
 */
 
 #include <string>
+#include <vector>
 #include "unicode/unistr.h"
 #include "unicode/normalizer2.h"
+#include "unicode/regex.h"
 
 namespace TiCC {
 
@@ -55,6 +57,27 @@ namespace TiCC {
     std::string mode;
   };
 
+  class UnicodeRegexMatcher {
+  public:
+    UnicodeRegexMatcher( const UnicodeString&, const UnicodeString& name="" );
+    ~UnicodeRegexMatcher();
+    bool match_all( const UnicodeString&, UnicodeString&, UnicodeString&  );
+    const UnicodeString get_match( unsigned int ) const;
+    int NumOfMatches() const;
+    int split( const UnicodeString&, std::vector<UnicodeString>& );
+    UnicodeString Pattern() const;
+    bool set_debug( bool b ){ bool r = _debug; _debug = b; return r; };
+  private:
+    UnicodeRegexMatcher( const UnicodeRegexMatcher& );  // inhibit copies
+    UnicodeRegexMatcher& operator=( const UnicodeRegexMatcher& ); // inhibit copies
+    std::string failString;
+    RegexPattern *pattern;
+    RegexMatcher *matcher;
+    UnicodeRegexMatcher();
+    std::vector<UnicodeString> results;
+    const UnicodeString _name;
+    bool _debug;
+  };
 
 }
 #endif // TICC_UNICODE_H
