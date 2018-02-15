@@ -324,6 +324,16 @@ namespace TiCC {
     delete _trans;
   }
 
+  UnicodeString UniFilter::getRules() const {
+    UnicodeString result;
+    if ( !_trans ){
+      throw runtime_error( "UniFilter not initialized." );
+    }
+    else {
+      return _trans->toRules( result, false );
+    }
+  }
+
   void UniFilter::init( const UnicodeString& rules,
 			const UnicodeString& name ){
     UErrorCode stat = U_ZERO_ERROR;
