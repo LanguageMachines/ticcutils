@@ -85,6 +85,7 @@ namespace TiCC {
     UniFilter();
     ~UniFilter();
     void init( const UnicodeString&, const UnicodeString& );
+    void fill( const std::string&, const std::string& = "" );
     UnicodeString filter( const UnicodeString& );
   private:
     Transliterator *_trans;

@@ -29,6 +29,7 @@
 #include <exception>
 #include <stdexcept>
 #include <iostream>
+#include <fstream>
 #include "unicode/normalizer2.h"
 #include "unicode/ustream.h"
 #include "ticcutils/StringOps.h"
@@ -338,6 +339,38 @@ namespace TiCC {
 	+ " at postion: " + toString(err.offset);
       throw runtime_error( msg );
     }
+  }
+
+  UnicodeString escape( const UnicodeString& line ){
+    bool old_style = line.indexOf( '<' ) == -1;
+    UnicodeString result;
+    for ( int i=0; i < line.length(); ++i ){
+      if ( line[i] == '`' || line[i] == '\'' || line[i] == '"' ){
+	result += '\\';
+      }
+      else if ( old_style && (line[i] == ' ' || line[i] == '\t' ) ){
+	result += " < ";
+      }
+      result += line[i];
+    }
+    return result;
+  }
+
+  void UniFilter::fill( const string& filename,
+			const string& label ){
+    ifstream is( filename );
+    if ( !is ){
+      throw runtime_error( "UniFilter: unable te open rules file: '"
+			   + filename + "'" );
+    }
+    UnicodeString rule;
+    string line;
+    while ( getline( is, line ) ){
+      UnicodeString uline = UnicodeFromUTF8( line );
+      uline = escape( uline );
+      rule += uline + " ;";
+    }
+    init( rule, UnicodeFromUTF8(label) );
   }
 
   UnicodeString UniFilter::filter( const UnicodeString& line ){
