@@ -639,6 +639,28 @@ void test_unicode( const string& path ){
   assertEqual( UnicodeToUTF8(ng11), UnicodeToUTF8(ng12) );
 }
 
+void test_unicode_regex( ){
+  string pattern1 = "^(\\p{Lu}{1,2}\\.{1,2}(\\p{Lu}{1,2}\\.{1,2})*)(\\p{Lu}{0,2})$";
+  UnicodeRegexMatcher test1( UnicodeFromUTF8(pattern1), "test1" );
+  UnicodeString pre, post;
+  UnicodeString us = "A.N.W.B.";
+  assertTrue( test1.match_all( us, pre, post ) );
+  us = "A.N.W..B";
+  assertTrue( test1.match_all( us, pre, post ) );
+  us = "A.NON.W.B.";
+  assertFalse( test1.match_all( us, pre, post ) );
+  string pattern2 = "(?:de|het|een)_(\\p{Lu}+)(?:-(?:\\p{L}*)|\\Z)";
+  UnicodeRegexMatcher test2( UnicodeFromUTF8(pattern2), "test2" );
+  us = "een_CDA-minister";
+  assertTrue( test2.match_all( us, pre, post ) );
+  string result = TiCC::UnicodeToUTF8( test2.get_match( 0 ) );
+  assertEqual( result, "CDA" );
+  us = "de_VVD";
+  assertTrue( test2.match_all( us, pre, post ) );
+  result = TiCC::UnicodeToUTF8( test2.get_match( 0 ) );
+  assertEqual( result, "VVD" );
+}
+
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
   test_opts_basic();
@@ -694,5 +716,6 @@ int main( const int argc, const char* argv[] ){
   test_configuration( testdir );
   test_logstream( testdir );
   test_unicode( testdir );
+  test_unicode_regex();
   summarize_tests(4);
 }
