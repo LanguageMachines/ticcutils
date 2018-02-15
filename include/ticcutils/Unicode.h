@@ -70,7 +70,6 @@ namespace TiCC {
   private:
     UnicodeRegexMatcher( const UnicodeRegexMatcher& );  // inhibit copies
     UnicodeRegexMatcher& operator=( const UnicodeRegexMatcher& ); // inhibit copies
-    std::string failString;
     RegexPattern *pattern;
     RegexMatcher *matcher;
     UnicodeRegexMatcher();

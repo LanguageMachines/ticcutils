@@ -117,16 +117,15 @@ namespace TiCC {
 
   UnicodeRegexMatcher::UnicodeRegexMatcher( const UnicodeString& pat,
 					    const UnicodeString& name ):
-    _name(name)
+    _name(name), _debug(false)
   {
-    failString.clear();
     matcher = NULL;
     UErrorCode u_stat = U_ZERO_ERROR;
     UParseError errorInfo;
     pattern = RegexPattern::compile( pat, 0, errorInfo, u_stat );
     if ( U_FAILURE(u_stat) ){
       string spat = UnicodeToUTF8(pat);
-      failString = UnicodeToUTF8(_name);
+      string failString = UnicodeToUTF8(_name);
       if ( errorInfo.offset >0 ){
 	failString += " at position " + TiCC::toString( errorInfo.offset ) + "\n";
 	UnicodeString pat1 = UnicodeString( pat, 0, errorInfo.offset -1 );
@@ -140,7 +139,7 @@ namespace TiCC {
     else {
       matcher = pattern->matcher( u_stat );
       if (U_FAILURE(u_stat)){
-	failString = "'" + UnicodeToUTF8(pat) + "'";
+	string failString = "'" + UnicodeToUTF8(pat) + "'";
 	throw uRegexError(failString);
       }
     }
