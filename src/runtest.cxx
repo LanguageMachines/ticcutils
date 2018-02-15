@@ -661,6 +661,14 @@ void test_unicode_regex( ){
   assertEqual( result, "VVD" );
 }
 
+void test_unicode_filter( ){
+  UniFilter filt;
+  assertNoThrow( filt.init( "\\‘ > \\' ; \\’ > \\' ;  \\` > \\' ; \\´ > \\' ;", "quote_filter" ) );
+  UnicodeString vies = "`vies´ en ‘smerig’ en `apart´";
+  UnicodeString schoon = filt.filter( vies );
+  assertEqual( schoon, "\'vies\' en \'smerig\' en \'apart\'" );
+}
+
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
   test_opts_basic();
@@ -717,5 +725,6 @@ int main( const int argc, const char* argv[] ){
   test_logstream( testdir );
   test_unicode( testdir );
   test_unicode_regex();
+  test_unicode_filter();
   summarize_tests(4);
 }

@@ -318,4 +318,37 @@ namespace TiCC {
     return numWords;
   }
 
+  UniFilter::UniFilter(): _trans(0) {}
+  UniFilter::~UniFilter(){
+    delete _trans;
+  }
+
+  void UniFilter::init( const UnicodeString& rules,
+			const UnicodeString& name ){
+    UErrorCode stat = U_ZERO_ERROR;
+    UParseError err;
+    _trans = Transliterator::createFromRules( name,
+					      rules,
+					      UTRANS_FORWARD,
+					      err,
+					      stat );
+    if ( U_FAILURE( stat ) ){
+      string msg = "creating UniFilter: " + UnicodeToUTF8( name )
+	+ " failed\n" + "error in rules, line=" + toString(err.line)
+	+ " at postion: " + toString(err.offset);
+      throw runtime_error( msg );
+    }
+  }
+
+  UnicodeString UniFilter::filter( const UnicodeString& line ){
+    if ( !_trans ){
+      throw runtime_error( "UniFilter not initialized." );
+    }
+    else {
+      UnicodeString result = line;
+      _trans->transliterate( result );
+      return result;
+    }
+  }
+
 }

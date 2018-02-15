@@ -31,7 +31,9 @@
 #include <string>
 #include <vector>
 #include "unicode/unistr.h"
+#include "unicode/ustream.h"
 #include "unicode/normalizer2.h"
+#include "unicode/translit.h"
 #include "unicode/regex.h"
 
 namespace TiCC {
@@ -76,6 +78,16 @@ namespace TiCC {
     std::vector<UnicodeString> results;
     const UnicodeString _name;
     bool _debug;
+  };
+
+  class UniFilter {
+  public:
+    UniFilter();
+    ~UniFilter();
+    void init( const UnicodeString&, const UnicodeString& );
+    UnicodeString filter( const UnicodeString& );
+  private:
+    Transliterator *_trans;
   };
 
 }
