@@ -676,6 +676,13 @@ void test_unicode_filter( const string& path ){
   assertNoThrow( filt2.fill( path + "quotes.old.filter") );
   schoon = filt.filter( vies );
   assertEqual( schoon, "\'vies\' en \'smerig\' en \'apart\'" );
+  UniFilter filt4;
+  assertNoThrow( filt4.init( "‘ > \\' ;", "quote_filter" ) );
+  assertNoThrow( filt4.add( "’ \' " ) );
+  assertNoThrow( filt4.add( "` \'" ) );
+  assertNoThrow( filt4.add( "´ \' " ) );
+  schoon = filt.filter( vies );
+  assertEqual( schoon, "\'vies\' en \'smerig\' en \'apart\'" );
 }
 
 int main( const int argc, const char* argv[] ){

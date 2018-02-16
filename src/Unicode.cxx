@@ -352,14 +352,18 @@ namespace TiCC {
   }
 
   UnicodeString escape( const UnicodeString& line ){
-    bool old_style = line.indexOf( '<' ) == -1;
+    bool old_style = line.indexOf( '>' ) == -1;
+    bool inserted = false;
     UnicodeString result;
     for ( int i=0; i < line.length(); ++i ){
       if ( line[i] == '`' || line[i] == '\'' || line[i] == '"' ){
 	result += '\\';
       }
-      else if ( old_style && (line[i] == ' ' || line[i] == '\t' ) ){
-	result += " < ";
+      else if ( old_style
+		&& (line[i] == ' ' || line[i] == '\t' )
+		&& !inserted ){
+	inserted = true;
+	result += " > ";
       }
       result += line[i];
     }
@@ -385,7 +389,7 @@ namespace TiCC {
 
   UnicodeString UniFilter::filter( const UnicodeString& line ){
     if ( !_trans ){
-      throw runtime_error( "UniFilter not initialized." );
+      throw logic_error( "UniFilter not initialized." );
     }
     else {
       UnicodeString result = line;
@@ -394,4 +398,22 @@ namespace TiCC {
     }
   }
 
+  void UniFilter::add( const string& line ){
+    if ( !_trans ){
+      throw logic_error( "UniFilter: not initialized" );
+    }
+    UnicodeString uline = UnicodeFromUTF8( line );
+    uline = escape( uline );
+    uline += " ;";
+    UnicodeString old_rules;
+    _trans->toRules( old_rules, false );
+    cerr << "OLD rule: " << old_rules << endl;
+    cerr << "add rule: " << uline << endl;
+    old_rules += uline;
+    cerr << "NEW rule: " << old_rules << endl;
+    UnicodeString id = _trans->getID();
+    cerr << "ID = " << id << endl;
+    delete _trans;
+    init( old_rules, id );
+  }
 }
