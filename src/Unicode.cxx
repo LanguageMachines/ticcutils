@@ -330,7 +330,7 @@ namespace TiCC {
       throw runtime_error( "UniFilter not initialized." );
     }
     else {
-      return _trans->toRules( result, false );
+      return _trans->toRules( result, true );
     }
   }
 
@@ -367,6 +367,9 @@ namespace TiCC {
       }
       result += line[i];
     }
+    if ( old_style && result.indexOf( '>' ) == -1 ){
+      result  += "> ";
+    }
     return result;
   }
 
@@ -389,7 +392,8 @@ namespace TiCC {
 
   UnicodeString UniFilter::filter( const UnicodeString& line ){
     if ( !_trans ){
-      throw logic_error( "UniFilter not initialized." );
+      //      throw logic_error( "UniFilter not initialized." );
+      return line;
     }
     else {
       UnicodeString result = line;
@@ -398,22 +402,30 @@ namespace TiCC {
     }
   }
 
-  void UniFilter::add( const string& line ){
-    if ( !_trans ){
-      throw logic_error( "UniFilter: not initialized" );
-    }
-    UnicodeString uline = UnicodeFromUTF8( line );
-    uline = escape( uline );
+  void UniFilter::add( const UnicodeString& in ){
+    // if ( !_trans ){
+    //   throw logic_error( "UniFilter::add() not initialized" );
+    // }
+    UnicodeString uline = escape( in );
     uline += " ;";
     UnicodeString old_rules;
-    _trans->toRules( old_rules, false );
+    UnicodeString id;
+    if ( _trans ){
+      _trans->toRules( old_rules, false );
+      id = _trans->getID();
+      delete _trans;
+    }
     cerr << "OLD rule: " << old_rules << endl;
     cerr << "add rule: " << uline << endl;
     old_rules += uline;
     cerr << "NEW rule: " << old_rules << endl;
-    UnicodeString id = _trans->getID();
     cerr << "ID = " << id << endl;
-    delete _trans;
     init( old_rules, id );
   }
+
+  void UniFilter::add( const string& line ){
+    UnicodeString uline = UnicodeFromUTF8( line );
+    add( uline );
+  }
+
 }

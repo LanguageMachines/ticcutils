@@ -678,9 +678,9 @@ void test_unicode_filter( const string& path ){
   assertEqual( schoon, "\'vies\' en \'smerig\' en \'apart\'" );
   UniFilter filt4;
   assertNoThrow( filt4.init( "‘ > \\' ;", "quote_filter" ) );
-  assertNoThrow( filt4.add( "’ \' " ) );
-  assertNoThrow( filt4.add( "` \'" ) );
-  assertNoThrow( filt4.add( "´ \' " ) );
+  assertNoThrow( filt4.add( string("’ \' ") ) );
+  assertNoThrow( filt4.add( string("` \'") ) );
+  assertNoThrow( filt4.add( string("´ \' ") ) );
   schoon = filt.filter( vies );
   assertEqual( schoon, "\'vies\' en \'smerig\' en \'apart\'" );
 }
