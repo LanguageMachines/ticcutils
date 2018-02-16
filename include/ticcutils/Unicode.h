@@ -81,13 +81,14 @@ namespace TiCC {
   };
 
   class UniFilter {
+    friend std::ostream& operator<<( std::ostream&, const UniFilter& );
   public:
     UniFilter();
     ~UniFilter();
-    void init( const UnicodeString&, const UnicodeString& );
-    void fill( const std::string&, const std::string& = "" );
-    void add( const std::string& );
-    void add( const UnicodeString& );
+    bool init( const UnicodeString&, const UnicodeString& );
+    bool fill( const std::string&, const std::string& = "" );
+    bool add( const std::string& );
+    bool add( const UnicodeString& );
     UnicodeString filter( const UnicodeString& );
     UnicodeString getRules() const;
   private:

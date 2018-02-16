@@ -334,7 +334,7 @@ namespace TiCC {
     }
   }
 
-  void UniFilter::init( const UnicodeString& rules,
+  bool UniFilter::init( const UnicodeString& rules,
 			const UnicodeString& name ){
     UErrorCode stat = U_ZERO_ERROR;
     UParseError err;
@@ -349,6 +349,7 @@ namespace TiCC {
 	+ " at postion: " + toString(err.offset);
       throw runtime_error( msg );
     }
+    return true;
   }
 
   UnicodeString escape( const UnicodeString& line ){
@@ -373,7 +374,7 @@ namespace TiCC {
     return result;
   }
 
-  void UniFilter::fill( const string& filename,
+  bool UniFilter::fill( const string& filename,
 			const string& label ){
     ifstream is( filename );
     if ( !is ){
@@ -387,7 +388,7 @@ namespace TiCC {
       uline = escape( uline );
       rule += uline + " ;";
     }
-    init( rule, UnicodeFromUTF8(label) );
+    return init( rule, UnicodeFromUTF8(label) );
   }
 
   UnicodeString UniFilter::filter( const UnicodeString& line ){
@@ -402,7 +403,7 @@ namespace TiCC {
     }
   }
 
-  void UniFilter::add( const UnicodeString& in ){
+  bool UniFilter::add( const UnicodeString& in ){
     // if ( !_trans ){
     //   throw logic_error( "UniFilter::add() not initialized" );
     // }
@@ -420,12 +421,16 @@ namespace TiCC {
     old_rules += uline;
     cerr << "NEW rule: " << old_rules << endl;
     cerr << "ID = " << id << endl;
-    init( old_rules, id );
+    return init( old_rules, id );
   }
 
-  void UniFilter::add( const string& line ){
+  bool UniFilter::add( const string& line ){
     UnicodeString uline = UnicodeFromUTF8( line );
-    add( uline );
+    return add( uline );
   }
 
+  ostream& operator<<( ostream& os, const UniFilter& uf ){
+    os << uf.getRules();
+    return os;
+  }
 }
