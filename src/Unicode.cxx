@@ -390,7 +390,7 @@ namespace TiCC {
 			const string& label ){
     ifstream is( filename );
     if ( !is ){
-      throw runtime_error( "UniFilter::fille(), unable te open rules file: '"
+      throw runtime_error( "UniFilter::fill(), unable te open rules file: '"
 			   + filename + "'" );
     }
     UnicodeString rule;
