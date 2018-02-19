@@ -4,7 +4,7 @@
 TiCC utils
 ==============
 
-    TiCC utils 0.11 (c) ILK/CLST 1998 - 2018
+    TiCC utils 0.18 (c) ILK/CLST 1998 - 2018
     by Ko van der Sloot
 
     Tilburg centre for Cognition and Communication, Tilburg University.
@@ -18,11 +18,11 @@ TiCC utils is distributed under the GNU Public Licence (see the file ``COPYING``
 This software has been tested on:
 - Intel/AMD platforms running several versions of Linux, including Ubuntu,
   Debian and Fedora.
-- both 32 and 64 bits
-- MAC platform running OS X 10.10
+- 64 bits
+- MAC platform running OS X 10.13
 
 Compilers:
-- GCC (4.9 - 5.2). It is highly recommended to upgrade to at least GCC 5.0
+- GCC (4.9 - 7.0). It is highly recommended to upgrade to at least GCC 5.0
 - CLANG. Preferrable a recent version which supporte OpenMP
 
 Contents of this distribution:
@@ -37,8 +37,13 @@ To be able to succesfully build libticcl from the tarball, you need the
 following pakages:
 - ``autotools``
 - ``autoconf-archive``
+- ``pkg-config``
 - ``libxml2-dev``
-- preferably also: ``libtar-dev``, ``libbz2-dev``, ``zlib1g-dev``
+- ``icu-dev``
+- ``libboost-dev`` and ``libboost-regex-dev``
+- ``libtar-dev``
+- ``libbz2-dev``
+- ``zlib1g-dev``
 
 --------------------------------
 Installation Instructions
