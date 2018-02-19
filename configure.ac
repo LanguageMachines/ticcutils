@@ -19,7 +19,7 @@ if $cxx_flags_were_set; then
 fi
 
 # Checks for programs.
-AC_PROG_CXX([g++ clang++-5.0] )
+AC_PROG_CXX([g++ clang++] )
 AC_PROG_LIBTOOL
 LT_INIT
 
@@ -38,18 +38,18 @@ fi
 
 #checks for libraries.
 AX_CHECK_ZLIB( [],
-	       [AC_MSG_NOTICE([libzlib1g-dev not found. gz support disabled.])] )
+	       [AC_MSG_ERROR([zlib not found. Please install libzlib1g-dev.])] )
 
 # Checks for header files.
 AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h sys/socket.h unistd.h sys/time.h])
 
 AC_CHECK_HEADERS([bzlib.h],
 		[LIBS="$LIBS -lbz2"],
-		[AC_MSG_NOTICE([libbz2-dev not found. bz2 support disabled])] )
+		[AC_MSG_ERROR([bz2lib not found. Please install libbz2-dev])] )
 
 AC_CHECK_HEADERS([libtar.h],
 		[LIBS="$LIBS -ltar"],
-		[AC_MSG_NOTICE([libtar-dev not found. tar support disabled.])] )
+		[AC_MSG_ERROR([libtar not found. Please install libtar.])] )
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
@@ -72,27 +72,12 @@ if test x"$ax_pthread_ok" = xyes; then
    CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS"
 fi
 
-# only require boost for OLD gcc compilers AND als stdlib++
-# for now we HAV to stick to boost regex :{
-
-# AX_COMPILER_VENDOR
-# if test x"$ax_cv_cxx_compiler_vendor" = xgnu; then
-#   AX_COMPILER_VERSION
-#   AX_COMPARE_VERSION( [$ax_cv_cxx_compiler_version], [lt], [4.9],
-#                      [AX_BOOST_BASE( [1.50],
-#                                     [AX_BOOST_REGEX
-#                                     LIBS="$LIBS $BOOST_REGEX_LIB"
-#                                     AC_DEFINE(HAVE_WORKING_REGEX, 2 , Define to 2 if you have boost regular expresions )],
-#                                     [AC_MSG_ERROR([No Regular expression support available. Please install libboost-regex-dev, or update gcc])])],
-#                       AC_DEFINE(HAVE_WORKING_REGEX, 1 , Define to 1 if you have working native C++ regular expresions ) )
-# else
-#   AC_DEFINE(HAVE_WORKING_REGEX, 1 , Define to 1 if you have native C++ regular expresions)
-# fi
-
+# for now we demand boost, because on some systems gcc4.8 is installed still
+# ans that fails on regex.
 AX_BOOST_BASE( [1.50],
 	       [AX_BOOST_REGEX
 	        LIBS="$LIBS $BOOST_REGEX_LIB"
-                AC_DEFINE(HAVE_WORKING_REGEX, 2 , Define to 2 if you have boost regular expresions )],
+                AC_DEFINE(HAVE_BOOST_REGEX, 1 , [Define to 1 if you have boost regular expresions] )],
                [AC_MSG_ERROR([No Regular expression support available. Please install libboost-regex-dev])])
 
 PKG_PROG_PKG_CONFIG
