@@ -4,7 +4,7 @@ AM_CXXFLAGS = -g -std=c++11 -O3 -W -Wall -pedantic
 LDADD = libticcutils.la
 
 lib_LTLIBRARIES = libticcutils.la
-libticcutils_la_LDFLAGS = -version-info 5:0:0
+libticcutils_la_LDFLAGS = -version-info 4:0:0
 
 libticcutils_la_SOURCES = LogStream.cxx StringOps.cxx TreeHash.cxx \
 	Configuration.cxx Timer.cxx XMLtools.cxx zipper.cxx Tar.cxx \
