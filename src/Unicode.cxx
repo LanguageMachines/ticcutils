@@ -455,7 +455,7 @@ namespace TiCC {
 					      UTRANS_FORWARD,
 					      stat );
       if ( U_FAILURE( stat ) ){
-	throw std::runtime_error( "filterDiacritics()  transliterator not created" );
+	throw std::runtime_error( "filter_diacritics()  transliterator not created" );
       }
     }
     UnicodeString result = in;
