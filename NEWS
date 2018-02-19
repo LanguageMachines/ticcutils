@@ -1,3 +1,14 @@
+19 feb 2018 0.18
+* added more unicode helper classes and functions:
+  - Unicode Filter class, diacriticsfilter(), Unicode Normalizer.
+* small fix in Configiguration Class
+* Bumped library version to 4.0
+* more tests added to make check.
+* overhauled autoconfigure stuff.
+   - MacOSX is now better supported.
+   - libzlib, libbz2 and libtar ar no longer optional
+
+
 07 nov 2017 0.16.1
 [Ko vd Sloot]
 New release due to mixup in the previous release
