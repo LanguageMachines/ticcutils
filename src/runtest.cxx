@@ -661,7 +661,7 @@ void test_unicode_regex( ){
   assertEqual( result, "VVD" );
 }
 
-void test_unicode_filter( const string& path ){
+void test_unicode_filters( const string& path ){
   UniFilter filt;
   assertNoThrow( filt.init( "‘ > \\' ; ’ > \\' ;  \\` > \\' ; ´ > \\' ;", "quote_filter" ) );
   UnicodeString vies = "`vies´ en ‘smerig’ en `apart´";
@@ -673,7 +673,7 @@ void test_unicode_filter( const string& path ){
   schoon = filt.filter( vies );
   assertEqual( schoon, "\'vies\' en \'smerig\' en \'apart\'" );
   UniFilter filt3;
-  assertNoThrow( filt2.fill( path + "quotes.old.filter") );
+  assertNoThrow( filt3.fill( path + "quotes.old.filter") );
   schoon = filt.filter( vies );
   assertEqual( schoon, "\'vies\' en \'smerig\' en \'apart\'" );
   UniFilter filt4;
@@ -683,6 +683,8 @@ void test_unicode_filter( const string& path ){
   assertNoThrow( filt4.add( string("´ \' ") ) );
   schoon = filt.filter( vies );
   assertEqual( schoon, "\'vies\' en \'smerig\' en \'apart\'" );
+  assertEqual( filter_diacritics( "een appél is geen appèl" ), "een appel is geen appel" );
+  assertEqual( filter_diacritics( "de reeën zijn reeël" ), "de reeen zijn reeel" );
 }
 
 int main( const int argc, const char* argv[] ){
@@ -741,6 +743,6 @@ int main( const int argc, const char* argv[] ){
   test_logstream( testdir );
   test_unicode( testdir );
   test_unicode_regex();
-  test_unicode_filter( testdir );
+  test_unicode_filters( testdir );
   summarize_tests(4);
 }

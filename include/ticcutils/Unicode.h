@@ -90,10 +90,11 @@ namespace TiCC {
     bool add( const std::string& );
     bool add( const UnicodeString& );
     UnicodeString filter( const UnicodeString& );
-    UnicodeString getRules() const;
+    UnicodeString get_rules() const;
   private:
     Transliterator *_trans;
   };
 
+  UnicodeString filter_diacritics( const UnicodeString& );
 }
 #endif // TICC_UNICODE_H

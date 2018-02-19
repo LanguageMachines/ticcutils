@@ -324,10 +324,10 @@ namespace TiCC {
     delete _trans;
   }
 
-  UnicodeString UniFilter::getRules() const {
+  UnicodeString UniFilter::get_rules() const {
     UnicodeString result;
     if ( !_trans ){
-      throw runtime_error( "UniFilter not initialized." );
+      throw runtime_error( "UniFilter::getRules(), filter not initialized." );
     }
     else {
       return _trans->toRules( result, true );
@@ -336,6 +336,9 @@ namespace TiCC {
 
   bool UniFilter::init( const UnicodeString& rules,
 			const UnicodeString& name ){
+    if ( _trans ){
+      throw logic_error( "UniFilter::init():, filter already initialized." );
+    }
     UErrorCode stat = U_ZERO_ERROR;
     UParseError err;
     _trans = Transliterator::createFromRules( name,
@@ -352,24 +355,33 @@ namespace TiCC {
     return true;
   }
 
-  UnicodeString escape( const UnicodeString& line ){
+  UnicodeString to_icu_rule( const UnicodeString& line ){
+    // a line can be an ICU Transcriptor rule " ß > sz ;"
+    // OR a simple mentioning of a symbol to be replaced " ss sz" (old_style)
+    // we try to covert old style to a ICU rule. (always only 1)
     bool old_style = line.indexOf( '>' ) == -1;
-    bool inserted = false;
     UnicodeString result;
-    for ( int i=0; i < line.length(); ++i ){
-      if ( line[i] == '`' || line[i] == '\'' || line[i] == '"' ){
-	result += '\\';
+    if ( old_style ){
+      bool inserted = false;
+      for ( int i=0; i < line.length(); ++i ){
+	if ( line[i] == '`' || line[i] == '\'' || line[i] == '"' ){
+	  result += '\\';
+	}
+	else if ( old_style
+		  && (line[i] == ' ' || line[i] == '\t' )
+		  && !inserted ){
+	  // OLD style: replace first space by a '>' symbol.
+	  inserted = true;
+	  result += " >";
+	}
+	result += line[i];
       }
-      else if ( old_style
-		&& (line[i] == ' ' || line[i] == '\t' )
-		&& !inserted ){
-	inserted = true;
-	result += " > ";
+      if ( !inserted ){
+	// special case. line was only something like "\u00A0" or "-"
+	// which means: delete (replace by nothing)
+	result  += " >";
       }
-      result += line[i];
-    }
-    if ( old_style && result.indexOf( '>' ) == -1 ){
-      result  += "> ";
+      result += " ;";
     }
     return result;
   }
@@ -378,15 +390,14 @@ namespace TiCC {
 			const string& label ){
     ifstream is( filename );
     if ( !is ){
-      throw runtime_error( "UniFilter: unable te open rules file: '"
+      throw runtime_error( "UniFilter::fille(), unable te open rules file: '"
 			   + filename + "'" );
     }
     UnicodeString rule;
     string line;
     while ( getline( is, line ) ){
       UnicodeString uline = UnicodeFromUTF8( line );
-      uline = escape( uline );
-      rule += uline + " ;";
+      rule += to_icu_rule( uline );
     }
     return init( rule, UnicodeFromUTF8(label) );
   }
@@ -404,23 +415,25 @@ namespace TiCC {
   }
 
   bool UniFilter::add( const UnicodeString& in ){
-    // if ( !_trans ){
-    //   throw logic_error( "UniFilter::add() not initialized" );
-    // }
-    UnicodeString uline = escape( in );
-    uline += " ;";
+    //
+    // TODO: cache multiple add's and only (re-)init the transliterator
+    //       once. On first use of the filter() method.
+    //       caveat: Warnings about problems will be postponed too
+    //
+    UnicodeString uline = to_icu_rule( in );
     UnicodeString old_rules;
-    UnicodeString id;
+    UnicodeString id = "generatedId";
     if ( _trans ){
       _trans->toRules( old_rules, false );
       id = _trans->getID();
       delete _trans;
+      _trans = 0;
     }
-    cerr << "OLD rule: " << old_rules << endl;
-    cerr << "add rule: " << uline << endl;
+    // cerr << "OLD rule: " << old_rules << endl;
+    // cerr << "add rule: " << uline << endl;
     old_rules += uline;
-    cerr << "NEW rule: " << old_rules << endl;
-    cerr << "ID = " << id << endl;
+    // cerr << "NEW rule: " << old_rules << endl;
+    // cerr << "ID = " << id << endl;
     return init( old_rules, id );
   }
 
@@ -430,7 +443,23 @@ namespace TiCC {
   }
 
   ostream& operator<<( ostream& os, const UniFilter& uf ){
-    os << uf.getRules();
+    os << uf.get_rules();
     return os;
+  }
+
+  UnicodeString filter_diacritics( const UnicodeString& in ) {
+    static Transliterator *trans = 0;
+    if ( trans == 0 ){
+      UErrorCode stat = U_ZERO_ERROR;
+      trans = Transliterator::createInstance( "NFD; [:M:] Remove; NFC",
+					      UTRANS_FORWARD,
+					      stat );
+      if ( U_FAILURE( stat ) ){
+	throw std::runtime_error( "filterDiacritics()  transliterator not created" );
+      }
+    }
+    UnicodeString result = in;
+    trans->transliterate( result );
+    return result;
   }
 }
