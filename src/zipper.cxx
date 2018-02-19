@@ -29,48 +29,14 @@
 #include <stdexcept>
 #include <fstream>
 #include "config.h"
-#ifdef HAVE_BZLIB_H
 #include "bzlib.h"
 #include "ticcutils/bz2stream.h"
-#endif
-#ifdef HAVE_LIBZ
 #include "ticcutils/gzstream.h"
-#endif
 
 using namespace std;
 
 namespace TiCC {
 
-#ifndef HAVE_BZLIB_H
-  void bz2fail( const string&f ){
-  throw runtime_error( "unable to execute '" + f +"', BZ2 support not enabled." );
-}
-
-  bool bz2Compress( const string&, const string& ){
-    bz2fail( "bz2Compress()" );
-    return false;
-  }
-  bool bz2Decompress( const string&, const string& ){
-    bz2fail( "bz2Decompress()" );
-    return false;
-  }
-  string bz2ReadStream( istream& ){
-    bz2fail( "bz2ReadStream()" );
-    return "false";
-  }
-  string bz2ReadFile( const string& ){
-    bz2fail( "bz2CReadFile()" );
-    return "false";
-  }
-  bool bz2WriteStream( ostream&, const string& ){
-    bz2fail( "bz2WriteStream()" );
-    return false;
-  }
-  bool bz2WriteFile( const string&, const string& ){
-    bz2fail( "bz2WriteFile()" );
-    return false;
-  }
-#else
   bool bz2Compress( const string& inName, const string& outName ){
     std::ifstream infile( inName, std::ios::binary);
     if ( !infile ){
@@ -159,35 +125,7 @@ namespace TiCC {
     bzout << buffer;
     return true;
   }
-#endif
 
-#ifndef HAVE_LIBZ
-  bool gzfail( const string&f ){
-    throw runtime_error( "unable to execute '" + f +"', GZ support not enabled." );
-    return false;
-  }
-  bool gzCompress( const string&, const string& ){
-    return gzfail( "gzCompress()" );
-  }
-  bool gzDecompress( const string&, const string& ){
-    return gzfail( "gzDecompress()" );
-  }
-  string gzReadStream( istream& ){
-    gzfail( "gzReadStream()" );
-    return "";
-  }
-  string gzReadFile( const string& ){
-    gzfail( "gzReadFile()" );
-    return "";
-  }
-  bool gzWriteStream( ostream&, const string& ){
-    return gzfail( "gbzWriteStream()" );
-  }
-  bool gzWriteFile( const string&, const string& ){
-    return gzfail( "gzWriteFile()" );
-  }
-
-#else
   string gzReadStream( istream& is ){
     string result;
     char c;
@@ -276,6 +214,5 @@ namespace TiCC {
       outfile << c;
     return true;
   }
-#endif
 
 }
