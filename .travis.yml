@@ -16,28 +16,14 @@ matrix:
   include:
     - os: linux
       compiler: gcc
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-4.9']
-      env: COMPILER=g++-4.9
 
     - os: linux
-      compiler: clang
-      addons:
-        apt:
-          packages:
-            - libiomp-dev
+      compiler: clang++
       env:
-       - COMPILER=clang++
-# libiomp is a very strange abberation in trusty
-# changed to libomp in newer Ubuntu versions.
-       - CXXFLAGS="-fopenmp=libiomp5"
+       - OPENMPFLAG=--disable-openmp
 
     - os: osx
-      compiler: gcc
-      env: COMPILER=g++
-
+      compiler: clang++
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
@@ -58,11 +44,11 @@ before_install:
 
 install:
   - bash bootstrap.sh
-  - ./configure
-  - make CXX=$COMPILER
-  - sudo make CXX=$COMPILER install
+  - ./configure $OPENMPFLAG
+  - make
+  - sudo make install
 script:
-  - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib make CXX=$COMPILER check
+  - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib make check
 after_failure:
   - cat src/test-suite.log
   - cat config.log
