@@ -27,9 +27,7 @@
 #ifndef TICC_TAR_TOOLS_H
 #define TICC_TAR_TOOLS_H
 
-#ifdef HAVE_LIBTAR_H
 #include "libtar.h"
-#endif
 #include <fstream>
 #include <vector>
 
@@ -48,9 +46,7 @@ namespace TiCC {
     bool extract_ifstream( const std::string&, std::ifstream& );
     bool close();
   private:
-#ifdef HAVE_LIBTAR_H
     TAR *tar_file;
-#endif
     std::string tarname;
     tar( const tar& ); // no copies
     tar& operator=( const tar& ); // no copies
