@@ -683,6 +683,20 @@ void test_unicode_filters( const string& path ){
   assertNoThrow( filt4.add( string("´ \' ") ) );
   schoon = filt.filter( vies );
   assertEqual( schoon, "\'vies\' en \'smerig\' en \'apart\'" );
+  UniFilter filt5;
+  assertNoThrow( filt5.init( "[:Hyphen:]+ > '-'; [:Dash:]+ > '-';",
+			     "hypen_filter" ) );
+  vies = "em—dash, en–dash, bar―, bar―――, 3em⸻dash, FullWidth－HyphenMinus,"
+    " 3FullWidth－－－HyphenMinus, vertical︱Emdash, hyp-en, 2hyp--ens";
+  schoon = filt5.filter( vies );
+  assertEqual( schoon, "em-dash, en-dash, bar-, bar-, 3em-dash, "
+	       "FullWidth-HyphenMinus, 3FullWidth-HyphenMinus, vertical-Emdash,"
+	       " hyp-en, 2hyp-ens" );
+  UniFilter filt6;
+  assertNoThrow( filt6.init( "^[:White_Space:]+ > ; [:White_Space:]+ > ' ';", "sep_filter" ) );
+  vies = " \t\t  Jan    en    Kees, \tKlaas\t \ten    Mies";
+  schoon = filt6.filter( vies );
+  assertEqual( schoon, "Jan en Kees, Klaas en Mies" );
   assertEqual( filter_diacritics( "een appél is geen appèl" ), "een appel is geen appel" );
   assertEqual( filter_diacritics( "de reeën zijn reeël" ), "de reeen zijn reeel" );
 }
