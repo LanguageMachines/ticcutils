@@ -360,8 +360,8 @@ namespace TiCC {
     // OR a simple mentioning of a symbol to be replaced " ss sz" (old_style)
     // we try to covert old style to a ICU rule. (always only 1)
     bool old_style = line.indexOf( '>' ) == -1;
-    UnicodeString result;
     if ( old_style ){
+      UnicodeString result;
       bool inserted = false;
       for ( int i=0; i < line.length(); ++i ){
 	if ( line[i] == '`' || line[i] == '\'' || line[i] == '"' ){
@@ -382,8 +382,11 @@ namespace TiCC {
 	result  += " >";
       }
       result += " ;";
+      return result;
     }
-    return result;
+    else {
+      return line;
+    }
   }
 
   bool UniFilter::fill( const string& filename,
