@@ -32,6 +32,7 @@
 #include <stdexcept>
 
 #include "ticcutils/StringOps.h"
+#include "ticcutils/TreeHash.h"
 #include "ticcutils/PrettyPrint.h"
 #include "ticcutils/zipper.h"
 #include "ticcutils/Tar.h"
@@ -443,6 +444,31 @@ void test_lowercase(){
   assertEqual( res, "een camelcapped zin." );
 }
 
+void test_lexicon(){
+  Hash::Lexicon lex;
+  Hash::LexInfo *info = lex.Store( "appel", "apple" );
+  info = lex.Store( "peer", "pear" );
+  info = lex.Store( "appeltaart", "applepie" );
+  info = lex.Lookup( "cake" );
+  assertEqual( (void*)info, (void*)0 );
+  info = lex.Lookup( "appel" );
+  assertEqual( info->Trans(), "apple" );
+}
+
+void test_treehash(){
+  Hash::StringHash sh;
+  size_t index = sh.Hash( "appel" );
+  assertEqual( index, 1 );
+  index = sh.Hash( "peer" );
+  assertEqual( index, 2 );
+  index = sh.Hash( "appeltaart" );
+  assertEqual( index, 3 );
+  index = sh.Hash( "peer" );
+  assertEqual( index, 2 );
+  assertEqual( sh.NumOfEntries(), 3 );
+  assertEqual( sh.ReverseLookup( 3 ), "appeltaart" );
+}
+
 void test_base_dir(){
   assertEqual( TiCC::basename("/foo/bar" ), "bar" );
   assertEqual( TiCC::dirname("/foo/bar" ), "/foo" );
@@ -491,6 +517,7 @@ void test_tar( const string& path ){
   assertTrue( mytar.next_ifstream( tmp, name ) );
   assertEqual( name, "small.txt" );
   assertTrue( mytar.next_ifstream( tmp, name ) );
+  assertEqual( name, "sub.txt" );
   assertTrue( mytar.next_ifstream( tmp, name ) );
   assertEqual( name, "sub1/sub.txt" );
   assertNoThrow( mytar.extract_ifstream( "sub1/sub.txt", tmp ) );
@@ -748,6 +775,8 @@ int main( const int argc, const char* argv[] ){
   test_to_lower();
   test_uppercase();
   test_lowercase();
+  test_treehash();
+  test_lexicon();
   string testdir;
   bool dummy;
   opts1.is_present( 'd', testdir, dummy );
