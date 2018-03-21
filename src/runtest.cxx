@@ -446,10 +446,10 @@ void test_lowercase(){
 
 void test_lexicon(){
   Hash::Lexicon lex;
-  Hash::LexInfo *info = lex.Store( "appel", "apple" );
-  info = lex.Store( "peer", "pear" );
-  info = lex.Store( "appeltaart", "applepie" );
-  info = lex.Lookup( "cake" );
+  lex.Store( "appel", "apple" );
+  lex.Store( "peer", "pear" );
+  lex.Store( "appeltaart", "applepie" );
+  Hash::LexInfo *info = lex.Lookup( "cake" );
   assertEqual( (void*)info, (void*)0 );
   info = lex.Lookup( "appel" );
   assertEqual( info->Trans(), "apple" );
@@ -709,7 +709,6 @@ void test_unicode_filters( const string& path ){
   UnicodeString vies = "`vies´ en ‘smerig’ en `apart´";
   UnicodeString schoon = filt.filter( vies );
   assertEqual( schoon, "\'vies\' en \'smerig\' en \'apart\'" );
-  ifstream in( path + "quotes.filter" );
   UniFilter filt2;
   assertNoThrow( filt2.fill( path + "quotes.filter") );
   schoon = filt.filter( vies );
