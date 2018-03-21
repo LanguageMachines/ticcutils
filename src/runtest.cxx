@@ -67,16 +67,16 @@ void test_nothrow(){
 
 void test_opts_basic(){
   startTestSerie( "we testen basic commandline opties." );
+  bool opt_dbg=false;
   CL_Options opts1;
+  opts1.set_debug(opt_dbg);
   opts1.allow_args( "t:fh" );
   // -t mist een optie
   assertThrow( opts1.parse_args( "-t -f -h" ), OptionError );
   // onbekende optie
   assertThrow( opts1.init( "-a" ), OptionError );
-  // -f heeft onterecht een parameter
-  assertThrow( opts1.parse_args( "-t1 -f bla -h"), OptionError );
-  // parameters aan einde ==> massopts.
-  assertNoThrow( opts1.parse_args( "-t1 -f -h bla") );
+  // -f heeft onterecht een parameter ==> massopts
+  assertNoThrow( opts1.parse_args( "-t1 -f bla -h") );
   CL_Options opts2;
   opts2.allow_args( "", "true:,false" );
   // --true mist een optie
@@ -160,7 +160,7 @@ void test_opts_basic(){
   assertThrow( opts9.extract('r', myint ), OptionError );
   CL_Options opts10;
   opts10.allow_args( "", "test::,qed,data:" );
-  //  opts10.set_debug(true);
+  //  opts10.set_debug(opt_dbg);
   // --test heeft optionele optie. qed is een stoorzender
   assertNoThrow( opts10.parse_args( "--test 1 --test=2 --qed --test --test=3 --data=5.6 --data=appel")  );
   ts.clear();
@@ -205,13 +205,13 @@ void test_opts_basic(){
   auto v = opts13.getMassOpts();
   assertEqual( v.size(), 2 );
   CL_Options opts14;
-  opts14.set_debug(true);
+  opts14.set_debug(opt_dbg);
   opts14.parse_args( "-a b -a c oke -d\"-fiets --appel peer \" --fout=goed toch" );
   assertEqual( opts14.toString(), "-ab -ac -d-fiets --appel peer  --fout=goed" );
   v = opts14.getMassOpts();
   assertEqual( v.size(), 2 );
   CL_Options opts15;
-  opts15.set_debug(true);
+  opts15.set_debug(opt_dbg);
   opts15.parse_args( "--fout=goed\\mis --jan=gek" );
   assertEqual( opts15.toString(), "--fout=goed\\mis --jan=gek" );
   string res;
@@ -221,7 +221,7 @@ void test_opts_basic(){
   assertEqual( res, "gek" );
   CL_Options opts16;
   opts16.allow_args( "", "test:" );
-  opts16.set_debug(true);
+  opts16.set_debug(opt_dbg);
   opts16.parse_args( "--test goed --test=prima --test niet=eens --test=wel=eens" );
   opts16.extract("test", res );
   assertEqual( res, "goed" );
@@ -231,6 +231,21 @@ void test_opts_basic(){
   assertEqual( res, "niet=eens" );
   opts16.extract("test", res );
   assertEqual( res, "wel=eens" );
+  CL_Options opts17;
+  // new feature: check for stray mass opts inside commandline
+  opts17.allow_args( "ab:c", "aap" );
+  opts17.set_debug(true);
+  opts17.parse_args( "-a file1 -b prima de luxe --aap file2 -c file3 file4" );
+  opts17.extract("a", res );
+  assertEqual( res, "" );
+  opts17.extract("b", res );
+  assertEqual( res, "prima" );
+  opts17.extract("aap", res );
+  assertEqual( res, "" );
+  opts17.extract("c", res );
+  assertEqual( res, "" );
+  vector<string> mo2 = opts17.getMassOpts();
+  assertEqual( mo2.size(), 6  );
 }
 
 void test_opts( CL_Options& opts ){
