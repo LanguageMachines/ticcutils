@@ -15,20 +15,28 @@ language: cpp
 matrix:
   include:
     - os: linux
+      cache: ccache
       compiler: gcc
+      env:
+        - SCAN=echo
 
     - os: linux
+      cache: ccache
       compiler: clang++
       env:
-       - OPENMPFLAG=--disable-openmp
+        - SCAN=scan-build
+        - OPENMPFLAG=--disable-openmp
 
     - os: osx
+      cache: ccache
       compiler: clang++
+      env:
+        - SCAN=echo
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     sudo apt-get update;
-    sudo apt-get install pkg-config autoconf-archive libicu-dev libxml2-dev libbz2-dev zlib1g-dev libtar-dev libboost-dev libboost-regex-dev;
+    sudo apt-get install pkg-config autoconf-archive ccache cppcheck libicu-dev libxml2-dev libbz2-dev zlib1g-dev libtar-dev libboost-dev libboost-regex-dev;
     fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     brew update;
@@ -39,12 +47,19 @@ before_install:
     brew outdated || brew install bzip2;
     brew outdated || brew install zlib;
     brew install libtar;
+    brew install cppcheck;
+    brew install ccache;
     brew outdated boost || brew upgrade boost;
     fi
+
+  - export PATH="/usr/lib/ccache/bin/:$PATH"
 
 install:
   - bash bootstrap.sh
   - ./configure $OPENMPFLAG
+  - cppcheck --enable=all --quiet --error-exitcode=0 .
+  - $SCAN --status-bugs ./configure
+  - $SCAN --status-bugs make
   - make
   - sudo make install
 script:
