@@ -157,8 +157,12 @@ namespace Tries {
     // we can store the info.
     //
     if ( lab[0] == '\0') {
-      if ( !the_info )
+      if ( !the_info ){
 	the_info = info;
+      }
+      else {
+	delete( info );
+      }
       return the_info;
     }
     else {
