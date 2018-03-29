@@ -35,6 +35,7 @@
 #include "unicode/normalizer2.h"
 #include "unicode/translit.h"
 #include "unicode/regex.h"
+using namespace icu;
 
 namespace TiCC {
 
