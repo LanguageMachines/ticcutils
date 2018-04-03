@@ -652,11 +652,11 @@ void test_logstream( const string& path ){
 }
 
 void test_unicode( const string& path ){
-  UnicodeString u1 = L'私';
+  icu::UnicodeString u1 = L'私';
   UChar32 uc1 = U'\U00007981';
   UChar32 uc2 = U'\U00007982';
-  UnicodeString u2 = uc1;
-  u2 += UnicodeString( uc2 );
+  icu::UnicodeString u2 = uc1;
+  u2 += icu::UnicodeString( uc2 );
   string s1 = UnicodeToUTF8( u1 );
   assertEqual( s1 , "私" );
   string s2 = UnicodeToUTF8( u2 );
@@ -665,27 +665,27 @@ void test_unicode( const string& path ){
   string line;
   getline( in, line );
   assertFalse( line == "Hier staat een BOM voor. æ en ™ om te testen." );
-  UnicodeString u3 = UnicodeFromEnc( line, "UTF16" );
+  icu::UnicodeString u3 = UnicodeFromEnc( line, "UTF16" );
   string s3 = UnicodeToUTF8(  u3 );
   assertEqual( s3, "Hier staat een BOM voor. æ en ™ om te testen." );
-  UnicodeString greek1 = "ἀντιϰειμένου";
-  UnicodeString greek2 = "ἀντιϰειμένου";
+  icu::UnicodeString greek1 = "ἀντιϰειμένου";
+  icu::UnicodeString greek2 = "ἀντιϰειμένου";
   assertFalse( greek1 == greek2 ); // different normalizations!
   UnicodeNormalizer N;
-  UnicodeString ng1 = N.normalize( greek1 );
-  UnicodeString ng2 = N.normalize( greek2 );
+  icu::UnicodeString ng1 = N.normalize( greek1 );
+  icu::UnicodeString ng2 = N.normalize( greek2 );
   assertEqual( UnicodeToUTF8(ng1), UnicodeToUTF8(ng2) );
   N.setMode("NFD");
-  UnicodeString ng11 = N.normalize( greek1 );
-  UnicodeString ng12 = N.normalize( greek2 );
+  icu::UnicodeString ng11 = N.normalize( greek1 );
+  icu::UnicodeString ng12 = N.normalize( greek2 );
   assertEqual( UnicodeToUTF8(ng11), UnicodeToUTF8(ng12) );
 }
 
 void test_unicode_regex( ){
   string pattern1 = "^(\\p{Lu}{1,2}\\.{1,2}(\\p{Lu}{1,2}\\.{1,2})*)(\\p{Lu}{0,2})$";
   UnicodeRegexMatcher test1( UnicodeFromUTF8(pattern1), "test1" );
-  UnicodeString pre, post;
-  UnicodeString us = "A.N.W.B.";
+  icu::UnicodeString pre, post;
+  icu::UnicodeString us = "A.N.W.B.";
   assertTrue( test1.match_all( us, pre, post ) );
   us = "A.N.W..B";
   assertTrue( test1.match_all( us, pre, post ) );
@@ -706,8 +706,8 @@ void test_unicode_regex( ){
 void test_unicode_filters( const string& path ){
   UniFilter filt;
   assertNoThrow( filt.init( "‘ > \\' ; ’ > \\' ;  \\` > \\' ; ´ > \\' ;", "quote_filter" ) );
-  UnicodeString vies = "`vies´ en ‘smerig’ en `apart´";
-  UnicodeString schoon = filt.filter( vies );
+  icu::UnicodeString vies = "`vies´ en ‘smerig’ en `apart´";
+  icu::UnicodeString schoon = filt.filter( vies );
   assertEqual( schoon, "\'vies\' en \'smerig\' en \'apart\'" );
   UniFilter filt2;
   assertNoThrow( filt2.fill( path + "quotes.filter") );
