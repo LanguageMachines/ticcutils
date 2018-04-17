@@ -679,6 +679,11 @@ void test_unicode( const string& path ){
   icu::UnicodeString ng11 = N.normalize( greek1 );
   icu::UnicodeString ng12 = N.normalize( greek2 );
   assertEqual( UnicodeToUTF8(ng11), UnicodeToUTF8(ng12) );
+  string utf8_1 = "ἀντιϰειμένου";
+  string utf8_2 = "ἀντικειμένου";
+  assertEqual( TiCC::utf8_uppercase( utf8_1 ), "ἈΝΤΙΚΕΙΜΈΝΟΥ" );
+  assertEqual( TiCC::utf8_lowercase( "ἈΝΤΙΚΕΙΜΈΝΟΥ" ), utf8_2 );
+  assertEqual( TiCC::utf8_uppercase( "æ en ß en œ" ), "Æ EN SS EN Œ" );
 }
 
 void test_unicode_split(){
@@ -818,8 +823,8 @@ int main( const int argc, const char* argv[] ){
   test_configuration( testdir );
   test_logstream( testdir );
   test_unicode( testdir );
+  test_unicode_split();
   test_unicode_regex();
   test_unicode_filters( testdir );
-  test_unicode_split();
   summarize_tests(4);
 }

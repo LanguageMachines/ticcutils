@@ -565,4 +565,18 @@ namespace TiCC {
     return split_at_first_of( src, spaces, max );
   }
 
+  string utf8_lowercase( const string& in ){
+    // Unicode safe version
+    icu::UnicodeString us = TiCC::UnicodeFromUTF8( in );
+    us.toLower();
+    return TiCC::UnicodeToUTF8( us );
+  }
+
+  string utf8_uppercase( const string& in ){
+    // Unicode safe version
+    icu::UnicodeString us = TiCC::UnicodeFromUTF8( in );
+    us.toUpper();
+    return TiCC::UnicodeToUTF8( us );
+  }
+
 }

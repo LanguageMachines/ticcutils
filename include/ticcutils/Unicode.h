@@ -108,5 +108,8 @@ namespace TiCC {
   std::vector<icu::UnicodeString> split( const icu::UnicodeString&,
 					 size_t = 0 );
 
+  std::string utf8_lowercase( const std::string& ); // Unicode safe version
+  std::string utf8_uppercase( const std::string& ); // Unicode safe version
+
 }
 #endif // TICC_UNICODE_H
