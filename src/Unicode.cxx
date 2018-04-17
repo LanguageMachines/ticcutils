@@ -465,4 +465,104 @@ namespace TiCC {
     trans->transliterate( result );
     return result;
   }
+
+  vector<icu::UnicodeString> split_at( const icu::UnicodeString& src,
+				       const icu::UnicodeString& sep,
+				       size_t max ){
+    // split a string into substrings, using sep as separator
+    // silently skip empty entries (e.g. when two or more separators co-incide)
+    // if max > 0, limit the size off the result to max,
+    // leaving the remainder in the last part of the result
+    if ( sep.isEmpty() ){
+      throw runtime_error( "TiCC::split_at(): separator is empty!" );
+    }
+    vector<icu::UnicodeString> results;
+    size_t cnt = 0;
+    int pos = 0;
+    while ( pos != -1 ){
+      UnicodeString res;
+      int p = src.indexOf( sep, pos );
+      if ( p == -1 ){
+	res = src.tempSubString( pos );
+	pos = p;
+      }
+      else {
+	res = src.tempSubString( pos, p - pos );
+	pos = p + sep.length();
+      }
+      if ( !res.isEmpty() ){
+	++cnt;
+	results.push_back( res );
+      }
+      if ( max != 0 && cnt >= max-1 ){
+	if ( pos != -1 ){
+	  results.push_back( src.tempSubString( pos ) );
+	}
+	break;
+      }
+    }
+    return results;
+  }
+
+  int find_first_of( const icu::UnicodeString& src,
+		     const icu::UnicodeString& seps,
+		     int pos ){
+    int result = src.length()+10;
+    for ( int i=0; i < seps.length(); ++i ){
+      int p = src.indexOf( seps[i], pos );
+      if ( p >= 0 ){
+	result = min( p, result );
+      }
+    }
+    if ( result >= 0 && result < src.length() ){
+      return result;
+    }
+    return -1;
+  }
+
+  vector<icu::UnicodeString> split_at_first_of( const icu::UnicodeString& src,
+						const icu::UnicodeString& seps,
+						size_t max ){
+    // split a string into substrings, using the characters in seps
+    // as possible separators
+    // silently skip empty entries (e.g. when two or more separators co-incide)
+    // if max > 0, limit the size of the result to max,
+    // leaving the remainder in the last part of the result
+    if ( seps.isEmpty() ){
+      throw runtime_error( "TiCC::split_at_first_of(): separators are empty!" );
+    }
+    vector<icu::UnicodeString> results;
+    size_t cnt = 0;
+    int pos = 0;
+    while ( pos != -1 ){
+      icu::UnicodeString res;
+      int e = find_first_of( src, seps, pos );
+      if ( e == -1 ){
+	res = src.tempSubString( pos );
+	pos = e;
+      }
+      else {
+	res = src.tempSubString( pos, e - pos );
+	pos = e+1;
+      }
+      if ( !res.isEmpty() ){
+	results.push_back( res );
+	++cnt;
+      }
+      if ( max != 0 && cnt >= max-1 ){
+	if ( pos != -1 ){
+	  results.push_back( src.tempSubString( pos ) );
+	}
+	break;
+      }
+    }
+    return results;
+  }
+
+  vector<icu::UnicodeString> split( const icu::UnicodeString& src,
+				    size_t max ){
+    static icu::UnicodeString spaces = TiCC::UnicodeFromUTF8( " \r\t\n" );
+    return split_at_first_of( src, spaces, max );
+  }
+
 }

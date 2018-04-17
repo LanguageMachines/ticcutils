@@ -96,5 +96,17 @@ namespace TiCC {
   };
 
   icu::UnicodeString filter_diacritics( const icu::UnicodeString& );
+
+  std::vector<icu::UnicodeString> split_at( const icu::UnicodeString&,
+					    const icu::UnicodeString&,
+					    size_t = 0 );
+
+  std::vector<icu::UnicodeString> split_at_first_of( const icu::UnicodeString&,
+						     const icu::UnicodeString&,
+						     size_t = 0 );
+
+  std::vector<icu::UnicodeString> split( const icu::UnicodeString&,
+					 size_t = 0 );
+
 }
 #endif // TICC_UNICODE_H

@@ -359,7 +359,7 @@ void test_split(){
   assertEqual( res6.size(), 8 );
   assertEqual( res6[1], "kat" );
   assertEqual( res6[2], "krabt" );
-  vector<string> res7 = split( "APPELTAART", 2 );
+  vector<string> res7 = split( string("APPELTAART"), 2 );
   assertEqual( res7.size(), 1 );
   assertEqual( res7[0], "APPELTAART" );
 }
@@ -681,6 +681,37 @@ void test_unicode( const string& path ){
   assertEqual( UnicodeToUTF8(ng11), UnicodeToUTF8(ng12) );
 }
 
+void test_unicode_split(){
+  string line8 = "De kat krabt de krullen\n van de   trap.";
+  icu::UnicodeString line = TiCC::UnicodeFromUTF8( line8 );
+  vector<icu::UnicodeString> res = split_at( line, "de" );
+  assertEqual( res.size(), 3 );
+  assertEqual( TiCC::UnicodeToUTF8(res[0]), "De kat krabt " );
+  assertEqual( TiCC::UnicodeToUTF8(res[1]), " krullen\n van " );
+  assertEqual( TiCC::UnicodeToUTF8(res[2]), "   trap." );
+  res = split( line, 3 );
+  assertEqual( res.size(), 3 );
+  assertEqual( res[1], "kat" );
+  assertEqual( res[2], "krabt de krullen\n van de   trap." );
+  res = split( line, 24 );
+  assertEqual( res.size(), 8 );
+  assertEqual( res[1], "kat" );
+  assertEqual( res[2], "krabt" );
+  assertEqual( res[4], "krullen" );
+  assertEqual( res[5], "van" );
+  icu::UnicodeString vies = "em—dash, en–dash, bar―, bar―――, 3em⸻dash, FullWidth－HyphenMinus,";
+  res = split_at( vies, "," );
+  assertEqual( res.size(), 6 );
+  assertEqual( res[5], " FullWidth－HyphenMinus" );
+  UnicodeString seps =  "—–―⸻－";
+  res = split_at_first_of( vies, seps );
+  assertEqual( res.size(), 7 );
+  assertEqual( res[0], "em" );
+  assertEqual( res[2], "dash, bar" );
+  assertEqual( res[4], ", 3em" );
+  assertEqual( res[6], "HyphenMinus," );
+}
+
 void test_unicode_regex( ){
   string pattern1 = "^(\\p{Lu}{1,2}\\.{1,2}(\\p{Lu}{1,2}\\.{1,2})*)(\\p{Lu}{0,2})$";
   UnicodeRegexMatcher test1( UnicodeFromUTF8(pattern1), "test1" );
@@ -789,5 +820,6 @@ int main( const int argc, const char* argv[] ){
   test_unicode( testdir );
   test_unicode_regex();
   test_unicode_filters( testdir );
+  test_unicode_split();
   summarize_tests(4);
 }
