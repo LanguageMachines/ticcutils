@@ -73,7 +73,8 @@ if test x"$ax_pthread_ok" = xyes; then
 fi
 
 # for now we demand boost, because on some systems gcc4.8 is installed still
-# ans that fails on regex.
+# and that fails on regex.
+
 AX_BOOST_BASE( [1.50],
 	       [AX_BOOST_REGEX
 	        LIBS="$LIBS $BOOST_REGEX_LIB"

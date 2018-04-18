@@ -38,45 +38,45 @@
 
 namespace TiCC {
 
-  std::string UnicodeToUTF8( const UnicodeString&  );
+  std::string UnicodeToUTF8( const icu::UnicodeString&  );
 
-  UnicodeString UnicodeFromEnc( const std::string& ,
+  icu::UnicodeString UnicodeFromEnc( const std::string& ,
 				const std::string& = "UTF8" );
 
-  inline UnicodeString UnicodeFromUTF8( const std::string& s ){
-    return UnicodeString::fromUTF8( s );
+  inline icu::UnicodeString UnicodeFromUTF8( const std::string& s ){
+    return icu::UnicodeString::fromUTF8( s );
   }
 
   class UnicodeNormalizer {
   public:
     UnicodeNormalizer( const std::string& = "" );
     ~UnicodeNormalizer();
-    UnicodeString normalize( const UnicodeString& );
+    icu::UnicodeString normalize( const icu::UnicodeString& );
     const std::string setMode( const std::string& );
     const std::string getMode() const { return mode; };
   private:
-    const Normalizer2 *_normalizer;
+    const icu::Normalizer2 *_normalizer;
     std::string mode;
   };
 
   class UnicodeRegexMatcher {
   public:
-    UnicodeRegexMatcher( const UnicodeString&, const UnicodeString& name="" );
+    UnicodeRegexMatcher( const icu::UnicodeString&, const icu::UnicodeString& name="" );
     ~UnicodeRegexMatcher();
-    bool match_all( const UnicodeString&, UnicodeString&, UnicodeString&  );
-    const UnicodeString get_match( unsigned int ) const;
+    bool match_all( const icu::UnicodeString&, icu::UnicodeString&, icu::UnicodeString&  );
+    const icu::UnicodeString get_match( unsigned int ) const;
     int NumOfMatches() const;
-    int split( const UnicodeString&, std::vector<UnicodeString>& );
-    UnicodeString Pattern() const;
+    int split( const icu::UnicodeString&, std::vector<icu::UnicodeString>& );
+    icu::UnicodeString Pattern() const;
     bool set_debug( bool b ){ bool r = _debug; _debug = b; return r; };
   private:
     UnicodeRegexMatcher( const UnicodeRegexMatcher& );  // inhibit copies
     UnicodeRegexMatcher& operator=( const UnicodeRegexMatcher& ); // inhibit copies
-    RegexPattern *pattern;
-    RegexMatcher *matcher;
+    icu::RegexPattern *pattern;
+    icu::RegexMatcher *matcher;
     UnicodeRegexMatcher();
-    std::vector<UnicodeString> results;
-    const UnicodeString _name;
+    std::vector<icu::UnicodeString> results;
+    const icu::UnicodeString _name;
     bool _debug;
   };
 
@@ -85,16 +85,31 @@ namespace TiCC {
   public:
     UniFilter();
     ~UniFilter();
-    bool init( const UnicodeString&, const UnicodeString& );
+    bool init( const icu::UnicodeString&, const icu::UnicodeString& );
     bool fill( const std::string&, const std::string& = "" );
     bool add( const std::string& );
-    bool add( const UnicodeString& );
-    UnicodeString filter( const UnicodeString& );
-    UnicodeString get_rules() const;
+    bool add( const icu::UnicodeString& );
+    icu::UnicodeString filter( const icu::UnicodeString& );
+    icu::UnicodeString get_rules() const;
   private:
-    Transliterator *_trans;
+    icu::Transliterator *_trans;
   };
 
-  UnicodeString filter_diacritics( const UnicodeString& );
+  icu::UnicodeString filter_diacritics( const icu::UnicodeString& );
+
+  std::vector<icu::UnicodeString> split_at( const icu::UnicodeString&,
+					    const icu::UnicodeString&,
+					    size_t = 0 );
+
+  std::vector<icu::UnicodeString> split_at_first_of( const icu::UnicodeString&,
+						     const icu::UnicodeString&,
+						     size_t = 0 );
+
+  std::vector<icu::UnicodeString> split( const icu::UnicodeString&,
+					 size_t = 0 );
+
+  std::string utf8_lowercase( const std::string& ); // Unicode safe version
+  std::string utf8_uppercase( const std::string& ); // Unicode safe version
+
 }
 #endif // TICC_UNICODE_H

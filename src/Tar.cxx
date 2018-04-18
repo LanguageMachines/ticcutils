@@ -187,10 +187,12 @@ namespace TiCC {
 	  }
 	  result.open( tmpfile );
 	  if ( result.good() ){
+	    tar_close( local_tar );
 	    return true;
 	  }
 	  else {
 	    cerr << "problem with " << tmpfile << endl;
+	    tar_close( local_tar );
 	    return false;
 	  }
 	}

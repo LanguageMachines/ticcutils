@@ -214,7 +214,7 @@ namespace TiCC {
 
     list<xmlNode*> srch = FindNodes( node, xpath );
     xmlNode *result = 0;
-    if ( srch.size() != 0 ){
+    if ( !srch.empty() ){
       result = srch.front();
     }
     return result;

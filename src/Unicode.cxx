@@ -38,11 +38,11 @@ using namespace std;
 
 namespace TiCC {
 
-  UnicodeString UnicodeFromEnc( const string& s, const string& enc ){
-    return UnicodeString( s.c_str(), s.length(), enc.c_str() );
+  icu::UnicodeString UnicodeFromEnc( const string& s, const string& enc ){
+    return icu::UnicodeString( s.c_str(), s.length(), enc.c_str() );
   }
 
-  string UnicodeToUTF8( const UnicodeString& s ){
+  string UnicodeToUTF8( const icu::UnicodeString& s ){
     string result;
     s.toUTF8String(result);
     return result;
@@ -70,17 +70,17 @@ namespace TiCC {
       UErrorCode err = U_ZERO_ERROR;
       if ( enc == ""
 	   || enc == "NFC" )
-	_normalizer = Normalizer2::getNFCInstance( err );
+	_normalizer = icu::Normalizer2::getNFCInstance( err );
       else if ( enc == "NONE" )
 	_normalizer = 0;
       else if ( enc == "NFD" )
-	_normalizer = Normalizer2::getNFDInstance( err );
+	_normalizer = icu::Normalizer2::getNFDInstance( err );
       else if ( enc == "NFKC" )
-	_normalizer = Normalizer2::getNFKCInstance( err );
+	_normalizer = icu::Normalizer2::getNFKCInstance( err );
       else if ( enc == "NFKD" )
-	_normalizer = Normalizer2::getNFKDInstance( err );
+	_normalizer = icu::Normalizer2::getNFKDInstance( err );
       else {
-	throw std::logic_error( "invalid normalization mode: " + enc );
+	throw logic_error( "invalid normalization mode: " + enc );
       }
       string tmp = mode;
       mode = enc;
@@ -91,33 +91,33 @@ namespace TiCC {
     }
   }
 
-  UnicodeString UnicodeNormalizer::normalize( const UnicodeString& us ){
+  icu::UnicodeString UnicodeNormalizer::normalize( const icu::UnicodeString& us ){
     if ( _normalizer == 0 ){
       return us;
     }
     else {
       UErrorCode status=U_ZERO_ERROR;
-      UnicodeString r = _normalizer->normalize( us, status );
+      icu::UnicodeString r = _normalizer->normalize( us, status );
       if (U_FAILURE(status)){
-	throw std::invalid_argument("Normalizer");
+	throw invalid_argument("Normalizer");
       }
       return r;
     }
   }
 
-  class uRegexError: public std::invalid_argument {
+  class uRegexError: public invalid_argument {
   public:
     explicit uRegexError( const string& s ): invalid_argument( "Invalid regular expression: " + s ){};
-    explicit uRegexError( const UnicodeString& us ): invalid_argument( "Invalid regular expression: " + UnicodeToUTF8(us) ){};
+    explicit uRegexError( const icu::UnicodeString& us ): invalid_argument( "Invalid regular expression: " + UnicodeToUTF8(us) ){};
   };
 
 
-  UnicodeString UnicodeRegexMatcher::Pattern() const{
+  icu::UnicodeString UnicodeRegexMatcher::Pattern() const{
     return pattern->pattern();
   }
 
-  UnicodeRegexMatcher::UnicodeRegexMatcher( const UnicodeString& pat,
-					    const UnicodeString& name ):
+  UnicodeRegexMatcher::UnicodeRegexMatcher( const icu::UnicodeString& pat,
+					    const icu::UnicodeString& name ):
     _name(name), _debug(false)
   {
     matcher = NULL;
@@ -129,7 +129,7 @@ namespace TiCC {
       string failString = UnicodeToUTF8(_name);
       if ( errorInfo.offset >0 ){
 	failString += " at position " + TiCC::toString( errorInfo.offset ) + "\n";
-	UnicodeString pat1 = UnicodeString( pat, 0, errorInfo.offset -1 );
+	icu::UnicodeString pat1 = icu::UnicodeString( pat, 0, errorInfo.offset -1 );
 	failString += UnicodeToUTF8(pat1) + " <== HERE\n";
       }
       else {
@@ -151,9 +151,9 @@ namespace TiCC {
     delete matcher;
   }
 
-  bool UnicodeRegexMatcher::match_all( const UnicodeString& line,
-				       UnicodeString& pre,
-				       UnicodeString& post ){
+  bool UnicodeRegexMatcher::match_all( const icu::UnicodeString& line,
+				       icu::UnicodeString& pre,
+				       icu::UnicodeString& post ){
     UErrorCode u_stat = U_ZERO_ERROR;
     pre = "";
     post = "";
@@ -172,21 +172,21 @@ namespace TiCC {
 	}
 	if ( matcher->groupCount() == 0 ){
 	  // case 1: a rule without capture groups matches
-	  UnicodeString us = matcher->group(0,u_stat) ;
+	  icu::UnicodeString us = matcher->group(0,u_stat) ;
 	  if ( _debug ){
 	    cerr << "case 1, result = " << us << endl;
 	  }
 	  results.push_back( us );
 	  int start = matcher->start( 0, u_stat );
 	  if ( start > 0 ){
-	    pre = UnicodeString( line, 0, start );
+	    pre = icu::UnicodeString( line, 0, start );
 	    if ( _debug ){
 	      cerr << "found pre " << pre << endl;
 	    }
 	  }
 	  int end = matcher->end( 0, u_stat );
 	  if ( end < line.length() ){
-	    post = UnicodeString( line, end );
+	    post = icu::UnicodeString( line, end );
 	    if ( _debug ){
 	      cerr << "found post " << post << endl;
 	    }
@@ -197,20 +197,20 @@ namespace TiCC {
 	  // case 2: a rule with one capture group matches
 	  int start = matcher->start( 1, u_stat );
 	  if ( start >= 0 ){
-	    UnicodeString us = matcher->group(1,u_stat) ;
+	    icu::UnicodeString us = matcher->group(1,u_stat) ;
 	    if ( _debug ){
 	      cerr << "case 2a , result = " << us << endl;
 	    }
 	    results.push_back( us );
 	    if ( start > 0 ){
-	      pre = UnicodeString( line, 0, start );
+	      pre = icu::UnicodeString( line, 0, start );
 	      if ( _debug ){
 		cerr << "found pre " << pre << endl;
 	      }
 	    }
 	    int end = matcher->end( 1, u_stat );
 	    if ( end < line.length() ){
-	      post = UnicodeString( line, end );
+	      post = icu::UnicodeString( line, end );
 	      if ( _debug ){
 		cerr << "found post " << post << endl;
 	      }
@@ -218,21 +218,21 @@ namespace TiCC {
 	  }
 	  else {
 	    // group 1 is empty, return group 0
-	    UnicodeString us = matcher->group(0,u_stat) ;
+	    icu::UnicodeString us = matcher->group(0,u_stat) ;
 	    if ( _debug ){
 	      cerr << "case 2b , result = " << us << endl;
 	    }
 	    results.push_back( us );
 	    start = matcher->start( 0, u_stat );
 	    if ( start > 0 ){
-	      pre = UnicodeString( line, 0, start );
+	      pre = icu::UnicodeString( line, 0, start );
 	      if ( _debug ){
 		cerr << "found pre " << pre << endl;
 	      }
 	    }
 	    int end = matcher->end( 0, u_stat );
 	    if ( end < line.length() ){
-	      post = UnicodeString( line, end );
+	      post = icu::UnicodeString( line, end );
 	      if ( _debug ){
 		cerr << "found post " << post << endl;
 	      }
@@ -261,7 +261,7 @@ namespace TiCC {
 	    else
 	      break;
 	    if ( start > end ){
-	      pre = UnicodeString( line, end, start );
+	      pre = icu::UnicodeString( line, end, start );
 	      if ( _debug ){
 		cerr << "found pre " << pre << endl;
 	      }
@@ -271,7 +271,7 @@ namespace TiCC {
 	      cerr << "end = " << end << endl;
 	    }
 	    if (!U_FAILURE(u_stat)){
-	      results.push_back( UnicodeString( line, start, end - start ) );
+	      results.push_back( icu::UnicodeString( line, start, end - start ) );
 	      if ( _debug ){
 		cerr << "added result " << results.back() << endl;
 	      }
@@ -280,7 +280,7 @@ namespace TiCC {
 	      break;
 	  }
 	  if ( end < line.length() ){
-	    post = UnicodeString( line, end );
+	    post = icu::UnicodeString( line, end );
 	    if ( _debug ){
 	      cerr << "found post " << post << endl;
 	    }
@@ -293,7 +293,7 @@ namespace TiCC {
     return false;
   }
 
-  const UnicodeString UnicodeRegexMatcher::get_match( unsigned int n ) const{
+  const icu::UnicodeString UnicodeRegexMatcher::get_match( unsigned int n ) const{
     if ( n < results.size() )
       return results[n];
     else
@@ -307,11 +307,11 @@ namespace TiCC {
       return 0;
   }
 
-  int UnicodeRegexMatcher::split( const UnicodeString& us,
-				  vector<UnicodeString>& result ){
+  int UnicodeRegexMatcher::split( const icu::UnicodeString& us,
+				  vector<icu::UnicodeString>& result ){
     result.clear();
     const int maxWords = 256;
-    UnicodeString words[maxWords];
+    icu::UnicodeString words[maxWords];
     UErrorCode status = U_ZERO_ERROR;
     int numWords = matcher->split( us, words, maxWords, status );
     for ( int i = 0; i < numWords; ++i )
@@ -324,8 +324,8 @@ namespace TiCC {
     delete _trans;
   }
 
-  UnicodeString UniFilter::get_rules() const {
-    UnicodeString result;
+  icu::UnicodeString UniFilter::get_rules() const {
+    icu::UnicodeString result;
     if ( !_trans ){
       throw runtime_error( "UniFilter::getRules(), filter not initialized." );
     }
@@ -334,18 +334,18 @@ namespace TiCC {
     }
   }
 
-  bool UniFilter::init( const UnicodeString& rules,
-			const UnicodeString& name ){
+  bool UniFilter::init( const icu::UnicodeString& rules,
+			const icu::UnicodeString& name ){
     if ( _trans ){
       throw logic_error( "UniFilter::init():, filter already initialized." );
     }
     UErrorCode stat = U_ZERO_ERROR;
     UParseError err;
-    _trans = Transliterator::createFromRules( name,
-					      rules,
-					      UTRANS_FORWARD,
-					      err,
-					      stat );
+    _trans = icu::Transliterator::createFromRules( name,
+						   rules,
+						   UTRANS_FORWARD,
+						   err,
+						   stat );
     if ( U_FAILURE( stat ) ){
       string msg = "creating UniFilter: " + UnicodeToUTF8( name )
 	+ " failed\n" + "error in rules, line=" + toString(err.line)
@@ -355,13 +355,13 @@ namespace TiCC {
     return true;
   }
 
-  UnicodeString to_icu_rule( const UnicodeString& line ){
+  icu::UnicodeString to_icu_rule( const icu::UnicodeString& line ){
     // a line can be an ICU Transcriptor rule " ß > sz ;"
     // OR a simple mentioning of a symbol to be replaced " ss sz" (old_style)
     // we try to covert old style to a ICU rule. (always only 1)
     bool old_style = line.indexOf( '>' ) == -1;
     if ( old_style ){
-      UnicodeString result;
+      icu::UnicodeString result;
       bool inserted = false;
       for ( int i=0; i < line.length(); ++i ){
 	if ( line[i] == '`' || line[i] == '\'' || line[i] == '"' ){
@@ -396,36 +396,36 @@ namespace TiCC {
       throw runtime_error( "UniFilter::fill(), unable te open rules file: '"
 			   + filename + "'" );
     }
-    UnicodeString rule;
+    icu::UnicodeString rule;
     string line;
     while ( getline( is, line ) ){
-      UnicodeString uline = UnicodeFromUTF8( line );
+      icu::UnicodeString uline = UnicodeFromUTF8( line );
       rule += to_icu_rule( uline );
     }
     return init( rule, UnicodeFromUTF8(label) );
   }
 
-  UnicodeString UniFilter::filter( const UnicodeString& line ){
+  icu::UnicodeString UniFilter::filter( const icu::UnicodeString& line ){
     if ( !_trans ){
       //      throw logic_error( "UniFilter not initialized." );
       return line;
     }
     else {
-      UnicodeString result = line;
+      icu::UnicodeString result = line;
       _trans->transliterate( result );
       return result;
     }
   }
 
-  bool UniFilter::add( const UnicodeString& in ){
+  bool UniFilter::add( const icu::UnicodeString& in ){
     //
     // TODO: cache multiple add's and only (re-)init the transliterator
     //       once. On first use of the filter() method.
     //       caveat: Warnings about problems will be postponed too
     //
-    UnicodeString uline = to_icu_rule( in );
-    UnicodeString old_rules;
-    UnicodeString id = "generatedId";
+    icu::UnicodeString uline = to_icu_rule( in );
+    icu::UnicodeString old_rules;
+    icu::UnicodeString id = "generatedId";
     if ( _trans ){
       _trans->toRules( old_rules, false );
       id = _trans->getID();
@@ -441,7 +441,7 @@ namespace TiCC {
   }
 
   bool UniFilter::add( const string& line ){
-    UnicodeString uline = UnicodeFromUTF8( line );
+    icu::UnicodeString uline = UnicodeFromUTF8( line );
     return add( uline );
   }
 
@@ -450,19 +450,133 @@ namespace TiCC {
     return os;
   }
 
-  UnicodeString filter_diacritics( const UnicodeString& in ) {
-    static Transliterator *trans = 0;
+  icu::UnicodeString filter_diacritics( const icu::UnicodeString& in ) {
+    static icu::Transliterator *trans = 0;
     if ( trans == 0 ){
       UErrorCode stat = U_ZERO_ERROR;
-      trans = Transliterator::createInstance( "NFD; [:M:] Remove; NFC",
-					      UTRANS_FORWARD,
-					      stat );
+      trans = icu::Transliterator::createInstance( "NFD; [:M:] Remove; NFC",
+						   UTRANS_FORWARD,
+						   stat );
       if ( U_FAILURE( stat ) ){
-	throw std::runtime_error( "filter_diacritics()  transliterator not created" );
+	throw runtime_error( "filter_diacritics()  transliterator not created" );
       }
     }
-    UnicodeString result = in;
+    icu::UnicodeString result = in;
     trans->transliterate( result );
     return result;
   }
+
+  vector<icu::UnicodeString> split_at( const icu::UnicodeString& src,
+				       const icu::UnicodeString& sep,
+				       size_t max ){
+    // split a string into substrings, using sep as separator
+    // silently skip empty entries (e.g. when two or more separators co-incide)
+    // if max > 0, limit the size off the result to max,
+    // leaving the remainder in the last part of the result
+    if ( sep.isEmpty() ){
+      throw runtime_error( "TiCC::split_at(): separator is empty!" );
+    }
+    vector<icu::UnicodeString> results;
+    size_t cnt = 0;
+    int pos = 0;
+    while ( pos != -1 ){
+      UnicodeString res;
+      int p = src.indexOf( sep, pos );
+      if ( p == -1 ){
+	res = src.tempSubString( pos );
+	pos = p;
+      }
+      else {
+	res = src.tempSubString( pos, p - pos );
+	pos = p + sep.length();
+      }
+      if ( !res.isEmpty() ){
+	++cnt;
+	results.push_back( res );
+      }
+      if ( max != 0 && cnt >= max-1 ){
+	if ( pos != -1 ){
+	  results.push_back( src.tempSubString( pos ) );
+	}
+	break;
+      }
+    }
+    return results;
+  }
+
+  int find_first_of( const icu::UnicodeString& src,
+		     const icu::UnicodeString& seps,
+		     int pos ){
+    int result = src.length()+10;
+    for ( int i=0; i < seps.length(); ++i ){
+      int p = src.indexOf( seps[i], pos );
+      if ( p >= 0 ){
+	result = min( p, result );
+      }
+    }
+    if ( result >= 0 && result < src.length() ){
+      return result;
+    }
+    return -1;
+  }
+
+  vector<icu::UnicodeString> split_at_first_of( const icu::UnicodeString& src,
+						const icu::UnicodeString& seps,
+						size_t max ){
+    // split a string into substrings, using the characters in seps
+    // as possible separators
+    // silently skip empty entries (e.g. when two or more separators co-incide)
+    // if max > 0, limit the size of the result to max,
+    // leaving the remainder in the last part of the result
+    if ( seps.isEmpty() ){
+      throw runtime_error( "TiCC::split_at_first_of(): separators are empty!" );
+    }
+    vector<icu::UnicodeString> results;
+    size_t cnt = 0;
+    int pos = 0;
+    while ( pos != -1 ){
+      icu::UnicodeString res;
+      int e = find_first_of( src, seps, pos );
+      if ( e == -1 ){
+	res = src.tempSubString( pos );
+	pos = e;
+      }
+      else {
+	res = src.tempSubString( pos, e - pos );
+	pos = e+1;
+      }
+      if ( !res.isEmpty() ){
+	results.push_back( res );
+	++cnt;
+      }
+      if ( max != 0 && cnt >= max-1 ){
+	if ( pos != -1 ){
+	  results.push_back( src.tempSubString( pos ) );
+	}
+	break;
+      }
+    }
+    return results;
+  }
+
+  vector<icu::UnicodeString> split( const icu::UnicodeString& src,
+				    size_t max ){
+    static icu::UnicodeString spaces = TiCC::UnicodeFromUTF8( " \r\t\n" );
+    return split_at_first_of( src, spaces, max );
+  }
+
+  string utf8_lowercase( const string& in ){
+    // Unicode safe version
+    icu::UnicodeString us = TiCC::UnicodeFromUTF8( in );
+    us.toLower();
+    return TiCC::UnicodeToUTF8( us );
+  }
+
+  string utf8_uppercase( const string& in ){
+    // Unicode safe version
+    icu::UnicodeString us = TiCC::UnicodeFromUTF8( in );
+    us.toUpper();
+    return TiCC::UnicodeToUTF8( us );
+  }
+
 }

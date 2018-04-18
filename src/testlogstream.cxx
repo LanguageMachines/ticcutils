@@ -50,6 +50,8 @@ public:
     *Log(ls) << " 1" << endl;
   }
   LogStream *ls;
+private:
+  Sub1( const Sub1& );
 };
 
 class Sub2 {
@@ -78,6 +80,8 @@ public:
     *Log(ls) << " 3" << endl;
   }
   LogStream *ls;
+private:
+  Sub3( const Sub3& );
 };
 
 int main(){

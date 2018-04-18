@@ -425,7 +425,7 @@ namespace TiCC {
       default:
 	argument.stat = MASS;
 	if ( debug ){
-	  cerr << "OPTION=" << Option << endl;
+	  cerr << "MASS-OPTION=" << Option << endl;
 	}
 	argument.val = Option;
 	arguments.push_back(argument);
@@ -441,7 +441,7 @@ namespace TiCC {
     bool doCheck = !valid_long.empty() || !valid_chars.empty();
     if ( doCheck ){
       if ( debug ){
-	cerr << "we must check those " << endl;
+	cerr << "we must check this list" << endl;
       }
       auto it = arguments.begin();
       while ( it != arguments.end() ){
@@ -467,8 +467,6 @@ namespace TiCC {
 	      if ( debug ){
 		cerr << "no parameter: OK" << endl;
 	      }
-	      ++it;
-	      continue;
 	    }
 	    else {
 	      if ( debug ){
@@ -487,8 +485,6 @@ namespace TiCC {
 		  if ( debug ){
 		    cerr << "OK: " << it->val << endl;
 		  }
-		  ++it;
-		  continue;
 		}
 	      }
 	      else if ( !has_opt ){
@@ -504,24 +500,16 @@ namespace TiCC {
 	    if ( debug ){
 	      cerr << "found a parameter: " <<  it->val << endl;
 	    }
-	    ++it;
-	    continue;
 	  }
 	  else {
-	    auto next = it+1;
-	    while ( next != arguments.end() && next->stat == MASS ){
-	      ++next;
+	    // ok, some random data. assume it to be a Mass opt
+	    arg a = *it;
+	    a.stat = MASS;
+	    it->val.clear();
+	    it = arguments.insert( ++it, a );
+	    if ( debug ){
+	      cerr << "inserted " << a << endl;
 	    }
-	    if ( next != arguments.end() ){
-	      throw OptionError( string("option '") + it->s
-				 + "' may not have a value. (found "
-				 + it->val + ")" );
-	    }
-	    else {
-	      MassOpts.push_back( it->val );
-	      it->val.clear();
-	    }
-	    ++it;
 	  }
 	}
 	else if ( it->stat == MIN || it->stat == PLUS ){
@@ -543,8 +531,6 @@ namespace TiCC {
 	      if ( debug ){
 		cerr << "no parameter: OK" << endl;
 	      }
-	      ++it;
-	      continue;
 	    }
 	    else {
 	      if ( debug ){
@@ -563,8 +549,6 @@ namespace TiCC {
 		  if ( debug ){
 		    cerr << "OK: " << it->val << endl;
 		  }
-		  ++it;
-		  continue;
 		}
 	      }
 	      else if ( !has_opt ){
@@ -574,50 +558,28 @@ namespace TiCC {
 		throw OptionError( string("missing value for option ''")
 				   + it->c + "'" );
 	      }
-	      else {
-		++it;
-		continue;
-	      }
 	    }
 	  }
 	  else if ( has_par || has_opt ){
 	    if ( debug ){
 	      cerr << "found a parameter: " <<  it->val << endl;
 	    }
-	    ++it;
-	    continue;
 	  }
 	  else {
-	    auto next = it+1;
-	    while ( next != arguments.end() && next->stat == MASS ){
-	      ++next;
+	    // ok, some random data. assume it to be a Mass opt
+	    arg a = *it;
+	    a.stat = MASS;
+	    it->val.clear();
+	    it = arguments.insert( ++it, a );
+	    if ( debug ){
+	      cerr << "inserted " << a << endl;
 	    }
-	    if ( next != arguments.end() ){
-	      throw OptionError( string("option '") + it->c
-				 + "' may not have a value. (found "
-				 + it->val + ")" );
-	    }
-	    else {
-	      MassOpts.push_back( it->val );
-	      it->val.clear();
-	    }
-	    ++it;
 	  }
 	}
 	else if ( it->stat == MASS ){
-	  auto next = it+1;
-	  while ( next != arguments.end() && next->stat == MASS ){
-	    ++next;
-	  }
-	  if ( next != arguments.end() ){
-	    throw OptionError( "spurious value: '" + it->val +
-			       "' in options" );
-	  }
-	  else {
-	    MassOpts.push_back( it->val );
-	    it = arguments.erase(it);
-	  }
+	  // skip
 	}
+	++it;
       }
     }
     if ( debug ){
@@ -636,11 +598,9 @@ namespace TiCC {
 	MassOpts.push_back( it.val );
       }
     }
-    if ( debug ){
-      cerr << "mass opts: " << MassOpts << endl;
-    }
 
     if ( debug ){
+      cerr << "Final mass opts: " << MassOpts << endl;
       cerr << "CL_options after Parse " << endl;
       dump(cerr);
       cerr << endl;

@@ -32,6 +32,7 @@
 #include <stdexcept>
 
 #include "ticcutils/StringOps.h"
+#include "ticcutils/TreeHash.h"
 #include "ticcutils/PrettyPrint.h"
 #include "ticcutils/zipper.h"
 #include "ticcutils/Tar.h"
@@ -67,16 +68,16 @@ void test_nothrow(){
 
 void test_opts_basic(){
   startTestSerie( "we testen basic commandline opties." );
+  bool opt_dbg=false;
   CL_Options opts1;
+  opts1.set_debug(opt_dbg);
   opts1.allow_args( "t:fh" );
   // -t mist een optie
   assertThrow( opts1.parse_args( "-t -f -h" ), OptionError );
   // onbekende optie
   assertThrow( opts1.init( "-a" ), OptionError );
-  // -f heeft onterecht een parameter
-  assertThrow( opts1.parse_args( "-t1 -f bla -h"), OptionError );
-  // parameters aan einde ==> massopts.
-  assertNoThrow( opts1.parse_args( "-t1 -f -h bla") );
+  // -f heeft onterecht een parameter ==> massopts
+  assertNoThrow( opts1.parse_args( "-t1 -f bla -h") );
   CL_Options opts2;
   opts2.allow_args( "", "true:,false" );
   // --true mist een optie
@@ -160,7 +161,7 @@ void test_opts_basic(){
   assertThrow( opts9.extract('r', myint ), OptionError );
   CL_Options opts10;
   opts10.allow_args( "", "test::,qed,data:" );
-  //  opts10.set_debug(true);
+  //  opts10.set_debug(opt_dbg);
   // --test heeft optionele optie. qed is een stoorzender
   assertNoThrow( opts10.parse_args( "--test 1 --test=2 --qed --test --test=3 --data=5.6 --data=appel")  );
   ts.clear();
@@ -205,13 +206,13 @@ void test_opts_basic(){
   auto v = opts13.getMassOpts();
   assertEqual( v.size(), 2 );
   CL_Options opts14;
-  opts14.set_debug(true);
+  opts14.set_debug(opt_dbg);
   opts14.parse_args( "-a b -a c oke -d\"-fiets --appel peer \" --fout=goed toch" );
   assertEqual( opts14.toString(), "-ab -ac -d-fiets --appel peer  --fout=goed" );
   v = opts14.getMassOpts();
   assertEqual( v.size(), 2 );
   CL_Options opts15;
-  opts15.set_debug(true);
+  opts15.set_debug(opt_dbg);
   opts15.parse_args( "--fout=goed\\mis --jan=gek" );
   assertEqual( opts15.toString(), "--fout=goed\\mis --jan=gek" );
   string res;
@@ -221,7 +222,7 @@ void test_opts_basic(){
   assertEqual( res, "gek" );
   CL_Options opts16;
   opts16.allow_args( "", "test:" );
-  opts16.set_debug(true);
+  opts16.set_debug(opt_dbg);
   opts16.parse_args( "--test goed --test=prima --test niet=eens --test=wel=eens" );
   opts16.extract("test", res );
   assertEqual( res, "goed" );
@@ -231,6 +232,21 @@ void test_opts_basic(){
   assertEqual( res, "niet=eens" );
   opts16.extract("test", res );
   assertEqual( res, "wel=eens" );
+  CL_Options opts17;
+  // new feature: check for stray mass opts inside commandline
+  opts17.allow_args( "ab:c", "aap" );
+  opts17.set_debug(true);
+  opts17.parse_args( "-a file1 -b prima de luxe --aap file2 -c file3 file4" );
+  opts17.extract("a", res );
+  assertEqual( res, "" );
+  opts17.extract("b", res );
+  assertEqual( res, "prima" );
+  opts17.extract("aap", res );
+  assertEqual( res, "" );
+  opts17.extract("c", res );
+  assertEqual( res, "" );
+  vector<string> mo2 = opts17.getMassOpts();
+  assertEqual( mo2.size(), 6  );
 }
 
 void test_opts( CL_Options& opts ){
@@ -343,7 +359,7 @@ void test_split(){
   assertEqual( res6.size(), 8 );
   assertEqual( res6[1], "kat" );
   assertEqual( res6[2], "krabt" );
-  vector<string> res7 = split( "APPELTAART", 2 );
+  vector<string> res7 = split( string("APPELTAART"), 2 );
   assertEqual( res7.size(), 1 );
   assertEqual( res7[0], "APPELTAART" );
 }
@@ -428,6 +444,31 @@ void test_lowercase(){
   assertEqual( res, "een camelcapped zin." );
 }
 
+void test_lexicon(){
+  Hash::Lexicon lex;
+  lex.Store( "appel", "apple" );
+  lex.Store( "peer", "pear" );
+  lex.Store( "appeltaart", "applepie" );
+  Hash::LexInfo *info = lex.Lookup( "cake" );
+  assertEqual( (void*)info, (void*)0 );
+  info = lex.Lookup( "appel" );
+  assertEqual( info->Trans(), "apple" );
+}
+
+void test_treehash(){
+  Hash::StringHash sh;
+  size_t index = sh.Hash( "appel" );
+  assertEqual( index, 1 );
+  index = sh.Hash( "peer" );
+  assertEqual( index, 2 );
+  index = sh.Hash( "appeltaart" );
+  assertEqual( index, 3 );
+  index = sh.Hash( "peer" );
+  assertEqual( index, 2 );
+  assertEqual( sh.NumOfEntries(), 3 );
+  assertEqual( sh.ReverseLookup( 3 ), "appeltaart" );
+}
+
 void test_base_dir(){
   assertEqual( TiCC::basename("/foo/bar" ), "bar" );
   assertEqual( TiCC::dirname("/foo/bar" ), "/foo" );
@@ -476,6 +517,7 @@ void test_tar( const string& path ){
   assertTrue( mytar.next_ifstream( tmp, name ) );
   assertEqual( name, "small.txt" );
   assertTrue( mytar.next_ifstream( tmp, name ) );
+  assertEqual( name, "sub.txt" );
   assertTrue( mytar.next_ifstream( tmp, name ) );
   assertEqual( name, "sub1/sub.txt" );
   assertNoThrow( mytar.extract_ifstream( "sub1/sub.txt", tmp ) );
@@ -610,11 +652,11 @@ void test_logstream( const string& path ){
 }
 
 void test_unicode( const string& path ){
-  UnicodeString u1 = L'私';
+  icu::UnicodeString u1 = L'私';
   UChar32 uc1 = U'\U00007981';
   UChar32 uc2 = U'\U00007982';
-  UnicodeString u2 = uc1;
-  u2 += UnicodeString( uc2 );
+  icu::UnicodeString u2 = uc1;
+  u2 += icu::UnicodeString( uc2 );
   string s1 = UnicodeToUTF8( u1 );
   assertEqual( s1 , "私" );
   string s2 = UnicodeToUTF8( u2 );
@@ -623,27 +665,63 @@ void test_unicode( const string& path ){
   string line;
   getline( in, line );
   assertFalse( line == "Hier staat een BOM voor. æ en ™ om te testen." );
-  UnicodeString u3 = UnicodeFromEnc( line, "UTF16" );
+  icu::UnicodeString u3 = UnicodeFromEnc( line, "UTF16" );
   string s3 = UnicodeToUTF8(  u3 );
   assertEqual( s3, "Hier staat een BOM voor. æ en ™ om te testen." );
-  UnicodeString greek1 = "ἀντιϰειμένου";
-  UnicodeString greek2 = "ἀντιϰειμένου";
+  icu::UnicodeString greek1 = "ἀντιϰειμένου";
+  icu::UnicodeString greek2 = "ἀντιϰειμένου";
   assertFalse( greek1 == greek2 ); // different normalizations!
   UnicodeNormalizer N;
-  UnicodeString ng1 = N.normalize( greek1 );
-  UnicodeString ng2 = N.normalize( greek2 );
+  icu::UnicodeString ng1 = N.normalize( greek1 );
+  icu::UnicodeString ng2 = N.normalize( greek2 );
   assertEqual( UnicodeToUTF8(ng1), UnicodeToUTF8(ng2) );
   N.setMode("NFD");
-  UnicodeString ng11 = N.normalize( greek1 );
-  UnicodeString ng12 = N.normalize( greek2 );
+  icu::UnicodeString ng11 = N.normalize( greek1 );
+  icu::UnicodeString ng12 = N.normalize( greek2 );
   assertEqual( UnicodeToUTF8(ng11), UnicodeToUTF8(ng12) );
+  string utf8_1 = "ἀντιϰειμένου";
+  string utf8_2 = "ἀντικειμένου";
+  assertEqual( TiCC::utf8_uppercase( utf8_1 ), "ἈΝΤΙΚΕΙΜΈΝΟΥ" );
+  assertEqual( TiCC::utf8_lowercase( "ἈΝΤΙΚΕΙΜΈΝΟΥ" ), utf8_2 );
+  assertEqual( TiCC::utf8_uppercase( "æ en ß en œ" ), "Æ EN SS EN Œ" );
+}
+
+void test_unicode_split(){
+  string line8 = "De kat krabt de krullen\n van de   trap.";
+  icu::UnicodeString line = TiCC::UnicodeFromUTF8( line8 );
+  vector<icu::UnicodeString> res = split_at( line, "de" );
+  assertEqual( res.size(), 3 );
+  assertEqual( TiCC::UnicodeToUTF8(res[0]), "De kat krabt " );
+  assertEqual( TiCC::UnicodeToUTF8(res[1]), " krullen\n van " );
+  assertEqual( TiCC::UnicodeToUTF8(res[2]), "   trap." );
+  res = split( line, 3 );
+  assertEqual( res.size(), 3 );
+  assertEqual( res[1], "kat" );
+  assertEqual( res[2], "krabt de krullen\n van de   trap." );
+  res = split( line, 24 );
+  assertEqual( res.size(), 8 );
+  assertEqual( res[1], "kat" );
+  assertEqual( res[2], "krabt" );
+  assertEqual( res[4], "krullen" );
+  assertEqual( res[5], "van" );
+  icu::UnicodeString vies = "em—dash, en–dash, bar―, bar―――, 3em⸻dash, FullWidth－HyphenMinus,";
+  res = split_at( vies, "," );
+  assertEqual( res.size(), 6 );
+  assertEqual( res[5], " FullWidth－HyphenMinus" );
+  UnicodeString seps =  "—–―⸻－";
+  res = split_at_first_of( vies, seps );
+  assertEqual( res.size(), 7 );
+  assertEqual( res[0], "em" );
+  assertEqual( res[2], "dash, bar" );
+  assertEqual( res[4], ", 3em" );
+  assertEqual( res[6], "HyphenMinus," );
 }
 
 void test_unicode_regex( ){
   string pattern1 = "^(\\p{Lu}{1,2}\\.{1,2}(\\p{Lu}{1,2}\\.{1,2})*)(\\p{Lu}{0,2})$";
   UnicodeRegexMatcher test1( UnicodeFromUTF8(pattern1), "test1" );
-  UnicodeString pre, post;
-  UnicodeString us = "A.N.W.B.";
+  icu::UnicodeString pre, post;
+  icu::UnicodeString us = "A.N.W.B.";
   assertTrue( test1.match_all( us, pre, post ) );
   us = "A.N.W..B";
   assertTrue( test1.match_all( us, pre, post ) );
@@ -664,10 +742,9 @@ void test_unicode_regex( ){
 void test_unicode_filters( const string& path ){
   UniFilter filt;
   assertNoThrow( filt.init( "‘ > \\' ; ’ > \\' ;  \\` > \\' ; ´ > \\' ;", "quote_filter" ) );
-  UnicodeString vies = "`vies´ en ‘smerig’ en `apart´";
-  UnicodeString schoon = filt.filter( vies );
+  icu::UnicodeString vies = "`vies´ en ‘smerig’ en `apart´";
+  icu::UnicodeString schoon = filt.filter( vies );
   assertEqual( schoon, "\'vies\' en \'smerig\' en \'apart\'" );
-  ifstream in( path + "quotes.filter" );
   UniFilter filt2;
   assertNoThrow( filt2.fill( path + "quotes.filter") );
   schoon = filt.filter( vies );
@@ -733,6 +810,8 @@ int main( const int argc, const char* argv[] ){
   test_to_lower();
   test_uppercase();
   test_lowercase();
+  test_treehash();
+  test_lexicon();
   string testdir;
   bool dummy;
   opts1.is_present( 'd', testdir, dummy );
@@ -744,6 +823,7 @@ int main( const int argc, const char* argv[] ){
   test_configuration( testdir );
   test_logstream( testdir );
   test_unicode( testdir );
+  test_unicode_split();
   test_unicode_regex();
   test_unicode_filters( testdir );
   summarize_tests(4);
