@@ -86,6 +86,8 @@ namespace Sockets {
 	cerr << "read res = " << bytes_read  << " ( " << strerror(bytes_read) << ")" << endl;
 #endif
 	// The other side may have closed unexpectedly
+	::close(sock);
+	sock = -1;
 	break;
       }
       if ( ( last_read != 10 ) && ( last_read !=13 ) ) {
@@ -149,6 +151,8 @@ namespace Sockets {
 	}
 	else {
 	  mess = strerror( res );
+	  ::close(sock);
+	  sock = -1;
 	  return false;
 	}
       }
@@ -175,14 +179,17 @@ namespace Sockets {
 	  cerr << "write res = " << this_write  << " ( " << strerror(this_write) << ")" << endl;
 #endif
 	} while ( (this_write < 0) && (errno == EINTR) );
-	if (this_write <= 0)
+	if (this_write <= 0){
 	  break;
+	}
 	bytes_sent += this_write;
 	str += this_write;
       }
       if ( bytes_sent < count ) {
 	mess = "write: failed to sent " + TiCC::toString(count - bytes_sent) +
 	  " bytes out of " + TiCC::toString(count);
+	::close(sock);
+	sock = -1;
 	return false;
       }
     }
@@ -213,12 +220,16 @@ namespace Sockets {
 	}
 	else {
 	  mess = strerror( res );
+	  ::close(sock);
+	  sock = -1;
 	  return false;
 	}
       }
       if ( bytes_sent < count ) {
 	mess = "write: failed to sent " + TiCC::toString(count - bytes_sent) +
 	  " bytes out of " + TiCC::toString(count);
+	::close(sock);
+	sock = -1;
 	return false;
       }
     }
