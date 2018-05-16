@@ -1,3 +1,23 @@
+16 may 2018 0.19
+[Ko van der Sloot]
+* Bumped library version to 5.0
+* Socketbasics:
+  - invalidate sockets, when something looks not OK
+* Unicode:
+  - added Unicode (UTF8) aware versions of uppercase() and lowercase()
+    added a UnicodeString splitter, analogue to the 'old' TiCC::split()
+    functions
+  - added icu:: namespace (required for ICU61 and up)
+  - fixed a problem with Transcriptor rules not handled correctly.
+* Small edits to fix some compiler warnings.
+* fixed potential memory leaks in Trie.h and Tar.cxx
+* CommandLine:
+  - implemented gnu-like extensions in commandline parsing.
+    (intermixing mass options with normal options)
+* added tests for the new features/functions.
+[Maarten van Gompel]
+* added codemeta.json file
+
 19 feb 2018 0.18
 * added more unicode helper classes and functions:
   - Unicode Filter class
