@@ -1,0 +1,71 @@
+{
+    "@context": [
+        "https://doi.org/10.5063/schema/codemeta-2.0",
+        "http://schema.org"
+    ],
+    "@type": "SoftwareSourceCode",
+    "identifier": "ticcutils",
+    "name": "ticcutils",
+    "version": "0.19",
+    "description": "This module contains useful functions for general use in the TiCC software stack and beyond.",
+    "license": "https://spdx.org/licenses/GPL-3.0",
+	"url": "https://github.com/LanguageMachines/ticcutils",
+    "author": [
+		{
+			"@type": "Person",
+			"givenName": "Ko",
+			"familyName": "van der Sloot",
+			"email": "ko.vandersloot@let.ru.nl",
+			"affiliation": {
+				"@id": "https://www.ru.nl/clst",
+				"@type": "Organization",
+				"name": "Centre for Language and Speech Technology",
+				"url": "https://www.ru.nl/clst",
+				"parentOrganization": {
+					"@id": "https://www.ru.nl/cls",
+					"@type": "Organization",
+					"name": "Centre for Language Studies",
+					"url": "https://www.ru.nl/cls",
+					"parentOrganization": {
+						"@id": "https://www.ru.nl",
+						"name": "Radboud University",
+						"@type": "Organization",
+						"url": "https://www.ru.nl",
+						"location": {
+							"@type": "Place",
+							"name": "Nijmegen"
+						}
+					}
+
+				}
+			}
+		}
+	],
+	"sourceOrganization": { "@id": "https://www.ru.nl/clst" },
+	"programmingLanguage": {
+		"@type": "ComputerLanguage",
+		"identifier": "c++",
+		"name": "C++"
+	},
+	"operatingSystem": "POSIX",
+	"codeRepository": "https://github.com/LanguageMachines/ticcutils",
+    "softwareRequirements": [
+        {
+			"@type": "SoftwareApplication",
+			"identifier": "icu",
+			"name": "icu"
+		},
+        {
+			"@type": "SoftwareApplication",
+			"identifier": "libxml2",
+			"name": "libxml2"
+		}
+	],
+	"readme": "https://github.com/LanguageMachines/ticcutils/blob/master/README.md",
+	"issueTracker": "https://github.com/LanguageMachines/ticcutils/issues",
+	"contIntegration": "https://travis-ci.org/LanguageMachines/ticcutils",
+	"releaseNotes": "https://github.com/LanguageMachines/ticcutils/releases",
+	"developmentStatus": "active",
+	"keywords":  [ "nlp", "natural language processing" ],
+	"dateCreated": "2011-03-27"
+}
