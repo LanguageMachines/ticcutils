@@ -708,7 +708,7 @@ void test_unicode_split(){
   res = split_at( vies, "," );
   assertEqual( res.size(), 6 );
   assertEqual( res[5], " FullWidth－HyphenMinus" );
-  UnicodeString seps =  "—–―⸻－";
+  icu::UnicodeString seps =  "—–―⸻－";
   res = split_at_first_of( vies, seps );
   assertEqual( res.size(), 7 );
   assertEqual( res[0], "em" );
