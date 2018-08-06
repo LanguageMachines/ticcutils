@@ -123,7 +123,7 @@ namespace TiCC {
     matcher = NULL;
     UErrorCode u_stat = U_ZERO_ERROR;
     UParseError errorInfo;
-    pattern = RegexPattern::compile( pat, 0, errorInfo, u_stat );
+    pattern = icu::RegexPattern::compile( pat, 0, errorInfo, u_stat );
     if ( U_FAILURE(u_stat) ){
       string spat = UnicodeToUTF8(pat);
       string failString = UnicodeToUTF8(_name);
@@ -480,7 +480,7 @@ namespace TiCC {
     size_t cnt = 0;
     int pos = 0;
     while ( pos != -1 ){
-      UnicodeString res;
+      icu::UnicodeString res;
       int p = src.indexOf( sep, pos );
       if ( p == -1 ){
 	res = src.tempSubString( pos );
