@@ -120,5 +120,19 @@ namespace TiCC {
     return os;
   }
 
+  template< typename S, typename T, typename SORT >
+    inline std::ostream& operator<< ( std::ostream& os, const std::multimap<S,T,SORT>& s ){
+    os << "{";
+    typename std::multimap<S,T,SORT>::const_iterator it = s.begin();
+    while ( it != s.end() ){
+      os << "<" << it->first << "," << it->second << ">";
+      ++it;
+      if ( it != s.end() )
+	os << ",";
+    }
+    os << "}";
+    return os;
+  }
+
 }
 #endif // PRETTY_PRINT_H
