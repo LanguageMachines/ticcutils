@@ -86,6 +86,7 @@ namespace TiCC {
     UniFilter();
     ~UniFilter();
     bool init( const icu::UnicodeString&, const icu::UnicodeString& );
+    bool is_initialized() const { return _trans != 0; };
     bool fill( const std::string&, const std::string& = "" );
     bool add( const std::string& );
     bool add( const icu::UnicodeString& );
