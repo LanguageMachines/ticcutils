@@ -46,6 +46,7 @@
 
 using namespace std;
 using namespace TiCC;
+using namespace icu;
 
 void helper(){
   throw runtime_error("fout");
@@ -652,11 +653,11 @@ void test_logstream( const string& path ){
 }
 
 void test_unicode( const string& path ){
-  icu::UnicodeString u1 = L'私';
+  UnicodeString u1 = L'私';
   UChar32 uc1 = U'\U00007981';
   UChar32 uc2 = U'\U00007982';
-  icu::UnicodeString u2 = uc1;
-  u2 += icu::UnicodeString( uc2 );
+  UnicodeString u2 = uc1;
+  u2 += UnicodeString( uc2 );
   string s1 = UnicodeToUTF8( u1 );
   assertEqual( s1 , "私" );
   string s2 = UnicodeToUTF8( u2 );
@@ -665,19 +666,19 @@ void test_unicode( const string& path ){
   string line;
   getline( in, line );
   assertFalse( line == "Hier staat een BOM voor. æ en ™ om te testen." );
-  icu::UnicodeString u3 = UnicodeFromEnc( line, "UTF16" );
+  UnicodeString u3 = UnicodeFromEnc( line, "UTF16" );
   string s3 = UnicodeToUTF8(  u3 );
   assertEqual( s3, "Hier staat een BOM voor. æ en ™ om te testen." );
-  icu::UnicodeString greek1 = "ἀντιϰειμένου";
-  icu::UnicodeString greek2 = "ἀντιϰειμένου";
+  UnicodeString greek1 = "ἀντιϰειμένου";
+  UnicodeString greek2 = "ἀντιϰειμένου";
   assertFalse( greek1 == greek2 ); // different normalizations!
   UnicodeNormalizer N;
-  icu::UnicodeString ng1 = N.normalize( greek1 );
-  icu::UnicodeString ng2 = N.normalize( greek2 );
+  UnicodeString ng1 = N.normalize( greek1 );
+  UnicodeString ng2 = N.normalize( greek2 );
   assertEqual( UnicodeToUTF8(ng1), UnicodeToUTF8(ng2) );
   N.setMode("NFD");
-  icu::UnicodeString ng11 = N.normalize( greek1 );
-  icu::UnicodeString ng12 = N.normalize( greek2 );
+  UnicodeString ng11 = N.normalize( greek1 );
+  UnicodeString ng12 = N.normalize( greek2 );
   assertEqual( UnicodeToUTF8(ng11), UnicodeToUTF8(ng12) );
   string utf8_1 = "ἀντιϰειμένου";
   string utf8_2 = "ἀντικειμένου";
@@ -688,8 +689,8 @@ void test_unicode( const string& path ){
 
 void test_unicode_split(){
   string line8 = "De kat krabt de krullen\n van de   trap.";
-  icu::UnicodeString line = TiCC::UnicodeFromUTF8( line8 );
-  vector<icu::UnicodeString> res = split_at( line, "de" );
+  UnicodeString line = TiCC::UnicodeFromUTF8( line8 );
+  vector<UnicodeString> res = split_at( line, "de" );
   assertEqual( res.size(), 3 );
   assertEqual( TiCC::UnicodeToUTF8(res[0]), "De kat krabt " );
   assertEqual( TiCC::UnicodeToUTF8(res[1]), " krullen\n van " );
@@ -704,11 +705,11 @@ void test_unicode_split(){
   assertEqual( res[2], "krabt" );
   assertEqual( res[4], "krullen" );
   assertEqual( res[5], "van" );
-  icu::UnicodeString vies = "em—dash, en–dash, bar―, bar―――, 3em⸻dash, FullWidth－HyphenMinus,";
+  UnicodeString vies = "em—dash, en–dash, bar―, bar―――, 3em⸻dash, FullWidth－HyphenMinus,";
   res = split_at( vies, "," );
   assertEqual( res.size(), 6 );
   assertEqual( res[5], " FullWidth－HyphenMinus" );
-  icu::UnicodeString seps =  "—–―⸻－";
+  UnicodeString seps =  "—–―⸻－";
   res = split_at_first_of( vies, seps );
   assertEqual( res.size(), 7 );
   assertEqual( res[0], "em" );
@@ -720,8 +721,8 @@ void test_unicode_split(){
 void test_unicode_regex( ){
   string pattern1 = "^(\\p{Lu}{1,2}\\.{1,2}(\\p{Lu}{1,2}\\.{1,2})*)(\\p{Lu}{0,2})$";
   UnicodeRegexMatcher test1( UnicodeFromUTF8(pattern1), "test1" );
-  icu::UnicodeString pre, post;
-  icu::UnicodeString us = "A.N.W.B.";
+  UnicodeString pre, post;
+  UnicodeString us = "A.N.W.B.";
   assertTrue( test1.match_all( us, pre, post ) );
   us = "A.N.W..B";
   assertTrue( test1.match_all( us, pre, post ) );
@@ -742,8 +743,8 @@ void test_unicode_regex( ){
 void test_unicode_filters( const string& path ){
   UniFilter filt;
   assertNoThrow( filt.init( "‘ > \\' ; ’ > \\' ;  \\` > \\' ; ´ > \\' ;", "quote_filter" ) );
-  icu::UnicodeString vies = "`vies´ en ‘smerig’ en `apart´";
-  icu::UnicodeString schoon = filt.filter( vies );
+  UnicodeString vies = "`vies´ en ‘smerig’ en `apart´";
+  UnicodeString schoon = filt.filter( vies );
   assertEqual( schoon, "\'vies\' en \'smerig\' en \'apart\'" );
   UniFilter filt2;
   assertNoThrow( filt2.fill( path + "quotes.filter") );
