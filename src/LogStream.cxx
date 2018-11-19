@@ -139,7 +139,7 @@ namespace TiCC {
       LogStream& tmp = dynamic_cast<LogStream&>(os);
       tmp.setlevel( l );
     }
-    catch ( bad_cast ){
+    catch ( const bad_cast& ){
     }
     return os;
   }
@@ -153,7 +153,7 @@ namespace TiCC {
       LogStream& tmp = dynamic_cast<LogStream&>(os);
       tmp.setthreshold( l );
     }
-    catch ( bad_cast ){
+    catch ( const bad_cast& ){
     }
     return os;
   }
@@ -167,7 +167,7 @@ namespace TiCC {
       LogStream& tmp = dynamic_cast<LogStream&>(os);
       tmp.setstamp( f );
     }
-    catch ( bad_cast ){
+    catch ( const bad_cast& ){
     }
     return os;
   }
@@ -181,7 +181,7 @@ namespace TiCC {
       LogStream& tmp = dynamic_cast<LogStream&>(os);
       tmp.message( m );
     }
-    catch ( bad_cast ){
+    catch ( const bad_cast& ){
     }
     return os;
   }
@@ -195,7 +195,7 @@ namespace TiCC {
       LogStream& tmp = dynamic_cast<LogStream&>(os);
       tmp.addmessage( m );
     }
-    catch ( bad_cast ){
+    catch ( const bad_cast& ){
     }
     return os;
   }
@@ -215,7 +215,7 @@ namespace TiCC {
       LogStream& tmp = dynamic_cast<LogStream&>(os);
       tmp.write( m.data(), m.size() );
     }
-    catch ( bad_cast ){
+    catch ( const bad_cast& ){
     }
     return os;
   }
