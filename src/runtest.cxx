@@ -483,6 +483,10 @@ void test_base_dir(){
   assertEqual( TiCC::dirname("." ), "." );
 }
 
+void test_realpath(){
+  assertEqual( realpath( "" ), "" );
+}
+
 void test_bz2compression( const string& path ){
   assertTrue( bz2Compress( path + "small.txt", "bzout.bz2" ) );
   assertTrue( bz2Decompress( "bzout.bz2", "bzout.txt" ) );
@@ -813,6 +817,7 @@ int main( const int argc, const char* argv[] ){
   test_lowercase();
   test_treehash();
   test_lexicon();
+  test_realpath();
   string testdir;
   bool dummy;
   opts1.is_present( 'd', testdir, dummy );

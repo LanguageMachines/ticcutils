@@ -294,10 +294,17 @@ namespace TiCC {
   }
 
   string realpath( const string& path ){
+    string result;
+    if ( path.empty() ){
+      return result;
+    }
     const char *in = path.c_str();
     char *out = 0;
-    string result = ::realpath( in, out );
-    free( out );
+    char *res = ::realpath( in, out );
+    if ( res ){
+      result = string(res);
+      free( res);
+    }
     return result;
   }
 
