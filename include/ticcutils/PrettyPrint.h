@@ -36,6 +36,13 @@
 
 namespace TiCC {
 
+
+  template< typename S, typename T >
+  inline std::ostream& operator<< ( std::ostream& os, const std::pair<S,T>& p ){
+    os << "<" << p.first << "," << p.second << ">";
+    return os;
+  }
+
   template< typename T >
     inline std::ostream& operator<< ( std::ostream& os, const std::set<T>& s ){
     os << "{";
