@@ -14,7 +14,7 @@ libticcutils_la_SOURCES = LogStream.cxx StringOps.cxx TreeHash.cxx \
 
 check_PROGRAMS = runtest testlogstream
 runtest_SOURCES = runtest.cxx
-testlogstream_SOURCES =testlogstream.cxx
+testlogstream_SOURCES = testlogstream.cxx
 
 TESTS_ENVIRONMENT = topsrcdir=$(top_srcdir)
 TESTS = tst.sh
