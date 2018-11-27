@@ -1,6 +1,3 @@
-# $Id$
-# $URL$
-
 # bootstrap - script to bootstrap the distribution rolling engine
 
 # usage:
@@ -20,23 +17,6 @@
 
 automake=automake
 aclocal=aclocal
-
-# if you want to autogenerate a ChangeLog form svn:
-#
-#  svn2cl, a python script, as used in the GNU Enterprise project.
-#    By jcater (Jason Cater), contributions by reinhard (Reinhard Müller).
-#    Get it from
-#    http://www.gnuenterprise.org/cgi-bin/viewcvs.cgi/*checkout*/gnue/trunk/gnue-common/utils/svn2cl .
-#    svn2cl is used in Makefile.am too.
-#
-# (Another svn2cl implementation, in perl, is at
-# http://www.contactor.se/~dast/svn/archive-2002-04/0910.shtml)
-#
-# see also toplevel Makefile.am
-
-# test -f ChangeLog || {
-#   svn log --verbose > ChangeLog
-#}
 
 if $automake --version|head -1 |grep ' 1\.[4-9]'; then
     echo "automake 1.4-1.9 is active. You should use automake 1.10 or later"
