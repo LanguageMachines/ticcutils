@@ -495,6 +495,11 @@ void test_bz2compression( const string& path ){
   assertEqual( buffer.substr(0,4), "This" );
   string cmd = "diff " + path + "small.txt bzout.txt";
   assertEqual( system( cmd.c_str() ), 0 );
+  bool ok = false;
+  assertNoThrow( ok = bz2WriteFile( "bzout.test.bz2", buffer ) );
+  assertEqual( ok, true );
+  cmd = "diff bzout.bz2 bzout.test.bz2";
+  assertEqual( system( cmd.c_str() ), 0 );
 }
 
 void test_gzcompression( const string& path ){
@@ -508,6 +513,11 @@ void test_gzcompression( const string& path ){
   assertTrue( gzDecompress( path + "nasty.gz", "nasty.txt" ) );
   cmd = "diff " + path + "nasty.gz nasty.txt";
   assertEqual( system(cmd.c_str()), 0 );
+  bool ok = false;
+  assertNoThrow( ok = gzWriteFile( "gzout.test.gz", buffer ) );
+  assertEqual( ok, true );
+  cmd = "diff gzout.gz gzout.test.gz";
+  assertEqual( system( cmd.c_str() ), 0 );
 }
 
 void test_tar( const string& path ){
