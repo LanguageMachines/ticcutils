@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2006 - 2018
+  Copyright (c) 2006 - 2019
   CLST  - Radboud University
   ILK   - Tilburg University
 
@@ -121,9 +121,7 @@ namespace TiCC {
       cerr << "bz2: unable to open outputfile: " << outName << endl;
       return false;
     }
-    bz2ostream bzout(outfile.rdbuf());
-    bzout << buffer;
-    return true;
+    return bz2WriteStream( outfile, buffer );
   }
 
   string gzReadStream( istream& is ){
@@ -158,8 +156,7 @@ namespace TiCC {
       cerr << "gz: unable to open outputfile: " << outName << endl;
       return false;
     }
-    outfile << buffer;
-    return true;
+    return gzWriteStream( outfile, buffer );
   }
 
   bool gzCompress( const string& inName, const string& outName ){

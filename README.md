@@ -3,7 +3,7 @@
 TiCC utils
 ==============
 
-    TiCC utils 0.18 (c) ILK/CLST 1998 - 2018
+    TiCC utils 0.18 (c) ILK/CLST 1998 - 2019
     by Ko van der Sloot
 
     Tilburg centre for Cognition and Communication, Tilburg University.

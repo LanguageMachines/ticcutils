@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2006 - 2018
+  Copyright (c) 2006 - 2019
   CLST  - Radboud University
   ILK   - Tilburg University
 
@@ -25,10 +25,12 @@
 
 */
 
+#include <cassert>
 #include <string>
 #include <cstdlib>
 #include "config.h"
 #include <iostream>
+#include <iomanip>
 #include <unistd.h>
 #include <stdexcept>
 
@@ -40,7 +42,7 @@ using namespace TiCC;
 
 class Sub1 {
 public:
-  Sub1( LogStream& log ){
+  explicit Sub1( LogStream& log ){
     ls = new LogStream( log, "-SUB1" );
     *Log(ls) << "created a sub1 " << endl;
   }
@@ -56,7 +58,7 @@ private:
 
 class Sub2 {
 public:
-  Sub2( LogStream* log ){
+  explicit Sub2( LogStream* log ){
     ls = log;
     *Log(*ls) << "created a sub2 " << endl;
   }
@@ -70,7 +72,7 @@ public:
 
 class Sub3 {
 public:
-  Sub3( Sub2& s ){
+  explicit Sub3( Sub2& s ){
     ls = new LogStream( s.ls, "-SUB3", StampMessage );
     *Log(ls) << "created a sub3 " << endl;
   }
@@ -88,6 +90,7 @@ int main(){
   LogStream the_log( "main-log" );
   Sub1 sub1( the_log );
   Sub2 sub2( &the_log );
+  assert( IsActive( the_log ) );
 #pragma omp parallel for schedule(dynamic)
   for ( int i = 0; i < 5; ++i ){
     sub1.exec(i);
