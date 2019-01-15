@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/LanguageMachines/ticcutils.svg?branch=master)](https://travis-ci.org/LanguageMachines/ticcutils) [![Language Machines Badge](http://applejack.science.ru.nl/lamabadge.php/ticcutils)](http://applejack.science.ru.nl/languagemachines/)
+[![Build Status](https://travis-ci.org/LanguageMachines/ticcutils.svg?branch=master)](https://travis-ci.org/LanguageMachines/ticcutils) [![Language Machines Badge](http://applejack.science.ru.nl/lamabadge.php/ticcutils)](http://applejack.science.ru.nl/languagemachines/) [![DOI](https://zenodo.org/badge/9028755.svg)](https://zenodo.org/badge/latestdoi/9028755)
 
 TiCC utils
 ==============
