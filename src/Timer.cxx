@@ -60,6 +60,17 @@ namespace TiCC {
     return os;
   }
 
+  Timer& Timer::operator+=( const Timer& rhs ){
+    this->myTime.tv_sec += rhs.myTime.tv_sec;
+    this->myTime.tv_usec += rhs.myTime.tv_usec;
+    return *this;
+  }
+
+  Timer operator+( Timer lhs, const Timer& rhs){
+    lhs += rhs;
+    return lhs;
+  }
+
   string Timer::toString(){
     stringstream os;
     os << *this;

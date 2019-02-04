@@ -40,7 +40,8 @@ namespace TiCC {
       gettimeofday( &startTime, 0 );
     };
     void stop();
-    unsigned int secs() { stop(); return myTime.tv_sec; };
+    Timer& operator+=( const Timer& );
+    friend Timer operator+( Timer, const Timer& );
     std::string toString();
     static std::string now();
   private:
