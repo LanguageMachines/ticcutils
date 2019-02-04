@@ -41,6 +41,7 @@
 #include "ticcutils/FileUtils.h"
 #include "ticcutils/CommandLine.h"
 #include "ticcutils/Configuration.h"
+#include "ticcutils/Timer.h"
 #include "ticcutils/LogStream.h"
 #include "ticcutils/Unicode.h"
 
@@ -795,6 +796,10 @@ void test_unicode_filters( const string& path ){
 
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
+  Timer t1;
+  Timer t2;
+  t1.start();
+  t2.start();
   test_opts_basic();
   CL_Options opts1;
   opts1.set_short_options( "t:qf:d:" );
@@ -842,5 +847,10 @@ int main( const int argc, const char* argv[] ){
   test_unicode_split();
   test_unicode_regex();
   test_unicode_filters( testdir );
+  t1.stop();
+  t2.stop();
+  cerr << t1 << endl;
+  cerr << t2 << endl;
+  cerr << t1 + t2 << endl;
   summarize_tests(4);
 }
