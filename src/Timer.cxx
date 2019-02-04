@@ -61,8 +61,7 @@ namespace TiCC {
   }
 
   Timer& Timer::operator+=( const Timer& rhs ){
-    this->myTime.tv_sec += rhs.myTime.tv_sec;
-    this->myTime.tv_usec += rhs.myTime.tv_usec;
+    timeradd( &(this->myTime), &(rhs.myTime), &(this->myTime) );
     return *this;
   }
 
