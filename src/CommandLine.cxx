@@ -135,6 +135,7 @@ namespace TiCC {
 
   bool CL_Options::is_present_internal( const char c, string &opt, bool& mood ) const {
     mood = false;
+    opt.clear();
     for ( auto const& pos : Opts ){
       if ( pos.isLong() )
 	continue;
@@ -154,6 +155,7 @@ namespace TiCC {
   }
 
   bool CL_Options::is_present_internal( const string& w, string &opt ) const {
+    opt.clear();
     for ( const auto& pos : Opts ){
       if ( pos.OptWord() == w ){
 	opt = pos.Option();
@@ -170,6 +172,7 @@ namespace TiCC {
   }
 
   bool CL_Options::extract_internal( const char c, string &opt, bool& mood ) {
+    opt.clear();
     mood = false;
     for ( auto pos = Opts.begin(); pos != Opts.end(); ++pos ){
       if ( !pos->isLong() ){
@@ -191,6 +194,7 @@ namespace TiCC {
   }
 
   bool CL_Options::extract_internal( const string& w, string &opt ) {
+    opt.clear();
     for ( auto pos = Opts.begin(); pos != Opts.end(); ++pos ){
       if ( pos->OptWord() == w ){
 	opt = pos->Option();
