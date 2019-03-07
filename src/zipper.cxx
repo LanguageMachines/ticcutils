@@ -96,15 +96,14 @@ namespace TiCC {
     return result;
   }
 
-  string bz2ReadFile( const string& inName ){
-    string inname = inName;
-    string::size_type pos = inname.rfind( ".bz2" );
+  string bz2ReadFile( const string& in_name ){
+    string::size_type pos = in_name.rfind( ".bz2" );
     if ( pos == string::npos ){
-      throw runtime_error( "bz2: expected an inputfile name with .bz2 extension" );
+      throw runtime_error( "bz2: expected an inputfile name with .bz2 extension, not '" + in_name + "'" );
     }
-    std::ifstream infile( inname, std::ios::binary);
+    std::ifstream infile( in_name, std::ios::binary);
     if ( !infile ){
-      throw runtime_error( "bz2: unable to open inputfile: " + inName );
+      throw runtime_error( "bz2: unable to open inputfile: " + in_name );
     }
     return bz2ReadStream( infile );
   }
