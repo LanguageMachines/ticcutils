@@ -18,7 +18,7 @@
 automake=automake
 aclocal=aclocal
 
-if $automake --version|head -1 |grep ' 1\.[4-9]'; then
+if $automake --version|head -1 |grep ' 1\.[^1][0-9]'; then
     echo "automake 1.4-1.9 is active. You should use automake 1.10 or later"
     if test -f /etc/debian_version; then
         echo " sudo apt-get install automake"
