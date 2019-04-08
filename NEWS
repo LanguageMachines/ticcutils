@@ -1,3 +1,12 @@
+08 apr 2019 0.21
+NOTE: this is hopefully the last release that needs boost::regex
+The next releases will depend on competent C++11 compilers
+
+* small fixes in bootstrapping and building phae
+* improved Timer clas. Added + operator
+* added more self-tests
+* zipper: Simplified code and better error messages
+
 27 nov 2018 0.20
 [Ko van der Sloot]
 * PrettyPrint: added printing of pairs
