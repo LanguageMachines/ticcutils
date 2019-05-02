@@ -204,13 +204,13 @@ void test_opts_basic(){
   assertEqual( mo[1], "aa" );
   CL_Options opts13;
   opts13.parse_args( "-a b -a c oke -dfiets --appel peer --fout=goed toch" );
-  assertEqual( opts13.toString(), "-ab -ac -dfiets --appel=peer --fout=goed" );
+  assertEqual( opts13.toString(), "-a b -a c -d fiets --appel=peer --fout=goed" );
   auto v = opts13.getMassOpts();
   assertEqual( v.size(), 2 );
   CL_Options opts14;
   opts14.set_debug(opt_dbg);
   opts14.parse_args( "-a b -a c oke -d\"-fiets --appel peer \" --fout=goed toch" );
-  assertEqual( opts14.toString(), "-ab -ac -d-fiets --appel peer  --fout=goed" );
+  assertEqual( opts14.toString(), "-a b -a c -d -fiets --appel peer  --fout=goed" );
   v = opts14.getMassOpts();
   assertEqual( v.size(), 2 );
   CL_Options opts15;

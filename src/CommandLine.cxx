@@ -98,7 +98,7 @@ namespace TiCC {
       result += option;
     }
     else
-      result += (mood ? "+": "-" ) + opt_word + option;
+      result += (mood ? "+": "-" ) + opt_word + " " + option;
     return result;
   }
 
