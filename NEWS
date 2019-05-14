@@ -1,8 +1,9 @@
-08 apr 2019 0.21
+14 may 2019 0.21
 NOTE: this is hopefully the last release that needs boost::regex
 The next releases will depend on competent C++11 compilers
 
-* small fixes in bootstrapping and building phae
+* small fixes in bootstrapping and building phase
+* neater output from CL_Options::toString()
 * improved Timer clas. Added + operator
 * added more self-tests
 * zipper: Simplified code and better error messages
