@@ -49,7 +49,7 @@ namespace TimblServer {
   const string serv_short_opts = "S:C:";
   const string serv_long_opts =
     // leave the , below!. This string is appended later
-    ",pidfile:,logfile:,daemonize::,debug:,config:";
+    ",pidfile:,logfile:,daemonize::,debug:,config:,protocol:";
 
   string Version() { return VERSION; }
   string VersionName() { return PACKAGE_STRING; }
@@ -83,6 +83,7 @@ namespace TimblServer {
     _maxConn( 25 ),
     serverPort( 7000 ),
     callback_data( 0 ),
+    serverProtocol( "tcp" ),
     config(c)
   {
     string value = config->lookUp( "port" );
@@ -106,9 +107,6 @@ namespace TimblServer {
     value = config->lookUp( "protocol" );
     if ( !value.empty() ){
       serverProtocol = value;
-    }
-    else {
-      serverProtocol = "tcp";
     }
     value = config->lookUp( "daemonize" );
     if ( !value. empty() ){
@@ -185,6 +183,9 @@ namespace TimblServer {
     if ( opts.extract( "debug", value ) ){
       config->setatt( "debug", value );
     }
+    if ( opts.extract( "protocol", value ) ){
+      config->setatt( "protocol", value );
+    }
     if ( old ){
       string rest = opts.toString();
       config->setatt( "default", rest );
@@ -219,10 +220,6 @@ namespace TimblServer {
 	    if ( tmp == "protocol" ){
 	      string protocol = rest;
 	      lowercase( protocol );
-	      if ( protocol != "http" && protocol != "tcp" ){
-		cerr << "invalid protocol: " << protocol << endl;
-		return result;
-	      }
 	      return protocol;
 	    }
 	  }
