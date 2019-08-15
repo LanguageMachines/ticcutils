@@ -30,6 +30,7 @@
 #include <string>
 #include <map>
 #include <list>
+#include <map>
 #include "libxml/tree.h"
 
 namespace TiCC {
@@ -106,6 +107,18 @@ namespace TiCC {
       }
     }
     return "";
+  }
+
+  inline std::map<std::string,std::string> getAttributes( const xmlNode *node ){
+    std::map<std::string,std::string> result;
+    if ( node ){
+      xmlAttr *a = node->properties;
+      while ( a ){
+	result[(char*)a->name ] = (char *)a->children->content;
+	a = a->next;
+      }
+    }
+    return result;
   }
 
   std::string getNS( const xmlNode *, std::string& );
