@@ -56,13 +56,23 @@ AC_C_INLINE
 AC_HEADER_STDBOOL
 AC_TYPE_SIZE_T
 AC_TYPE_SSIZE_T
+AC_TYPE_INT8_T
+AC_TYPE_INT16_T
+AC_TYPE_INT32_T
+AC_TYPE_INT64_T
+AC_TYPE_UINT8_T
+AC_TYPE_UINT16_T
+AC_TYPE_UINT32_T
+AC_TYPE_UINT64_T
 AC_TYPE_PID_T
 AX_LIB_SOCKET_NSL
 AX_TYPE_SOCKLEN_T
+AC_CHECK_TYPES( [ptrdiff_t] )
 
 # Checks for library functions.
-AC_CHECK_FUNCS([localtime_r gettimeofday mkdir getaddrinfo gethostbyaddr gethostbyname inet_ntoa memset socket strerror dup2 memmove ])
+AC_CHECK_FUNCS([localtime_r gettimeofday mkdir getaddrinfo gethostbyaddr gethostbyname inet_ntoa memset socket strerror dup2 memmove floor localeconv realpath strtoull])
 AC_FUNC_FORK
+AC_FUNC_STRTOD
 # AC_FUNC_MALLOC seems to drive clang nuts
 
 AX_PTHREAD([],[AC_MSG_ERROR([We need pthread support!])])
