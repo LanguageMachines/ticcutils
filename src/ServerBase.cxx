@@ -422,7 +422,8 @@ namespace TimblServer {
       LOG << "Threads: couldn't set attributes" << endl;
       return EXIT_FAILURE;
     }
-    LOG << "Starting Server on port:" << serverPort << endl;
+    LOG << "Now running a " << serverProtocol
+	<< " server on port " << serverPort << endl;
 
     pthread_t chld_thr;
 
