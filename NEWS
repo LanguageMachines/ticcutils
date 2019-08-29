@@ -1,3 +1,16 @@
+28 aug 2019 0.22
+Major update:
+* removed dependency on boost::regex.
+  As a consequence, we DO NOT support gcc < 4.9 anymore.
+* added the json.hpp include file from: https://github.com/nlohmann/json/
+  This opens the possibility to enable JSON support in server-like
+  applications build on ticcutils.
+* bumped the library version to
+* some small changes:
+  - clearer error message in ServerBase.cxx
+  - added a 'protocol' option to ServerBase.cxx
+  - added an extra function getAttributes() to XmlTools
+
 14 may 2019 0.21
 NOTE: this is hopefully the last release that needs boost::regex
 The next releases will depend on competent C++11 compilers
