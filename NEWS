@@ -5,7 +5,7 @@ Major update:
 * added the json.hpp include file from: https://github.com/nlohmann/json/
   This opens the possibility to enable JSON support in server-like
   applications build on ticcutils.
-* bumped the library version to
+* bumped the library version to 6
 * some small changes:
   - clearer error message in ServerBase.cxx
   - added a 'protocol' option to ServerBase.cxx
