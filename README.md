@@ -3,7 +3,7 @@
 TiCC utils
 ==============
 
-    TiCC utils 0.18 (c) ILK/CLST 1998 - 2019
+    TiCC utils 0.22 (c) ILK/CLST 1998 - 2019
     by Ko van der Sloot
 
     Tilburg centre for Cognition and Communication, Tilburg University.
@@ -22,7 +22,7 @@ This software has been tested on:
 
 Compilers:
 - GCC (4.9 - 7.0). It is highly recommended to upgrade to at least GCC 5.0
-- CLANG. Preferrable a recent version which supporte OpenMP
+- CLANG. Preferrable a recent version which supports OpenMP
 
 Contents of this distribution:
 - Sources
