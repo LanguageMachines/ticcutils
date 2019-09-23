@@ -478,7 +478,7 @@ namespace TiCC {
 		  if ( debug ){
 		    cerr << " FAILED " << endl;
 		  }
-		  throw OptionError( "missing value for long option: '"
+		  throw OptionError( "missing value for long option: '--"
 				     + it->s + "'" );
 		}
 		else {
@@ -491,7 +491,7 @@ namespace TiCC {
 		if ( debug ){
 		  cerr << " OHO FAILED " << endl;
 		}
-		throw OptionError( "missing value for long option: '"
+		throw OptionError( "missing value for long option: '--"
 				   + it->s + "'" );
 	      }
 	    }
@@ -542,7 +542,7 @@ namespace TiCC {
 		  if ( debug ){
 		    cerr << " FAILED " << endl;
 		  }
-		  throw OptionError( string("missing value for option '")
+		  throw OptionError( string("missing value for option '-")
 				     + it->c + "'" );
 		}
 		else {
@@ -555,7 +555,7 @@ namespace TiCC {
 		if ( debug ){
 		  cerr << " AHA FAILED " << endl;
 		}
-		throw OptionError( string("missing value for option ''")
+		throw OptionError( string("missing value for option '-")
 				   + it->c + "'" );
 	      }
 	    }

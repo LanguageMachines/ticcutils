@@ -149,10 +149,10 @@ namespace TimblServer {
 
   void ServerBase::server_usage(void) {
     cerr << "Server options" << endl;
-    cerr << "--config=<f> or -c <f> read server settings from file <f>" << endl;
-    cerr << "--pidfile=<f> store pid in file <f>" << endl;
-    cerr << "--logfile=<f> log server activity in file <f>" << endl;
-    cerr << "--daemonize=[yes|no] (default yes)" << endl << endl;
+    cerr << "--config=<f> or -c <f> : read server settings from file <f>" << endl;
+    cerr << "--pidfile=<f> : store pid in file <f>" << endl;
+    cerr << "--logfile=<f> : log server activity in file <f>" << endl;
+    cerr << "--daemonize=[yes|no] (default yes)" << endl;
     cerr << "--protocol=[tcp|http|json] (default tcp)" << endl << endl;
     cerr << "OR, without config file:" << endl;
     cerr << "-S <port> : run as a server on <port>" << endl;
