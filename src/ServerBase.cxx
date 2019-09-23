@@ -42,14 +42,14 @@
 using namespace std;
 using namespace TiCC;
 
-#define LOG *Log(myLog)
+#define LOG *Log(_my_log)
 
 namespace TimblServer {
 
-  const string serv_short_opts = "S:C:";
+  const string serv_short_opts = "S:C:c:";
   const string serv_long_opts =
     // leave the , below!. This string is appended later
-    ",pidfile:,logfile:,daemonize::,debug:,config:,protocol:";
+    ",pidfile:,logfile:,daemonize:,debug:,config:,protocol:";
 
   string Version() { return VERSION; }
   string VersionName() { return PACKAGE_STRING; }
@@ -76,19 +76,20 @@ namespace TimblServer {
     return result;
   }
 
-  ServerBase::ServerBase( const Configuration *c ):
-    myLog("BasicServer"),
-    doDaemon( true ),
-    debug( false ),
-    _maxConn( 25 ),
-    serverPort( 7000 ),
-    callback_data( 0 ),
-    serverProtocol( "tcp" ),
-    config(c)
+  ServerBase::ServerBase( const Configuration *c,
+			  const void *callback_data ):
+    _my_log("BasicServer"),
+    _do_daemon( true ),
+    _debug( false ),
+    _max_conn( 25 ),
+    _server_port( 7000 ),
+    _callback_data( callback_data ),
+    _protocol( "tcp" ),
+    _config(c)
   {
-    string value = config->lookUp( "port" );
+    string value = _config->lookUp( "port" );
     if ( !value.empty() ){
-      if ( !stringTo( value, serverPort ) ){
+      if ( !stringTo( value, _server_port ) ){
 	string mess = "ServerBase: invalid value '" + value + "' for port";
 	throw runtime_error( mess );
       }
@@ -97,60 +98,73 @@ namespace TimblServer {
       string mess = "ServerBase:missing 'port' in config ";
       throw runtime_error( mess );
     }
-    value = config->lookUp( "maxconn" );
+    value = _config->lookUp( "maxconn" );
     if ( !value.empty() ){
-      if ( !stringTo( value, _maxConn ) ){
+      if ( !stringTo( value, _max_conn ) ){
 	string mess = "ServerBase: invalid value '" + value + "' for maxconn";
 	throw runtime_error( mess );
       }
     }
-    value = config->lookUp( "protocol" );
+    value = _config->lookUp( "protocol" );
     if ( !value.empty() ){
-      serverProtocol = value;
+      _protocol = value;
     }
-    value = config->lookUp( "daemonize" );
+    value = _config->lookUp( "daemonize" );
     if ( !value. empty() ){
       if ( value == "no" )
-	doDaemon = false;
+	_do_daemon = false;
       else if ( value == "yes" )
-	doDaemon = true;
+	_do_daemon = true;
       else {
 	string mess = "ServerBase: invalid value '" + value
 	  + "' for --daemonize";
 	throw runtime_error( mess );
       }
     }
-    value = config->lookUp( "logfile" );
+    value = _config->lookUp( "logfile" );
     if ( !value.empty() )
-      logFile = value;
-    value = config->lookUp( "pidfile" );
+      _log_file = value;
+    value = _config->lookUp( "pidfile" );
     if ( !value.empty() )
-      pidFile = value;
-    value = config->lookUp( "name" );
+      _pid_file = value;
+    value = _config->lookUp( "name" );
     if ( !value.empty() )
-      name = value;
+      _name = value;
     else
-      name = serverProtocol + "-server";
-    myLog.message( name );
-    value = config->lookUp( "debug" );
+      _name = _protocol + "-server";
+    _my_log.message( _name );
+    value = _config->lookUp( "debug" );
     if ( !value.empty() ){
       if ( value == "no" )
-	debug = false;
+	_debug = false;
       else if ( value == "yes" )
-	debug = true;
+	_debug = true;
       else {
 	string mess = "ServerBase: invalid value '" + value + "' for --debug";
 	throw runtime_error( mess );
       }
     }
-    tcp_socket = 0;
+    _tcp_socket = 0;
+  }
+
+  void ServerBase::server_usage(void) {
+    cerr << "Server options" << endl;
+    cerr << "--config=<f> or -c <f> read server settings from file <f>" << endl;
+    cerr << "--pidfile=<f> store pid in file <f>" << endl;
+    cerr << "--logfile=<f> log server activity in file <f>" << endl;
+    cerr << "--daemonize=[yes|no] (default yes)" << endl << endl;
+    cerr << "--protocol=[tcp|http|json] (default tcp)" << endl << endl;
+    cerr << "OR, without config file:" << endl;
+    cerr << "-S <port> : run as a server on <port>" << endl;
+    cerr << "-C <num>  : accept a maximum of 'num' parallel connections (default 10)" << endl;
   }
 
   Configuration *initServerConfig( TiCC::CL_Options& opts ){
     Configuration *config = new Configuration();
     bool old = false;
     string value;
-    if ( !opts.extract( "config", value ) ){
+    if ( !opts.extract( "config", value )
+	 && !opts.extract( 'c', value ) ){
       if ( opts.extract( 'S', value ) ){
 	config->setatt( "port", value );
 	old = true;
@@ -159,7 +173,7 @@ namespace TimblServer {
 	}
       }
       if ( !old ){
-	cerr << "missing --config option" << endl;
+	cerr << "missing '--config' or '-c' option" << endl;
 	delete config;
 	return 0;
       }
@@ -357,62 +371,62 @@ namespace TimblServer {
   }
 
   int ServerBase::Run(){
-    LOG << "Starting a " << serverProtocol
-	<< " server on port " << serverPort << endl;
-    if ( !pidFile.empty() ){
+    LOG << "Starting a " << _protocol
+	<< " server on port " << _server_port << endl;
+    if ( !_pid_file.empty() ){
       // check validity of pidfile
-      if ( doDaemon && pidFile[0] != '/' ) // make sure the path is absolute
-	pidFile = '/' + pidFile;
-      unlink( pidFile.c_str() ) ;
-      ofstream pid_file( pidFile ) ;
+      if ( _do_daemon && _pid_file[0] != '/' ) // make sure the path is absolute
+	_pid_file = '/' + _pid_file;
+      unlink( _pid_file.c_str() ) ;
+      ofstream pid_file( _pid_file ) ;
       if ( !pid_file ){
-	LOG<< "unable to create pidfile:"<< pidFile << endl;
+	LOG<< "unable to create pidfile:"<< _pid_file << endl;
 	LOG<< "not Started" << endl;
 	return EXIT_FAILURE;
       }
     }
     ostream *logS = 0;
-    if ( !logFile.empty() ){
-      if ( doDaemon && logFile[0] != '/' ) // make sure the path is absolute
-	logFile = '/' + logFile;
-      logS = new ofstream( logFile );
+    if ( !_log_file.empty() ){
+      if ( _do_daemon && _log_file[0] != '/' ) // make sure the path is absolute
+	_log_file = '/' + _log_file;
+      logS = new ofstream( _log_file );
       if ( logS && logS->good() ){
-	LOG << "switching logging to file " << logFile << endl;
-	myLog.associate( *logS );
+	LOG << "switching logging to file " << _log_file << endl;
+	_my_log.associate( *logS );
 	LOG  << "Started logging " << endl;
 	LOG  << "debugging is " << (doDebug()?"on":"off") << endl;
       }
       else {
 	delete logS;
-	LOG << "unable to create logfile: " << logFile << endl;
+	LOG << "unable to create logfile: " << _log_file << endl;
 	LOG << "not started" << endl;
 	return EXIT_FAILURE;
       }
     }
 
     int start = 1;
-    if ( doDaemon ){
+    if ( _do_daemon ){
       LOG << "running as a dæmon" << endl;
       signal( SIGCHLD, AfterDaemonFun );
-      start = daemonize( 0, logFile.empty() );
+      start = daemonize( 0, _log_file.empty() );
     }
     if ( start < 0 ){
       cerr << "failed to daemonize error= " << strerror(errno) << endl;
       return EXIT_FAILURE;
     };
-    if ( !pidFile.empty() ){
+    if ( !_pid_file.empty() ){
       // we have a liftoff!
       // signal it to the world
-      ofstream pid_file( pidFile ) ;
+      ofstream pid_file( _pid_file ) ;
       if ( !pid_file ){
-	LOG << "unable to create pidfile:"<< pidFile << endl;
+	LOG << "unable to create pidfile:"<< _pid_file << endl;
 	LOG << "server NOT Started" << endl;
 	return EXIT_FAILURE;
       }
       else {
 	pid_t pid = getpid();
 	pid_file << pid << endl;
-	LOG << "wrote PID=" << pid << " to " << pidFile << endl;
+	LOG << "wrote PID=" << pid << " to " << _pid_file << endl;
       }
     }
     // set the attributes
@@ -422,13 +436,13 @@ namespace TimblServer {
       LOG << "Threads: couldn't set attributes" << endl;
       return EXIT_FAILURE;
     }
-    LOG << "Now running a " << serverProtocol
-	<< " server on port " << serverPort << endl;
+    LOG << "Now running a " << _protocol
+	<< " server on port " << _server_port << endl;
 
     pthread_t chld_thr;
 
     Sockets::ServerSocket server;
-    string portString = toString<int>(serverPort);
+    string portString = toString<int>(_server_port);
     if ( !server.connect( portString ) ){
       LOG << "failed to start Server: " << server.getMessage() << endl;
       return EXIT_FAILURE;

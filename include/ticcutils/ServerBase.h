@@ -45,34 +45,38 @@ namespace TimblServer {
     ServerBase( const ServerBase& ); // no copies allowed
     ServerBase& operator=( const ServerBase& );  // no copies allowed
   public:
-    bool doDebug() { return debug; };
+    explicit ServerBase( const TiCC::Configuration *, const void * );
     virtual ~ServerBase(){};
+    bool doDebug() { return _debug; };
+    static void server_usage();
     static std::string VersionInfo( bool );
     static int daemonize( int , int );
-    int maxConn() const { return _maxConn; };
-    explicit ServerBase( const TiCC::Configuration * );
-    void setDebug( bool d ){ debug = d; };
-    Sockets::ServerSocket *TcpSocket() const { return tcp_socket; };
+    int maxConn() const { return _max_conn; };
+    void setDebug( bool d ){ _debug = d; };
+    Sockets::ServerSocket *TcpSocket() const { return _tcp_socket; };
     static void *callChild( void * );
+    const void *callback_data() const { return _callback_data; };
     int Run();
+    TiCC::LogStream& logstream() { return _my_log; }
+    const TiCC::Configuration *config() const { return _config; };
     virtual void socketChild( childArgs * );
     virtual void callback( childArgs* ) = 0;
-    virtual void sendReject( std::ostream& os ) const;
+    virtual void sendReject( std::ostream& ) const;
 
-    TiCC::LogStream myLog;
-    std::string logFile;
-    std::string pidFile;
-    std::string name;
-    bool doDaemon;
-    bool debug;
-    int _maxConn;
-    int serverPort;
-    void *callback_data;
-    Sockets::ServerSocket *tcp_socket;
-    std::string serverProtocol;
-    std::string serverConfigFile;
-    const TiCC::Configuration *config;
-    std::map<std::string, std::string> serverConfig;
+  protected:
+    TiCC::LogStream _my_log;
+    std::string _log_file;
+    std::string _pid_file;
+    std::string _name;
+    bool _do_daemon;
+    bool _debug;
+    int _max_conn;
+    int _server_port;
+    const void *_callback_data;
+    Sockets::ServerSocket *_tcp_socket;
+    std::string _protocol;
+    std::string _config_file;
+    const TiCC::Configuration *_config;
   };
 
   class childArgs {
@@ -83,7 +87,7 @@ namespace TimblServer {
     std::ostream& os() { return _os; };
     std::istream& is() { return _is; };
     ServerBase *mother() const { return _mother; };
-    TiCC::LogStream& logstream() { return _mother->myLog; }
+    TiCC::LogStream& logstream() { return _mother->logstream(); }
     Sockets::ServerSocket *socket() const { return _socket; };
     bool debug() const { return _mother->doDebug(); };
   private:
@@ -98,14 +102,16 @@ namespace TimblServer {
 
   class TcpServerBase : public ServerBase {
   public:
-    explicit TcpServerBase( const TiCC::Configuration *c ):ServerBase( c ){};
+    explicit TcpServerBase( const TiCC::Configuration *c,
+			    const void *cb ):ServerBase( c, cb ){};
   };
 
   class HttpServerBase : public ServerBase {
   public:
     void socketChild( childArgs * );
     virtual void sendReject( std::ostream& os ) const;
-    explicit HttpServerBase( const TiCC::Configuration *c ): ServerBase( c ){};
+    explicit HttpServerBase( const TiCC::Configuration *c,
+			     const void *cb ): ServerBase( c, cb ){};
   };
 
   std::string Version();
