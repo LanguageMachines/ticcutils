@@ -77,7 +77,7 @@ namespace TimblServer {
   }
 
   ServerBase::ServerBase( const Configuration *c,
-			  const void *callback_data ):
+			  void *callback_data ):
     _my_log("BasicServer"),
     _do_daemon( true ),
     _debug( false ),
@@ -144,7 +144,7 @@ namespace TimblServer {
 	throw runtime_error( mess );
       }
     }
-    _tcp_socket = 0;
+    _socket = 0;
   }
 
   void ServerBase::server_usage(void) {

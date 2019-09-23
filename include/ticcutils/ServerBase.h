@@ -45,17 +45,17 @@ namespace TimblServer {
     ServerBase( const ServerBase& ); // no copies allowed
     ServerBase& operator=( const ServerBase& );  // no copies allowed
   public:
-    explicit ServerBase( const TiCC::Configuration *, const void * );
-    virtual ~ServerBase(){};
+    explicit ServerBase( const TiCC::Configuration *, void * );
+    virtual ~ServerBase(){ delete _socket; delete _config; };
     bool doDebug() { return _debug; };
     static void server_usage();
     static std::string VersionInfo( bool );
     static int daemonize( int , int );
     int maxConn() const { return _max_conn; };
     void setDebug( bool d ){ _debug = d; };
-    Sockets::ServerSocket *TcpSocket() const { return _tcp_socket; };
+    Sockets::ServerSocket *TcpSocket() const { return _socket; };
     static void *callChild( void * );
-    const void *callback_data() const { return _callback_data; };
+    void *callback_data() const { return _callback_data; };
     int Run();
     TiCC::LogStream& logstream() { return _my_log; }
     const TiCC::Configuration *config() const { return _config; };
@@ -72,8 +72,8 @@ namespace TimblServer {
     bool _debug;
     int _max_conn;
     int _server_port;
-    const void *_callback_data;
-    Sockets::ServerSocket *_tcp_socket;
+    void *_callback_data;
+    Sockets::ServerSocket *_socket;
     std::string _protocol;
     std::string _config_file;
     const TiCC::Configuration *_config;
@@ -103,7 +103,7 @@ namespace TimblServer {
   class TcpServerBase : public ServerBase {
   public:
     explicit TcpServerBase( const TiCC::Configuration *c,
-			    const void *cb ):ServerBase( c, cb ){};
+			    void *cb ):ServerBase( c, cb ){};
   };
 
   class HttpServerBase : public ServerBase {
@@ -111,7 +111,7 @@ namespace TimblServer {
     void socketChild( childArgs * );
     virtual void sendReject( std::ostream& os ) const;
     explicit HttpServerBase( const TiCC::Configuration *c,
-			     const void *cb ): ServerBase( c, cb ){};
+			     void *cb ): ServerBase( c, cb ){};
   };
 
   std::string Version();
