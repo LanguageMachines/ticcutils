@@ -70,8 +70,9 @@ namespace TimblServer {
     string result;
     ostringstream oss;
     oss << VERSION;
-    if ( full )
+    if ( full ){
       oss << ", compiled on " << __DATE__ << ", " << __TIME__;
+    }
     result = oss.str();
     return result;
   }
@@ -111,10 +112,12 @@ namespace TimblServer {
     }
     value = _config->lookUp( "daemonize" );
     if ( !value. empty() ){
-      if ( value == "no" )
+      if ( value == "no" ){
 	_do_daemon = false;
-      else if ( value == "yes" )
+      }
+      else if ( value == "yes" ){
 	_do_daemon = true;
+      }
       else {
 	string mess = "ServerBase: invalid value '" + value
 	  + "' for --daemonize";
@@ -122,23 +125,29 @@ namespace TimblServer {
       }
     }
     value = _config->lookUp( "logfile" );
-    if ( !value.empty() )
+    if ( !value.empty() ){
       _log_file = value;
+    }
     value = _config->lookUp( "pidfile" );
-    if ( !value.empty() )
+    if ( !value.empty() ){
       _pid_file = value;
+    }
     value = _config->lookUp( "name" );
-    if ( !value.empty() )
+    if ( !value.empty() ){
       _name = value;
-    else
+    }
+    else {
       _name = _protocol + "-server";
+    }
     _my_log.message( _name );
     value = _config->lookUp( "debug" );
     if ( !value.empty() ){
-      if ( value == "no" )
+      if ( value == "no" ){
 	_debug = false;
-      else if ( value == "yes" )
+      }
+      else if ( value == "yes" ){
 	_debug = true;
+      }
       else {
 	string mess = "ServerBase: invalid value '" + value + "' for --debug";
 	throw runtime_error( mess );
@@ -190,8 +199,9 @@ namespace TimblServer {
       config->setatt( "logfile", value );
     }
     if ( opts.extract( "daemonize", value ) ){
-      if ( value.empty() )
+      if ( value.empty() ){
 	value = "true";
+      }
       config->setatt( "daemonize", value );
     }
     if ( opts.extract( "debug", value ) ){
@@ -205,42 +215,6 @@ namespace TimblServer {
       config->setatt( "default", rest );
     }
     return config;
-  }
-
-  string getProtocol( const string& serverConfigFile ){
-    string result = "tcp";
-    ifstream is( serverConfigFile );
-    if ( !is ){
-      cerr << "problem reading " << serverConfigFile << endl;
-      return result;
-    }
-    else {
-      string line;
-      while ( getline( is, line ) ){
-	if ( line.empty() || line[0] == '#' )
-	  continue;
-	string::size_type ispos = line.find('=');
-	if ( ispos == string::npos ){
-	  cerr << "invalid entry in: " << serverConfigFile
-	       << "offending line: '" << line << "'" << endl;
-	  return result;
-	}
-	else {
-	  string base = line.substr(0,ispos);
-	  string rest = line.substr( ispos+1 );
-	  if ( !rest.empty() ){
-	    string tmp = base;
-	    lowercase(tmp);
-	    if ( tmp == "protocol" ){
-	      string protocol = rest;
-	      lowercase( protocol );
-	      return protocol;
-	    }
-	  }
-	}
-      }
-    }
-    return result;
   }
 
   void *ServerBase::callChild( void *a ) {
