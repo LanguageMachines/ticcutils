@@ -68,8 +68,9 @@ namespace TiCC {
     if ( is_init ){
       throw ImplementationError( "cannot parse() a commandline twice" );
     }
-    if ( Parse_Command_Line( argc, argv ) )
+    if ( Parse_Command_Line( argc, argv ) ){
       is_init = true;
+    }
     return is_init;
   }
 
@@ -78,8 +79,9 @@ namespace TiCC {
       throw ImplementationError( "cannot parse() a commandline twice" );
     }
     const char *argstr = args.c_str();
-    if ( Parse_Command_Line( 0, &argstr ) )
+    if ( Parse_Command_Line( 0, &argstr ) ){
       is_init = true;
+    }
     return is_init;
   }
 
@@ -97,8 +99,9 @@ namespace TiCC {
       }
       result += option;
     }
-    else
+    else {
       result += (mood ? "+": "-" ) + opt_word + " " + option;
+    }
     return result;
   }
 
@@ -115,8 +118,9 @@ namespace TiCC {
     for( const auto& pos : Opts ){
       result += pos.toString() + " ";
     }
-    if ( !result.empty() )
+    if ( !result.empty() ){
       result.erase(result.length()-1);
+    }
     return result;
   }
 
@@ -136,8 +140,9 @@ namespace TiCC {
   bool CL_Options::is_present_internal( const char c, string &opt, bool& mood ) const {
     mood = false;
     for ( auto const& pos : Opts ){
-      if ( pos.isLong() )
+      if ( pos.isLong() ){
 	continue;
+      }
       if ( pos.OptChar() == c ){
 	opt = pos.Option();
 	mood = pos.Mood();
@@ -211,8 +216,9 @@ namespace TiCC {
     for ( auto pos = Opts.begin(); pos != Opts.end(); ){
       if ( pos->OptChar() == c ){
 	pos = Opts.erase(pos);
-	if ( !all )
+	if ( !all ){
 	  return true;
+	}
       }
       else {
 	++pos;
@@ -225,8 +231,9 @@ namespace TiCC {
     for ( auto pos = Opts.begin(); pos != Opts.end(); ){
       if ( pos->OptWord() == w ){
 	pos = Opts.erase(pos);
-	if ( !all )
+	if ( !all ){
 	  return true;
+	}
       }
       else {
 	++pos;
@@ -318,14 +325,16 @@ namespace TiCC {
 				       const char * const *Argv ){
     Opts.clear();
     vector<string> local_argv;
-    if ( Argc == 0 )
+    if ( Argc == 0 ){
       if ( Argv != 0 &&
 	   Argv[0] != 0 ){
 	split( Argv[0], local_argv );
 	local_argv = fix_quotes( local_argv );
       }
-      else
+      else {
 	return false;
+      }
+    }
     else {
       _prog_name = basename(Argv[0]);
       for( int i=1; i < Argc; ++i ){
@@ -455,12 +464,15 @@ namespace TiCC {
 	  bool has_par = valid_long_par.find( it->s ) != valid_long_par.end();
 	  bool has_opt = valid_long_opt.find( it->s ) != valid_long_opt.end();
 	  if ( debug ){
-	    if ( has_par )
+	    if ( has_par ){
 	      cerr << "\"" << it->s << "\" must have a parameter." << endl;
-	    else if ( has_opt )
+	    }
+	    else if ( has_opt ){
 	      cerr << "\"" << it->s << "\" may have a parameter!" << endl;
-	    else
+	    }
+	    else {
 	      cerr << "\"" << it->s << "\" doesn't take a parameter." << endl;
+	    }
 	  }
 	  if ( it->val.empty() ){
 	    if ( !has_par ){
@@ -519,12 +531,15 @@ namespace TiCC {
 	  bool has_par = valid_chars_par.find( it->c ) != valid_chars_par.end();
 	  bool has_opt = valid_chars_opt.find( it->c ) != valid_chars_opt.end();
 	  if ( debug ){
-	    if ( has_par )
+	    if ( has_par ){
 	      cerr << "'" << it->c << "' must have a parameter." << endl;
-	    else if ( has_opt )
+	    }
+	    else if ( has_opt ) {
 	      cerr << "'" << it->c << "' may have a parameter." << endl;
-	    else
+	    }
+	    else {
 	      cerr << "'" << it->c << "' doesn't take a parameter." << endl;
+	    }
 	  }
 	  if ( it->val.empty() ){
 	    if ( !has_par ){
@@ -630,10 +645,12 @@ namespace TiCC {
     string result;
     for ( auto const& it : valid_chars ){
       result += it;
-      if ( valid_chars_par.find( it ) != valid_chars_par.end() )
+      if ( valid_chars_par.find( it ) != valid_chars_par.end() ){
 	result += ":";
-      else if ( valid_chars_opt.find( it ) != valid_chars_opt.end() )
+      }
+      else if ( valid_chars_opt.find( it ) != valid_chars_opt.end() ){
 	result += "::";
+      }
     }
     return result;
   }
@@ -670,14 +687,17 @@ namespace TiCC {
     string result;
     for ( auto const& s : valid_long ){
       result += s;
-      if ( valid_long_par.find( s ) != valid_long_par.end() )
+      if ( valid_long_par.find( s ) != valid_long_par.end() ){
 	result += ":";
-      else if ( valid_long_opt.find( s ) != valid_long_opt.end() )
+      }
+      else if ( valid_long_opt.find( s ) != valid_long_opt.end() ){
 	result += "::";
+      }
       result += ",";
     }
-    if ( !result.empty() )
+    if ( !result.empty() ){
       result = result.substr(0,result.size()-1);
+    }
     return result;
   }
 
