@@ -377,6 +377,20 @@ namespace TiCC {
 	    }
 	  }
 	}
+	else if ( Option.size() >3
+		  && Option[1] == '-'
+		  && Option.back() == '=' ){
+	  if ( i < local_argv.size()-1 ){
+	    string Option2 = local_argv[i+1];
+	    if ( debug ){
+	      cerr << "examine potential extra option: " << Option2 << endl;
+	    }
+	    if ( Option2[0] != '+' && Option2[0] != '-' ){
+	      Option += Option2;
+	    }
+	    ++i;
+	  }
+	}
 	cleaned.push_back( Option );
 	break;
       case '=':

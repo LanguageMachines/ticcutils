@@ -68,8 +68,8 @@ void test_nothrow(){
   assertThrow( helper(), runtime_error );
 }
 
-void test_opts_basic(){
-  startTestSerie( "we testen basic commandline opties." );
+void test_opt_1(){
+  startTestSerie( "subtest 1" );
   bool opt_dbg=false;
   CL_Options opts1;
   opts1.set_debug(opt_dbg);
@@ -80,18 +80,34 @@ void test_opts_basic(){
   assertThrow( opts1.init( "-a" ), OptionError );
   // -f heeft onterecht een parameter ==> massopts
   assertNoThrow( opts1.parse_args( "-t1 -f bla -h") );
-  CL_Options opts2;
-  opts2.allow_args( "", "true:,false" );
-  // --true mist een optie
-  assertThrow( opts2.parse_args( "--true --false"), OptionError );
-  // --false heeft optie --> massOpts.
-  assertNoThrow( opts2.parse_args( "--true=1 --false 2")  );
+}
+
+void test_opt_2(){
+  startTestSerie( "subtest 2" );
+  bool opt_dbg=false;
+  CL_Options opts1;
+  opts1.set_debug(opt_dbg);
+  opts1.allow_args( "t:fh" );
+  // -t mist een optie
+  assertThrow( opts1.parse_args( "-t -f -h" ), OptionError );
+  // onbekende optie
+  assertThrow( opts1.init( "-a" ), OptionError );
+  // -f heeft onterecht een parameter ==> massopts
+  assertNoThrow( opts1.parse_args( "-t1 -f bla -h") );
+}
+
+void test_opt_3(){
+  startTestSerie( "subtest 3" );
   CL_Options opts3;
   opts3.allow_args( "", "true:,false" );
   // - te weinig
   assertThrow( opts3.parse_args( "-true=false"), OptionError );
   // onbekende optie
   assertThrow( opts3.parse_args( "--magniet"), OptionError );
+}
+
+void test_opt_4(){
+  startTestSerie( "subtest 4" );
   CL_Options opts4;
   opts4.allow_args( "", "true:,false" );
   // --true heeft optie, OK en
@@ -100,12 +116,21 @@ void test_opts_basic(){
   string value;
   opts4.is_present( "true", value );
   assertEqual( value, "1" );
+}
+
+void test_opt_5(){
+  startTestSerie( "subtest 5" );
   CL_Options opts5( "", "false:,true::" );
   // --true heeft optionele optie,
   // --false heeft optie
   assertNoThrow( opts5.parse_args( "--true --false 2")  );
+  string value;
   opts5.is_present( "true", value );
   assertEqual( value, "" );
+}
+
+void test_opt_6(){
+  startTestSerie( "subtest 6" );
   string lo6 = "false:,true::";
   CL_Options opts6;
   opts6.allow_args( "", lo6 );
@@ -113,10 +138,15 @@ void test_opts_basic(){
   // --true heeft optionele optie,
   // --false heeft optie
   assertNoThrow( opts6.parse_args( "--true ok --false=6")  );
+  string value;
   opts6.is_present( "true", value );
   assertEqual( value, "ok" );
   opts6.is_present( "false", value );
   assertEqual( value, "6" );
+}
+
+void test_opt_7(){
+  startTestSerie( "subtest 7" );
   string so7 = "f:t::";
   CL_Options opts7;
   opts7.allow_args( so7 );
@@ -125,23 +155,36 @@ void test_opts_basic(){
   // -f heeft optie
   assertNoThrow( opts7.parse_args( "-t ok -f6")  );
   bool mood;
+  string value;
   opts7.is_present( 't', value, mood );
   assertEqual( value, "ok" );
   opts7.is_present( 'f', value, mood );
   assertEqual( value, "6" );
+}
+
+void test_opt_8(){
+  startTestSerie( "subtest 8" );
   CL_Options opts8( "t::,f:", "" );
   // -t heeft optionele optie,
   // -f heeft optie
   assertNoThrow( opts8.parse_args( "-t -f6")  );
+  string value;
+  bool mood;
   opts8.is_present( 't', value, mood );
   assertEqual( value, "" );
   opts8.is_present( 'f', value, mood );
   assertEqual( value, "6" );
+}
+
+void test_opt_9(){
+  startTestSerie( "subtest 9" );
   CL_Options opts9;
   opts9.allow_args( "t::qp:r:" );
   // -t heeft optionele optie. q is een stoorzender
   assertNoThrow( opts9.parse_args( "-t 1 -t2 -t3 -q -t -t4 -p5 -r appel ")  );
   vector<string> ts;
+  string value;
+  bool mood;
   while ( opts9.extract( 't', value, mood ) ){
     ts.push_back( value );
   }
@@ -161,12 +204,18 @@ void test_opts_basic(){
   assertTrue( opts9.extract('p', myint ) );
   assertEqual( myint, 5 );
   assertThrow( opts9.extract('r', myint ), OptionError );
+}
+
+void test_opt_10(){
+  startTestSerie( "subtest 10" );
   CL_Options opts10;
   opts10.allow_args( "", "test::,qed,data:" );
-  //  opts10.set_debug(opt_dbg);
+  bool opt_dbg=false;
+  opts10.set_debug(opt_dbg);
   // --test heeft optionele optie. qed is een stoorzender
   assertNoThrow( opts10.parse_args( "--test 1 --test=2 --qed --test --test=3 --data=5.6 --data=appel")  );
-  ts.clear();
+  vector<string> ts;
+  string value;
   while ( opts10.extract( "test", value ) ){
     ts.push_back( value );
   }
@@ -185,15 +234,24 @@ void test_opts_basic(){
   assertTrue( opts10.extract("data", mydouble ) );
   assertEqual( mydouble, 5.6 );
   assertThrow( opts10.extract("data", mydouble ), OptionError );
+}
+
+void test_opt_11(){
+  startTestSerie( "subtest 11" );
   CL_Options opts11;
   opts11.allow_args( "", "test:" );
   opts11.parse_args( "--test=test/a arg1" );
   string ex;
   opts11.extract( "test", ex );
   assertEqual( ex, "test/a" );
+}
+
+void test_opt_12(){
+  startTestSerie( "subtest 12" );
   CL_Options opts12;
   opts12.allow_args( "a:", "a:" );
   opts12.parse_args( "-a 1 --a=2 a aa" );
+  string ex;
   opts12.extract( 'a', ex );
   assertEqual( ex, "1" );
   opts12.extract( "a", ex );
@@ -202,18 +260,32 @@ void test_opts_basic(){
   assertEqual( mo.size(), 2 );
   assertEqual( mo[0], "a" );
   assertEqual( mo[1], "aa" );
+}
+
+void test_opt_13(){
+  startTestSerie( "subtest 13" );
   CL_Options opts13;
   opts13.parse_args( "-a b -a c oke -dfiets --appel peer --fout=goed toch" );
   assertEqual( opts13.toString(), "-a b -a c -d fiets --appel=peer --fout=goed" );
   auto v = opts13.getMassOpts();
   assertEqual( v.size(), 2 );
+}
+
+void test_opt_14(){
+  startTestSerie( "subtest 14" );
   CL_Options opts14;
+  bool opt_dbg=false;
   opts14.set_debug(opt_dbg);
   opts14.parse_args( "-a b -a c oke -d\"-fiets --appel peer \" --fout=goed toch" );
   assertEqual( opts14.toString(), "-a b -a c -d -fiets --appel peer  --fout=goed" );
-  v = opts14.getMassOpts();
+  auto v = opts14.getMassOpts();
   assertEqual( v.size(), 2 );
+}
+
+void test_opt_15(){
+  startTestSerie( "subtest 15" );
   CL_Options opts15;
+  bool opt_dbg=false;
   opts15.set_debug(opt_dbg);
   opts15.parse_args( "--fout=goed\\mis --jan=gek" );
   assertEqual( opts15.toString(), "--fout=goed\\mis --jan=gek" );
@@ -222,10 +294,16 @@ void test_opts_basic(){
   assertEqual( res, "goed\\mis" );
   opts15.extract("jan", res );
   assertEqual( res, "gek" );
+}
+
+void test_opt_16(){
+  startTestSerie( "subtest 16" );
   CL_Options opts16;
   opts16.allow_args( "", "test:" );
+  bool opt_dbg=false;
   opts16.set_debug(opt_dbg);
   opts16.parse_args( "--test goed --test=prima --test niet=eens --test=wel=eens" );
+  string res;
   opts16.extract("test", res );
   assertEqual( res, "goed" );
   opts16.extract("test", res );
@@ -234,11 +312,16 @@ void test_opts_basic(){
   assertEqual( res, "niet=eens" );
   opts16.extract("test", res );
   assertEqual( res, "wel=eens" );
+}
+
+void test_opt_17(){
+  startTestSerie( "subtest 17" );
   CL_Options opts17;
   // new feature: check for stray mass opts inside commandline
   opts17.allow_args( "ab:c", "aap" );
-  opts17.set_debug(true);
+  opts17.set_debug(false);
   opts17.parse_args( "-a file1 -b prima de luxe --aap file2 -c file3 file4" );
+  string res;
   opts17.extract("a", res );
   assertEqual( res, "" );
   opts17.extract("b", res );
@@ -249,6 +332,49 @@ void test_opts_basic(){
   assertEqual( res, "" );
   vector<string> mo2 = opts17.getMassOpts();
   assertEqual( mo2.size(), 6  );
+}
+
+void test_opt_18(){
+  startTestSerie( "subtest 18" );
+  CL_Options opts;
+  // check bug: space after '=' in long option
+  opts.allow_args( "", "aap:" );
+  opts.set_debug(true);
+  opts.parse_args( "--aap value1 --aap=value2 test --aap= value3" );
+  vector<string> ts;
+  string res;
+  while ( opts.extract("aap", res ) ){
+    ts.push_back(res);
+  }
+  assertEqual( ts.size() , 3 );
+  assertEqual( ts[0], "value1" );
+  assertEqual( ts[1], "value2" );
+  assertEqual( ts[2], "value3" );
+  auto mv = opts.getMassOpts();
+  assertEqual( mv.size(), 1 );
+  assertEqual( mv[0], "test" );
+}
+
+void test_opts_basic(){
+  startTestSerie( "we testen basic commandline opties." );
+  test_opt_1();
+  test_opt_2();
+  test_opt_3();
+  test_opt_4();
+  test_opt_5();
+  test_opt_6();
+  test_opt_7();
+  test_opt_8();
+  test_opt_9();
+  test_opt_10();
+  test_opt_11();
+  test_opt_12();
+  test_opt_13();
+  test_opt_14();
+  test_opt_15();
+  test_opt_16();
+  test_opt_17();
+  test_opt_18();
 }
 
 void test_opts( CL_Options& opts ){
