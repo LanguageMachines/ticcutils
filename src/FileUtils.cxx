@@ -28,6 +28,7 @@
 #include "ticcutils/FileUtils.h"
 
 #include <cerrno>
+#include <cstdio>
 #include <cstring>
 #include <vector>
 #include <string>
@@ -282,6 +283,14 @@ namespace TiCC {
     string result = filename;
     free( filename );
     return result;
+  }
+
+  void erase( const std::string& name ){
+    int stat = std::remove( name.c_str() );
+    if ( stat != 0 ){
+      throw runtime_error( "could not erase file/path '" + name + "': "
+			   + strerror(errno) );
+    }
   }
 
 } // namespace TiCC

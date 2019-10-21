@@ -683,9 +683,9 @@ void test_fileutils( const string& path ){
   assertNoThrow( res = searchFiles( path+"small.txt" ) );
   assertEqual( res.size(), 1 );
   assertTrue( res[0] == path+"small.txt" );
-  unlink(  "/tmp/test/silly/files/file" );
+  erase( "/tmp/test/silly/files/file" );
   assertTrue( createPath( "/tmp/test/silly/files/file" ) );
-  unlink(  "/tmp/test/silly/" );
+  assertThrow( erase( "/tmp/test/silly/" ), runtime_error );
   assertTrue( createPath( "/tmp/test/silly/files/path/" ) );
   assertTrue( createPath( "/tmp/test/silly/files/path/raar" ) );
   assertFalse( createPath( "/tmp/test/silly/files/path/raar/sub" ) );
@@ -704,7 +704,7 @@ void test_fileutils( const string& path ){
   assertEqual( res.size(), 2 );
   string fn;
   assertNoThrow( fn = tempname("test") );
-  assertNoThrow( unlink( fn.c_str() ) );
+  assertNoThrow( erase( fn ) );
   assertThrow( fn = tempname("/nonexist/test"), runtime_error );
 }
 

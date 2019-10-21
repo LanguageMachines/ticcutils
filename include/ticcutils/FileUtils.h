@@ -49,6 +49,8 @@ namespace TiCC {
 
   std::string tempname( const std::string& );
 
+  void erase( const std::string& );
+
 }
 
 #endif // TICC_FILE_UTILS_H
