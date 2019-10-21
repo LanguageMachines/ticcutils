@@ -287,7 +287,7 @@ namespace TiCC {
 
   void erase( const std::string& name ){
     int stat = std::remove( name.c_str() );
-    if ( stat != 0 ){
+    if ( stat != 0 && errno != ENOENT ){
       throw runtime_error( "could not erase file/path '" + name + "': "
 			   + strerror(errno) );
     }
