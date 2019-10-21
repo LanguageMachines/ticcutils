@@ -1,7 +1,12 @@
-29 sept 2019 0.23
+21 oct 2019 0.23
 [Ko vd Sloot]
-re-implementation of ServerBase.cxx
-As this breaks the API/ABI, the library version is bumped.
+* re-implementation of ServerBase.cxx
+  As this breaks the API/ABI, the library version is bumped.
+* added 2 functions to FileUtils:
+  - erase() to erase a file or dir
+  - tempname() to create a temporary file. (to replace the dreaded tmpnam()
+    function)
+* fixed small bug in CommandLine parsing
 
 28 aug 2019 0.22
 Major update:
