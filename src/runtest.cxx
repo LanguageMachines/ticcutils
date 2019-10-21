@@ -702,6 +702,10 @@ void test_fileutils( const string& path ){
   assertNoThrow( res = searchFilesMatch( path, "s*[lb].txt" ) );
   // should match small.txt and sub1/sub.txt
   assertEqual( res.size(), 2 );
+  string fn;
+  assertNoThrow( fn = tempname("test") );
+  assertNoThrow( unlink( fn.c_str() ) );
+  assertThrow( fn = tempname("/nonexist/test"), runtime_error );
 }
 
 void test_configuration( const string& path ){

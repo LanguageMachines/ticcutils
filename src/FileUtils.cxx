@@ -270,4 +270,18 @@ namespace TiCC {
     return true;
   }
 
+  string tempname( const string& label ){
+    string path = "/tmp/" + label;
+    string temp = path + "XXXXXX";
+    char *filename = strdup(temp.c_str());
+    if ( mkstemp(filename) < 0 ){
+      throw runtime_error( "unable to create a temporary file under path="
+			   + path );
+    }
+    //  cerr << "created temporary file: " << filename << endl;
+    string result = filename;
+    free( filename );
+    return result;
+  }
+
 } // namespace TiCC
