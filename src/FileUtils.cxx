@@ -289,7 +289,8 @@ namespace TiCC {
     string path = "/tmp/" + label;
     string temp = path + "XXXXXX";
     char *dirname = strdup(temp.c_str());
-    if ( (dirname = mkdtemp(dirname)) == 0 ){
+    dirname = mkdtemp(dirname);
+    if ( dirname == 0 ){
       throw runtime_error( "unable to create a temporary dir under path="
 			   + path );
     }
