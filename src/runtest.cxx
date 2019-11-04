@@ -706,6 +706,10 @@ void test_fileutils( const string& path ){
   assertNoThrow( fn = tempname("test") );
   assertNoThrow( erase( fn ) );
   assertThrow( fn = tempname("/nonexist/test"), runtime_error );
+  string dn;
+  assertNoThrow( dn = tempdir("/noexist") );
+  assertNoThrow( createPath( dn + "/test") );
+  assertNoThrow( erase( dn+"/test" ) );
 }
 
 void test_configuration( const string& path ){

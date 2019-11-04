@@ -285,6 +285,20 @@ namespace TiCC {
     return result;
   }
 
+  string tempdir( const string& label ){
+    string path = "/tmp/" + label;
+    string temp = path + "XXXXXX";
+    char *dirname = strdup(temp.c_str());
+    if ( (dirname = mkdtemp(dirname)) == 0 ){
+      throw runtime_error( "unable to create a temporary dir under path="
+			   + path );
+    }
+    //  cerr << "created temporary file: " << filename << endl;
+    string result = dirname;
+    free( dirname );
+    return result;
+  }
+
   void erase( const std::string& name ){
     int stat = std::remove( name.c_str() );
     if ( stat != 0 && errno != ENOENT ){
