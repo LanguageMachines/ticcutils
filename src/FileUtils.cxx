@@ -35,6 +35,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <unistd.h>
 #include <glob.h>
 #include <sys/types.h>
 #include <sys/stat.h>
