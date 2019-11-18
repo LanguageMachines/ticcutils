@@ -1,3 +1,9 @@
+... nov 2019 0.24
+[Ko vd Sloot]
+Bug fix release:
+* updated json to htps://github.com/nlohmann/json/releases/tag/v3.7.3
+* added a tempdir() member to FileUtils
+
 21 oct 2019 0.23
 [Ko vd Sloot]
 * re-implementation of ServerBase.cxx
