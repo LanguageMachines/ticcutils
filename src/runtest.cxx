@@ -449,11 +449,15 @@ void test_trim_back(){
 void test_match_front(){
   assertTrue( match_front("janklaassenenkatrien", "janklaassen" ) );
   assertFalse( match_front("janklaassenenkatrien", "anklaassen" ) );
+  assertNoThrow( match_front("janklaassen", "janklaassenenkatrien" ) );
+  assertFalse( match_front("janklaassen", "janklaassenenkatrien" ) );
 }
 
 void test_match_back(){
   assertTrue( match_back("janklaassenenkatrien", "katrien" ) );
   assertFalse( match_back("janklaassenenkatrien", "katrie" ) );
+  assertNoThrow( match_back("katrien", "janklaassenenkatrien" ) );
+  assertFalse( match_back("katrien", "janklaassenenkatrien" ) );
 }
 
 void test_format_non_ascii(){

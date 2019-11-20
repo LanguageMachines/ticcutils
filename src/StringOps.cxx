@@ -108,16 +108,22 @@ namespace TiCC {
   }
 
   bool match_back( const std::string& s, const std::string& tail ){
-    string::size_type pos = s.rfind( tail );
-    if ( pos != string::npos && (s.length() - pos == tail.length() ) ){
+    int res = -2;
+    try {
+      res = s.compare( s.length() - tail.length(), tail.length(), tail );
+    }
+    catch ( ... ){
+    }
+    if ( res == 0  ){
       return true;
     }
     return false;
   }
 
   bool match_front( const std::string& s, const std::string& head ){
-    string::size_type pos = s.find( head );
-    if ( pos == 0  ){
+    int res = s.compare(0,head.length(),head);
+    // Doesn't throw when head is longer then s!
+    if ( res == 0  ){
       return true;
     }
     return false;
