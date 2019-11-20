@@ -127,7 +127,7 @@ namespace TiCC {
 	continue;
       if ( line[0] == '#' )
 	continue;
-      if ( line.find( "[[" ) == 0  )
+      if ( match_front( line, "[[" ) ){
 	if ( line[line.length()-1] == ']' &&
 	     line[line.length()-2] == ']' ){
 	  section = line.substr(2,line.length()-4);
@@ -137,12 +137,11 @@ namespace TiCC {
 	  cerr << "invalid section: in line '" << line << "'" << endl;
 	  return false;
 	}
-      else {
-	if ( !get_att_val ( line, section ) ){
-	  cerr << "invalid attribute value pair in line '"
-	       << line << "'" << endl;
-	  return false;
-	}
+      }
+      else if ( !get_att_val ( line, section ) ){
+	cerr << "invalid attribute value pair in line '"
+	     << line << "'" << endl;
+	return false;
       }
     }
     return true;
@@ -165,7 +164,7 @@ namespace TiCC {
 	continue;
       if ( line[0] == '#' )
 	continue;
-      if ( line.find( "[[" ) == 0  )
+      if ( match_front( line, "[[" ) ){
 	if ( line[line.length()-1] == ']' &&
 	     line[line.length()-2] == ']' ){
 	  localsection = line.substr(2,line.length()-4);
@@ -176,6 +175,7 @@ namespace TiCC {
 	  cerr << "invalid section: in line '" << line << "'" << endl;
 	  return false;
 	}
+      }
       else if ( localsection == section ){
 	found = true;
 	if ( !get_att_val( line, section ) ){
