@@ -29,6 +29,7 @@
 
 #include <string>
 #include <vector>
+#include <typeinfo>
 #include <sstream>
 #include <stdexcept>
 
@@ -73,8 +74,8 @@ namespace TiCC {
     T result;
     std::stringstream dummy ( str );
     if ( !( dummy >> result ) ) {
-      throw( std::runtime_error( "conversion from string '"
-				 + str + "' failed" ) );
+      throw( std::runtime_error( "conversion from string '" + str + "' to type:"
+				 + typeid(result).name() + " failed" ) );
     }
     return result;
   }
@@ -88,7 +89,7 @@ namespace TiCC {
       return false;
     else
       throw( std::runtime_error( "conversion from string '"
-				 + str + "' to bool failed" ) );
+				 + str + "' to type:bool failed" ) );
   }
 
   template< typename T >
@@ -121,7 +122,8 @@ namespace TiCC {
     inline std::string toString ( const T& obj, bool=false ) {
     std::stringstream dummy;
     if ( !( dummy << obj ) ) {
-      throw( std::runtime_error( "conversion failed" ) );
+      throw( std::runtime_error( std::string("conversion from type:")
+				 + typeid(obj).name() + " to string failed" ) );
     }
    return dummy.str();
   }

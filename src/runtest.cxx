@@ -933,6 +933,34 @@ void test_unicode_filters( const string& path ){
   assertEqual( filter_diacritics( "de reeën zijn reeël" ), "de reeen zijn reeel" );
 }
 
+void test_conversion(){
+  int i = 8;
+  double d = 3.14;
+  string result;
+  assertNoThrow( result = toString( i ) );
+  assertEqual( result, "8" );
+  int ii;
+  assertNoThrow( ii = stringTo<int>( result ) );
+  assertEqual( i, ii );
+  assertNoThrow( result = toString( d ) );
+  assertEqual( result, "3.14" );
+  double dd;
+  assertNoThrow( dd = stringTo<double>( result ) );
+  assertEqual( d, dd );
+  string fout = "appeltaart";
+  assertThrow( dd = stringTo<double>( fout ), runtime_error );
+  string error = lastError();
+  assertEqual( error, "conversion from string 'appeltaart' to type:d failed" );
+  fout = "a2.718q";
+  assertNoThrow( dd = stringTo<double>( fout ) );
+  if ( hasThrown() ){
+    decrementError();
+    string new_error = lastError();
+    assertEqual( new_error,
+		 "conversion from string 'a2.718q' to type:d failed" );
+  }
+}
+
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
   Timer t1;
@@ -986,6 +1014,7 @@ int main( const int argc, const char* argv[] ){
   test_unicode_split();
   test_unicode_regex();
   test_unicode_filters( testdir );
+  test_conversion();
   t1.stop();
   t2.stop();
   cerr << t1 << endl;

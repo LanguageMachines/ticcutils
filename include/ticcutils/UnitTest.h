@@ -57,6 +57,7 @@ static MyTSerie currentTestContext( "default", 0, "default" );
 int exit_status = 0;
 bool summarized = false;
 bool testSilent = false;
+std::string last_what;
 
 #define TEST_SILENT_ON() testSilent = true;
 #define TEST_SILENT_OFF() testSilent = false;
@@ -112,10 +113,12 @@ void MyTSerie::stop( const std::string& fun, int ){
 }
 
 #define assertEqual( XX , YY )						\
+  last_what.clear();							\
   try {									\
     test_eq<decltype(XX), decltype(YY)>( __func__, __LINE__, (XX), (YY), currentTestContext ); \
       }									\
   catch ( const std::exception& e ){					\
+    last_what = e.what();						\
     ++currentTestContext._fails;					\
     if ( currentTestContext.isDefault() )				\
       std::cout << FAIL << std::endl;					\
@@ -126,17 +129,20 @@ void MyTSerie::stop( const std::string& fun, int ){
 
 #define assertThrow( XX, EE )						\
   do { 									\
+    last_what.clear();							\
     ++currentTestContext._tests;					\
     if ( !testSilent && currentTestContext.isDefault() )		\
       std::cout << "test: " << __func__ << "(" << __LINE__ << "): ";	\
     try {								\
       XX; }								\
-    catch( const EE& ){							\
+    catch( const EE& e ){						\
+      last_what = e.what();						\
       if (  !testSilent && currentTestContext.isDefault() )		\
 	std::cerr << OK << std::endl;					\
       break;								\
     }									\
     catch ( const std::exception& e ){					\
+      last_what = e.what();						\
       ++currentTestContext._fails;					\
       if ( currentTestContext.isDefault() )				\
 	std::cout << FAIL << std::endl;					\
@@ -156,12 +162,14 @@ void MyTSerie::stop( const std::string& fun, int ){
 
 #define assertNoThrow( XX )						\
   do { 									\
+    last_what.clear();							\
     ++currentTestContext._tests;					\
     if (  !testSilent && currentTestContext.isDefault() )		\
       std::cout << "test: " << __func__ << "(" << __LINE__ << "): ";	\
     try {								\
       (void)(XX); }							\
     catch ( const std::exception& e ){					\
+      last_what = e.what();						\
       ++currentTestContext._fails;					\
       if ( currentTestContext.isDefault() )				\
 	std::cout << FAIL << std::endl;					\
@@ -176,29 +184,38 @@ void MyTSerie::stop( const std::string& fun, int ){
   while( false )
 
 #define assertTrue( YY ) 			                        \
-  try {                                                                 \
+  last_what.clear();							\
+  try {									\
     test_true( __func__, __LINE__, (YY), currentTestContext );		\
   }									\
   catch( const std::exception& e ){					\
+    last_what = e.what();						\
     std::cerr << __func__ << "(" << __LINE__ << ") error: '" << e.what() << "'" << std::endl; \
   }
 
 #define assertFalse( YY )						\
+  last_what.clear();							\
   try {									\
     test_false( __func__, __LINE__, (YY), currentTestContext );		\
   }									\
   catch( const std::exception& e ){					\
+    last_what = e.what();						\
     std::cerr << __func__ << "(" << __LINE__ << ") error:'" << e.what() << "'" << std::endl; \
   }
 
 #define assertMessage( MM, YY )						\
+  last_what.clear();							\
   try {									\
     test_true_message( __func__, __LINE__, (MM), (YY), currentTestContext ); \
   }									\
   catch( const std::exception& e ){					\
+    last_what = e.what();						\
     std::cerr << __func__ << "(" << __LINE__ << ") error: '" << e.what() << "'" << std::endl; \
   }
 
+std::string lastError() { return last_what;}
+bool hasThrown() { return !last_what.empty(); }
+void decrementError() { --currentTestContext._fails; }
 
 #define startTestSerie( SS ) MyTSerie currentTestContext( __func__, __LINE__, (SS) )
 
