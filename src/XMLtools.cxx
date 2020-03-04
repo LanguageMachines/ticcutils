@@ -178,14 +178,14 @@ namespace TiCC {
     return result;
   }
 
-  list<xmlNode*> FindNodes( xmlNode* node,
+  list<xmlNode*> FindNodes( const xmlNode* node,
 			    const string& xPath ){
   string xpath = replaceStarNS( xPath );
 #ifdef DEBUG_XPATH
   cerr << "replaced " << xPath << " by " << xpath << endl;
 #endif
     xmlXPathContext* ctxt = xmlXPathNewContext( node->doc );
-    ctxt->node = node;
+    ctxt->node = (xmlNode *)node;
     register_namespaces( ctxt );
     list<xmlNode*> nodes = FindLocal( ctxt, xpath );
 #ifdef DEBUG_XPATH
@@ -202,13 +202,13 @@ namespace TiCC {
     return nodes;
   }
 
-  list<xmlNode*> FindNodes( xmlDoc* doc,
+  list<xmlNode*> FindNodes( const xmlDoc* doc,
 			    const string& xPath ){
-    xmlNode *root = xmlDocGetRootElement( doc );
+    const xmlNode *root = xmlDocGetRootElement( doc );
     return FindNodes( root, xPath );
   }
 
-  xmlNode *xPath( xmlNode *node, const string& xpath ){
+  xmlNode *xPath( const xmlNode *node, const string& xpath ){
     // try to find a path, but it may not be there...
     // if there are more, just return the first
 
@@ -220,8 +220,8 @@ namespace TiCC {
     return result;
   }
 
-  xmlNode *xPath( xmlDoc *doc, const std::string& xpath ){
-    xmlNode *root = xmlDocGetRootElement( doc );
+  xmlNode *xPath( const xmlDoc *doc, const string& xpath ){
+    const xmlNode *root = xmlDocGetRootElement( doc );
     return xPath( root, xpath );
   }
 
