@@ -91,7 +91,7 @@
 /// Notice that this is an early release; this code is tested, but not
 /// ready for applications where absolute reliability is a must.
 
-/// \file bz2stream.hpp
+/// \file bz2stream.h
 /// This file declares and defines all of the bz2stream class set.  It
 /// is currently the only source code file.
 
