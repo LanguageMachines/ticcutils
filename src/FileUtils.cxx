@@ -41,20 +41,14 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include "config.h"
-#if HAVE_BOOST_REGEX
-#  include <boost/regex.hpp>
-#  define regex boost::regex
-#  define regex_error boost::regex_error
-#  define regex_search boost::regex_search
-#else
-#  include <regex>
-#endif
+#include <regex>
 #include "ticcutils/StringOps.h"
 
 using namespace std;
 namespace TiCC {
 
   vector<string> glob( const string& pat ){
+    ///  return a 'globbed; list of files from 'pat'
     vector<string> result;
     glob_t glob_result;
     int res = glob(pat.c_str(),GLOB_TILDE,NULL,&glob_result);
@@ -74,7 +68,7 @@ namespace TiCC {
   }
 
   bool isDir( const string& name ){
-    // is 'name' a directory in sight ?
+    /// is 'name' an accessible directory
     struct stat st_buf;
     int status = stat( name.c_str(), &st_buf );
     if ( status < 0 )
@@ -83,7 +77,7 @@ namespace TiCC {
   }
 
   bool isFile( const string& name ){
-    // is 'name' a file in sight ?
+    /// is 'name' an accessible file
     struct stat st_buf;
     int status = stat( name.c_str(), &st_buf );
     if ( status < 0 )
@@ -93,6 +87,13 @@ namespace TiCC {
 
   void gatherFilesExt( const string& dirName, const string& ext,
 		       vector<string>& result, bool recurse ){
+    /// collect all files matching a certain extension
+    /*!
+      \param dirName path to search
+      \param ext the extension to match
+      \param result a list of matching filenames. New finds will be added
+      \param recurse if true recurse into all subdirs
+    */
     DIR *dir = opendir( dirName.c_str() );
     if ( !dir ){
       string mess = "TiCC::gatherFilesExt: unable to open dir " + dirName;
@@ -119,6 +120,13 @@ namespace TiCC {
   vector<string> searchFilesExt( const string& name,
 				 const string& ext,
 				 bool recurse ){
+    /// collect all files with a given extension
+    /*!
+      \param name the files/path to search to search
+      \param ext a file extension to match each file
+      \param recurse if true recurse into all subdirs
+      \return a list of matching filenames.
+     */
     vector<string> result;
     if ( isFile( name ) ){
       // it is just 1 file
@@ -139,6 +147,13 @@ namespace TiCC {
 
   void gatherFilesMatch( const string& dirName, const regex& match,
 			 vector<string>& result, bool recurse ){
+    /// collect all files matching a regular expression
+    /*!
+      \param dirName path to search
+      \param match a regular expressiin to match each file
+      \param result a list of matching filenames. New finds will be added
+      \param recurse if true recurse into all subdirs
+    */
     DIR *dir = opendir( dirName.c_str() );
     if ( !dir ){
       string mess = "TiCC::gatherFilesMatch: unable to open dir " + dirName;
@@ -186,6 +201,13 @@ namespace TiCC {
   vector<string> searchFilesMatch( const string& name,
 				   const string& wild,
 				   bool recurse ){
+    /// search all files matching a wildcard search
+    /*!
+      \param name a path/filename
+      \param wild a wildcard pattern
+      \param recurse if true, and name is a path, recurse into all subdirs
+      \return a list of matching filenames
+    */
     vector<string> result;
     string reg = wildToRegExp( wild );
     try {
@@ -200,8 +222,9 @@ namespace TiCC {
 	else {
 	  fname = name;
 	}
-	if ( regex_search( fname, rx ) )
+	if ( regex_search( fname, rx ) ){
 	  result.push_back( name );
+	}
 	return result;
       }
       else if ( !isDir( name ) ){
@@ -223,11 +246,18 @@ namespace TiCC {
   }
 
   bool createTruePath( const string& path ){
-    // attempt to open a path /a/b/c/ from an expression like:
-    // /a/b/c/
-    // or ./a/b/c/ from expressions like
-    // a/b/c/
-
+    /// create a path using 'name'
+    /*!
+      \param path the path description
+      \return true if the path is created and a directory
+      This function attempts to open a path /a/b/c/ from an expression like:
+      \verbatim
+      /a/b/c/
+      ./a/b/c/
+      a/b/c/
+      \endverbatim
+      It will recursively create all intermediate directories when needed
+    */
     ofstream os1( path );
     if ( !os1.good() ){
       // it fails
@@ -255,6 +285,11 @@ namespace TiCC {
   }
 
   bool createPath( const string& name ){
+    /// create a path (directory OR file) using 'name'
+    /*!
+      \param name path description
+      \return true if the file is created and available for writing
+    */
     string path;
     string::size_type pos = name.rfind('/');
     if ( pos == name.length()-1 ){
@@ -273,6 +308,13 @@ namespace TiCC {
   }
 
   string tempname( const string& label ){
+    /// create a temporary directory
+    /*!
+      \param label a prefix to use
+      \return the name of the created file
+      The file will be added to /tmp/ with the label as the first part
+      of the name, and 6 random characters added.
+    */
     string path = "/tmp/" + label;
     string temp = path + "XXXXXX";
     char *filename = strdup(temp.c_str());
@@ -287,6 +329,13 @@ namespace TiCC {
   }
 
   string tempdir( const string& label ){
+    /// create a temporary directory
+    /*!
+      \param label a prefix to use
+      \return the name of the created directory
+      The directory will be added to /tmp/ with the label as the first part
+      of the name, and 6 random characters added.
+    */
     string path = "/tmp/" + label;
     string temp = path + "XXXXXX";
     char *dirname = strdup(temp.c_str());
@@ -303,6 +352,7 @@ namespace TiCC {
   }
 
   void erase( const std::string& name ){
+    /// remove a file
     int stat = std::remove( name.c_str() );
     if ( stat != 0 && errno != ENOENT ){
       throw runtime_error( "could not erase file/path '" + name + "': "
