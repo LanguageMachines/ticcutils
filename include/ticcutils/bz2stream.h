@@ -263,7 +263,7 @@ class bz2outbuf : public std::streambuf {
   /// the data will be compressed more.  Valid values range from 1
   /// to 9.
   ///
-  /// @param verbostity The amount of debugging information libbz2
+  /// @param verbosity The amount of debugging information libbz2
   /// should print to stderr.  Ranges from 0 (quiet) to 4 (very
   /// talkative).
   ///
@@ -285,7 +285,7 @@ class bz2outbuf : public std::streambuf {
   /// routines bzalloc and bzfree, if you specified them.  See also
   /// ::bzalloc_ptr and ::bzfree_ptr.
   ///
-  /// @param buffer_size The size of the stream buffer used by
+  /// @param stream_buffer_size The size of the stream buffer used by
   /// bz2outbuf.  Leave it alone if you don't know what you're
   /// doing.  (Bigger values are not necessarily faster).  Must be
   /// positive.
