@@ -141,8 +141,9 @@ void test_opt_6(){
   string value;
   opts6.is_present( "true", value );
   assertEqual( value, "ok" );
-  opts6.is_present( "false", value );
-  assertEqual( value, "6" );
+  int ival = 8;
+  opts6.is_present( "false", ival );
+  assertEqual( ival, 6 );
 }
 
 void test_opt_7(){

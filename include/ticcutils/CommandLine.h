@@ -107,9 +107,11 @@ namespace TiCC {
     bool parse_args( const int, const char * const * );
     bool parse_args( const std::string& );
     bool init( const int i, const char * const * a ){
+      /// initialize CL_Options from a argument list
       return parse_args( i, a );
     }
     bool init( const std::string& s ){
+      /// initialize CL_Options from a string
       return parse_args( s );
     }
     void set_short_options( const std::string& s );
@@ -165,11 +167,11 @@ namespace TiCC {
       std::string v;
       bool b;
       if ( is_present_internal( c, v, b ) ){
-	if ( TiCC::stringTo( v, val ) )
+	if ( TiCC::stringTo( v, val ) ){
 	  return true;
-	std::string msg = "wrong type for value of -";
-	msg += c;
-	msg += " " + v;
+	}
+	std::string msg = "wrong type for value of -" + std::string(c,1)
+	  + " " + v;
 	throw OptionError( msg );
       }
       return false;
@@ -205,8 +207,9 @@ namespace TiCC {
       */
       std::string v;
       if ( is_present_internal( s, v ) ){
-	if ( TiCC::stringTo( v, val ) )
+	if ( TiCC::stringTo( v, val ) ){
 	  return true;
+	}
 	throw OptionError( "wrong type for value of --" + s + "=" + v );
       }
       return false;
@@ -256,11 +259,11 @@ namespace TiCC {
       std::string v;
       bool b;
       if ( extract_internal( c, v, b ) ){
-	if ( TiCC::stringTo( v, val ) )
+	if ( TiCC::stringTo( v, val ) ){
 	  return true;
-	std::string msg = "wrong type for value of -";
-	msg += c;
-	msg += " " + v;
+	}
+	std::string msg = "wrong type for value of -" + std::string(c,1)
+	  + " " + v;
 	throw OptionError( msg );
       }
       return false;
