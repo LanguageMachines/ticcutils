@@ -38,11 +38,19 @@
 using namespace std;
 
 namespace TiCC {
+
   Configuration::Configuration(){
+    /// set up a Configuration structure
     myMap["global"] = ssMap();
   }
 
   string fixControl( const string& s, char c ){
+    /// replace special characters
+    /*!
+      \param s the inputstring
+      \param c special 'symbol' to replace
+      \return a new string where all occurences of "\\c" aee replaced  by "\c"
+    */
     string sString;
     string rString;
     switch ( c ){
@@ -81,6 +89,7 @@ namespace TiCC {
   }
 
   string fixControls( const string& s ){
+    /// replace all "\\n", "\\r", "\\t" sequences by "\n", "\r" and "\t"
     string result = s;
     result = fixControl( result, 'n' );
     result = fixControl( result, 'r' );
@@ -89,14 +98,21 @@ namespace TiCC {
   }
 
   bool Configuration::get_att_val( const string& line, const string& section ){
+    /// parse a string into an attribute/value pair and insert in a section
+    /*!
+      \param line the line to parse
+      \param section the section to insert in.
+      \return true if we have a result
+     */
     string::size_type pos = line.find("=");
     if ( pos != string::npos ){
       string att = line.substr(0,pos);
       att = TiCC::trim(att);
       string val = line.substr(pos+1);
       val = TiCC::trim(val);
-      if ( val[0] == '"' && val[val.length()-1] == '"' )
+      if ( val[0] == '"' && val[val.length()-1] == '"' ){
 	val = val.substr(1, val.length()-2);
+      }
       val = fixControls( val );
       myMap[section][att] = val;
       return true;
@@ -105,6 +121,11 @@ namespace TiCC {
   }
 
   bool Configuration::fill( const string& fileName ){
+    /// fill a Configuration structure from a file
+    /*!
+      \param fileName the name of the input file
+      \return true on succes
+    */
     ifstream is( fileName );
     if ( !is ){
       cerr << "unable to read configuration from " << fileName << endl;
@@ -123,10 +144,9 @@ namespace TiCC {
     string section = "global";
     while ( getline( is, inLine ) ){
       string line = TiCC::trim(inLine);
-      if ( line.empty() )
+      if ( line.empty() || line[0] == '#' ){
 	continue;
-      if ( line[0] == '#' )
-	continue;
+      }
       if ( match_front( line, "[[" ) ){
 	if ( line[line.length()-1] == ']' &&
 	     line[line.length()-2] == ']' ){
@@ -148,6 +168,12 @@ namespace TiCC {
   }
 
   bool Configuration::fill( const string& fileName, const string& insect ){
+    /// fill a Configuration structure from a file for a certain section
+    /*!
+      \param fileName the name of the input file
+      \param insect the section to find and fill
+      \return true on succes
+    */
     ifstream is( fileName );
     if ( !is ){
       cerr << "unable to read configuration from " << fileName << endl;
@@ -160,10 +186,9 @@ namespace TiCC {
     //  cerr << "looking for section = " << insection << endl;
     while ( getline( is, inLine ) ){
       string line = TiCC::trim(inLine);
-      if ( line.empty() )
+      if ( line.empty() || line[0] == '#' ){
 	continue;
-      if ( line[0] == '#' )
-	continue;
+      }
       if ( match_front( line, "[[" ) ){
 	if ( line[line.length()-1] == ']' &&
 	     line[line.length()-2] == ']' ){
@@ -194,6 +219,11 @@ namespace TiCC {
   }
 
   string encode_ctrl( const string& in ){
+    /// encdode "\n", "\r" and "\t" into "\\n", "\\r" and "\\t"
+    /*!
+      \param in the input string
+      \return an encodes string
+    */
     string out;
     for ( const auto& c : in ){
       switch ( c ){
@@ -211,6 +241,7 @@ namespace TiCC {
   }
 
   void Configuration::dump( ostream& os ) const {
+    /// dump a Configuration to a stream
     auto it1 = myMap.find("global");
     if ( it1 == myMap.end() ){
       os << "empty" << endl;
@@ -237,6 +268,10 @@ namespace TiCC {
   }
 
   void Configuration::create_configfile( const string& name ) const {
+    /// create a named configfile
+    /*!
+      \param name the name of the output file
+    */
     ofstream os( name );
     if ( !os ){
       throw runtime_error( "unable to create outputfile: " + name );
@@ -247,12 +282,20 @@ namespace TiCC {
   string Configuration::setatt( const string& inatt,
 				const string& inval,
 				const string& insect ){
+    /// set an attribute/value pair in a section
+    /*!
+      \param inatt the attribute to add
+      \param inval the value to insert
+      \param insect the section to insert in. When empty, use the "global" one.
+      \return the old value if \e inatt was already set.
+     */
     string oldVal;
     string att = TiCC::trim(inatt);
     string val = TiCC::trim(inval);
     string sect = TiCC::trim(insect);
-    if ( sect.empty() )
+    if ( sect.empty() ){
       sect = "global";
+    }
     auto it1 = myMap.find( sect );
     if ( it1 != myMap.end() ){
       auto const& it2 = it1->second.find( att );
@@ -269,12 +312,19 @@ namespace TiCC {
 
   string Configuration::clearatt( const string& inatt,
 				  const string& insect ){
+    /// remove an attribute (and its value) from a section
+    /*!
+      \param inatt the attribute to remove
+      \param insect the section to search,  When empty, use the "global" one.
+      \return the value of the removed attribute
+    */
     //    cerr << "clear att: '" << inatt << "' in [" << insect << "]" << endl;
     string oldVal;
     string sect = TiCC::trim(insect);
     string att = TiCC::trim(inatt);
-    if ( sect.empty() )
+    if ( sect.empty() ){
       sect = "global";
+    }
     //    cerr << "clear sect [" << sect << "]" << endl;
     auto it1 = myMap.find( sect );
     if ( it1 != myMap.end() ){
@@ -297,11 +347,20 @@ namespace TiCC {
 
   string Configuration::getatt( const string& inatt,
 				const string& insect ) const {
+    /// return the value for an attribute
+    /*!
+      \param inatt the attribute to remove
+      \param insect the section to search,  When empty, use the "global" one.
+      \return the value of the attribute
+      \note when the attribute is NOT FOUND in the given section, we try to
+      retrieve it from the 'global' one. Which serves as a fallback then
+    */
     string sect = TiCC::trim(insect);
     string att = TiCC::trim(inatt);
     string key = sect;
-    if ( key.empty() )
+    if ( key.empty() ){
       key = "global";
+    }
     auto const& it1 = myMap.find( key );
     if ( it1 == myMap.end() ){
       return "";
@@ -309,17 +368,25 @@ namespace TiCC {
     else {
       auto const& it2 = it1->second.find( att );
       if ( it2 == it1->second.end() ){
-	if ( sect.empty() || sect == "global" )
+	if ( sect.empty() || sect == "global" ){
 	  return "";
-	else
-	  return lookUp( att, "global" );
+	}
+	else {
+	  return getatt( att, "global" );
+	}
       }
-      else
+      else {
 	return it2->second;
+      }
     }
   }
 
   map<string,string> Configuration::lookUpAll( const string& insect ) const {
+    /// return all attribute/value values in a given section
+    /*!
+      \param insect the section to search. When empty use 'global'
+      \return a map of all attribute/value pairs
+    */
     map<string,string> result;
     string sect = TiCC::trim(insect);
     if ( sect.empty() ){
@@ -337,6 +404,7 @@ namespace TiCC {
   }
 
   set<string> Configuration::lookUpSections() const {
+    /// return the names of all sections
     set<string> result;
     result.insert("global");
     auto it = myMap.begin();
@@ -348,6 +416,7 @@ namespace TiCC {
   }
 
   bool Configuration::hasSection( const string& insect ) const {
+    /// check the presence of a section
     string sect = TiCC::trim( insect );
     if ( !sect.empty() ){
       auto const it = myMap.find( sect );
@@ -358,6 +427,11 @@ namespace TiCC {
   }
 
   void Configuration::merge( const Configuration& in, bool override ) {
+    /// merge two Configuration objects
+    /*!
+      \param in the Configuration to add
+      \param override when true, override allready present attributes
+     */
     // get al sections from in;
     set<string> sections = in.lookUpSections();
     for ( const auto& s : sections ){

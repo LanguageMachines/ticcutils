@@ -44,6 +44,7 @@ namespace TiCC {
     bool hasSection( const std::string& ) const;
     std::string lookUp( const std::string& v,
 			const std::string& s = "" ) const {
+      /// alternative name for getatt() function
       return getatt( v, s );
     }
     ssMap lookUpAll( const std::string& ) const;
@@ -57,18 +58,23 @@ namespace TiCC {
 			  const std::string& = "" );
     void dump( std::ostream& ) const;
     void create_configfile( const std::string& ) const;
-    std::string configDir() const { return lookUp( "configDir" ); };
+    std::string configDir() const {
+      /// give the value of the configDir attribute. (set when parsing a file)
+      return lookUp( "configDir" );
+    };
   private:
     sssMap myMap;
     bool get_att_val( const std::string&, const std::string& );
   };
 
   inline std::ostream& operator<<( std::ostream& os, const Configuration& c ){
+    /// output a Configuration to a stream
     c.dump(os);
     return os;
   }
 
   inline std::ostream& operator<<( std::ostream& os, const Configuration* c ){
+    /// output a Configuration to a stream
     if ( c ){
       c->dump(os);
     }
