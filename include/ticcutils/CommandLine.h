@@ -44,34 +44,54 @@ namespace TiCC {
     friend std::ostream& operator<<( std::ostream&, const CL_item& );
   public:
   CL_item( const std::string& s, const std::string& o ):
-    opt_word(s), option( o ), mood( false ), longOpt(true) {};
+    _opt_value(s), _option( o ), _mood( false ), _long_opt(true) {};
   CL_item( char c, const std::string& o, bool m=false ):
-    opt_word(1,c),option( o ), mood( m ), longOpt(false){};
+    _opt_value(1,c),_option( o ), _mood( m ), _long_opt(false){};
   CL_item( const CL_item& in ):
-    opt_word( in.opt_word ), option(in.option),
-      mood(in.mood), longOpt(in.longOpt){
+    _opt_value( in._opt_value ),
+      _option(in._option),
+      _mood(in._mood),
+      _long_opt(in._long_opt){
     };
     CL_item& operator=( const CL_item& in ){
       if ( &in != this ){
-	opt_word = in.opt_word;
-	option = in.option;
-	mood = in.mood;
-	longOpt = in.longOpt;
+	_opt_value = in._opt_value;
+	_option = in._option;
+	_mood = in._mood;
+	_long_opt = in._long_opt;
       }
       return *this;
     }
-    bool Mood() const { return mood; };
-    char OptChar() const { return opt_word[0]; };
-    const std::string& OptWord() const { return opt_word; };
-    const std::string& Option() const { return option; };
-    bool isLong() const { return longOpt; };
-    bool getMood() const { return mood; };
+    char opt_char() const {
+      /// return the first character of _opt_value
+      return _opt_value[0];
+    };
+    const std::string& opt_value() const {
+      /// return the option's value
+      return _opt_value;
+    };
+    const std::string& option() const {
+      /// return the option.
+      return _option;
+    };
+    bool is_long() const {
+      /// return true for a long option, false otherwise
+      return _long_opt;
+    };
+    bool get_mood() const {
+      /// return the 'mood' value ( '+' or '-' )
+      /*!
+	\return for a character option, return true if it was preceded by a '+',
+	otherwise return false. For long options always return false
+      */
+      return _mood;
+    };
     std::string toString( ) const;
   private:
-    std::string opt_word;
-    std::string option;
-    bool mood;
-    bool longOpt;
+    std::string _opt_value;
+    std::string _option;
+    bool _mood;
+    bool _long_opt;
   };
 
   class CL_Options {

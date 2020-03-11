@@ -47,24 +47,42 @@ namespace TiCC {
     explicit ImplementationError( const std::string& s ): std::logic_error( "CommandLine: implementation error." + s ){};
   };
 
-  CL_Options::CL_Options( const string& valid_s, const string& valid_l ):
+  CL_Options::CL_Options( const string& short_opts, const string& long_opts ):
     is_init(false),
     debug(false){
-    allow_args( valid_s, valid_l );
+    /// setup an CL_Options structure with possible options.
+    /*!
+      \param short_opts a string describing the acceptable short options
+      \param long_opts a string describing the acceptable long options
+    */
+    allow_args( short_opts, long_opts );
   }
 
   CL_Options::CL_Options( ): is_init(false),debug(false){
-  }
+    /// setup an CL_Options structure
+ }
 
   CL_Options::~CL_Options(){
+    /// destructor
   }
 
-  void CL_Options::allow_args( const string& valid_s, const string& valid_l ){
-    set_short_options( valid_s );
-    set_long_options( valid_l );
+  void CL_Options::allow_args( const string& short_opts,
+			       const string& long_opts ){
+    /// register the possible options for this structure
+    /*!
+      \param short_opts a string describing the acceptable short options
+      \param long_opts a string describing the acceptable long options
+    */
+    set_short_options( short_opts );
+    set_long_options( long_opts );
   }
 
   bool CL_Options::parse_args( const int argc, const char * const *argv ){
+    /// parse a commandline and check against the possible options
+    /*!
+      \param argc the number of aruments in \e argv
+      \param argv a list of arguments
+    */
     if ( is_init ){
       throw ImplementationError( "cannot parse() a commandline twice" );
     }
@@ -75,6 +93,10 @@ namespace TiCC {
   }
 
   bool CL_Options::parse_args( const std::string& args ){
+    /// parse a commandline and check against the possible options
+    /*!
+      \param args a string describing a command line
+    */
     if ( is_init ){
       throw ImplementationError( "cannot parse() a commandline twice" );
     }
@@ -86,26 +108,29 @@ namespace TiCC {
   }
 
   ostream& operator<<( ostream& os, const CL_item& it ){
+    /// output a CL_item to a stream
     os << it.toString();
     return os;
   }
 
   string CL_item::toString( ) const {
+    /// convert a CL_item to a string
     string result;
-    if ( longOpt ){
-      result = "--" + opt_word;
-      if ( !option.empty() ){
+    if ( _long_opt ){
+      result = "--" + _opt_value;
+      if ( !_option.empty() ){
 	result += "=";
       }
-      result += option;
+      result += _option;
     }
     else {
-      result += (mood ? "+": "-" ) + opt_word + " " + option;
+      result += (_mood ? "+": "-" ) + _opt_value + " " + _option;
     }
     return result;
   }
 
   ostream& operator<<( ostream& os, const CL_Options& cl ){
+    /// output a CL_Options struct to a stream
     os << cl.toString() << " ";
     for ( const auto& opt : cl.MassOpts ){
       os << opt << " ";
@@ -114,6 +139,7 @@ namespace TiCC {
   }
 
   string CL_Options::toString() const {
+    /// convert a CL_Options struct to a string
     string result;
     for( const auto& pos : Opts ){
       result += pos.toString() + " ";
@@ -125,6 +151,7 @@ namespace TiCC {
   }
 
   ostream& CL_Options::dump( ostream& os ) {
+    /// dump a complete CL_Options struct to a stream. (DEBUGGING ONLY)
     os << *this;
     if ( !valid_chars.empty() ){
       os << endl;
@@ -137,17 +164,27 @@ namespace TiCC {
     return os;
   }
 
-  bool CL_Options::is_present_internal( const char c, string &opt, bool& mood ) const {
+  bool CL_Options::is_present_internal( const char c,
+					string &opt_val,
+					bool& mood ) const {
+    /// check if a character option \e c is available
+    /*!
+      \param c the character to search for
+      \param opt_val if \e c is available return the value
+      \param mood if \e c is available return if it was set with + or -
+      \return true if a result is found
+      \note when NO result is found, \e opt_val is NOT changed
+    */
     mood = false;
     for ( auto const& pos : Opts ){
-      if ( pos.isLong() ){
+      if ( pos.is_long() ){
 	continue;
       }
-      if ( pos.OptChar() == c ){
-	opt = pos.Option();
-	mood = pos.Mood();
+      if ( pos.opt_char() == c ){
+	opt_val = pos.option();
+	mood = pos.get_mood();
 	if ( debug ){
-	  cerr << "is_present '" << c << "' ==> '" << opt << "'" << endl;
+	  cerr << "is_present '" << c << "' ==> '" << opt_val << "'" << endl;
 	}
 	return true;
       }
@@ -158,12 +195,20 @@ namespace TiCC {
     return false;
   }
 
-  bool CL_Options::is_present_internal( const string& w, string &opt ) const {
+  bool CL_Options::is_present_internal( const string& w,
+					string& opt_val ) const {
+    /// check if a long option \e w is available
+    /*!
+      \param w the long options to search for
+      \param opt_val if \e w is available return the value
+      \return true if a result is found
+      \note when NO result is found, \e opt_val is NOT changed
+    */
     for ( const auto& pos : Opts ){
-      if ( pos.OptWord() == w ){
-	opt = pos.Option();
+      if ( pos.opt_value() == w ){
+	opt_val = pos.option();
 	if ( debug ){
-	  cerr << "is_present '" << w << "' ==> '" << opt << "'" << endl;
+	  cerr << "is_present '" << w << "' ==> '" << opt_val << "'" << endl;
 	}
 	return true;
       }
@@ -174,16 +219,27 @@ namespace TiCC {
     return false;
   }
 
-  bool CL_Options::extract_internal( const char c, string &opt, bool& mood ) {
+  bool CL_Options::extract_internal( const char c,
+				     string &opt_val,
+				     bool& mood ) {
+    /// check if a character option \e c is available and remove it
+    /*!
+      \param c the character to search for
+      \param opt_val if \e c is available return the value
+      \param mood if \e c is available return if it was set with + or -
+      \return true if a result is found
+      When the option is set, it is removed from the options list.
+      \note when NO result is found, \e opt_val is NOT changed
+    */
     mood = false;
     for ( auto pos = Opts.begin(); pos != Opts.end(); ++pos ){
-      if ( !pos->isLong() ){
-	if ( pos->OptChar() == c ){
-	  opt = pos->Option();
-	  mood = pos->Mood();
+      if ( !pos->is_long() ){
+	if ( pos->opt_char() == c ){
+	  opt_val = pos->option();
+	  mood = pos->get_mood();
 	  Opts.erase(pos);
 	  if ( debug ){
-	    cerr << "extract '" << c << "' ==> '" << opt << "'" << endl;
+	    cerr << "extract '" << c << "' ==> '" << opt_val << "'" << endl;
 	  }
 	  return true;
 	}
@@ -195,13 +251,22 @@ namespace TiCC {
     return false;
   }
 
-  bool CL_Options::extract_internal( const string& w, string &opt ) {
+  bool CL_Options::extract_internal( const string& w,
+				     string &opt_val ) {
+    /// check if a long option \e w is available, and extract it
+    /*!
+      \param w the long options to search for
+      \param opt_val if \e w is available return the value
+      \return true if a result is found
+      When the option is set, it is removed from the options list.
+      \note when NO result is found, \e opt_val is NOT changed
+    */
     for ( auto pos = Opts.begin(); pos != Opts.end(); ++pos ){
-      if ( pos->OptWord() == w ){
-	opt = pos->Option();
+      if ( pos->opt_value() == w ){
+	opt_val = pos->option();
 	Opts.erase(pos);
 	if ( debug ){
-	  cerr << "extract '" << w << "' ==> '" << opt << "'" << endl;
+	  cerr << "extract '" << w << "' ==> '" << opt_val << "'" << endl;
 	}
 	return true;
       }
@@ -213,46 +278,72 @@ namespace TiCC {
   }
 
   bool CL_Options::remove( const char c, bool all ){
+    /// remove a character option from the list of options
+    /*!
+      \param c the character option we look for
+      \param all when true, remove ALL occurrences
+      \return true if at least 1 match was found
+     */
+    bool result = false;
     for ( auto pos = Opts.begin(); pos != Opts.end(); ){
-      if ( pos->OptChar() == c ){
+      if ( pos->opt_char() == c ){
+	result = true;
 	pos = Opts.erase(pos);
 	if ( !all ){
-	  return true;
+	  return result;
 	}
       }
       else {
 	++pos;
       }
     }
-    return false;
+    return result;
   }
 
   bool CL_Options::remove( const string& w, bool all ){
+    /// remove a long option from the list of options
+    /*!
+      \param w the long option we look for
+      \param all when true, remove ALL occurrences
+      \return true if at least 1 match was found
+     */
+    bool result = false;
     for ( auto pos = Opts.begin(); pos != Opts.end(); ){
-      if ( pos->OptWord() == w ){
+      if ( pos->opt_value() == w ){
+	result = true;
 	pos = Opts.erase(pos);
 	if ( !all ){
-	  return true;
+	  return result;
 	}
       }
       else {
 	++pos;
       }
     }
-    return false;
+    return result;
   }
 
-  void CL_Options::insert( const string& s, const string& line ){
-    CL_item cl( s, line );
+  void CL_Options::insert( const string& s, const string& value ){
+    /// add a long CL_item to the list of items
+    CL_item cl( s, value );
     Opts.push_back( cl );
   }
 
-  void CL_Options::insert( const char c, const string& line, bool mood ){
-    CL_item cl( c, line, mood );
+  void CL_Options::insert( const char c, const string& value, bool mood ){
+    /// add a short CL_item to the list of items
+    CL_item cl( c, value, mood );
     Opts.push_back( cl );
   }
 
-  enum argstat { PLUS, MIN, LONG, MASS, UNKNOWN };
+  /// status values of the argument parser
+  enum argstat {
+    PLUS,   ///< a + was parsed
+    MIN,    ///< a - was parsed
+    LONG,   ///< a long option is found
+    MASS,   ///< we are parsing a 'mass' option
+    UNKNOWN ///< not known (yet)
+  };
+
   struct arg {
     arg(): stat(UNKNOWN),c(0){};
     argstat stat;
@@ -262,6 +353,7 @@ namespace TiCC {
   };
 
   ostream& operator<<( ostream& os, const arg& a ){
+    /// output an 'arg' to a stream
     switch ( a.stat ){
     case UNKNOWN:
       os << "?";
@@ -293,6 +385,7 @@ namespace TiCC {
   }
 
   vector<string> fix_quotes( const vector<string>& argv ){
+    /// fix quotes in the input
     // handle only balanced quotes, and 1 quote per option
     vector<string> result;
     bool q_found = false;
@@ -323,6 +416,7 @@ namespace TiCC {
 
   bool CL_Options::Parse_Command_Line( const int Argc,
 				       const char * const *Argv ){
+    /// parse a commandline into a CL_options structure
     Opts.clear();
     vector<string> local_argv;
     if ( Argc == 0 ){
@@ -638,6 +732,10 @@ namespace TiCC {
   }
 
   void CL_Options::set_short_options( const string& s ){
+    /// set the valid short options
+    /*!
+      \param s a string representing the valid options
+     */
     char last = '\0';
     for ( size_t i=0; i < s.size(); ++i ){
       if ( s[i] == ':' && last != '\0' ){
@@ -656,6 +754,11 @@ namespace TiCC {
   }
 
   string CL_Options::get_short_options() const {
+    /// return the current short options in a neatly manner
+    /*!
+      \return a string representation of the short options in such a way
+      that they could be parsed again by set_short_options
+    */
     string result;
     for ( auto const& it : valid_chars ){
       result += it;
@@ -670,6 +773,10 @@ namespace TiCC {
   }
 
   void CL_Options::set_long_options( const string& s ){
+    /// set the valid long options
+    /*!
+      \param s a string representing the valid options
+     */
     vector<string> parts = TiCC::split_at( s, "," );
     for ( auto value: parts ){
       string::size_type pos = value.find( ':' );
@@ -698,6 +805,11 @@ namespace TiCC {
   }
 
   string CL_Options::get_long_options() const {
+    /// return the current long options in a neatly manner
+    /*!
+      \return a string representation of the long options in such a way
+      that they could be parsed again by set_long_options
+    */
     string result;
     for ( auto const& s : valid_long ){
       result += s;
