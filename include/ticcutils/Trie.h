@@ -46,8 +46,8 @@ namespace Tries {
     ~TrieNode();
     Info *add_to_tree( Info *, const std::string& );
     Info *scan_tree( const std::string& ) const;
-    void Iterate( void(*)( Info *, void * ), void * );
-    void Iterate( void(*)( Info * ) );
+    void Iterate( void ( Info *, void * ), void * );
+    void Iterate( void ( Info * ) );
   private:
     char label;             // the label.
     Info *the_info;         // The information at this pnt.
