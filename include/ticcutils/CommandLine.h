@@ -114,22 +114,54 @@ namespace TiCC {
     }
     void set_short_options( const std::string& s );
     void set_long_options( const std::string& s );
-    std::string prog_name() const { return _prog_name; };
+    std::string prog_name() const {
+      /// return the stored name of the calling program (normally argv[0])
+      return _prog_name;
+    };
     std::string get_short_options() const;
     std::string get_long_options() const;
-    bool find( const char c, std::string& s, bool& b ) const {
-      return is_present_internal( c, s, b );
-    }
-    bool is_present( const char c, std::string& v, bool& b ) const {
+
+    bool find( const char c, std::string& v, bool& b ) const {
+      /// check if a short option is present
+      /*!
+	\param c the option we search
+	\param v the value found
+	\param b the mood of the option
+	\return true if a match is found
+      */
       return is_present_internal( c, v, b );
     }
+
+    bool is_present( const char c, std::string& v, bool& b ) const {
+      /// check if a short option is present
+      /*!
+	\param c the option we search
+	\param v the value found
+	\param b the mood of the option
+	\return true if a match is found
+      */
+      return is_present_internal( c, v, b );
+    }
+
     bool is_present( const char c ) const {
+      /// check if a short option is present
+      /*!
+	\param c the option we search
+	\return true if a match is found
+      */
       bool b;
       std::string v;
       return is_present_internal( c, v, b );
     }
+
     template <class T>
       inline bool is_present( const char c, T& val ) const {
+      /// check if a short option is present
+      /*!
+	\param c the option we search
+	\param val the found value of type \e T when a match is found
+	\return true if a match is found
+      */
       std::string v;
       bool b;
       if ( is_present_internal( c, v, b ) ){
@@ -144,14 +176,33 @@ namespace TiCC {
     }
 
     bool find( const std::string& w, std::string& s ) const {
+      /// check if a long option is present
+      /*!
+	\param w the option we search
+	\param s the found value
+	\return true if a match is found
+      */
       return is_present_internal( w, s );
     }
+
     bool is_present( const std::string& s ) const {
+      /// check if a long option is present
+      /*!
+	\param s the option we search
+	\return true if a match is found
+      */
       std::string v;
       return is_present_internal( s, v );
     }
+
     template <class T>
       inline bool is_present( const std::string& s, T& val ) const {
+      /// check if a long option is present
+      /*!
+	\param s the long option we search
+	\param val the found value of type \e T when a match is found
+	\return true if a match is found
+      */
       std::string v;
       if ( is_present_internal( s, v ) ){
 	if ( TiCC::stringTo( v, val ) )
@@ -160,20 +211,48 @@ namespace TiCC {
       }
       return false;
     }
+
     bool extract( const char c, std::string& v, bool& b){
+      /// extract a short option
+      /*!
+	\param c the option we search
+	\param v the value found
+	\param b the mood of the option
+	\return true if a match is found
+      */
       return extract_internal( c, v, b);
     }
+
     bool extract( const char c, std::string& s ){
+      /// extract a short option
+      /*!
+	\param c the option we search
+	\param s the value found
+	\return true if a match is found
+      */
       bool b;
       return extract_internal( c, s, b );
     };
+
     bool extract( const char c ){
+      /// extract a short option
+      /*!
+	\param c the option we search
+	\return true if a match is found
+      */
       bool b;
       std::string v;
       return extract_internal( c, v, b );
     };
+
     template <class T>
       inline bool extract( const char c, T& val ){
+      /// extract a short option into a value
+      /*!
+	\param c the short option we search
+	\param val the found value of type \e T when a match is found
+	\return true if a match is found
+      */
       std::string v;
       bool b;
       if ( extract_internal( c, v, b ) ){
@@ -188,11 +267,23 @@ namespace TiCC {
     }
 
     bool extract( const std::string& s ){
+      /// extract a long option
+      /*!
+	\param s the option we search
+	\return true if a match is found
+      */
       std::string v;
       return extract_internal( s, v );
     }
+
     template <class T>
       inline bool extract( const std::string& s, T& val ){
+      /// extract a long option into a value
+      /*!
+	\param s the option we search
+	\param val the found value of type \e T when a match is found
+	\return true if a match is found
+      */
       std::string v;
       if ( extract_internal( s, v ) ){
 	if ( TiCC::stringTo( v, val ) )
@@ -210,7 +301,10 @@ namespace TiCC {
     void set_debug( bool b ) { debug = b; };
     std::string toString() const;
     std::ostream& dump( std::ostream& );
-    const std::vector<std::string>& getMassOpts() const { return MassOpts; };
+    const std::vector<std::string>& getMassOpts() const {
+      /// return a list of mass options
+      return MassOpts;
+    };
   private:
     bool Parse_Command_Line( const int, const char * const * );
     bool is_present_internal( const char, std::string&, bool& ) const;
@@ -233,24 +327,48 @@ namespace TiCC {
   };
 
   template <>
-    inline bool CL_Options::is_present( const char c, std::string& s ) const {
+    inline bool CL_Options::is_present( const char c, std::string& v ) const {
+    /// check if a short option is present
+    /*!
+      \param c the option we search
+      \param v the value found
+      \return true if a match is found
+    */
     bool b;
-    return is_present_internal( c, s, b );
+    return is_present_internal( c, v, b );
   }
 
   template <>
     inline bool CL_Options::is_present( const std::string& s, std::string& v ) const {
+    /// check if a long option is present
+    /*!
+      \param s the option we search
+      \param v the value found
+      \return true if a match is found
+    */
     return is_present_internal( s, v );
   }
 
   template <>
     inline bool CL_Options::extract( const char c, std::string& v ){
+    /// extract a short option
+    /*!
+      \param c the option we search
+      \param v the value found
+      \return true if a match is found
+    */
     bool b;
     return extract_internal( c, v, b );
   }
 
   template <>
     inline bool CL_Options::extract( const std::string& s, std::string& v ){
+    /// extract a long option
+    /*!
+      \param s the option we search
+      \param v the value found
+      \return true if a match is found
+    */
     return extract_internal( s, v );
   }
 
