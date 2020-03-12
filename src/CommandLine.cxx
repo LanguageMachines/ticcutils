@@ -141,7 +141,7 @@ namespace TiCC {
   string CL_Options::toString() const {
     /// convert a CL_Options struct to a string
     string result;
-    for( const auto& pos : Opts ){
+    for ( const auto& pos : Opts ){
       result += pos.toString() + " ";
     }
     if ( !result.empty() ){
@@ -389,7 +389,7 @@ namespace TiCC {
     // handle only balanced quotes, and 1 quote per option
     vector<string> result;
     bool q_found = false;
-    for( auto str : argv ){
+    for ( auto str : argv ){
       if ( !q_found ){
 	string::size_type pos = str.find("\"");
 	if ( pos != string::npos ){
@@ -431,7 +431,7 @@ namespace TiCC {
     }
     else {
       _prog_name = basename(Argv[0]);
-      for( int i=1; i < Argc; ++i ){
+      for ( int i=1; i < Argc; ++i ){
 	// start at 1 to skip the program name
 	local_argv.push_back( Argv[i] );
       }
