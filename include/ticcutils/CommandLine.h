@@ -44,35 +44,35 @@ namespace TiCC {
     friend std::ostream& operator<<( std::ostream&, const CL_item& );
   public:
   CL_item( const std::string& s, const std::string& o ):
-    _opt_value(s), _option( o ), _mood( false ), _long_opt(true) {};
+    _option(s), _value( o ), _mood( false ), _long_opt(true) {};
   CL_item( char c, const std::string& o, bool m=false ):
-    _opt_value(1,c),_option( o ), _mood( m ), _long_opt(false){};
+    _option(1,c),_value( o ), _mood( m ), _long_opt(false){};
   CL_item( const CL_item& in ):
-    _opt_value( in._opt_value ),
-      _option(in._option),
+    _option( in._option ),
+      _value(in._value),
       _mood(in._mood),
       _long_opt(in._long_opt){
     };
     CL_item& operator=( const CL_item& in ){
       if ( &in != this ){
-	_opt_value = in._opt_value;
 	_option = in._option;
+	_value = in._value;
 	_mood = in._mood;
 	_long_opt = in._long_opt;
       }
       return *this;
     }
     char opt_char() const {
-      /// return the first character of _opt_value
-      return _opt_value[0];
-    };
-    const std::string& opt_value() const {
-      /// return the option's value
-      return _opt_value;
+      /// return the first character of _option
+      return _option[0];
     };
     const std::string& option() const {
-      /// return the option.
+      /// return the option's value
       return _option;
+    };
+    const std::string& value() const {
+      /// return the option.
+      return _value;
     };
     bool is_long() const {
       /// return true for a long option, false otherwise
@@ -81,15 +81,15 @@ namespace TiCC {
     bool get_mood() const {
       /// return the 'mood' value ( '+' or '-' )
       /*!
-	\return for a character option, return true if it was preceded by a '+',
+	\return true for a character option if it was preceded by a '+',
 	otherwise return false. For long options always return false
       */
       return _mood;
     };
     std::string toString( ) const;
   private:
-    std::string _opt_value;
     std::string _option;
+    std::string _value;
     bool _mood;
     bool _long_opt;
   };

@@ -117,14 +117,14 @@ namespace TiCC {
     /// convert a CL_item to a string
     string result;
     if ( _long_opt ){
-      result = "--" + _opt_value;
-      if ( !_option.empty() ){
+      result = "--" + _option;
+      if ( !_value.empty() ){
 	result += "=";
       }
-      result += _option;
+      result += _value;
     }
     else {
-      result += (_mood ? "+": "-" ) + _opt_value + " " + _option;
+      result += (_mood ? "+": "-" ) + _option + " " + _value;
     }
     return result;
   }
@@ -181,7 +181,7 @@ namespace TiCC {
 	continue;
       }
       if ( pos.opt_char() == c ){
-	opt_val = pos.option();
+	opt_val = pos.value();
 	mood = pos.get_mood();
 	if ( debug ){
 	  cerr << "is_present '" << c << "' ==> '" << opt_val << "'" << endl;
@@ -205,8 +205,8 @@ namespace TiCC {
       \note when NO result is found, \e opt_val is NOT changed
     */
     for ( const auto& pos : Opts ){
-      if ( pos.opt_value() == w ){
-	opt_val = pos.option();
+      if ( pos.option() == w ){
+	opt_val = pos.value();
 	if ( debug ){
 	  cerr << "is_present '" << w << "' ==> '" << opt_val << "'" << endl;
 	}
@@ -235,7 +235,7 @@ namespace TiCC {
     for ( auto pos = Opts.begin(); pos != Opts.end(); ++pos ){
       if ( !pos->is_long() ){
 	if ( pos->opt_char() == c ){
-	  opt_val = pos->option();
+	  opt_val = pos->value();
 	  mood = pos->get_mood();
 	  Opts.erase(pos);
 	  if ( debug ){
@@ -262,8 +262,8 @@ namespace TiCC {
       \note when NO result is found, \e opt_val is NOT changed
     */
     for ( auto pos = Opts.begin(); pos != Opts.end(); ++pos ){
-      if ( pos->opt_value() == w ){
-	opt_val = pos->option();
+      if ( pos->option() == w ){
+	opt_val = pos->value();
 	Opts.erase(pos);
 	if ( debug ){
 	  cerr << "extract '" << w << "' ==> '" << opt_val << "'" << endl;
@@ -309,7 +309,7 @@ namespace TiCC {
      */
     bool result = false;
     for ( auto pos = Opts.begin(); pos != Opts.end(); ){
-      if ( pos->opt_value() == w ){
+      if ( pos->value() == w ){
 	result = true;
 	pos = Opts.erase(pos);
 	if ( !all ){
