@@ -51,15 +51,16 @@ namespace TiCC {
   }
 
   xmlNode *XmlDoc::getRoot() const {
-    if ( the_doc )
+    if ( the_doc ){
       return xmlDocGetRootElement(the_doc);
-    else
-      return 0;
+    }
+    return 0;
   }
 
   void XmlDoc::setRoot( xmlNode *node ){
-    if ( the_doc )
+    if ( the_doc ){
       xmlDocSetRootElement(the_doc, node );
+    }
   }
 
   xmlNode *XmlDoc::MakeRoot( const string& elem ){
@@ -104,7 +105,7 @@ namespace TiCC {
     while ( p ){
       string pre;
       string val;
-  if ( p->prefix ){
+      if ( p->prefix ){
 	pre = (char *)p->prefix;
       }
       val = (char *)p->href;
@@ -196,8 +197,9 @@ namespace TiCC {
       cerr << "Found " << nodes.size() << " nodes in " << Name(node) << endl;
     }
 #endif
-    if (ctxt->namespaces != NULL)
+    if ( ctxt->namespaces != NULL ){
       xmlFree(ctxt->namespaces);
+    }
     xmlXPathFreeContext(ctxt);
     return nodes;
   }

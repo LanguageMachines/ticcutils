@@ -51,13 +51,16 @@ namespace TiCC {
     string result;
     if ( !s.empty() ){
       string::size_type b_pos = s.find_first_not_of( chars );
-      if ( b_pos == string::npos )
+      if ( b_pos == string::npos ){
 	return result; // 'empty' string. only garbage
+      }
       string::size_type e_pos = s.find_last_not_of( chars );
-      if ( e_pos == string::npos )
+      if ( e_pos == string::npos ){
 	result = s.substr( b_pos );
-      else
+      }
+      else {
 	result = s.substr( b_pos, e_pos-b_pos+1 );
+      }
     }
     return result;
   }
@@ -67,8 +70,9 @@ namespace TiCC {
     string result;
     if ( !s.empty() ){
       string::size_type b_pos = s.find_first_not_of( chars );
-      if ( b_pos != string::npos )
+      if ( b_pos != string::npos ){
 	result = s.substr( b_pos );
+      }
     }
     return result;
   }
@@ -78,8 +82,9 @@ namespace TiCC {
     string result;
     if ( !s.empty() ){
       string::size_type e_pos = s.find_last_not_of( chars );
-      if ( e_pos != string::npos )
+      if ( e_pos != string::npos ){
 	result = s.substr( 0, e_pos+1 );
+      }
     }
     return result;
   }
@@ -150,8 +155,9 @@ namespace TiCC {
 	res = src.substr( pos, p - pos );
 	pos = p + sep.length();
       }
-      if ( !res.empty() || exact )
+      if ( !res.empty() || exact ){
 	results.push_back( res );
+      }
     }
     return results.size();
   }

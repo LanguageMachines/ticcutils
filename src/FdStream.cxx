@@ -149,10 +149,12 @@ bool nb_getline( istream& is, string& result, int& timeout ){
 	count = 0;
       }
     }
-    else if ( is.eof() && !result.empty() )
+    else if ( is.eof() && !result.empty() ){
       return true;
-    else
+    }
+    else {
       return false;
+    }
   }
   return false;
 }

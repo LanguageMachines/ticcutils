@@ -44,8 +44,9 @@ namespace TiCC {
       return false;
     }
     string outname = outName;
-    if ( outname.empty() )
+    if ( outname.empty() ){
       outname = inName + ".bz2";
+    }
     std::ofstream outfile( outname, std::ios::binary);
     if ( !outfile ){
       cerr << "bz2: unable to open outputfile: " << outname << endl;
@@ -165,8 +166,9 @@ namespace TiCC {
       return false;
     }
     string outname = outName;
-    if ( outname.empty() )
+    if ( outname.empty() ){
       outname = inName + ".gz";
+    }
     ogzstream outfile( outname, ios::binary|ios::out );
     if ( !outfile ){
       cerr << "gz: unable to open outputfile: " << outname << endl;

@@ -45,7 +45,9 @@ using namespace std;
 namespace Sockets {
 
   Socket::~Socket() {
-    if ( sock >= 0 ) ::close(sock);
+    if ( sock >= 0 ) {
+      ::close(sock);
+    }
   }
 
   void milli_wait( int m_secs ){
@@ -81,7 +83,7 @@ namespace Sockets {
 #endif
     while ( last_read != 10 ) { // read 1 character at a time upto \n
       bytes_read = ::read( sock, &last_read, 1 );
-      if ( bytes_read <= 0) {
+      if ( bytes_read <= 0 ){
 #ifdef DEBUG
 	cerr << "read res = " << bytes_read  << " ( " << strerror(bytes_read) << ")" << endl;
 #endif
@@ -90,7 +92,7 @@ namespace Sockets {
 	sock = -1;
 	break;
       }
-      if ( ( last_read != 10 ) && ( last_read !=13 ) ) {
+      if ( ( last_read != 10 ) && ( last_read != 13 ) ) {
 	line += last_read;
 	total_count++;
       }
@@ -238,10 +240,12 @@ namespace Sockets {
 
   string Socket::getMessage() const{
     string m;
-    if ( isValid() )
+    if ( isValid() ){
       m = "socket " + TiCC::toString(sock);
-    else
+    }
+    else {
       m = "invalid socket ";
+    }
     if ( !mess.empty() ){
       m += ": " + mess;
     }
@@ -332,8 +336,9 @@ namespace Sockets {
       aip = res;
       while ( aip ){
 	sock = socket( aip->ai_family, aip->ai_socktype, aip->ai_protocol);
-	if ( sock > 0 )
+	if ( sock > 0 ){
 	  break;
+	}
 	sock = -1;
 	aip = aip->ai_next;
       }
@@ -406,10 +411,12 @@ namespace Sockets {
     socklen_t clilen = sizeof(cli_addr);
     int newsock = ::accept( sock, (struct sockaddr *)&cli_addr, &clilen );
     if( newsock < 0 ){
-      if ( errno == EINTR )
+      if ( errno == EINTR ){
 	mess = string("server-accept interrupted." );
-      else
+      }
+      else {
 	mess = string("server-accept failed: (") + strerror(errno) + ")";
+      }
       return false;
     }
     else {
@@ -531,10 +538,12 @@ namespace Sockets {
     socklen_t clilen = sizeof(cli_addr);
     int newsock = ::accept( sock, (struct sockaddr *)&cli_addr, &clilen );
     if( newsock < 0 ){
-      if ( errno == EINTR )
+      if ( errno == EINTR ){
 	mess = string("server-accept interrupted." );
-      else
+      }
+      else {
 	mess = string("server-accept failed: (") + strerror(errno) + ")";
+      }
       return false;
     }
     else {

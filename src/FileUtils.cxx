@@ -60,7 +60,7 @@ namespace TiCC {
       mess += strerror( errno );
       throw runtime_error( mess );
     }
-    for( unsigned int i=0; i<glob_result.gl_pathc; ++i ){
+    for ( unsigned int i=0; i<glob_result.gl_pathc; ++i ){
       result.push_back(string(glob_result.gl_pathv[i]));
     }
     globfree(&glob_result);
@@ -71,8 +71,9 @@ namespace TiCC {
     /// is 'name' an accessible directory
     struct stat st_buf;
     int status = stat( name.c_str(), &st_buf );
-    if ( status < 0 )
+    if ( status < 0 ){
       return false;
+    }
     return S_ISDIR (st_buf.st_mode);
   }
 
@@ -80,8 +81,9 @@ namespace TiCC {
     /// is 'name' an accessible file
     struct stat st_buf;
     int status = stat( name.c_str(), &st_buf );
-    if ( status < 0 )
+    if ( status < 0 ){
       return false;
+    }
     return S_ISREG (st_buf.st_mode);
   }
 
@@ -266,10 +268,12 @@ namespace TiCC {
       if ( parts.size() > 0 ){
 	//  at least one /
 	string newpath;
-	if ( path[0] == '/' )
+	if ( path[0] == '/' ){
 	  newpath = "/";
-	else
+	}
+	else {
 	  newpath = "./";
+	}
 	for ( auto const& p : parts ){
 	  newpath += p + "/";
 	  //	  cerr << "mkdir path = " << newpath << endl;
@@ -297,8 +301,9 @@ namespace TiCC {
     }
     else if ( pos != string::npos ){
       path = name.substr( 0, pos+1 );
-      if ( !createTruePath( path ) )
+      if ( !createTruePath( path ) ){
 	return false;
+      }
     }
     ofstream os( name );
     if ( !os.good() ){

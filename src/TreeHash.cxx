@@ -71,10 +71,10 @@ namespace Hash {
 
   unsigned int StringHash::Lookup( const string& name ) const {
     HashInfo *info = StringTree.Retrieve( name );
-    if ( info )
+    if ( info ){
       return info->Index();
-    else
-      return 0;
+    }
+    return 0;
   }
 
   const string& StringHash::ReverseLookup( unsigned int index ) const {

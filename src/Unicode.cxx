@@ -70,16 +70,21 @@ namespace TiCC {
       // NEVER EVER delete _normalizer! it is static
       UErrorCode err = U_ZERO_ERROR;
       if ( enc == ""
-	   || enc == "NFC" )
+	   || enc == "NFC" ){
 	_normalizer = Normalizer2::getNFCInstance( err );
-      else if ( enc == "NONE" )
+      }
+      else if ( enc == "NONE" ){
 	_normalizer = 0;
-      else if ( enc == "NFD" )
+      }
+      else if ( enc == "NFD" ){
 	_normalizer = Normalizer2::getNFDInstance( err );
-      else if ( enc == "NFKC" )
+      }
+      else if ( enc == "NFKC" ){
 	_normalizer = Normalizer2::getNFKCInstance( err );
-      else if ( enc == "NFKD" )
+      }
+      else if ( enc == "NFKD" ){
 	_normalizer = Normalizer2::getNFKDInstance( err );
+      }
       else {
 	throw logic_error( "invalid normalization mode: " + enc );
       }
@@ -254,7 +259,7 @@ namespace TiCC {
 	    if ( _debug ){
 	      cerr << "start = " << start << endl;
 	    }
-	    if (!U_FAILURE(u_stat)){
+	    if ( !U_FAILURE(u_stat) ){
 	      if ( start < 0 ){
 		continue;
 	      }
@@ -271,7 +276,7 @@ namespace TiCC {
 	    if ( _debug ){
 	      cerr << "end = " << end << endl;
 	    }
-	    if (!U_FAILURE(u_stat)){
+	    if ( !U_FAILURE(u_stat) ){
 	      results.push_back( UnicodeString( line, start, end - start ) );
 	      if ( _debug ){
 		cerr << "added result " << results.back() << endl;
@@ -295,17 +300,17 @@ namespace TiCC {
   }
 
   const UnicodeString UnicodeRegexMatcher::get_match( unsigned int n ) const{
-    if ( n < results.size() )
+    if ( n < results.size() ){
       return results[n];
-    else
-      return "";
+    }
+    return "";
   }
 
   int UnicodeRegexMatcher::NumOfMatches() const {
-    if ( results.size() > 0 )
+    if ( results.size() > 0 ){
       return results.size()-1;
-    else
-      return 0;
+    }
+    return 0;
   }
 
   int UnicodeRegexMatcher::split( const UnicodeString& us,

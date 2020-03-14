@@ -349,10 +349,12 @@ namespace TimblServer {
 	<< " server on port " << _server_port << endl;
     if ( !_pid_file.empty() ){
       // check validity of pidfile
-      if ( _do_daemon && _pid_file[0] != '/' ) // make sure the path is absolute
+      if ( _do_daemon && _pid_file[0] != '/' ) {
+	// make sure the path is absolute
 	_pid_file = '/' + _pid_file;
-      unlink( _pid_file.c_str() ) ;
-      ofstream pid_file( _pid_file ) ;
+      }
+      unlink( _pid_file.c_str() );
+      ofstream pid_file( _pid_file );
       if ( !pid_file ){
 	LOG<< "unable to create pidfile:"<< _pid_file << endl;
 	LOG<< "not Started" << endl;
@@ -361,8 +363,10 @@ namespace TimblServer {
     }
     ostream *logS = 0;
     if ( !_log_file.empty() ){
-      if ( _do_daemon && _log_file[0] != '/' ) // make sure the path is absolute
+      if ( _do_daemon && _log_file[0] != '/' ) {
+	// make sure the path is absolute
 	_log_file = '/' + _log_file;
+      }
       logS = new ofstream( _log_file );
       if ( logS && logS->good() ){
 	LOG << "switching logging to file " << _log_file << endl;

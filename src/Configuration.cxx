@@ -420,8 +420,9 @@ namespace TiCC {
     string sect = TiCC::trim( insect );
     if ( !sect.empty() ){
       auto const it = myMap.find( sect );
-      if ( it != myMap.end() )
+      if ( it != myMap.end() ){
 	return true;
+      }
     }
     return false;
   }

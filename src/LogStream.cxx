@@ -344,8 +344,9 @@ namespace TiCC {
     if ( !bad() ){
       return getlevel() <= getthreshold();
     }
-    else
+    else {
       return true;
+    }
   }
 
   bool IsActive( LogStream &ls ){
@@ -379,16 +380,19 @@ namespace TiCC {
   Log::~Log(){
     my_stream->flush();
     my_stream->setthreshold( my_level );
-    if ( !my_stream->single_threaded() )
+    if ( !my_stream->single_threaded() ){
       mutex_release();
+    }
   }
 
   LogStream& Log::operator *(){
 #ifdef DARE_TO_OPTIMIZE
-    if ( my_stream->getlevel() >= my_stream->getthreshold() )
+    if ( my_stream->getlevel() >= my_stream->getthreshold() ){
       return *my_stream;
-    else
+    }
+    else {
       return null_stream;
+    }
 #else
     return *my_stream;
 #endif
@@ -416,16 +420,19 @@ namespace TiCC {
   Dbg::~Dbg(){
     my_stream->flush();
     my_stream->setthreshold( my_level );
-    if ( !my_stream->single_threaded() )
+    if ( !my_stream->single_threaded() ){
       mutex_release();
+    }
   }
 
   LogStream& Dbg::operator *() {
 #ifdef DARE_TO_OPTIMIZE
-    if ( my_stream->getlevel() >= my_stream->getthreshold() )
+    if ( my_stream->getlevel() >= my_stream->getthreshold() ){
       return *my_stream;
-    else
+    }
+    else {
       return null_stream;
+    }
 #else
     return *my_stream;
 #endif
@@ -453,16 +460,19 @@ namespace TiCC {
   xDbg::~xDbg(){
     my_stream->flush();
     my_stream->setthreshold( my_level );
-    if ( !my_stream->single_threaded() )
+    if ( !my_stream->single_threaded() ){
       mutex_release();
+    }
   }
 
   LogStream& xDbg::operator *(){
 #ifdef DARE_TO_OPTIMIZE
-    if ( my_stream->getlevel() >= my_stream->getthreshold() )
+    if ( my_stream->getlevel() >= my_stream->getthreshold() ){
       return *my_stream;
-    else
+    }
+    else {
       return null_stream;
+    }
 #else
     return *my_stream;
 #endif
@@ -490,16 +500,19 @@ namespace TiCC {
   xxDbg::~xxDbg(){
     my_stream->flush();
     my_stream->setthreshold( my_level );
-    if ( !my_stream->single_threaded() )
+    if ( !my_stream->single_threaded() ){
       mutex_release();
+    }
   }
 
   LogStream& xxDbg::operator *(){
 #ifdef DARE_TO_OPTIMIZE
-    if ( my_stream->getlevel() >= my_stream->getthreshold() )
+    if ( my_stream->getlevel() >= my_stream->getthreshold() ){
       return *my_stream;
-    else
+    }
+    else {
       return null_stream;
+    }
 #else
     return *my_stream;
 #endif
