@@ -320,8 +320,9 @@ namespace TiCC {
     UnicodeString words[maxWords];
     UErrorCode status = U_ZERO_ERROR;
     int numWords = matcher->split( us, words, maxWords, status );
-    for ( int i = 0; i < numWords; ++i )
+    for ( int i = 0; i < numWords; ++i ){
       result.push_back( words[i] );
+    }
     return numWords;
   }
 

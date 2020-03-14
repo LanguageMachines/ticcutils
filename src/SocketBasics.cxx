@@ -410,7 +410,7 @@ namespace Sockets {
     struct sockaddr_storage cli_addr;
     socklen_t clilen = sizeof(cli_addr);
     int newsock = ::accept( sock, (struct sockaddr *)&cli_addr, &clilen );
-    if( newsock < 0 ){
+    if ( newsock < 0 ){
       if ( errno == EINTR ){
 	mess = string("server-accept interrupted." );
       }
@@ -537,7 +537,7 @@ namespace Sockets {
     struct sockaddr_storage cli_addr;
     socklen_t clilen = sizeof(cli_addr);
     int newsock = ::accept( sock, (struct sockaddr *)&cli_addr, &clilen );
-    if( newsock < 0 ){
+    if ( newsock < 0 ){
       if ( errno == EINTR ){
 	mess = string("server-accept interrupted." );
       }

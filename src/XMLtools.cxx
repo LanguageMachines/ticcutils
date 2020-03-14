@@ -129,8 +129,9 @@ namespace TiCC {
       }
       xmlNodeSet* nodeset = result->nodesetval;
       if ( nodeset ){
-	for (int i = 0; i != nodeset->nodeNr; ++i)
+	for ( int i = 0; i != nodeset->nodeNr; ++i ){
 	  nodes.push_back(nodeset->nodeTab[i]);
+	}
       }
       xmlXPathFreeObject(result);
     }
