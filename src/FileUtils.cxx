@@ -323,13 +323,17 @@ namespace TiCC {
     string path = "/tmp/" + label;
     string temp = path + "XXXXXX";
     char *filename = strdup(temp.c_str());
-    if ( mkstemp(filename) < 0 ){
+    
+    int temp_file = mkstemp(filename);
+    if ( temp_file < 0 ){
       throw runtime_error( "unable to create a temporary file under path="
 			   + path );
     }
     //  cerr << "created temporary file: " << filename << endl;
     string result = filename;
     free( filename );
+    // Prevent hitting open files limit in some cases
+    close( temp_file );
     return result;
   }
 
