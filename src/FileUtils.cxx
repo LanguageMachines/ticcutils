@@ -68,7 +68,7 @@ namespace TiCC {
   }
 
   bool isDir( const string& name ){
-    /// is 'name' an accessible directory
+    /// check if 'name' is an accessible directory
     struct stat st_buf;
     int status = stat( name.c_str(), &st_buf );
     if ( status < 0 ){
@@ -78,7 +78,7 @@ namespace TiCC {
   }
 
   bool isFile( const string& name ){
-    /// is 'name' an accessible file
+    /// check if 'name' an accessible file
     struct stat st_buf;
     int status = stat( name.c_str(), &st_buf );
     if ( status < 0 ){
@@ -323,7 +323,7 @@ namespace TiCC {
     string path = "/tmp/" + label;
     string temp = path + "XXXXXX";
     char *filename = strdup(temp.c_str());
-    
+
     int temp_file = mkstemp(filename);
     if ( temp_file < 0 ){
       throw runtime_error( "unable to create a temporary file under path="

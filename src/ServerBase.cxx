@@ -56,12 +56,20 @@ namespace TimblServer {
 
   childArgs::childArgs( ServerBase *server, Sockets::ServerSocket *sock ):
     _mother(server),_socket(sock){
+    /// create a childArgs structure
+    /*!
+      \param server our Server object
+      \param sock the Socket object
+
+      This fuction opens an input and an output stream connected to the socket.
+    */
     _id = _socket->getSockId();
     _is.open(_id);
     _os.open(_id);
   }
 
   childArgs::~childArgs( ){
+    /// destroy the childArgs object
     _os.flush();
     delete _socket;
   }
@@ -77,7 +85,7 @@ namespace TimblServer {
     return result;
   }
 
-  ServerBase::ServerBase( const Configuration *c,
+  ServerBase::ServerBase( const Configuration *config,
 			  void *callback_data ):
     _my_log("BasicServer"),
     _do_daemon( true ),
@@ -86,8 +94,13 @@ namespace TimblServer {
     _server_port( 7000 ),
     _callback_data( callback_data ),
     _protocol( "tcp" ),
-    _config(c)
+    _config(config)
   {
+    /// create a Basic Server
+    /*!
+      \param config the configuration informatio to use
+      \param callback_data a structure with data to use in every call
+    */
     string value = _config->lookUp( "port" );
     if ( !value.empty() ){
       if ( !stringTo( value, _server_port ) ){
@@ -157,6 +170,7 @@ namespace TimblServer {
   }
 
   void ServerBase::server_usage(void) {
+    /// display helpful information
     cerr << "Server options" << endl;
     cerr << "--config=<f> or -c <f> : read server settings from file <f>" << endl;
     cerr << "--pidfile=<f> : store pid in file <f>" << endl;
@@ -169,6 +183,11 @@ namespace TimblServer {
   }
 
   Configuration *initServerConfig( TiCC::CL_Options& opts ){
+    /// initialize a Configuration from command-line options
+    /*!
+      \param opts The command line options
+      \return the created Configuration
+    */
     Configuration *config = new Configuration();
     bool old = false;
     string value;
@@ -218,6 +237,8 @@ namespace TimblServer {
   }
 
   void *ServerBase::callChild( void *a ) {
+    /// generic callback function
+    /// pass the argument as a childArgs struct to the Server
     childArgs* ca = reinterpret_cast<childArgs*>(a);
     ca->mother()->socketChild( ca );
     return 0;
@@ -226,6 +247,7 @@ namespace TimblServer {
   static bool keepGoing = true;
 
   void KillServerFun( int Signal ){
+    /// function to handle SIGTERM signals
     if ( Signal == SIGTERM ){
       cerr << "KillServerFun caught a signal SIGTERM" << endl;
       keepGoing = false; // so stop accepting new connections
@@ -235,6 +257,7 @@ namespace TimblServer {
   }
 
   void AfterDaemonFun( int Signal ){
+    /// function to handle SIGCHILD signals
     cerr << "AfterDaemonFun caught a signal " << Signal << endl;
     if ( Signal == SIGCHLD ){
       exit(1);
@@ -242,13 +265,19 @@ namespace TimblServer {
   }
 
   void BrokenPipeChildFun( int Signal ){
+    /// function to handle SIGPIPE signals
     cerr << "BrokenPipeChildFun caught a signal " << Signal << endl;
     if ( Signal == SIGPIPE ){
       signal( SIGPIPE, BrokenPipeChildFun );
     }
   }
 
-
+  /// run the Server as a daemon
+  /*!
+    \param noCD if ≠ 0, don't cd to the root dir
+    \param noClose if ≠ 0 don't close stdin and stdout
+    \return
+  */
 #ifdef HAVE_DAEMON
   int ServerBase::daemonize( int noCD , int noClose ){
     return daemon( noCD, noClose );
@@ -300,12 +329,19 @@ namespace TimblServer {
 #endif // HAVE_DAEMON
 
   void ServerBase::sendReject( ostream& os ) const {
+    /// send message that we are too busy
     os << "Maximum connections exceeded." << endl;
     os << "try again later..." << endl;
   }
 
-  // ***** This is the routine that is executed from a new TCP thread *******
   void ServerBase::socketChild( childArgs *args ){
+    /// run a child in a new thread
+    /*!
+      \param args the arguments to use.
+
+      this function calls callback() and will run until that function
+      returns.
+    */
     signal( SIGPIPE, BrokenPipeChildFun );
     LOG << "Thread " << (uintptr_t)pthread_self() << " on socket "
 	<< args->id() << ", started at: " << Timer::now() << endl;
@@ -335,16 +371,25 @@ namespace TimblServer {
   }
 
   void HttpServerBase::sendReject( ostream& os ) const {
+    /// send HTTP message that we are too busy
     os << "Status:503 Maximum number of connections exceeded.\n" << endl;
   }
 
   // ***** This is the routine that is executed from a new HTTP thread *******
   void HttpServerBase::socketChild( childArgs *args ){
+    /// run a HTTP child in a new thread
+    /*!
+      \param args the arguments to use.
+
+      this function sets the connected streams to Non-Blocking and then calls
+      serverBase::socketChild
+    */
     args->socket()->setNonBlocking();
     ServerBase::socketChild( args );
   }
 
   int ServerBase::Run(){
+    /// run a Server. Must be configured before.
     LOG << "Starting a " << _protocol
 	<< " server on port " << _server_port << endl;
     if ( !_pid_file.empty() ){

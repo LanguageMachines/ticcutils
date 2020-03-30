@@ -37,7 +37,7 @@ class fdoutbuf: public std::streambuf {
   bool connect( int );
  protected:
   virtual int overflow( int );
-  virtual std::streamsize xsputn( const char *, std::streamsize );
+  virtual std::streamsize xsputn( const char *s, std::streamsize num );
   int fd; // file descriptor
 };
 
@@ -45,8 +45,15 @@ class fdostream: public std::ostream {
  protected:
   fdoutbuf buf;
  public:
- explicit fdostream( int fd ): std::ostream(&buf), buf(fd) {};
- fdostream(): std::ostream(&buf) {};
+ explicit fdostream( int fd ): std::ostream(&buf), buf(fd) {
+    /// create an fd outputstream
+    /*!
+      \param fd the file descriptor to use
+    */
+  };
+ fdostream(): std::ostream(&buf) {
+    /// create an fd outputstream
+  };
   bool open( int fd );
 };
 
@@ -67,11 +74,18 @@ class fdistream: public std::istream {
  protected:
   fdinbuf buf;
  public:
-  explicit fdistream( int fd ): std::istream(&buf), buf(fd) {};
- fdistream(): std::istream(&buf) {};
+  explicit fdistream( int fd ): std::istream(&buf), buf(fd) {
+    /// create an fd inputstream
+    /*!
+      \param fd the file descriptor to use
+    */
+  };
+ fdistream(): std::istream(&buf) {
+    /// create an fd inputstream
+  };
   bool open( int fd );
 };
 
-bool nb_getline( std::istream&, std::string&, int& );
-bool nb_putline( std::ostream&, const std::string&, int& );
+bool nb_getline( std::istream& is, std::string& result, int& timeout );
+bool nb_putline( std::ostream& os, const std::string& what, int& timeout );
 #endif

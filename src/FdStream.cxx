@@ -39,6 +39,10 @@
 using namespace std;
 
 void milli_wait( int m_secs ){
+  /// sleep for some milli-seconds
+  /*!
+    \param m_secs the milliseconds to sleep
+  */
   struct timespec tv;
   ldiv_t div = ldiv( m_secs, 1000 );
   tv.tv_sec = div.quot;               // seconds
@@ -48,10 +52,22 @@ void milli_wait( int m_secs ){
   }
 }
 
-fdoutbuf::fdoutbuf(): fd(-1) { }
-fdoutbuf::fdoutbuf( int _fd ): fd(_fd) { }
+fdoutbuf::fdoutbuf(): fd(-1) {
+  /// constructor for a non-initialized fd output buffer
+}
+fdoutbuf::fdoutbuf( int _fd ): fd(_fd) {
+  /// constructor for a fd output buffer connected to a file descriptor
+  /*!
+    \param _fd the file descriptor
+  */
+}
 
 bool fdoutbuf::connect( int _fd ){
+  /// connect a fd output buffer to a file descriptor
+  /*!
+    \param _fd the file descriptor
+    \return true on succes. Will throw otherwise
+  */
   if ( fd >= 0 ){
     throw logic_error( "FDstream: output buffer already connected" );
   }
@@ -60,6 +76,11 @@ bool fdoutbuf::connect( int _fd ){
 }
 
 int fdoutbuf::overflow( int c ){
+  /// overloaded version of streambuf::overflow()
+  /*!
+    \param c the character to write (integer value!)
+    \return the character written, OR EOF when we are done
+  */
   if ( c != EOF ){
     char z = c;
     if ( write( fd, &z, 1 ) != 1 ) {
@@ -69,24 +90,40 @@ int fdoutbuf::overflow( int c ){
   return c;
 }
 
-std::streamsize fdoutbuf::xsputn( const char *s, std::streamsize num ){
+streamsize fdoutbuf::xsputn( const char *s, streamsize num ){
+  /// overloaded version of streambuf::xputn()
+  /*!
+    \param s the range of characters to write
+    \param num the number of characters to write
+    \return the number of characters actually written
+  */
   return write( fd, s, num );
 }
 
 
 fdinbuf::fdinbuf(): fd(-1) {
+  /// constructor for a non-initialized fd input buffer
   setg( buffer + putbackSize,
 	buffer + putbackSize,
 	buffer + putbackSize );
 }
 
 fdinbuf::fdinbuf( int _fd ): fd(_fd) {
+  /// constructor for a fd input buffer connected to a file descriptor
+  /*!
+    \param _fd the file descriptor
+  */
   setg( buffer + putbackSize,
 	buffer + putbackSize,
 	buffer + putbackSize );
 }
 
 bool fdinbuf::connect( int _fd ){
+  /// connect a fd input buffer to a file descriptor
+  /*!
+    \param _fd the file descriptor
+    \return true on succes. Will throw otherwise
+  */
   if ( fd >= 0 ){
     throw logic_error( "FDstream: input buffer already connected" );
   }
@@ -95,6 +132,10 @@ bool fdinbuf::connect( int _fd ){
 }
 
 int fdinbuf::underflow(){
+  /// overloaded version of streambuf::underflow()
+  /*!
+    \return the next character in the input WITHOUT reading it. Might return EOF
+  */
   if ( gptr() < egptr() ){
     return traits_type::to_int_type(*gptr());
   }
@@ -120,10 +161,17 @@ int fdinbuf::underflow(){
 // #define DEBUG
 
 bool nb_getline( istream& is, string& result, int& timeout ){
-  // a getline for nonblocking connections.
-  // retry for a few special cases until timeout reached.
-  // return false except when correctly terminated
-  // ( meaning \n or an EOF after at least some input)
+  /// a getline for nonblocking connections.
+  /*!
+    \param is the stream te read from. Should be non-blocking!
+    \param result the string read
+    \param timeout the retry time in seconds until failure
+    \return false except when correctly terminated
+    ( meaning \n or an EOF after at least some input)
+
+    this function will retry the read for a few special cases until timeout
+    is reached.
+  */
   result = "";
   char c;
   int count = 0;
@@ -160,10 +208,16 @@ bool nb_getline( istream& is, string& result, int& timeout ){
 }
 
 bool nb_putline( ostream& os, const string& what, int& timeout ){
-  // a putline for nonblocking connections.
-  // retry for a few special cases until timeout reached.
-  // return false except when correctly terminated
-  // Must handle SIGPIPE
+  /// a putline for nonblocking connections.
+  /*!
+    \param os the output stream, must be NON-BLOCKING
+    \param what the buffer to write
+    \param timeout the time in seconds to wait until failure
+    \return false except when correctly terminated.
+    retry for a few special cases until timeout reached.
+
+    Must handle SIGPIPE.
+  */
   unsigned int i=0;
   int count = 0;
   bool result = true;
@@ -199,11 +253,13 @@ bool nb_putline( ostream& os, const string& what, int& timeout ){
 }
 
 bool fdistream::open( int fd ){
+  /// open an input stream connected to a file descriptor
   buf.connect( fd );
   return true;
 }
 
 bool fdostream::open( int fd ){
+  /// open an output stream connected to a file descriptor
   buf.connect( fd );
   return true;
 }

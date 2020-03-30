@@ -45,12 +45,17 @@ using namespace std;
 namespace Sockets {
 
   Socket::~Socket() {
+    /// destroy a Socket object
     if ( sock >= 0 ) {
       ::close(sock);
     }
   }
 
   void milli_wait( int m_secs ){
+    /// sleep for some milli-seconds
+    /*!
+      \param m_secs the milliseconds to sleep
+    */
     struct timespec tv;
     ldiv_t div = ldiv( m_secs, 1000 );
     tv.tv_sec = div.quot;               // seconds
@@ -64,6 +69,11 @@ namespace Sockets {
   //#define DEBUG
 
   bool Socket::read( string& line ) {
+    /// read s string from the socket
+    /*!
+      \param line the result
+      \return true on succes, false otherwise
+    */
     if ( !isValid() ){
       mess = "read: socket invalid";
 #ifdef DEBUG
@@ -114,10 +124,12 @@ namespace Sockets {
   }
 
   bool Socket::read( string& result, unsigned int timeout ) {
-    // a getline for nonblocking connections.
-    // retry for a few special cases until timeout reached.
-    // return false except when correctly terminated
-    // ( meaning \n or an EOF after at least some input)
+    /// read a line upto a NEWLINE from a nonblocking connection.
+    /*!
+      \param result the read line
+      \param timeout seconds to use for retry
+      \return true if something is read, false on error
+    */
     result = "";
     if ( !nonBlocking ){
       mess = "attempted timout read on a blocking socket";
@@ -165,6 +177,11 @@ namespace Sockets {
 
 
   bool Socket::write( const string& line ){
+    /// write a line to a socket
+    /*!
+      \param line the line to write
+      \return true on succes, false on error
+    */
     if ( !isValid() ){
       mess = "write: socket invalid";
       return false;
@@ -199,6 +216,12 @@ namespace Sockets {
   }
 
   bool Socket::write( const string& line, unsigned int timeout ){
+    /// write a line to a socket
+    /*!
+      \param line the line to write
+      \param timeout the number of seconds to use for retrying
+      \return true on succes, false on error
+    */
     if ( !isValid() ){
       mess = "write: socket invalid";
       return false;
@@ -239,6 +262,7 @@ namespace Sockets {
   }
 
   string Socket::getMessage() const{
+    /// return an error message set in lower layers
     string m;
     if ( isValid() ){
       m = "socket " + TiCC::toString(sock);
@@ -253,6 +277,10 @@ namespace Sockets {
   }
 
   bool Socket::setBlocking( ) {
+    /// set the socket to blocking mode
+    /*!
+      \return false on failure, true otherwise
+    */
     int opts = fcntl( sock, F_GETFL );
 #ifdef DEBUG
     cerr << "socket opts = " << opts << endl;
@@ -285,6 +313,10 @@ namespace Sockets {
   }
 
   bool Socket::setNonBlocking() {
+    /// set the socket to non-blocking mode
+    /*!
+      \return false on failure, true otherwise
+    */
     int opts = fcntl( sock, F_GETFL );
 #ifdef DEBUG
     cerr << "socket opts = " << opts << endl;
@@ -320,6 +352,12 @@ namespace Sockets {
 
   bool ClientSocket::connect( const string& hostString,
 			      const string& portString ){
+    /// connect a Client to an external server
+    /*!
+      \param hostString the name of the server to use
+      \param portString the number of the port of the server
+      \return true on success, false otherwise
+    */
     struct addrinfo *res, *aip;
     struct addrinfo hints;
     memset( &hints, 0, sizeof(hints) );
@@ -365,6 +403,11 @@ namespace Sockets {
   }
 
   bool ServerSocket::connect( const string& port ){
+    /// connect the Server to an port
+    /*!
+      \param port the number of the port of the server
+      \return true on success, false otherwise
+    */
     sock = -1;
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints));
@@ -406,6 +449,11 @@ namespace Sockets {
   }
 
   bool ServerSocket::accept( ServerSocket& newSocket ){
+    /// accept a connection on a socket
+    /*!
+      \param newSocket the socket to connect to
+      \return true on success, false otherwise
+    */
     newSocket.sock = -1;
     struct sockaddr_storage cli_addr;
     socklen_t clilen = sizeof(cli_addr);
@@ -573,6 +621,11 @@ namespace Sockets {
 #endif
 
   bool ServerSocket::listen( unsigned int num ){
+    /// start listening on a socket
+    /*!
+      \param num the maximum connections we accept
+      \return true on succes, false otherwise
+    */
     if ( ::listen( sock, num) < 0 ) {
       // maximum of num pending requests
       mess = string("server-listen failed: (") + strerror(errno) + ")";
