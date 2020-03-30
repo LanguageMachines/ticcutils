@@ -41,14 +41,21 @@ using namespace std;
 
 namespace TiCC {
 
-  tar::tar() : tar_file(0)
-  {}
+  tar::tar() : tar_file(0) {
+    /// create a tar object
+  }
 
   tar::~tar(){
+    /// destroy a tar object
     close();
   }
 
   bool tar::open( const string& name ){
+    /// connect a tar object to a stream
+    /*!
+      \param name the name of a .tar file
+      \return true on succes, false otherwise
+    */
     if ( !tarname.empty() ){
       cerr << "tar already opened!" << endl;
       return false;
@@ -66,6 +73,12 @@ namespace TiCC {
 
   bool tar::extract_file_names( vector<string>& result,
 				const string& ext ){
+    /// extract the file names from the connected file
+    /*!
+      \param result a vector of filenames found
+      \param ext limit the search to this file extension
+      \return true on succes, false otherwise
+    */
     result.clear();
     if ( tarname.empty() ){
       cerr << "no tar opened yet" << endl;
@@ -95,7 +108,7 @@ namespace TiCC {
   }
 
   static string wildToRegExp( const string& wild ){
-    // convert 'shell'-like wildcards into a regexp
+    /// convert 'shell'-like wildcards into a regexp
     string result;
     for ( auto const& c : wild ){
       switch( c ){
@@ -118,6 +131,12 @@ namespace TiCC {
 
   bool tar::extract_file_names_match( vector<string>& result,
 				      const string& wild ){
+    /// extract file names from the connected file
+    /*!
+      \param result a vector of filenames found
+      \param wild limit the search to this wildcard pattern
+      \return true on succes, false otherwise
+    */
     result.clear();
     if ( tarname.empty() ){
       cerr << "no tar opened yet" << endl;
@@ -155,6 +174,12 @@ namespace TiCC {
   }
 
   bool tar::extract_ifstream( const string& name, ifstream& result ){
+    /// connect one file from the tar object to an ifstream
+    /*!
+      \param name the filename
+      \param result the ifstream to connect
+      \result true on succes, false otherwise
+    */
     result.close();
     if ( tarname.empty() ){
       cerr << "no tar opened yet" << endl;
@@ -200,6 +225,15 @@ namespace TiCC {
   }
 
   bool tar::next_ifstream( ifstream& result, string& name ){
+    /// connect the next file from the tar object to an ifstream
+    /*!
+      \param result the connected ifstream
+      \param name the next filename found
+      \result true on succes, false otherwise
+
+      use this function repeatedly to extract all files from the tar. Loop
+      until it returns false.
+    */
     result.close();
     if ( tarname.empty() ){
       cerr << "no tar opened yet" << endl;
@@ -244,6 +278,7 @@ namespace TiCC {
   }
 
   bool tar::close() {
+    /// close the tar object
     if ( tar_file != 0 ){
       int res = tar_close( tar_file );
       if ( res < 0 ){
