@@ -34,15 +34,8 @@
 #include <fstream>
 #include <unistd.h>
 #include <sys/fcntl.h>
+#include <regex>
 #include "ticcutils/StringOps.h"
-#if HAVE_BOOST_REGEX
-#  include <boost/regex.hpp>
-#  define regex boost::regex
-#  define regex_error boost::regex_error
-#  define regex_search boost::regex_search
-#else
-#  include <regex>
-#endif
 
 using namespace std;
 
