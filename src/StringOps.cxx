@@ -47,7 +47,12 @@ namespace TiCC {
   }
 
   string trim( const string& s, const string& chars ){
-    // remove leading and trailing characters from a string
+    /// remove leading and trailing characters from a string
+    /*!
+      \param s the string to trim
+      \param chars the characters to remove. The default is whitespace.
+      When \e chars = "", the following chars are used: " \t\r\n"
+    */
     string result;
     if ( !s.empty() ){
       string::size_type b_pos = s.find_first_not_of( chars );
@@ -66,7 +71,12 @@ namespace TiCC {
   }
 
   string trim_front( const string& s, const string& chars ){
-    // remove leading characters from a string
+    /// remove leading characters from a string
+    /*!
+      \param s the string to trim
+      \param chars the characters to remove. The default is whitespace.
+      When \e chars = "", the following chars are used: " \t\r\n"
+    */
     string result;
     if ( !s.empty() ){
       string::size_type b_pos = s.find_first_not_of( chars );
@@ -78,7 +88,12 @@ namespace TiCC {
   }
 
   string trim_back( const string& s, const string& chars ){
-    // remove trailing characters from a string
+    /// remove trailing characters from a string
+    /*!
+      \param s the string to trim
+      \param chars the characters to remove. The default is whitespace.
+      When \e chars = "", the following chars are used: " \t\r\n"
+    */
     string result;
     if ( !s.empty() ){
       string::size_type e_pos = s.find_last_not_of( chars );
@@ -93,26 +108,36 @@ namespace TiCC {
   static int toUpper( const int& i ){ return toupper(i); }
 
   void to_lower( string& s ){
+    /// convert to all lowercase. Modifies the input.
     transform( s.begin(), s.end(), s.begin(), toLower );
   }
 
   void to_upper( string& s ){
+    /// convert to all uppercase. Modifies the input.
     transform( s.begin(), s.end(), s.begin(), toUpper );
   }
 
   string lowercase( const string& s ){
+    /// return a lowercased copy of the inputstring
     string result = s;
     to_lower( result );
     return result;
   }
 
   string uppercase( const string& s ){
+    /// return a uppercased copy of the inputstring
     string result = s;
     to_upper( result );
     return result;
   }
 
   bool match_back( const std::string& s, const std::string& tail ){
+    /// check if a string matches another at the back
+    /*!
+      \param s the string
+      \param tail the string we search in \e s
+      \return true is \e tail is the last pasrt of \e s
+    */
     int res = -2;
     try {
       res = s.compare( s.length() - tail.length(), tail.length(), tail );
@@ -126,8 +151,13 @@ namespace TiCC {
   }
 
   bool match_front( const std::string& s, const std::string& head ){
+    /// check if a string matches another at the front
+    /*!
+      \param s the string
+      \param head the string we search in \e s
+      \return true is \e head is the first part of \e s
+    */
     int res = s.compare(0,head.length(),head);
-    // Doesn't throw when head is longer then s!
     if ( res == 0  ){
       return true;
     }
@@ -136,9 +166,16 @@ namespace TiCC {
 
   size_t split_at( const string& src, vector<string>& results,
 		   const string& sep, bool exact ){
-    // split a string into substrings, using seps as separator
-    // silently skip empty entries (e.g. when two or more separators co-incide)
-    // unless exact=true;
+    /// split a string into substrings.
+    /*!
+      \param src the string to split
+      \param results a vector of split parts
+      \param sep a separator string. May be a multi-character string.
+      \param exact normally, we silently skip empty entries (e.g. when two or
+      more separators co-incide), but not when exact=true. In that case result
+      may contain empty strings.
+      \return the number of parts found
+    */
     if ( sep.empty() ){
       throw runtime_error( "TiCC::split_at(): separator is empty!" );
     }
@@ -165,10 +202,14 @@ namespace TiCC {
   vector<string> split_at( const string& src,
 			   const string& sep,
 			   size_t max ){
-    // split a string into substrings, using seps as separator
-    // silently skip empty entries (e.g. when two or more separators co-incide)
-    // if max > 0, limit the size off the result to max,
-    // leaving the remainder in the last part of the result
+    /// split a string into substrings.
+    /*!
+      \param src the string to split
+      \param sep a separator string. May be a multi-character string.
+      \param max if max > 0, limit the size of the result to \e max strings,
+      leaving the remainder in the last part of the result
+      \return a vector of split parts
+    */
     if ( sep.empty() ){
       throw runtime_error( "TiCC::split_at(): separator is empty!" );
     }
@@ -202,10 +243,17 @@ namespace TiCC {
 
   size_t split_at_first_of( const string& src, vector<string>& results,
 			    const string& seps, bool exact ){
-    // split a string into substrings, using the characters in seps
-    // as seperators
-    // silently skip empty entries (e.g. when two or more seperators co-incide)
-    // unless exact=true;
+    /// split a string into substrings.
+    /*!
+      \param src the string to split
+      \param results a vector of split parts
+      \param seps a string with separator characters. one of those should match
+      for a split to happen.
+      \param exact normally, we silently skip empty entries (e.g. when two or
+      more separators co-incide), but not when exact=true. In that case result
+      may contain empty strings.
+      \return the number of parts found
+    */
     if ( seps.empty() ){
       throw runtime_error( "TiCC::split_at_first_of(): separators are empty!" );
     }
@@ -232,11 +280,15 @@ namespace TiCC {
   vector<string> split_at_first_of( const string& src,
 				    const string& seps,
 				    size_t max ){
-    // split a string into substrings, using the characters in seps
-    // as seperators
-    // silently skip empty entries (e.g. when two or more seperators co-incide)
-    // if max > 0, limit the size of the result to max,
-    // leaving the remainder in the last part of the result
+    /// split a string into substrings.
+    /*!
+      \param src the string to split
+      \param seps a string with separator characters. one of those should match
+      for a split to happen.
+      \param max if max > 0, limit the size of the result to \e max strings,
+      leaving the remainder in the last part of the result
+      \return a vector of split parts
+    */
     if ( seps.empty() ){
       throw runtime_error( "TiCC::split_at_first_of(): separators are empty!" );
     }
@@ -268,9 +320,9 @@ namespace TiCC {
     return results;
   }
 
-  // format weird strings (like UTF8, LATIN1) printable
-  // useful for debugging
   string format_nonascii( const string& s ){
+    /// format weird strings (like UTF8, LATIN1) printable
+    // useful for debugging
     stringstream os;
     os << showbase << hex;
     for ( const auto& c : s ){
@@ -286,6 +338,7 @@ namespace TiCC {
   }
 
   string basename( const string& path ){
+    /// extract the basename of a path/filename
     string::size_type pos = path.rfind( "/" );
     if ( pos != string::npos ){
       return path.substr(pos+1);
@@ -296,6 +349,7 @@ namespace TiCC {
   }
 
   string dirname( const string& path ){
+    /// extract the dirname of a path/filename
     string::size_type pos = path.rfind( "/" );
     if ( pos != string::npos ){
       return path.substr(0,pos);
@@ -306,6 +360,7 @@ namespace TiCC {
   }
 
   string realpath( const string& path ){
+    /// give the 'real' pathname for a relative path/filename
     string result;
     if ( path.empty() ){
       return result;
