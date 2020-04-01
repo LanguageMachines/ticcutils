@@ -36,12 +36,17 @@ using namespace std;
 
 namespace TiCC {
 
-  XmlDoc::XmlDoc( const std::string& elem ){
-    the_doc = xmlNewDoc( (const xmlChar*)"""1.0""" );
+  XmlDoc::XmlDoc( const string& elem ){
+    /// create an XmlDoc with a root node
+    /*!
+      \param elem the tag of the root node
+    */
+    the_doc = xmlNewDoc( (const xmlChar*)"1.0" );
     MakeRoot( elem );
   }
 
   const string XmlDoc::toString() const {
+    /// serialize a complete XmlDoc to an UTF-8 string
     xmlChar *buf;
     int size;
     xmlDocDumpFormatMemoryEnc( the_doc, &buf, &size, "UTF-8", 1 );
@@ -51,6 +56,7 @@ namespace TiCC {
   }
 
   xmlNode *XmlDoc::getRoot() const {
+    /// return the root node
     if ( the_doc ){
       return xmlDocGetRootElement(the_doc);
     }
@@ -58,12 +64,18 @@ namespace TiCC {
   }
 
   void XmlDoc::setRoot( xmlNode *node ){
+    /// set the root node
     if ( the_doc ){
       xmlDocSetRootElement(the_doc, node );
     }
   }
 
   xmlNode *XmlDoc::MakeRoot( const string& elem ){
+    /// create a root node with tag \e elem
+    /*!
+      \param elem the tag of the new root node
+      \return the newly created node
+    */
     xmlNode *root;
     root = xmlNewDocNode( the_doc, 0, (const xmlChar*)elem.c_str(), 0 );
     xmlDocSetRootElement( the_doc, root );
@@ -71,6 +83,12 @@ namespace TiCC {
   }
 
   string getNS( const xmlNode *node, string& prefix ){
+    /// get the NameSpace of a node
+    /*!
+      \param node the node to examine
+      \param prefix the prefix of the namespace
+      \return the href of the namespace
+    */
     string result;
     prefix = "";
     xmlNs *p = node->ns;
@@ -84,6 +102,11 @@ namespace TiCC {
   }
 
   map<string,string> getNSvalues( const xmlNode *node ){
+    /// get the NameSpaces related to a node
+    /*!
+      \param node the node to examine
+      \return a map of prefix to href
+    */
     map<string,string> result;
     xmlNs *p = node->ns;
     while ( p ){
@@ -100,6 +123,11 @@ namespace TiCC {
   }
 
   map<string,string> getDefinedNS( const xmlNode *node ){
+    /// get the NameSpaces defined on a node
+    /*!
+      \param node the node to examine
+      \return a map of prefix to href
+    */
     map<string,string> result;
     xmlNs *p = node->nsDef;
     while ( p ){
@@ -119,6 +147,12 @@ namespace TiCC {
 
   list<xmlNode*> FindLocal( xmlXPathContext* ctxt,
 			    const string& xpath ){
+    /// extract all nodes matching a XPath
+    /*!
+      \param ctxt the XPathContext to search through
+      \param xpath an XPath expression
+      \return a list of all matching nodes
+    */
     list<xmlNode*> nodes;
     xmlXPathObject* result = xmlXPathEval((xmlChar*)xpath.c_str(), ctxt);
     if ( result ){
@@ -144,6 +178,13 @@ namespace TiCC {
   const string defaultP = "default";
 
   void register_namespaces( xmlXPathContext* ctxt ){
+    /// register all the namespaces in a XPathContext
+    /*!
+      \param ctxt The XPathContext we wil register to
+
+      Special care is taken to register a default prefix for the anonymous
+      prefix
+    */
     map<string,string> m = getNSvalues( ctxt->node );
 #ifdef DEBUG_XPATH
     {
@@ -155,6 +196,7 @@ namespace TiCC {
 #endif
     for ( auto const& it : m ){
       if ( it.first.empty() ){
+	// the anonymous namespace
 	xmlXPathRegisterNs( ctxt,
 			    (xmlChar*)defaultP.c_str(),
 			    (xmlChar*)it.second.c_str() );
@@ -168,6 +210,12 @@ namespace TiCC {
   }
 
   string replaceStarNS( const string& xPath ){
+    /// helper function to enable search with a wilcard prefix
+    // this function replace "*:" prefixes by a default prefix
+    /*!
+      \param xPath an XPath expression
+      \return a variant with substituted "*:" prefixes
+    */
     string result;
     string::size_type pos = xPath.find( "*:" );
     if ( pos == string::npos ){
@@ -182,9 +230,15 @@ namespace TiCC {
 
   list<xmlNode*> FindNodes( const xmlNode* node,
 			    const string& xPath ){
-  string xpath = replaceStarNS( xPath );
+    /// extract all nodes matching a XPath
+    /*!
+      \param node the node to start searching at
+      \param xPath an XPath expression
+      \return a list of all matching nodes
+    */
+    string xpath = replaceStarNS( xPath );
 #ifdef DEBUG_XPATH
-  cerr << "replaced " << xPath << " by " << xpath << endl;
+    cerr << "replaced " << xPath << " by " << xpath << endl;
 #endif
     xmlXPathContext* ctxt = xmlXPathNewContext( node->doc );
     ctxt->node = (xmlNode *)node;
@@ -206,15 +260,25 @@ namespace TiCC {
   }
 
   list<xmlNode*> FindNodes( const xmlDoc* doc,
-			    const string& xPath ){
+			    const string& xpath ){
+    /// extract all nodes matching a XPath
+    /*!
+      \param doc the xmlDoc to search in
+      \param xpath an XPath expression
+      \return a list of all matching nodes
+    */
     const xmlNode *root = xmlDocGetRootElement( doc );
-    return FindNodes( root, xPath );
+    return FindNodes( root, xpath );
   }
 
   xmlNode *xPath( const xmlNode *node, const string& xpath ){
-    // try to find a path, but it may not be there...
-    // if there are more, just return the first
-
+    /// search a node using an XPath expression
+    /*!
+      \param node the node to search in
+      \param xpath the XPath expression to use
+      \return 0 when nothing is found, or the first match if 1 or more matches
+      are found
+    */
     list<xmlNode*> srch = FindNodes( node, xpath );
     xmlNode *result = 0;
     if ( !srch.empty() ){
@@ -224,12 +288,19 @@ namespace TiCC {
   }
 
   xmlNode *xPath( const xmlDoc *doc, const string& xpath ){
+    /// search a node using an XPath expression
+    /*!
+      \param doc the xmlDoc to search in
+      \param xpath the XPath expression to use
+      \return 0 when nothing is found, or the first match if 1 or more matches
+      are found
+    */
     const xmlNode *root = xmlDocGetRootElement( doc );
     return xPath( root, xpath );
   }
 
   string serialize( const xmlNode& node ){
-    // serialize to a string (XML fragment)
+    /// serialize an xmlNode to a string (XML fragment)
     xmlBuffer *buf = xmlBufferCreate();
     xmlNodeDump( buf, 0, const_cast<xmlNode*>(&node), 0, 0 );
     string result = (const char*)xmlBufferContent( buf );
