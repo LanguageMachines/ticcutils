@@ -169,7 +169,7 @@ namespace Hash {
   }
 
   ostream& operator<<( ostream& os, const Lexicon& L ){
-    /// prettyprint L
+    /// prettyprint a Lexicon
     return os << &L.LexTree;
   }
 
