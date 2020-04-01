@@ -38,7 +38,13 @@ using namespace std;
 namespace TiCC {
 
   bool bz2Compress( const string& inName, const string& outName ){
-    std::ifstream infile( inName, std::ios::binary);
+    /// bz2 zip a file
+    /*!
+      \param inName the input file
+      \param outName the bz2 zipped output file
+      \return true on success, false otherwise
+    */
+    ifstream infile( inName, ios::binary);
     if ( !infile ){
       cerr << "bz2: unable to open inputfile: " << inName << endl;
       return false;
@@ -47,7 +53,7 @@ namespace TiCC {
     if ( outname.empty() ){
       outname = inName + ".bz2";
     }
-    std::ofstream outfile( outname, std::ios::binary);
+    ofstream outfile( outname, ios::binary);
     if ( !outfile ){
       cerr << "bz2: unable to open outputfile: " << outname << endl;
       return false;
@@ -58,7 +64,13 @@ namespace TiCC {
   }
 
   bool bz2Decompress( const string& inName, const string& outName ){
-    std::ifstream infile( inName, std::ios::binary);
+    /// bz2 unzip a file
+    /*!
+      \param inName the bz2 zipped input file
+      \param outName the output file
+      \return true on success, false otherwise
+    */
+    ifstream infile( inName, ios::binary);
     if ( !infile ){
       cerr << "bz2: unable to open inputfile: " << inName << endl;
       return false;
@@ -75,7 +87,7 @@ namespace TiCC {
 	outname = outname.substr( 0, pos );
       }
     }
-    std::ofstream outfile( outname, std::ios::binary);
+    ofstream outfile( outname, ios::binary);
     if ( !outfile ){
       cerr << "bz2: unable to open outputfile: " << outname << endl;
       return false;
@@ -86,6 +98,11 @@ namespace TiCC {
   }
 
   string bz2ReadStream( istream& is ){
+    /// read a complete file from a bz2 stream
+    /*!
+      \param is the bz2 zipped input stream
+      \return a string with the unzipped contents of the stream
+    */
     bz2istream bz2in(is.rdbuf());
     istreambuf_iterator<char> inpos( bz2in.rdbuf() );
     istreambuf_iterator<char> endpos;
@@ -98,25 +115,42 @@ namespace TiCC {
   }
 
   string bz2ReadFile( const string& in_name ){
+    /// read a complete file from a bz2 zipped file
+    /*!
+      \param in_name the bz2 zipped input file
+      \return a string with the unzipped contents of the stream
+    */
     string::size_type pos = in_name.rfind( ".bz2" );
     if ( pos == string::npos ){
       throw runtime_error( "bz2: expected an inputfile name with .bz2 extension, not '" + in_name + "'" );
     }
-    std::ifstream infile( in_name, std::ios::binary);
+    ifstream infile( in_name, ios::binary);
     if ( !infile ){
       throw runtime_error( "bz2: unable to open inputfile: " + in_name );
     }
     return bz2ReadStream( infile );
   }
 
-  bool bz2WriteStream( ostream& outfile, const string& buffer ){
-    bz2ostream bzout(outfile.rdbuf());
+  bool bz2WriteStream( ostream& os, const string& buffer ){
+    /// write a buffer to a bz2 stream
+    /*!
+      \param os the bz2 zipped output stream
+      \param buffer the text to compress
+      \return true on succes. May throw.
+    */
+    bz2ostream bzout(os.rdbuf());
     bzout << buffer;
     return true;
   }
 
   bool bz2WriteFile( const string& outName, const string& buffer ){
-    std::ofstream outfile( outName, std::ios::binary);
+    /// write a buffer to a bz2 output file
+    /*!
+      \param outName the bz2 zipped output file
+      \param buffer the text to compress
+      \return true on succes, false on error. May throw.
+    */
+    ofstream outfile( outName, ios::binary);
     if ( !outfile ){
       cerr << "bz2: unable to open outputfile: " << outName << endl;
       return false;
@@ -125,14 +159,25 @@ namespace TiCC {
   }
 
   string gzReadStream( istream& is ){
+    /// read a complete file from a gz stream
+    /*!
+      \param is the gz zipped input stream
+      \return the complete contents of the stream
+    */
     string result;
     char c;
-    while ( is.get(c) )
+    while ( is.get(c) ){
       result += c;
+    }
     return result;
   }
 
   string gzReadFile( const string& inName ){
+    /// read a complete file from a gz zipped file
+    /*!
+      \param inName the gz zipped input file
+      \return a string with the unzipped contents of the filr
+    */
     string inname = inName;
     string::size_type pos = inname.rfind( ".gz" );
     if ( pos == string::npos ){
@@ -145,12 +190,24 @@ namespace TiCC {
     return gzReadStream( infile );
   }
 
-  bool gzWriteStream( ostream& outfile, const string& buffer ){
-    outfile << buffer;
+  bool gzWriteStream( ostream& os, const string& buffer ){
+    /// write a buffer to a gz stream
+    /*!
+      \param os the bz2 zipped output stream
+      \param buffer the text to compress
+      \return true. May throw.
+    */
+    os << buffer;
     return true;
   }
 
   bool gzWriteFile( const string& outName, const string& buffer ){
+    /// write a buffer to a gz file
+    /*!
+      \param outName the gz zipped output file
+      \param buffer the text to compress
+      \return true on succes, false on failure. May throw.
+    */
     ogzstream outfile( outName, ios::binary|ios::out );
     if ( !outfile ){
       cerr << "gz: unable to open outputfile: " << outName << endl;
@@ -160,6 +217,12 @@ namespace TiCC {
   }
 
   bool gzCompress( const string& inName, const string& outName ){
+    /// gz zip a file
+    /*!
+      \param inName the input file
+      \param outName the gz zipped output file
+      \return true on success, false otherwise
+    */
     ifstream infile( inName );
     if ( !infile ){
       cerr << "gz: unable to open inputfile: " << inName << endl;
@@ -185,7 +248,13 @@ namespace TiCC {
   }
 
   bool gzDecompress( const string& inName, const string& outName ){
-    igzstream infile( inName, std::ios::binary|ios::in);
+    /// gz unzip a file
+    /*!
+      \param inName the gz zipped input file
+      \param outName the unzipped output file
+      \return true on success, false otherwise
+    */
+    igzstream infile( inName, ios::binary|ios::in);
     if ( !infile ){
       cerr << "gz: unable to open inputfile: " << inName << endl;
       return false;
@@ -202,7 +271,7 @@ namespace TiCC {
 	outname = outname.substr( 0, pos );
       }
     }
-    std::ofstream outfile( outname, std::ios::binary);
+    ofstream outfile( outname, ios::binary);
     if ( !outfile ){
       cerr << "gz: unable to open outputfile: " << outName << endl;
       return false;
