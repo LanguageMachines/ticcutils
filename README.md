@@ -39,7 +39,6 @@ following pakages:
 - ``pkg-config``
 - ``libxml2-dev``
 - ``icu-dev``
-- ``libboost-dev`` and ``libboost-regex-dev``
 - ``libtar-dev``
 - ``libbz2-dev``
 - ``zlib1g-dev``
