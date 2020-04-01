@@ -76,8 +76,8 @@ namespace TiCC {
       }
     }
     std::ofstream outfile( outname, std::ios::binary);
-    if ( !infile ){
-      cerr << "bz2: unable to open inputfile: " << inName << endl;
+    if ( !outfile ){
+      cerr << "bz2: unable to open outputfile: " << outname << endl;
       return false;
     }
     bz2istream bz2in(infile.rdbuf());

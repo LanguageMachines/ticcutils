@@ -450,8 +450,7 @@ namespace TiCC {
 	if ( line[i] == '`' || line[i] == '\'' || line[i] == '"' ){
 	  result += '\\';
 	}
-	else if ( old_style
-		  && (line[i] == ' ' || line[i] == '\t' )
+	else if ( (line[i] == ' ' || line[i] == '\t' )
 		  && !inserted ){
 	  // OLD style: replace first space by a '>' symbol.
 	  inserted = true;
