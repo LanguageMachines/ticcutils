@@ -36,30 +36,45 @@ namespace Hash {
 
   using namespace Tries;
 
-  HashInfo::HashInfo( const string& Tname, unsigned int Indx ):
-    name(Tname), ID(Indx){}
+  HashInfo::HashInfo( const string& value, unsigned int index ):
+    name(value), ID(index){
+    /// create a HashInfo record
+    /*!
+      \param value the value to store
+      \param index the index to sore
+    */
+  }
 
   HashInfo::~HashInfo(){
+    /// destroy a HashInfo record
   }
 
   ostream& operator<<( ostream& os, const HashInfo& tok ){
+    /// output a HashInfo record
     os << tok.ID << " " << tok.name;
     return os;
   }
 
   StringHash::StringHash():
-    NumOfTokens(0)
-  {}
-
-  StringHash::~StringHash( ){
+    NumOfTokens(0) {
+    /// initialize a new StringHash
   }
 
-  unsigned int StringHash::Hash( const string& name ){
+  StringHash::~StringHash(){
+    /// destroy a StringHash
+  }
+
+  unsigned int StringHash::Hash( const string& value ){
+    /// lookup or create a hash for the string parameter
+    /*!
+      \param value the string to hash
+      \return the hash value
+    */
     unsigned int idx = 0;
-    HashInfo *info = StringTree.Retrieve( name );
+    HashInfo *info = StringTree.Retrieve( value );
     if ( !info ){
-      info = new HashInfo( name, ++NumOfTokens );
-      info = reinterpret_cast<HashInfo *>(StringTree.Store( name, info ));
+      info = new HashInfo( value, ++NumOfTokens );
+      info = reinterpret_cast<HashInfo *>(StringTree.Store( value, info ));
     }
     idx = info->Index();
     if ( idx >= rev_index.size() ){
@@ -69,8 +84,13 @@ namespace Hash {
     return idx;
   }
 
-  unsigned int StringHash::Lookup( const string& name ) const {
-    HashInfo *info = StringTree.Retrieve( name );
+  unsigned int StringHash::Lookup( const string& value ) const {
+    /// lookup the hash for a string in the StringHash
+    /*!
+      \param value the string to lookup
+      \return the hash value, or 0 when not found
+    */
+    HashInfo *info = StringTree.Retrieve( value );
     if ( info ){
       return info->Index();
     }
@@ -78,41 +98,79 @@ namespace Hash {
   }
 
   const string& StringHash::ReverseLookup( unsigned int index ) const {
+    /// lookup the string value for a certain index
+    /*!
+      \param index the index we search
+      \return the string value
+
+      \note this assumes the index is valid!
+    */
     return rev_index[index]->Name();
   }
 
-  ostream& operator << ( ostream& os, const StringHash& S){
-    return os << &S.StringTree; }
+  ostream& operator << ( ostream& os, const StringHash& S ){
+    /// output the content of a whole StringHash structure (Debugging only)
+    return os << &S.StringTree;
+  }
 
-  LexInfo::LexInfo( const string& Tname, const string& Tran ):
-    name(Tname),trans(Tran){}
+  LexInfo::LexInfo( const string& name, const string& trans ):
+    /// create e new LexInfo structure
+    /*!
+      \param name the entry
+      \param trans the translation
+     */
+    name(name),trans(trans){
+  }
 
-  LexInfo::~LexInfo(){}
+  LexInfo::~LexInfo(){
+    /// destroy a LexInfo structure
+  }
 
   ostream& operator<<( ostream& os, const LexInfo& LI ){
+    /// outpu a LexInfo structure to a stream
     os << " " << LI.name << " - " << LI.trans;
     return os;
   }
 
-  Lexicon::Lexicon(){}
-
-  Lexicon::~Lexicon(){}
-
-  LexInfo *Lexicon::Lookup( const string& name ) const {
-    return reinterpret_cast<LexInfo *>(LexTree.Retrieve( name ));
+  Lexicon::Lexicon(){
+    /// create a lexicon
   }
 
-  LexInfo *Lexicon::Store( const string& name, const string& translation ){
+  Lexicon::~Lexicon(){
+    /// destroy a Lexicon
+  }
+
+  LexInfo *Lexicon::Lookup( const string& value ) const {
+    /// lookup the translation for a string in the Lexicon
+    /*!
+      \param value the string to lookup
+      \return the hash value, or 0 when not found
+    */
+    return reinterpret_cast<LexInfo *>(LexTree.Retrieve( value ) );
+  }
+
+  LexInfo *Lexicon::Store( const string& value, const string& translation ){
+    /// store a translation in the Lexicon
+    /*!
+      \param value the value to store
+      \param translation the translation
+      \return the LexInfo structure found or created
+
+      \note if an entry for value already exists, that is returned. Even if it
+      has a different translation!
+    */
     LexInfo *info = 0;
-    info = LexTree.Retrieve( name );
+    info = LexTree.Retrieve( value );
     if ( !info ){
-      info = new LexInfo( name, translation );
-      info = LexTree.Store( name, info );
+      info = new LexInfo( value, translation );
+      info = LexTree.Store( value, info );
     }
     return info;
   }
 
-  ostream& operator<<( ostream& os, const Lexicon& L )
-  { return os << &L.LexTree; }
+  ostream& operator<<( ostream& os, const Lexicon& L ){
+    /// prettyprint L
+    return os << &L.LexTree;
+  }
 
 }

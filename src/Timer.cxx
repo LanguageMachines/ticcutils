@@ -35,6 +35,7 @@ using namespace std;
 namespace TiCC {
 
   void Timer::stop(){
+    /// stop the current timer and add the current lap
     timeval now;
     gettimeofday( &now, 0 );
     long usecs = (myTime.tv_sec + now.tv_sec - startTime.tv_sec) * 1000000
@@ -44,16 +45,21 @@ namespace TiCC {
     myTime.tv_usec = div.rem;
   }
 
-  string Timer::now() {
+  string Timer::now(){
+    /// return the current system time as a string
     time_t now;
     time( &now );
-    //return asctime( localtime( &now ) );
     char buffer[256];
     strftime( buffer, 100, "%c", localtime( &now ) );
     return buffer;
   }
 
   ostream& operator << ( ostream& os, const Timer& T ){
+    /// pretty print the Timers value to a stream
+    /*!
+      \param os a stream
+      \param T the Timer to display
+    */
     ldiv_t div = ldiv( T.myTime.tv_usec, 1000 );
     os << T.myTime.tv_sec << " seconds, " << div.quot << " milliseconds and "
        << div.rem << " microseconds";
@@ -61,16 +67,28 @@ namespace TiCC {
   }
 
   Timer& Timer::operator+=( const Timer& rhs ){
+    /// add the value of a Timer to this one
+    /*!
+      \param rhs the timer to add
+      \return the incremented Timer
+    */
     timeradd( &(this->myTime), &(rhs.myTime), &(this->myTime) );
     return *this;
   }
 
   Timer operator+( Timer lhs, const Timer& rhs){
+    /// add the value of 2 Timers
+    /*!
+      \param lhs the timer to add to
+      \param rhs the timer to add
+      \return the incremented Timer
+    */
     lhs += rhs;
     return lhs;
   }
 
   string Timer::toString(){
+    /// pretty print the Timer value to a string
     stringstream os;
     os << *this;
     return os.str();

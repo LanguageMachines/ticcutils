@@ -31,12 +31,18 @@
 #include <iostream>
 
 namespace TiCC {
+
+  /// a class to keep Time in a practical way
   class Timer {
   public:
     friend std::ostream& operator << ( std::ostream& os, const Timer& T );
     Timer(){ reset(); };
-    void reset(){ myTime.tv_sec=0; myTime.tv_usec=0; };
+    void reset(){
+      /// set the Timer to sll 0
+      myTime.tv_sec=0; myTime.tv_usec=0;
+    };
     void start(){
+      /// start the Timer
       gettimeofday( &startTime, 0 );
     };
     void stop();
