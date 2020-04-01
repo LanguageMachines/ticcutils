@@ -40,16 +40,32 @@ namespace TiCC {
   using namespace icu;
 
   UnicodeString UnicodeFromEnc( const string& s, const string& enc ){
+    /// convert a character buffer in some encoding to an UnicodeString
+    /*!
+      \param s the string to interpret as a character buffer
+      \param enc the encoding to use
+      \return an UnicodeString object
+    */
     return UnicodeString( s.c_str(), s.length(), enc.c_str() );
   }
 
   string UnicodeToUTF8( const UnicodeString& s ){
+    /// convert an UnicodeString to an UTF-8 string
+    /*!
+      \param s the UnicodeString to convert
+      \return an UTF-8 encoded string
+    */
     string result;
     s.toUTF8String(result);
     return result;
   }
 
   UnicodeNormalizer::UnicodeNormalizer( const string& enc ): _normalizer(0) {
+    /// create an UnicodeNormalizer object
+    /*!
+      \param enc a string describing the wanted normaliztion.
+      valid values are: NFC (the default), NFD, NFKC, NFKD
+    */
     string mode = enc;
     if ( mode.empty() ){
       mode = "NFC";
@@ -58,10 +74,16 @@ namespace TiCC {
   }
 
   UnicodeNormalizer::~UnicodeNormalizer(){
+    /// destroy the UnicodeNormalizer
     // NEVER EVER delete _normalizer!
   }
 
   const string UnicodeNormalizer::setMode( const string& enc ){
+    /// set the desired normalizer mode
+    /*!
+      \param enc the new mode to set
+      \return the previous mode
+    */
     if ( enc == mode
 	 || (enc.empty() && mode == "NFC") ){
       return mode;
@@ -98,6 +120,11 @@ namespace TiCC {
   }
 
   UnicodeString UnicodeNormalizer::normalize( const UnicodeString& us ){
+    /// normalize a UnicodeString to the current mode
+    /*!
+      \param us the UnicodeString to normalize
+      \return the UnicodeString in the correct normalization
+    */
     if ( _normalizer == 0 ){
       return us;
     }
@@ -118,7 +145,8 @@ namespace TiCC {
   };
 
 
-  UnicodeString UnicodeRegexMatcher::Pattern() const{
+  UnicodeString UnicodeRegexMatcher::Pattern() const {
+    /// return the current Regex pattern
     return pattern->pattern();
   }
 
@@ -126,6 +154,11 @@ namespace TiCC {
 					    const UnicodeString& name ):
     _name(name), _debug(false)
   {
+    /// create a RegexMatcher object
+    /*!
+      \param pat The pattern to use
+      \param name a name we give to this RegexMatcher (for error messages)
+    */
     matcher = NULL;
     UErrorCode u_stat = U_ZERO_ERROR;
     UParseError errorInfo;
@@ -153,6 +186,7 @@ namespace TiCC {
   }
 
   UnicodeRegexMatcher::~UnicodeRegexMatcher(){
+    /// destroy a RegexMatcher
     delete pattern;
     delete matcher;
   }
@@ -160,6 +194,15 @@ namespace TiCC {
   bool UnicodeRegexMatcher::match_all( const UnicodeString& line,
 				       UnicodeString& pre,
 				       UnicodeString& post ){
+    /// apply the RegexMatcher on an Unicode line
+    /*!
+      \param line the UnicodeString to analyze
+      \param pre the part of the line BEFORE the match, may be ""
+      \param post the part of the line AFTER the match, may be ""
+      \return true when there was some match found
+
+      if match_all returns true, you need to call get_match() to get results
+    */
     UErrorCode u_stat = U_ZERO_ERROR;
     pre = "";
     post = "";
@@ -300,6 +343,12 @@ namespace TiCC {
   }
 
   const UnicodeString UnicodeRegexMatcher::get_match( unsigned int n ) const{
+    /// get one match from the RegexMatcher
+    /*!
+      \param n the index of the match
+      \return the match result as a UnicodeString. Returns "" when n is out
+      of range.
+    */
     if ( n < results.size() ){
       return results[n];
     }
@@ -307,6 +356,7 @@ namespace TiCC {
   }
 
   int UnicodeRegexMatcher::NumOfMatches() const {
+    /// give the number of matches found.
     if ( results.size() > 0 ){
       return results.size()-1;
     }
@@ -315,6 +365,12 @@ namespace TiCC {
 
   int UnicodeRegexMatcher::split( const UnicodeString& us,
 				  vector<UnicodeString>& result ){
+    /// split a UnicodeString using the stored pattern
+    /*!
+      \param us the UnicodeString to split
+      \param result a vector with the splitted parts
+      \return the number os elements in the result
+    */
     result.clear();
     const int maxWords = 256;
     UnicodeString words[maxWords];
@@ -326,12 +382,16 @@ namespace TiCC {
     return numWords;
   }
 
-  UniFilter::UniFilter(): _trans(0) {}
+  UniFilter::UniFilter(): _trans(0) {
+    /// create a Unicode Filter object
+  }
   UniFilter::~UniFilter(){
+    /// destroy a Unicode Filter object
     delete _trans;
   }
 
   UnicodeString UniFilter::get_rules() const {
+    /// extract the current rules from the Unicode Filter
     UnicodeString result;
     if ( !_trans ){
       throw runtime_error( "UniFilter::getRules(), filter not initialized." );
@@ -343,6 +403,12 @@ namespace TiCC {
 
   bool UniFilter::init( const UnicodeString& rules,
 			const UnicodeString& name ){
+    /// initialize a Unicode Filter
+    /*!
+      \param rules a Unicode string with filter rules
+      \param name a name for the filter (used for error messages)
+      \return true on succes, will throw on error
+    */
     if ( _trans ){
       throw logic_error( "UniFilter::init():, filter already initialized." );
     }
@@ -363,9 +429,19 @@ namespace TiCC {
   }
 
   UnicodeString to_icu_rule( const UnicodeString& line ){
-    // a line can be an ICU Transcriptor rule " ß > sz ;"
-    // OR a simple mentioning of a symbol to be replaced " ss sz" (old_style)
-    // we try to covert old style to a ICU rule. (always only 1)
+    /// convert an ICU Transcriptor rule or a trivial replacement into
+    /// an ICU rule
+    /*!
+      \param line the rule to convert
+      \return an Unicode representation of the rule
+
+      A rule can be an ICU Transcriptor rule like " ß > sz ;"
+      OR a simple mentioning of a symbol to be replaced " ss sz" (old_style)
+
+      The old_style variants are converted to a ICU rule. (always only just 1)
+
+      otherwise the input is just returned 'as is'
+    */
     bool old_style = line.indexOf( '>' ) == -1;
     if ( old_style ){
       UnicodeString result;
@@ -398,6 +474,12 @@ namespace TiCC {
 
   bool UniFilter::fill( const string& filename,
 			const string& label ){
+    /// fill a Unicode Filter from a file
+    /*!
+      \param filename the file to read
+      \param label a label for the filter
+      \return true on succes, will throw on erroe
+    */
     ifstream is( filename );
     if ( !is ){
       throw runtime_error( "UniFilter::fill(), unable te open rules file: '"
@@ -413,6 +495,11 @@ namespace TiCC {
   }
 
   UnicodeString UniFilter::filter( const UnicodeString& line ){
+    /// apply the Unicode Filter on a Unicode line
+    /*!
+      \param line the inputline
+      \return the resulting filtered line
+    */
     if ( !_trans ){
       //      throw logic_error( "UniFilter not initialized." );
       return line;
@@ -425,6 +512,10 @@ namespace TiCC {
   }
 
   bool UniFilter::add( const UnicodeString& in ){
+    /// add an extra rule to the Unicode Filter
+    /*!
+      \param in a rule to add
+    */
     //
     // TODO: cache multiple add's and only (re-)init the transliterator
     //       once. On first use of the filter() method.
@@ -448,16 +539,26 @@ namespace TiCC {
   }
 
   bool UniFilter::add( const string& line ){
+    /// add an extra rule to the Unicode Filter
+    /*!
+      \param line a UTF-8 encoded rule
+    */
     UnicodeString uline = UnicodeFromUTF8( line );
     return add( uline );
   }
 
   ostream& operator<<( ostream& os, const UniFilter& uf ){
+    /// output the current Rules to a stream
     os << uf.get_rules();
     return os;
   }
 
   UnicodeString filter_diacritics( const UnicodeString& in ) {
+    /// filter ALL diacritics from an UnicodeString
+    /*!
+      \param in the UnicodeString to filter from
+      \return an UnicodeString with all diacrytics removed
+    */
     static Transliterator *trans = 0;
     if ( trans == 0 ){
       UErrorCode stat = U_ZERO_ERROR;
