@@ -577,10 +577,17 @@ namespace TiCC {
   vector<UnicodeString> split_at( const UnicodeString& src,
 				  const UnicodeString& sep,
 				  size_t max ){
-    // split a string into substrings, using sep as separator
-    // silently skip empty entries (e.g. when two or more separators co-incide)
-    // if max > 0, limit the size off the result to max,
-    // leaving the remainder in the last part of the result
+    /// split an UnicodeString
+    /*!
+      \param src the UnicodeString to split
+      \param sep the separator to split at
+      \param max limit the size off the result to max, when max > 0
+      leaving the remainder in the last part of the result
+      \return a vector with the splitted parts
+
+      \note this function skips empty entries (e.g. when two or more separators
+      co-incide)
+    */
     if ( sep.isEmpty() ){
       throw runtime_error( "TiCC::split_at(): separator is empty!" );
     }
@@ -615,6 +622,13 @@ namespace TiCC {
   int find_first_of( const UnicodeString& src,
 		     const UnicodeString& seps,
 		     int pos ){
+    /// find the first occurrence of one of the seps in a string
+    /*!
+      \param src the string to search
+      \param seps a list of separator characters
+      \param pos start position for the search
+      \return the position found, or -1 when not present
+    */
     int result = src.length()+10;
     for ( int i=0; i < seps.length(); ++i ){
       int p = src.indexOf( seps[i], pos );
@@ -631,11 +645,17 @@ namespace TiCC {
   vector<UnicodeString> split_at_first_of( const UnicodeString& src,
 					   const UnicodeString& seps,
 					   size_t max ){
-    // split a string into substrings, using the characters in seps
-    // as possible separators
-    // silently skip empty entries (e.g. when two or more separators co-incide)
-    // if max > 0, limit the size of the result to max,
-    // leaving the remainder in the last part of the result
+    /// split an UnicodeString
+    /*!
+      \param src the UnicodeString to split
+      \param seps a list of separator characters
+      \param max limit the size off the result to max, when max > 0
+      leaving the remainder in the last part of the result
+      \return a vector with the splitted parts
+
+      \note this function skips empty entries (e.g. when two or more separators
+      co-incide)
+    */
     if ( seps.isEmpty() ){
       throw runtime_error( "TiCC::split_at_first_of(): separators are empty!" );
     }
@@ -669,19 +689,29 @@ namespace TiCC {
 
   vector<UnicodeString> split( const UnicodeString& src,
 			       size_t max ){
+    /// split an UnicodeString at whitespace
+    /*!
+      \param src the UnicodeString to split
+      \param max limit the size off the result to max, when max > 0
+      leaving the remainder in the last part of the result
+      \return a vector with the splitted parts
+
+      \note this function skips empty entries (e.g. when two or more separators
+      co-incide)
+    */
     static UnicodeString spaces = TiCC::UnicodeFromUTF8( " \r\t\n" );
     return split_at_first_of( src, spaces, max );
   }
 
   string utf8_lowercase( const string& in ){
-    // Unicode safe version
+    /// convert an UTF-8 string to lowercase
     UnicodeString us = TiCC::UnicodeFromUTF8( in );
     us.toLower();
     return TiCC::UnicodeToUTF8( us );
   }
 
   string utf8_uppercase( const string& in ){
-    // Unicode safe version
+    /// convert an UTF-8 string to uppercase
     UnicodeString us = TiCC::UnicodeFromUTF8( in );
     us.toUpper();
     return TiCC::UnicodeToUTF8( us );
