@@ -41,7 +41,7 @@ namespace Hash {
     /// create a HashInfo record
     /*!
       \param value the value to store
-      \param index the index to sore
+      \param index the index to store
     */
   }
 
@@ -69,6 +69,8 @@ namespace Hash {
     /*!
       \param value the string to hash
       \return the hash value
+
+      when a new hash is inserted, the reverse index is also updated
     */
     unsigned int idx = 0;
     HashInfo *info = StringTree.Retrieve( value );
@@ -103,7 +105,7 @@ namespace Hash {
       \param index the index we search
       \return the string value
 
-      \note this assumes the index is valid!
+      \note this assumes the index is valid, which isn't checked!
     */
     return rev_index[index]->Name();
   }
@@ -127,13 +129,13 @@ namespace Hash {
   }
 
   ostream& operator<<( ostream& os, const LexInfo& LI ){
-    /// outpu a LexInfo structure to a stream
+    /// output a LexInfo structure to a stream
     os << " " << LI.name << " - " << LI.trans;
     return os;
   }
 
   Lexicon::Lexicon(){
-    /// create a lexicon
+    /// create a Lexicon
   }
 
   Lexicon::~Lexicon(){

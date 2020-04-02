@@ -497,8 +497,8 @@ namespace Sockets {
 
 #else
 
-  // Converts ascii text to in_addr struct.
-  // NULL is returned if the address can not be found.
+  /// Converts ascii text to in_addr struct.
+  /// NULL is returned if the address can not be found.
   struct in_addr *atoaddr( const string& address ){
     struct hostent *host;
     static struct in_addr saddr;
@@ -516,13 +516,20 @@ namespace Sockets {
     return NULL;
   }
 
-  bool ClientSocket::connect( const string& host, const string& portNum ){
-    int port = TiCC::stringTo<int>(portNum );
+  bool ClientSocket::connect( const string& hostString,
+			      const string& portString ){
+    /// connect a Client to an external server
+    /*!
+      \param hostString the name of the server to use
+      \param portString the number of the port of the server
+      \return true on success, false otherwise
+    */
+    int port = TiCC::stringTo<int>( portString );
     if (port == -1) {
       mess = "ClientSocket connect: invalid port number";
       return false;
     }
-    struct in_addr *addr = atoaddr( host );
+    struct in_addr *addr = atoaddr( hostString );
     if (addr == NULL) {
       mess = "ClientSocket connect:  Invalid host.";
       return false;
@@ -553,6 +560,11 @@ namespace Sockets {
   }
 
   bool ServerSocket::connect( const string& port ){
+    /// connect the Server to an port
+    /*!
+      \param port the number of the port of the server
+      \return true on success, false otherwise
+    */
     sock = -1;
     sock = socket( AF_INET, SOCK_STREAM, 0 );
     if ( sock < 0 ){
@@ -581,6 +593,11 @@ namespace Sockets {
   }
 
   bool ServerSocket::accept( ServerSocket& newSocket ){
+    /// accept a connection on a socket
+    /*!
+      \param newSocket the socket to connect to
+      \return true on success, false otherwise
+    */
     newSocket.sock = -1;
     struct sockaddr_storage cli_addr;
     socklen_t clilen = sizeof(cli_addr);

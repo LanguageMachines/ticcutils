@@ -72,7 +72,12 @@ namespace Sockets {
     bool connect( const std::string& );
     bool listen( unsigned int = 5 );
     bool accept( ServerSocket& );
-    std::string getClientName() const { return clientName; };
+    std::string getClientName() const {
+      /*!
+	\return the given name of the Client
+      */
+      return clientName;
+    };
   private:
     std::string clientName;
   };
