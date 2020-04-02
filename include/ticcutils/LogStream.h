@@ -38,36 +38,7 @@
 
 namespace TiCC {
 
-  template<class T> class o_manip;
-  template <class T> std::ostream& operator << (std::ostream&, const o_manip<T>& );
-
-  template<class T> class o_manip{
-    typedef std::ostream& (*FRM)(std::ostream&, T );
-    FRM func;
-    T l;
-  public:
-    o_manip<T>( FRM f, T ll ): func(f), l(ll) {};
-    friend std::ostream& operator << LTGT (std::ostream&, const o_manip<T>& );
-    o_manip<T>( const o_manip<T>& o ):
-    func(o.func), l(o.l){};
-  private:
-    o_manip<T> operator=( const o_manip<T>& );
-  };
-
-  template<class T>
-    inline std::ostream& operator << (std::ostream& os,
-				      const o_manip<T>& m ){
-    return m.func( os, m.l );
-  }
-
   class LogStream : public std::ostream {
-    friend o_manip<LogLevel> setlevel( LogLevel );
-    friend o_manip<LogLevel> setthreshold( LogLevel );
-    friend o_manip<LogFlag> setstamp( LogFlag );
-    friend o_manip<const std::string& > setmessage( const std::string& );
-    friend o_manip<const std::string&> addmessage( const std::string& );
-    friend o_manip<const std::string&> addmessage( const int );
-    friend o_manip<const std::string&> write_buf(const std::string& );
     friend bool IsActive( LogStream & );
     friend bool IsActive( LogStream * );
   public:

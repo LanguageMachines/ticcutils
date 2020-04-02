@@ -800,6 +800,8 @@ void test_logstream( const string& path ){
   *xxDbg( ls ) << "xx_debug 4" << endl;
   ls.setlevel( LogHeavy );
   *Log( ls ) << "test 5 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
+  ls.addmessage( "AHA:" );
+  ls.setstamp( StampMessage );
   *Dbg( ls ) << "debug 5" << endl;
   *xDbg( ls ) << "x_debug 5" << endl;
   *xxDbg( ls ) << "xx_debug 5" << endl;

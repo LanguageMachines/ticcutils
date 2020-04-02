@@ -6,5 +6,5 @@ debug 4
 x_debug 4
 xx_debug 4
 test 5 level=3 threshold=1
-debug 5
-x_debug 5
+AHA::debug 5
+AHA::x_debug 5

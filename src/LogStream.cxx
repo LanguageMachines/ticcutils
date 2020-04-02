@@ -180,109 +180,6 @@ namespace TiCC {
       return false;
   }
 
-  ostream& setlevel_sup( ostream& os, LogLevel l ){
-    /// helper function to set the LogLevel
-    try {
-      LogStream& tmp = dynamic_cast<LogStream&>(os);
-      tmp.setlevel( l );
-    }
-    catch ( const bad_cast& ){
-    }
-    return os;
-  }
-
-  o_manip<LogLevel> setlevel( LogLevel l ){
-    /// stream manipulator to set the LogLevel
-    return o_manip<LogLevel>( &setlevel_sup, l );
-  }
-
-  ostream& setthreshold_sup( ostream& os, LogLevel l ){
-    /// helper function to set the Logging threshold
-    try {
-      LogStream& tmp = dynamic_cast<LogStream&>(os);
-      tmp.setthreshold( l );
-    }
-    catch ( const bad_cast& ){
-    }
-    return os;
-  }
-
-  o_manip<LogLevel> setthreshold( LogLevel l ){
-    /// stream manipulatorto set the Logging threshold
-    return o_manip<LogLevel>( &setthreshold_sup, l );
-  }
-
-  ostream& setstamp_sup( ostream& os, LogFlag f ){
-    /// helper function to set the Logging stamp
-    try {
-      LogStream& tmp = dynamic_cast<LogStream&>(os);
-      tmp.setstamp( f );
-    }
-    catch ( const bad_cast& ){
-    }
-    return os;
-  }
-
-  o_manip<LogFlag> setstamp( LogFlag f ){
-    /// stream manipulator to set the Logging stamp
-    return o_manip<LogFlag>( &setstamp_sup, f );
-  }
-
-  ostream& setmess_sup( ostream& os, const string& m ){
-    /// helper function to set the Logging message prefix
-    try {
-      LogStream& tmp = dynamic_cast<LogStream&>(os);
-      tmp.message( m );
-    }
-    catch ( const bad_cast& ){
-    }
-    return os;
-  }
-
-  o_manip<const string& > setmessage( const string& m ){
-    /// stream manipulator to set the Logging message prefix
-    return o_manip<const string&>( &setmess_sup, m );
-  }
-
-  ostream& addmess_sup( ostream& os, const string& m ){
-    /// helper function to append to the Logging message prefix
-    try {
-      LogStream& tmp = dynamic_cast<LogStream&>(os);
-      tmp.addmessage( m );
-    }
-    catch ( const bad_cast& ){
-    }
-    return os;
-  }
-
-  o_manip<const string&> addmessage( const string& m ){
-    /// stream manipulator to add a string to the Logging message prefix
-    return o_manip<const string&>( &addmess_sup, m );
-  }
-
-  o_manip<const string&> addmessage( const int i ){
-    /// stream manipulator to add a number to the Logging message prefix
-    static char m[32]; // assume we are within the mutex here
-    sprintf( m, "-%d", i );
-    return o_manip<const string&>( &addmess_sup, m );
-  }
-
-  ostream& write_sup( ostream& os, const string& m ){
-    /// helper function to write a string to the LogStream
-    try {
-      LogStream& tmp = dynamic_cast<LogStream&>(os);
-      tmp.write( m.data(), m.size() );
-    }
-    catch ( const bad_cast& ){
-    }
-    return os;
-  }
-
-  o_manip<const string&> write_buf( const string& m ){
-    /// stream manipulator to write a string to the LogStream
-    return o_manip<const string&>( &write_sup, m );
-  }
-
   pthread_mutex_t global_logging_mutex = PTHREAD_MUTEX_INITIALIZER;
   pthread_mutex_t global_lock_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -411,7 +308,11 @@ namespace TiCC {
   bool LogStream::IsBlocking(){
     /// is the current level below the threshold?
     if ( !bad() ){
-      return getlevel() <= getthreshold();
+#ifdef LSDEBUG
+      cerr << "IsBlocking( " << getlevel() << "," << getthreshold() << ")"
+	   << " ==> " << ( getlevel() < getthreshold() ) << endl;
+#endif
+      return getlevel() < getthreshold();
     }
     else {
       return true;

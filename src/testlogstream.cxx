@@ -30,7 +30,6 @@
 #include <cstdlib>
 #include "config.h"
 #include <iostream>
-#include <iomanip>
 #include <unistd.h>
 #include <stdexcept>
 
