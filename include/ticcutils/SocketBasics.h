@@ -45,11 +45,23 @@ namespace Sockets {
 
   class Socket {
   public:
-  Socket(): nonBlocking(false),sock(-1){};
+  Socket(): nonBlocking(false),sock(-1){
+      /// create a new Socket. Not connected yet!
+    };
     virtual ~Socket();
-    bool isValid() const { return sock != -1 ; };
+    bool isValid() const {
+      /*!
+	\return true if the Socket object is connected to a working socket
+      */
+      return sock != -1 ;
+    };
     std::string getMessage() const;
-    int getSockId() const { return sock; }
+    int getSockId() const {
+      /*!
+	\return the socket's id
+      */
+      return sock;
+    }
     bool read( std::string& );
     bool read( std::string&, unsigned int );
     bool write( const std::string& );
@@ -57,9 +69,9 @@ namespace Sockets {
     bool setNonBlocking();
     bool setBlocking();
   protected:
-    bool nonBlocking;
-    int sock;
-    std::string mess;
+    bool nonBlocking; //!< (non-)blocking status. default is false
+    int sock;         //!< the id of the internal socket
+    std::string mess; //!< a buffer to store error messages
   };
 
   class ClientSocket: public Socket {

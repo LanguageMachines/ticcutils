@@ -69,10 +69,10 @@ namespace Sockets {
   //#define DEBUG
 
   bool Socket::read( string& line ) {
-    /// read s string from the socket
+    /// read s string from the Socket
     /*!
       \param line the result
-      \return true on succes, false otherwise
+      \return true when at least one byte is read. false otherwise
     */
     if ( !isValid() ){
       mess = "read: socket invalid";
@@ -124,11 +124,11 @@ namespace Sockets {
   }
 
   bool Socket::read( string& result, unsigned int timeout ) {
-    /// read a line upto a NEWLINE from a nonblocking connection.
+    /// read a line upto a NEWLINE from a nonblocking Socket
     /*!
       \param result the read line
       \param timeout seconds to use for retry
-      \return true if something is read, false on error
+      \return true is at least one byte is read, false on error
     */
     result = "";
     if ( !nonBlocking ){
