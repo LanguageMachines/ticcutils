@@ -47,18 +47,48 @@ namespace TimblServer {
   public:
     explicit ServerBase( const TiCC::Configuration *, void * );
     virtual ~ServerBase(){ delete _socket; delete _config; };
-    bool doDebug() { return _debug; };
+    bool doDebug() {
+      /*!
+	\return true of debugging is on
+      */
+      return _debug;
+    };
     static void server_usage();
     static std::string VersionInfo( bool );
     static int daemonize( int , int );
-    int maxConn() const { return _max_conn; };
+    int maxConn() const {
+      /*!
+	\return the maximum simultaneous connections allowed
+      */
+      return _max_conn;
+    };
     void setDebug( bool d ){ _debug = d; };
-    Sockets::ServerSocket *TcpSocket() const { return _socket; };
+    Sockets::ServerSocket *TcpSocket() const {
+      /*!
+	\return the ServerSocket
+      */
+      return _socket;
+    };
     static void *callChild( void * );
-    void *callback_data() const { return _callback_data; };
+    void *callback_data() const {
+      /*!
+	\return the callback_data structure
+      */
+      return _callback_data;
+    };
     int Run();
-    TiCC::LogStream& logstream() { return _my_log; }
-    const TiCC::Configuration *config() const { return _config; };
+    TiCC::LogStream& logstream() {
+      /*!
+	\return the current LogStream
+      */
+      return _my_log;
+    }
+    const TiCC::Configuration *config() const {
+      /*!
+	\return the current Configuration
+      */
+      return _config;
+    };
     virtual void socketChild( childArgs * );
     virtual void callback( childArgs* ) = 0;
     virtual void sendReject( std::ostream& ) const;
@@ -83,13 +113,48 @@ namespace TimblServer {
   public:
     childArgs( ServerBase *, Sockets::ServerSocket * );
     ~childArgs();
-    int id() const { return _id; };
-    std::ostream& os() { return _os; };
-    std::istream& is() { return _is; };
-    ServerBase *mother() const { return _mother; };
-    TiCC::LogStream& logstream() { return _mother->logstream(); }
-    Sockets::ServerSocket *socket() const { return _socket; };
-    bool debug() const { return _mother->doDebug(); };
+    int id() const {
+      /*!
+	\return the id of these data
+      */
+      return _id;
+    };
+    std::ostream& os() {
+      /*!
+	\return the connected output stream
+      */
+      return _os;
+    };
+    std::istream& is() {
+      /*!
+	\return the connected input stream
+      */
+      return _is;
+    };
+    ServerBase *mother() const {
+      /*!
+	\return the ServerBase object we belong to
+      */
+      return _mother;
+    };
+    TiCC::LogStream& logstream() {
+      /*!
+	\return the LogStream of the Serverbase
+      */
+      return _mother->logstream();
+    }
+    Sockets::ServerSocket *socket() const {
+      /*!
+	\return the ServerSocket we are connected to
+      */
+      return _socket;
+    };
+    bool debug() const {
+      /*!
+	\return the debug status of our ServerBase
+      */
+      return _mother->doDebug();
+    };
   private:
     ServerBase *_mother;
     Sockets::ServerSocket *_socket;

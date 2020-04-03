@@ -91,7 +91,7 @@ namespace Sockets {
       return clientName;
     };
   private:
-    std::string clientName;
+    std::string clientName; //!< store the client's name here
   };
 }
 
