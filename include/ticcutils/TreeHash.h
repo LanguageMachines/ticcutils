@@ -34,7 +34,7 @@
 namespace Hash {
   using namespace Tries;
 
-  // a StringTokenizer. Stores strings and assigns unique numbers
+  /// HashInfo is a structure to store a string and and unique ID
   class HashInfo {
     friend std::ostream& operator<< ( std::ostream&, const HashInfo& );
   public:
@@ -59,6 +59,10 @@ namespace Hash {
     HashInfo& operator=( const HashInfo& );
   };
 
+  /// The Stringhash class is used to store string values which get
+  /// assigned an UNIQUE id. It also keeps a reverse index from the
+  /// id back to the string.
+  /// internally it uses a Trie for fast lookup and inserting
   class StringHash {
     friend std::ostream& operator << ( std::ostream&, const StringHash& );
   public:

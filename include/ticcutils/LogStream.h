@@ -30,12 +30,6 @@
 #include <string>
 #include "ticcutils/LogBuffer.h"
 
-#if defined __GNUC__ || __IBMCPP__
-#define LTGT <>
-#else
-#define LTGT
-#endif
-
 namespace TiCC {
 
   class LogStream : public std::ostream {

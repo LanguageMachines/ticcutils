@@ -27,20 +27,15 @@
 #ifndef TICC_TRIE_H
 #define TICC_TRIE_H
 
-#if defined __GNUC__ || __IBMCPP__
-#define LTGT <>
-#else
-#define LTGT
-#endif
-
 namespace Tries {
   // A node in the generic trie.
   template <class Info> class TrieNode;
-  template <class Info> std::ostream& operator<< ( std::ostream&,
-						   const TrieNode<Info> * );
+  template <class Info> std::ostream& operator<<( std::ostream&,
+						  const TrieNode<Info> * );
   template <class Info> class TrieNode {
-    friend std::ostream& operator<< LTGT ( std::ostream&,
-					   const TrieNode<Info> * );
+    template <class U>
+      friend std::ostream& operator<<( std::ostream&,
+				       const TrieNode<U> * );
   public:
     explicit TrieNode( char );
     ~TrieNode();
@@ -197,12 +192,13 @@ namespace Tries {
 
   // a generic trie.
   template <class Info> class Trie;
-  template <class Info> std::ostream &operator << ( std::ostream &,
-						    const Trie<Info> * );
+  template <class Info> std::ostream &operator<<( std::ostream &,
+						  const Trie<Info> * );
 
-  template <class Info> class Trie{
-    friend std::ostream &operator << LTGT ( std::ostream &,
-					    const Trie<Info> * );
+  template <class Info> class Trie {
+    template <class U>
+    friend std::ostream &operator << ( std::ostream &,
+				       const Trie<U> * );
   public:
     Trie():
       Tree( new TrieNode<Info>( '\0' ) )
