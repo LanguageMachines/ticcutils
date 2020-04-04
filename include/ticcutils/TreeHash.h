@@ -34,90 +34,52 @@
 namespace Hash {
   using namespace Tries;
 
-// a StringTokenizer. Stores strings and assigns unique numbers
-class HashInfo {
-  friend std::ostream& operator<< ( std::ostream&, const HashInfo& );
- public:
-  HashInfo( const std::string&, const unsigned int );
-  ~HashInfo();
-  const std::string& Name() const {
-    /*!
-      \return the value in the HashInfo
-    */
-    return name;
+  // a StringTokenizer. Stores strings and assigns unique numbers
+  class HashInfo {
+    friend std::ostream& operator<< ( std::ostream&, const HashInfo& );
+  public:
+    HashInfo( const std::string&, const unsigned int );
+    ~HashInfo();
+    const std::string& Name() const {
+      /*!
+	\return the value in the HashInfo
+      */
+      return name;
+    };
+    unsigned int Index() const {
+      /*!
+	\return the index in the HashInfo
+      */
+      return ID;
+    };
+  private:
+    const std::string name;
+    unsigned int ID;
+    HashInfo( const HashInfo& );
+    HashInfo& operator=( const HashInfo& );
   };
-  unsigned int Index() const {
-    /*!
-      \return the index in the HashInfo
-    */
-    return ID;
-  };
- private:
-  const std::string name;
-  unsigned int ID;
-  HashInfo( const HashInfo& );
-  HashInfo& operator=( const HashInfo& );
-};
 
-class StringHash {
-  friend std::ostream& operator << ( std::ostream&, const StringHash& );
- public:
-  StringHash();
-  ~StringHash();
-  unsigned int NumOfEntries() const {
-    /*!
-      \return the number of entries in the StringHash
-    */
-    return NumOfTokens;
+  class StringHash {
+    friend std::ostream& operator << ( std::ostream&, const StringHash& );
+  public:
+    StringHash();
+    ~StringHash();
+    unsigned int NumOfEntries() const {
+      /*!
+	\return the number of entries in the StringHash
+      */
+      return NumOfTokens;
+    };
+    unsigned int Hash( const std::string& );
+    unsigned int Lookup( const std::string& ) const;
+    const std::string& ReverseLookup( unsigned int ) const;
+  private:
+    unsigned int NumOfTokens;
+    std::vector<HashInfo*> rev_index;
+    Trie<HashInfo> StringTree;
+    StringHash( const StringHash& );
+    StringHash& operator=( const StringHash& );
   };
-  unsigned int Hash( const std::string& );
-  unsigned int Lookup( const std::string& ) const;
-  const std::string& ReverseLookup( unsigned int ) const;
- private:
-  unsigned int NumOfTokens;
-  std::vector<HashInfo*> rev_index;
-  Trie<HashInfo> StringTree;
-  StringHash( const StringHash& );
-  StringHash& operator=( const StringHash& );
-};
-
-// a Lexion. Stores strings and translations, assigns unique ID's as well
-class LexInfo {
-  friend std::ostream& operator<<( std::ostream&, const LexInfo& );
- public:
-  LexInfo( const std::string&, const std::string& );
-  ~LexInfo();
-  const std::string& Name() const {
-    /*!
-      \return the value in the LexInfo
-    */
-    return name;
-  };
-  const std::string& Trans() const {
-    /*!
-      \return the translation in the LexInfo
-    */
-    return trans;
-  };
- private:
-  const std::string name;
-  const std::string trans;
-  LexInfo( const LexInfo& );
-  LexInfo& operator=( const LexInfo& );
-};
-
-class Lexicon {
-  friend std::ostream& operator<< ( std::ostream&, const Lexicon& );
- public:
-  Lexicon();
-  ~Lexicon();
-  LexInfo *Lookup( const std::string& ) const;
-  LexInfo *Store( const std::string&, const std::string& );
- private:
-  Trie<LexInfo> LexTree;
-  Lexicon( const Lexicon& );
-  Lexicon& operator=( const Lexicon& );
-};
 
 }
 #endif

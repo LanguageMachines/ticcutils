@@ -577,17 +577,6 @@ void test_lowercase(){
   assertEqual( res, "een camelcapped zin." );
 }
 
-void test_lexicon(){
-  Hash::Lexicon lex;
-  lex.Store( "appel", "apple" );
-  lex.Store( "peer", "pear" );
-  lex.Store( "appeltaart", "applepie" );
-  Hash::LexInfo *info = lex.Lookup( "cake" );
-  assertEqual( (void*)info, (void*)0 );
-  info = lex.Lookup( "appel" );
-  assertEqual( info->Trans(), "apple" );
-}
-
 void test_treehash(){
   Hash::StringHash sh;
   size_t index = sh.Hash( "appel" );
@@ -1001,7 +990,6 @@ int main( const int argc, const char* argv[] ){
   test_uppercase();
   test_lowercase();
   test_treehash();
-  test_lexicon();
   test_realpath();
   string testdir;
   bool dummy;
