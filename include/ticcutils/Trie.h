@@ -33,7 +33,7 @@ namespace Tries {
   template <class Info> std::ostream& operator<<( std::ostream&,
 						  const TrieNode<Info> * );
 
-  /// \brief A class for the Nodes in the Trie class
+  /// \brief A genric class for the nodes we store in the Trie class
   template <class Info> class TrieNode {
     template <class U>
       friend std::ostream& operator<<( std::ostream&,
