@@ -40,6 +40,11 @@ namespace TiCCServer {
 
   class childArgs;
 
+  /// \brief ServerBase provides functions to setup a Server in a generic
+  /// way
+  ///
+  /// ServerBase serves as a baseclass for more specialized servers for TCP
+  /// HTTP connections
   class ServerBase {
   private:
     ServerBase( const ServerBase& ); // no copies allowed
@@ -109,6 +114,10 @@ namespace TiCCServer {
     const TiCC::Configuration *_config;
   };
 
+  /// \brief childArgs carries important data for Server connections
+  ///
+  /// this is passed using a callback function to every new Socket connection
+  /// the Server creates
   class childArgs {
   public:
     childArgs( ServerBase *, Sockets::ClientSocket * );
@@ -165,12 +174,14 @@ namespace TiCCServer {
     childArgs& operator=( const childArgs& ); // no copies allowed
   };
 
+  /// \brief TcpServerBase is a baseclass for TCP connections
   class TcpServerBase : public ServerBase {
   public:
     explicit TcpServerBase( const TiCC::Configuration *c,
 			    void *cb ):ServerBase( c, cb ){};
   };
 
+  /// \brief HttpServerBase is a baseclass for Http connections
   class HttpServerBase : public ServerBase {
   public:
     void socketChild( childArgs * );
@@ -183,6 +194,7 @@ namespace TiCCServer {
   std::string VersionName();
 
   inline int daemonize( int noCD , int noClose ){
+    /// wrapper to expose the daemonize function to std::
     return ServerBase::daemonize( noCD, noClose);
   }
 

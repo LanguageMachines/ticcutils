@@ -32,6 +32,8 @@ namespace Tries {
   template <class Info> class TrieNode;
   template <class Info> std::ostream& operator<<( std::ostream&,
 						  const TrieNode<Info> * );
+
+  /// \brief A class for the Nodes in the Trie class
   template <class Info> class TrieNode {
     template <class U>
       friend std::ostream& operator<<( std::ostream&,
@@ -44,10 +46,10 @@ namespace Tries {
     void Iterate( void ( Info *, void * ), void * );
     void Iterate( void ( Info * ) );
   private:
-    char label;             // the label.
-    Info *the_info;         // The information at this pnt.
-    TrieNode *next_node;       // Pointer to the next node.
-    TrieNode *sub_node;        // Pointer to the sub node.
+    char label;                //!< the label.
+    Info *the_info;            //!< The information at this pnt.
+    TrieNode *next_node;       //!< Pointer to the next node.
+    TrieNode *sub_node;        //!< Pointer to the sub node.
     TrieNode( const TrieNode& );
     TrieNode& operator=( const TrieNode& );
     Info *add_to_tree( Info *, const char * );
@@ -56,37 +58,56 @@ namespace Tries {
 
   template <class Info>
     inline Info *TrieNode<Info>::scan_tree( const char *name ) const {
-    //
-    // returns the info where it is found in the tree or NULL.
-    //
+    /// search a matching field in the Trie
+    /*!
+      \param name the stringto match in the Trie
+      \return an Info node where it is found in the tree or NULL.
+
+      This function searches the first character of \e name in the Trie
+
+      if NOT found it returns NULL. Otherwise it recursively searches for
+      the next character in \e name
+    */
     TrieNode *subtree = sub_node; // top node has empty label!
     while ( subtree ) {
       if ( subtree->label == *name ){
-	if ( *(++name) == '\0' )
+	if ( *(++name) == '\0' ){
 	  return subtree->the_info;
+	}
 	else {
+	  // we are at the NEXT character in name now!
 	  subtree = subtree->sub_node;
 	}
       }
-      else if ( subtree->label > *name )
+      else if ( subtree->label > *name ){
 	return NULL;
-      else
+      }
+      else {
 	subtree = subtree->next_node;
+      }
     }
     return NULL;
   }
 
   template <class Info>
     inline Info *TrieNode<Info>::scan_tree( const std::string& name ) const {
+    /// search a matching field in the Trie
+    /*!
+      \param name the stringto match in the Trie
+      \return an Info node where it is found in the tree or NULL.
+
+      This function searches the first character of \e name in the Trie
+
+      if NOT found it returns NULL. Otherwise it recursively searches for
+      the next character in \e name
+    */
     return scan_tree( name.c_str() );
   }
 
   template <class Info>
     inline std::ostream& operator << ( std::ostream& os,
 				       const TrieNode<Info> *tree ){
-    //
-    //  print an TrieNode sorted on Info
-    //
+    /// recursively print a Trie to a stream
     if ( tree ){
       os << tree->sub_node;
       if ( tree->the_info )
@@ -98,35 +119,35 @@ namespace Tries {
 
   template <class Info>
     inline void TrieNode<Info>::Iterate( void F( Info * ) ){
-    //
-    //  Do F on each entry in the Trie
-    //
+    /// execute the function F on each entry in the Trie
     if ( the_info )
 #pragma omp critical(trie_mod)
       {
 	F( the_info );
       }
-    if ( sub_node )
+    if ( sub_node ){
       sub_node->Iterate( F );
-    if ( next_node )
+    }
+    if ( next_node ){
       next_node->Iterate( F );
+    }
   }
 
   template <class Info>
     inline void TrieNode<Info>::Iterate( void F( Info *, void * ),
 					 void *arg ){
-    //
-    //  Do F on each entry in the Trie
-    //
+    /// execute the function F on each entry in the Trie
     if ( the_info )
 #pragma omp critical(trie_mod)
       {
 	F( the_info, arg );
       }
-    if ( sub_node )
+    if ( sub_node ){
       sub_node->Iterate( F, arg );
-    if ( next_node )
+    }
+    if ( next_node ){
       next_node->Iterate( F, arg );
+    }
   }
 
   template <class Info>
@@ -136,10 +157,12 @@ namespace Tries {
     next_node(NULL),
     sub_node(NULL)
     {
+      /// create an empty TrieNode for the character \e lab
     }
 
   template <class Info>
     inline TrieNode<Info>::~TrieNode(){
+    /// destroy a TrieNode
     delete the_info;
     delete sub_node;
     delete next_node;
@@ -148,9 +171,13 @@ namespace Tries {
   template <class Info>
     inline Info *TrieNode<Info>::add_to_tree( Info *info,
 					      const char *lab ){
-    // If the lab string is empty, we are at the bottom, and
-    // we can store the info.
-    //
+    /// add an Info record to the trie, using the label \e lab
+    /*!
+      \param info The information to store
+      \param lab a character array with the label
+      If the lab string is empty, we are at the bottom, and we can store the
+      info. If there is already Info, we discard the new \e info
+    */
     if ( lab[0] == '\0') {
       if ( !the_info ){
 	the_info = info;
@@ -170,6 +197,7 @@ namespace Tries {
 	  return (*subNodePtr)->add_to_tree( info, &lab[1] );
 	}
 	else if ( (*subNodePtr)->label > lab[0] ) {
+	  // we have to insert a new TrieNode to store info
 	  TrieNode<Info> *tmp = *subNodePtr;
 	  *subNodePtr = new TrieNode<Info>( lab[0] );
 	  (*subNodePtr)->next_node = tmp;
@@ -177,7 +205,7 @@ namespace Tries {
 	}
 	subNodePtr = &((*subNodePtr)->next_node);
       }
-      // We don't, so we create a new one, and continue.
+      // no match, so we create a new one at the end, and continue.
       //
       *subNodePtr = new TrieNode<Info>( lab[0] );
       return (*subNodePtr)->add_to_tree( info, &lab[1] );
@@ -187,6 +215,13 @@ namespace Tries {
   template <class Info>
     inline Info *TrieNode<Info>::add_to_tree( Info *info,
 					      const std::string& lab ){
+    /// add an Info record to the trie, using the label \e lab
+    /*!
+      \param info The information to store
+      \param lab a character array with the label
+      If the lab string is empty, we are at the bottom, and we can store the
+      info. If there is already Info, we discard the new \e info
+    */
     return add_to_tree( info, lab.c_str() );
   }
 
@@ -195,6 +230,7 @@ namespace Tries {
   template <class Info> std::ostream &operator<<( std::ostream &,
 						  const Trie<Info> * );
 
+  /// \brief A class to store opaque data in a Trie
   template <class Info> class Trie {
     template <class U>
     friend std::ostream &operator << ( std::ostream &,
@@ -213,9 +249,15 @@ namespace Tries {
     Info *Retrieve( const std::string& str ) const{
       return Tree->scan_tree( str ); };
     void ForEachDo( void F( Info *, void * ), void *arg ){
-      if ( Tree ) Tree->Iterate( F, arg ); };
+      if ( Tree ) {
+	Tree->Iterate( F, arg );
+      }
+    };
     void ForEachDo( void F( Info * ) ) {
-      if ( Tree ) Tree->Iterate( F ); };
+      if ( Tree ){
+	Tree->Iterate( F );
+      }
+    };
   protected:
     TrieNode<Info> *Tree;
     Trie( const Trie& );
