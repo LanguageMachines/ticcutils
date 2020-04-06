@@ -38,6 +38,7 @@
 enum LogLevel{ LogSilent, LogNormal, LogDebug, LogHeavy, LogExtreme };
 enum LogFlag { NoStamp=0, StampTime=1, StampMessage=2, StampBoth=3 };
 
+/// \brief a specialization of std::basic_streambuf for logging purposes
 template <class charT, class traits = std::char_traits<charT> >
   class basic_log_buffer : public std::basic_streambuf<charT, traits> {
  public:
@@ -107,12 +108,9 @@ inline std::string time_stamp(){
   return time_line;
 }
 
-//
-// for a derived output stream, we must provide implementations for
-// both overflow and sync.
-// both use a helper function buffer_out to do the real work.
-//
-
+/// for a derived output stream, we must provide implementations for
+/// both overflow and sync.
+/// both use a helper function buffer_out to do the real work.
 template <class charT, class traits >
 int basic_log_buffer<charT,traits>::overflow( int c ) {
   buffer_out();
@@ -123,8 +121,9 @@ int basic_log_buffer<charT,traits>::overflow( int c ) {
       char z = static_cast<char>(c);
       ass_stream->put( z );
     }
-    else
+    else {
       return EOF;
+    }
   }
   return c;
 }
@@ -148,8 +147,9 @@ void basic_log_buffer<charT,traits>::buffer_out(){
       if ( stamp_flag & StampTime ){
 	*ass_stream << time_stamp();
       }
-      if ( !ass_mess.empty() && ( stamp_flag & StampMessage ) )
+      if ( !ass_mess.empty() && ( stamp_flag & StampMessage ) ){
 	*ass_stream << ass_mess << ":";
+      }
       in_sync = false;
     }
   }

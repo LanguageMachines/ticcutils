@@ -30,6 +30,7 @@
 #include <iostream>
 #include <streambuf>
 
+/// \brief Specialization of std::streambuf for output to a Unix file descriptor
 class fdoutbuf: public std::streambuf {
  public:
   explicit fdoutbuf( int _fd );
@@ -41,6 +42,7 @@ class fdoutbuf: public std::streambuf {
   int fd; // file descriptor
 };
 
+/// \brief An output stream connected to a Unix file descriptor
 class fdostream: public std::ostream {
  protected:
   fdoutbuf buf;
@@ -57,6 +59,7 @@ class fdostream: public std::ostream {
   bool open( int fd );
 };
 
+/// \brief Specialization of std::streambuf for input from a Unix file descriptor
 class fdinbuf: public std::streambuf {
  public:
   fdinbuf();
@@ -70,6 +73,7 @@ class fdinbuf: public std::streambuf {
   char buffer[bufferSize];
 };
 
+/// \brief An input stream connected to a Unix file descriptor
 class fdistream: public std::istream {
  protected:
   fdinbuf buf;
