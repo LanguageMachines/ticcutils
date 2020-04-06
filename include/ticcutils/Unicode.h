@@ -48,6 +48,7 @@ namespace TiCC {
     return UnicodeString::fromUTF8( s );
   }
 
+  /// \brief a class that can normalize UnicodeStrings to NFC/NFD/NFKC/NFKD
   class UnicodeNormalizer {
   public:
     UnicodeNormalizer( const std::string& = "" );
@@ -60,6 +61,7 @@ namespace TiCC {
     std::string mode;
   };
 
+  /// \brief a class that can match UnicodeStrings to Regex patterns
   class UnicodeRegexMatcher {
   public:
     UnicodeRegexMatcher( const UnicodeString&, const UnicodeString& name="" );
@@ -81,6 +83,7 @@ namespace TiCC {
     bool _debug;
   };
 
+  /// \brief a class to run ICU Unicode filters on UnicodeStrings
   class UniFilter {
     friend std::ostream& operator<<( std::ostream&, const UniFilter& );
   public:

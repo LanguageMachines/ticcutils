@@ -183,12 +183,14 @@ namespace TiCC {
   pthread_mutex_t global_logging_mutex = PTHREAD_MUTEX_INITIALIZER;
   pthread_mutex_t global_lock_mutex = PTHREAD_MUTEX_INITIALIZER;
 
+  /// @cond HIDDEN
   /// a structure to store locking information per thread
   struct lock_s { pthread_t id; int cnt; time_t tim; };
 
 #define MAX_LOCKS 500
 
   lock_s locks[MAX_LOCKS];
+  /// @endcond
 
   bool LogStream::Problems(){
     /// perform a sanity check on the mutex locks

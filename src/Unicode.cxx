@@ -138,12 +138,13 @@ namespace TiCC {
     }
   }
 
+  /// @cond HIDDEN
   class uRegexError: public invalid_argument {
   public:
     explicit uRegexError( const string& s ): invalid_argument( "Invalid regular expression: " + s ){};
     explicit uRegexError( const UnicodeString& us ): invalid_argument( "Invalid regular expression: " + UnicodeToUTF8(us) ){};
   };
-
+  /// @endcond
 
   UnicodeString UnicodeRegexMatcher::Pattern() const {
     /// return the current Regex pattern

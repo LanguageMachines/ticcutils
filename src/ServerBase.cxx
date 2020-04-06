@@ -44,7 +44,7 @@ using namespace TiCC;
 
 #define LOG *Log(_my_log)
 
-namespace TimblServer {
+namespace TiCCServer {
 
   const string serv_short_opts = "S:C:c:";
   const string serv_long_opts =

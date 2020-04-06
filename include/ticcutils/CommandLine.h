@@ -35,11 +35,13 @@
 
 namespace TiCC {
 
+  /// @cond HIDDEN
   class OptionError: public std::runtime_error {
   public:
     explicit OptionError( const std::string& s ): std::runtime_error( "option-error: " + s ){};
   };
 
+  /// CL_item is used to store 1 commandline argument
   class CL_item {
     friend std::ostream& operator<<( std::ostream&, const CL_item& );
   public:
@@ -93,7 +95,14 @@ namespace TiCC {
     bool _mood;
     bool _long_opt;
   };
+  /// @endcond
 
+  /// \brief CL_options is a class for parsing and checking command-line options
+  ///
+  /// It allows you to define which short and long options are valid.
+  /// Several functions are available to check the presence of options and
+  /// extract their values, and even (for short options) if they were preceded
+  /// by a + or - sign
   class CL_Options {
     friend std::ostream& operator<<( std::ostream&, const CL_Options& );
   public:

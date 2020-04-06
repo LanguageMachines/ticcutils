@@ -33,6 +33,17 @@
 #include <iostream>
 
 namespace TiCC {
+
+  /// \brief a class to store configurations
+  ///
+  /// This class stores configuration information as key-value pairs.
+  /// The Configuration is devided in sections. A key must be unique \e per
+  /// \e section.
+  ///
+  /// We provide functions to read a Configuration from a file, or to set
+  /// an attribute-value in a certain section.
+  ///
+  /// There is an implicit \b global section when the section is unnamed.
   class Configuration {
     typedef std::map<std::string,std::string> ssMap;
     typedef std::map<std::string, ssMap> sssMap;

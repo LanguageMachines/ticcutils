@@ -32,6 +32,11 @@
 
 namespace TiCC {
 
+  /// \brief Logstream is a class to synchronize output in Multi-Threaded
+  /// programs.
+  ///
+  /// LogStream used mutexes to assure that output from different threads is
+  /// not mangled
   class LogStream : public std::ostream {
     friend bool IsActive( LogStream & );
     friend bool IsActive( LogStream * );
@@ -70,6 +75,7 @@ namespace TiCC {
   bool IsActive( LogStream & );
   bool IsActive( LogStream * );
 
+  /// \brief create a LogStream
   class Log{
   public:
     explicit Log( LogStream * );
@@ -83,6 +89,7 @@ namespace TiCC {
     Log& operator=( const Log& );
   };
 
+  /// \brief create a debugging LogStream
   class Dbg{
   public:
     explicit Dbg( LogStream * );
@@ -96,6 +103,7 @@ namespace TiCC {
     Dbg& operator=( const Dbg& );
   };
 
+  /// \brief a debugging LogStream for heavy output
   class xDbg{
   public:
     explicit xDbg( LogStream * );
@@ -109,6 +117,7 @@ namespace TiCC {
     xDbg& operator=( const xDbg& );
   };
 
+  /// \brief a debugging LogStream for extreme output
   class xxDbg{
   public:
     explicit xxDbg( LogStream * );

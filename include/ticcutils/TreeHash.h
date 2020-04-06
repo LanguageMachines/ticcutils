@@ -34,7 +34,7 @@
 namespace Hash {
   using namespace Tries;
 
-  /// HashInfo is a structure used by StringHash to store a string and
+  /// \brief HashInfo is a structure used by StringHash to store a string and
   /// an unique ID
   class HashInfo {
     friend std::ostream& operator<< ( std::ostream&, const HashInfo& );
@@ -60,7 +60,7 @@ namespace Hash {
     HashInfo& operator=( const HashInfo& );
   };
 
-  /// The Stringhash class is used to enumerate strings.
+  /// \brief The Stringhash class is used to enumerate strings.
   ///
   /// Every string gets an UNIQUE id assigned.
   ///

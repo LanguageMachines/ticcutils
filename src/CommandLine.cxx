@@ -42,10 +42,12 @@ using namespace std;
 
 namespace TiCC {
 
+  /// \cond HIDDEN
   class ImplementationError: public std::logic_error {
   public:
     explicit ImplementationError( const std::string& s ): std::logic_error( "CommandLine: implementation error." + s ){};
   };
+  /// \endcond
 
   CL_Options::CL_Options( const string& short_opts, const string& long_opts ):
     is_init(false),
@@ -344,6 +346,7 @@ namespace TiCC {
     UNKNOWN ///< not known (yet)
   };
 
+  /// @cond HIDDEN
   struct arg {
     arg(): stat(UNKNOWN),c(0){};
     argstat stat;
@@ -351,6 +354,7 @@ namespace TiCC {
     string s;
     string val;
   };
+  /// @endcond
 
   ostream& operator<<( ostream& os, const arg& a ){
     /// output an 'arg' to a stream

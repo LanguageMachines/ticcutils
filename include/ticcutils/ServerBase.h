@@ -33,7 +33,7 @@
 #include "ticcutils/SocketBasics.h"
 #include "ticcutils/FdStream.h"
 
-namespace TimblServer {
+namespace TiCCServer {
 
   extern const std::string serv_short_opts;
   extern const std::string serv_long_opts;

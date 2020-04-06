@@ -152,6 +152,7 @@ namespace TiCC {
     return result;
   }
 
+  /// \brief XmlDoc is a C++ wrapper around libxml2::xmlDoc
   class XmlDoc {
     friend std::ostream& operator << ( std::ostream& , const XmlDoc& );
   public:

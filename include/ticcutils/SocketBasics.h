@@ -44,6 +44,7 @@
 namespace Sockets {
 
   /// \brief The Socket class is a wrapper around the low-level Unix socket routines.
+  ///
   /// It provides functions to create connections with associated C++
   /// io-streams for reading and writing and also low-level functions to read
   /// and write directly from/to the sockets
@@ -81,15 +82,15 @@ namespace Sockets {
     std::string mess; //!< a buffer to store error messages
   };
 
-  /// The ClientSocket implements a connect function to connect a Socket to
-  /// a host::port
+  /// \brief The ClientSocket implements a connect function to connect a Socket
+  /// to a host::port
   class ClientSocket: public Socket {
     friend class ServerSocket;
   public:
     bool connect( const std::string&, const std::string& );
     std::string getClientName() const {
       /*!
-	\return the given name of the Client
+	\return the name of the Client (auto-generated on creation)
       */
       return clientName;
     };
@@ -97,7 +98,7 @@ namespace Sockets {
     std::string clientName; //!< store the client's name here
   };
 
-  /// The ServerSocket implements function to set up a Server on a port
+  /// The ServerSocket implements functions to set up a Server on a port
   class ServerSocket: public Socket {
   public:
     bool connect( const std::string& );

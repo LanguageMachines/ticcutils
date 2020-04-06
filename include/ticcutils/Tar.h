@@ -33,6 +33,7 @@
 
 namespace TiCC {
 
+  /// \brief a class to handle .tar files for extracting only
   class tar {
   public:
     tar();
