@@ -33,13 +33,14 @@
 const std::string OK = "\033[1;32m OK  \033[0m";
 const std::string FAIL = "\033[1;31m  FAILED  \033[0m";
 
+/// \brief class that defines a series of tests
 class MyTSerie {
  public:
   MyTSerie( const std::string& fun, int lineno, const std::string& line ){
     start( fun, lineno, line );
   }
   ~MyTSerie(){
-    stop( _fun, 0 );
+    stop( _fun );
   }
   bool isDefault() const {return _fun =="default"; };
   int _fails;
@@ -49,20 +50,28 @@ class MyTSerie {
   std::string _fun;
  private:
   void start( const std::string& fun, int lineno, const std::string& line );
-  void stop( const std::string& fun, int line );
+  void stop( const std::string& fun );
 };
 
+/// the default test serie where all other series run in
 static MyTSerie currentTestContext( "default", 0, "default" );
 
 int exit_status = 0;
 bool summarized = false;
 bool testSilent = false;
-std::string last_what;
+std::string last_what;      ///!< global variable to hold the last what() from
+/// any exception
 
 #define TEST_SILENT_ON() testSilent = true;
 #define TEST_SILENT_OFF() testSilent = false;
 
 void MyTSerie::start( const std::string& fun, int lineno, const std::string& line ){
+  /// start a new TestSerie
+  /*!
+    \param fun the function name
+    \param lineno the line number
+    \param line a message to print
+  */
   _fun = fun;
   _fails = 0;
   _tests = 0;
@@ -75,6 +84,13 @@ void MyTSerie::start( const std::string& fun, int lineno, const std::string& lin
 }
 
 inline void summarize_tests( int expected=0 ){
+  /// print a summary of all the executed tests so far
+  /*!
+    \param expected the number of expected failures
+
+    This function prints a summary about all the tests and signals if
+    a there were more or less failures then expected
+  */
   summarized = true;
   std::cout << "TiCC tests performed " << currentTestContext._series
 	    << " testseries, with a total of " << currentTestContext._tests
@@ -93,7 +109,11 @@ inline void summarize_tests( int expected=0 ){
   exit_status = diff;
 }
 
-void MyTSerie::stop( const std::string& fun, int ){
+void MyTSerie::stop( const std::string& fun ){
+  /// stop a Test Serie
+  /*!
+    \param fun a label for printing
+  */
   if ( isDefault() ){
     if ( !summarized ){
       summarize_tests( 0 );
@@ -213,87 +233,109 @@ void MyTSerie::stop( const std::string& fun, int ){
     std::cerr << __func__ << "(" << __LINE__ << ") error: '" << e.what() << "'" << std::endl; \
   }
 
-std::string lastError() { return last_what;}
-bool hasThrown() { return !last_what.empty(); }
-void decrementError() { --currentTestContext._fails; }
+std::string lastError() {
+  /*!
+    \return the value of the what() last exception
+  */
+  return last_what;
+}
+bool hasThrown() {
+  /*!
+    \return true when the last test has thrown, false otherwise
+   */
+  return !last_what.empty();
+}
+
+void decrementError() {
+  /// decrement the error count
+  --currentTestContext._fails;
+}
 
 #define startTestSerie( SS ) MyTSerie currentTestContext( __func__, __LINE__, (SS) )
 
 template <typename T1, typename T2>
   inline void test_eq( const char* F, int L,
 		       const T1& s1, const T2& s2, MyTSerie& T ){
-  if ( !testSilent && T.isDefault() )
+  if ( !testSilent && T.isDefault() ){
     std::cout << "test: " << F << "(" << L << "): ";
+  }
   ++T._tests;
   typename std::common_type<T1,T2>::type s11 = s1;
   typename std::common_type<T1,T2>::type s22 = s2;
   if ( s11 != s22 ){
     ++T._fails;
-    if ( T.isDefault() )
+    if ( T.isDefault() ){
       std::cout << FAIL << std::endl;
-    else
+    }
+    else {
       std::cerr << "\t";
+    }
     std::cerr << F << "(" << L << ") : '" << s1 << "' != '"
 	      << s2 << "'" << std::endl;
   }
-  else {
-    if ( !testSilent && T.isDefault() )
-      std::cout << OK << std::endl;
+  else if ( !testSilent && T.isDefault() ){
+    std::cout << OK << std::endl;
   }
 }
 
 inline void test_true( const char* F, int L, bool b, MyTSerie& T ){
-  if ( !testSilent && T.isDefault() )
+  if ( !testSilent && T.isDefault() ){
     std::cout << "test: " << F << "(" << L << "): ";
+  }
   ++T._tests;
   if ( !b ){
     ++T._fails;
-    if ( T.isDefault() )
+    if ( T.isDefault() ){
       std::cout << FAIL << std::endl;
-    else
+    }
+    else {
       std::cerr << "\t";
+    }
     std::cerr << F << "(" << L << ") : '"  << b << "' != TRUE" << std::endl;
   }
-  else {
-    if ( !testSilent && T.isDefault() )
-      std::cout << OK << std::endl;
+  else if ( !testSilent && T.isDefault() ){
+    std::cout << OK << std::endl;
   }
 }
 
 inline void test_false( const char* F, int L, bool b, MyTSerie& T ){
-  if ( !testSilent && T.isDefault() )
+  if ( !testSilent && T.isDefault() ){
     std::cout << "test: " << F << "(" << L << "): ";
+  }
   ++T._tests;
   if ( b ){
     ++T._fails;
-    if ( T.isDefault() )
+    if ( T.isDefault() ){
       std::cout << FAIL << std::endl;
-    else
+    }
+    else {
       std::cerr << "\t";
+    }
     std::cerr << F << "(" << L << ") : '"  << b << "' != TRUE" << std::endl;
   }
-  else {
-    if ( !testSilent && T.isDefault() )
-      std::cout << OK << std::endl;
+  else if ( !testSilent && T.isDefault() ){
+    std::cout << OK << std::endl;
   }
 }
 
 inline void test_true_message( const char* F, int L, const std::string& m,
 			       bool b, MyTSerie& T ){
-  if ( !testSilent && T.isDefault() )
+  if ( !testSilent && T.isDefault() ){
     std::cout << "test: " << F << "(" << L << "): ";
+  }
   ++T._tests;
   if ( !b ){
     ++T._fails;
-    if ( T.isDefault() )
+    if ( T.isDefault() ){
       std::cout << FAIL << std::endl;
-    else
+    }
+    else {
       std::cerr << "\t";
+    }
     std::cerr << F << "(" << L << ") : '"  << m << "'" << std::endl;
   }
-  else {
-    if ( !testSilent && T.isDefault() )
-      std::cout << OK << std::endl;
+  else if ( !testSilent && T.isDefault() ){
+    std::cout << OK << std::endl;
   }
 }
 
