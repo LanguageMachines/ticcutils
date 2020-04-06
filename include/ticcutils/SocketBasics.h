@@ -43,6 +43,13 @@
 
 namespace Sockets {
 
+  /// \brief The Socket class is a wrapper around the low-level Unix socket routines.
+  /// It provides functions to create connections with associated C++
+  /// io-streams for reading and writing and also low-level functions to read
+  /// and write directly from/to the sockets
+  ///
+  /// There is also a non-blocking variant, which makes some asynchronous
+  /// IO possible, using a timeout value
   class Socket {
   public:
   Socket(): nonBlocking(false),sock(-1){
@@ -51,14 +58,14 @@ namespace Sockets {
     virtual ~Socket();
     bool isValid() const {
       /*!
-	\return true if the Socket object is connected to a working socket
+	\return true if the Socket object is connected to a working Unix socket
       */
       return sock != -1 ;
     };
     std::string getMessage() const;
     int getSockId() const {
       /*!
-	\return the socket's id
+	\return the internal socket id
       */
       return sock;
     }
@@ -74,16 +81,12 @@ namespace Sockets {
     std::string mess; //!< a buffer to store error messages
   };
 
+  /// The ClientSocket implements a connect function to connect a Socket to
+  /// a host::port
   class ClientSocket: public Socket {
+    friend class ServerSocket;
   public:
     bool connect( const std::string&, const std::string& );
-  };
-
-  class ServerSocket: public Socket {
-  public:
-    bool connect( const std::string& );
-    bool listen( unsigned int = 5 );
-    bool accept( ServerSocket& );
     std::string getClientName() const {
       /*!
 	\return the given name of the Client
@@ -92,6 +95,14 @@ namespace Sockets {
     };
   private:
     std::string clientName; //!< store the client's name here
+  };
+
+  /// The ServerSocket implements function to set up a Server on a port
+  class ServerSocket: public Socket {
+  public:
+    bool connect( const std::string& );
+    bool listen( unsigned int = 5 );
+    bool accept( ClientSocket& newSocket );
   };
 }
 

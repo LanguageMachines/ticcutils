@@ -34,7 +34,8 @@
 namespace Hash {
   using namespace Tries;
 
-  /// HashInfo is a structure to store a string and and unique ID
+  /// HashInfo is a structure used by StringHash to store a string and
+  /// an unique ID
   class HashInfo {
     friend std::ostream& operator<< ( std::ostream&, const HashInfo& );
   public:
@@ -59,10 +60,13 @@ namespace Hash {
     HashInfo& operator=( const HashInfo& );
   };
 
-  /// The Stringhash class is used to store string values which get
-  /// assigned an UNIQUE id. It also keeps a reverse index from the
-  /// id back to the string.
-  /// internally it uses a Trie for fast lookup and inserting
+  /// The Stringhash class is used to enumerate strings.
+  ///
+  /// Every string gets an UNIQUE id assigned.
+  ///
+  /// It also keeps a reverse index from the id back to the string.
+  ///
+  /// Internally it uses a Trie for fast inserting en retrieving
   class StringHash {
     friend std::ostream& operator << ( std::ostream&, const StringHash& );
   public:

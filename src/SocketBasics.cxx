@@ -69,10 +69,12 @@ namespace Sockets {
   //#define DEBUG
 
   bool Socket::read( string& line ) {
-    /// read s string from the Socket
+    /// read a string from the Socket
     /*!
       \param line the result
       \return true when at least one byte is read. false otherwise
+
+      a line is terminated by a newline (\\n) or a return (\\r)
     */
     if ( !isValid() ){
       mess = "read: socket invalid";
@@ -124,11 +126,13 @@ namespace Sockets {
   }
 
   bool Socket::read( string& result, unsigned int timeout ) {
-    /// read a line upto a NEWLINE from a nonblocking Socket
+    /// read a line from a nonblocking Socket
     /*!
       \param result the read line
       \param timeout seconds to use for retry
       \return true is at least one byte is read, false on error
+
+      a line is terminated by a newline (\\n) or a return (\\r)
     */
     result = "";
     if ( !nonBlocking ){
@@ -216,7 +220,7 @@ namespace Sockets {
   }
 
   bool Socket::write( const string& line, unsigned int timeout ){
-    /// write a line to a socket
+    /// write a line to a non-blocking socket
     /*!
       \param line the line to write
       \param timeout the number of seconds to use for retrying
@@ -262,7 +266,7 @@ namespace Sockets {
   }
 
   string Socket::getMessage() const{
-    /// return an error message set in lower layers
+    /// return an error message, which might be set in lower layers
     string m;
     if ( isValid() ){
       m = "socket " + TiCC::toString(sock);
@@ -277,7 +281,8 @@ namespace Sockets {
   }
 
   bool Socket::setBlocking( ) {
-    /// set the socket to blocking mode
+    /// set the socket to blocking mode (which is the default for normal
+    /// IO-streams)
     /*!
       \return false on failure, true otherwise
     */
@@ -448,7 +453,7 @@ namespace Sockets {
     return isValid();
   }
 
-  bool ServerSocket::accept( ServerSocket& newSocket ){
+  bool ServerSocket::accept( ClientSocket& newSocket ){
     /// accept a connection on a socket
     /*!
       \param newSocket the socket to connect to

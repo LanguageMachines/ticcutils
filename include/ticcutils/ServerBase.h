@@ -111,7 +111,7 @@ namespace TimblServer {
 
   class childArgs {
   public:
-    childArgs( ServerBase *, Sockets::ServerSocket * );
+    childArgs( ServerBase *, Sockets::ClientSocket * );
     ~childArgs();
     int id() const {
       /*!
@@ -143,9 +143,9 @@ namespace TimblServer {
       */
       return _mother->logstream();
     }
-    Sockets::ServerSocket *socket() const {
+    Sockets::ClientSocket *socket() const {
       /*!
-	\return the ServerSocket we are connected to
+	\return the ClientSocket we belong to
       */
       return _socket;
     };
@@ -157,7 +157,7 @@ namespace TimblServer {
     };
   private:
     ServerBase *_mother;
-    Sockets::ServerSocket *_socket;
+    Sockets::ClientSocket *_socket;
     int _id;
     fdistream _is;
     fdostream _os;

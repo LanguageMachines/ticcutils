@@ -54,7 +54,7 @@ namespace TimblServer {
   string Version() { return VERSION; }
   string VersionName() { return PACKAGE_STRING; }
 
-  childArgs::childArgs( ServerBase *server, Sockets::ServerSocket *sock ):
+  childArgs::childArgs( ServerBase *server, Sockets::ClientSocket *sock ):
     _mother(server),_socket(sock){
     /// create a childArgs structure
     /*!
@@ -486,7 +486,7 @@ namespace TimblServer {
     sigaction( SIGTERM, &act, NULL );
     while( keepGoing ){ // waiting for connections loop
       signal( SIGPIPE, SIG_IGN );
-      Sockets::ServerSocket *newSocket = new Sockets::ServerSocket();
+      Sockets::ClientSocket *newSocket = new Sockets::ClientSocket();
       if ( !server.accept( *newSocket ) ){
 	cerr << "accept failed: " + server.getMessage() << endl;
 	delete newSocket;
