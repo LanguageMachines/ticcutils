@@ -39,10 +39,7 @@
 namespace GZSTREAM_NAMESPACE {
 #endif
 
-  // ----------------------------------------------------------------------------
-  // Internal classes to implement gzstream. See below for user classes.
-  // ----------------------------------------------------------------------------
-
+  /// \brief Internal class to implement gzstream. See below for user classes.
   class gzstreambuf : public std::streambuf {
   private:
     gzstreambuf( const gzstreambuf& ); // no copies please
@@ -75,6 +72,7 @@ namespace GZSTREAM_NAMESPACE {
     virtual int     sync();
   };
 
+  /// \brief Internal class to implement gzstream. See below for user classes.
   class gzstreambase : virtual public std::ios {
   protected:
     gzstreambuf buf;
@@ -87,12 +85,11 @@ namespace GZSTREAM_NAMESPACE {
     gzstreambuf* rdbuf() { return &buf; }
   };
 
-  // ----------------------------------------------------------------------------
-  // User classes. Use igzstream and ogzstream analogously to ifstream and
-  // ofstream respectively. They read and write files based on the gz*
-  // function interface of the zlib. Files are compatible with gzip compression.
-  // ----------------------------------------------------------------------------
-
+  /// \brief A stream class to support .gz files
+  ///
+  /// Use igzstream analogously to ifstream. It reads files based on the gz*
+  /// function interface of the zlib. Files are compatible with gzip
+  /// compression.
   class igzstream : public gzstreambase, public std::istream {
   public:
   igzstream() : std::istream( &buf) {}
@@ -104,6 +101,11 @@ namespace GZSTREAM_NAMESPACE {
     }
   };
 
+  /// \brief A stream class to support .gz files
+  ///
+  /// Use ogzstream analogously to ofstream. It writes files based on the gz*
+  /// function interface of the zlib. Files are compatible with gzip
+  /// compression.
   class ogzstream : public gzstreambase, public std::ostream {
   public:
   ogzstream() : std::ostream( &buf) {}
