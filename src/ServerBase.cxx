@@ -47,9 +47,8 @@ using namespace TiCC;
 namespace TiCCServer {
 
   const string serv_short_opts = "S:C:c:";
-  const string serv_long_opts =
-    // leave the , below!. This string is appended later
-    ",pidfile:,logfile:,daemonize:,debug:,config:,protocol:";
+  const string serv_long_opts = ",pidfile:,logfile:,daemonize:,debug:,config:,protocol:";
+    // leave the , in front of this line!. This string is appended later.
 
   string Version() { return VERSION; }
   string VersionName() { return PACKAGE_STRING; }
