@@ -136,7 +136,7 @@ namespace Sockets {
     */
     result = "";
     if ( !nonBlocking ){
-      mess = "attempted timout read on a blocking socket";
+      mess = "attempted a read with timeout on a blocking socket";
       return false;
     }
     else {

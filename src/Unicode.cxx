@@ -423,7 +423,7 @@ namespace TiCC {
     if ( U_FAILURE( stat ) ){
       string msg = "creating UniFilter: " + UnicodeToUTF8( name )
 	+ " failed\n" + "error in rules, line=" + toString(err.line)
-	+ " at postion: " + toString(err.offset);
+	+ " at position: " + toString(err.offset);
       throw runtime_error( msg );
     }
     return true;
