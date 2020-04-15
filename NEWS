@@ -1,8 +1,9 @@
 15 apr 2020 0.24
 [Ko vd Sloot]
-* added documentaion in Doxygen format
+* added documentation in Doxygen format
 * removed dependency on Boost
 * renamed TimblServer namespace to TiCCServer. breaks all builds that use it!
+* bumped library version to 8.0.0
 * updated ClientSocket and ServerSocket classes.
 * removed the Lexicon class from Treehash
 * cleaned up LogStream/LogBuffer classes. removing unused stuff
