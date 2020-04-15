@@ -1,8 +1,14 @@
-... nov 2019 0.24
+15 apr 2020 0.24
 [Ko vd Sloot]
-Bug fix release:
+* added documentaion in Doxygen format
+* removed dependency on Boost
+* renamed TimblServer namespace to TiCCServer. breaks all builds that use it!
+* updated ClientSocket and ServerSocket classes.
+* removed the Lexicon class from Treehash
+* cleaned up LogStream/LogBuffer classes. removing unused stuff
 * updated json to htps://github.com/nlohmann/json/releases/tag/v3.7.3
 * added a tempdir() member to FileUtils
+* many small code refactorings everywhere
 
 21 oct 2019 0.23
 [Ko vd Sloot]
