@@ -47,6 +47,7 @@ using std::cerr;
 using std::endl;
 using std::bad_cast;
 using std::string;
+using std::to_string;
 
 namespace TiCC {
   LogStream::LogStream( int ) :
@@ -159,8 +160,7 @@ namespace TiCC {
 
   void LogStream::addmessage( const int i ){
     /// append a number to the current messsage
-    char m[32];
-    sprintf( m, "-%d", i );
+    string m = "-" + to_string(i);
     addmessage( m );
   }
 
