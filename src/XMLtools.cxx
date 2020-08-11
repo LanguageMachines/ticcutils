@@ -259,7 +259,7 @@ namespace TiCC {
     return nodes;
   }
 
-  list<xmlNode*> FindNodes( const xmlDoc* doc,
+  list<xmlNode*> FindNodes( xmlDoc* doc,
 			    const string& xpath ){
     /// extract all nodes matching a XPath
     /*!
@@ -287,7 +287,7 @@ namespace TiCC {
     return result;
   }
 
-  xmlNode *xPath( const xmlDoc *doc, const string& xpath ){
+  xmlNode *xPath( xmlDoc *doc, const string& xpath ){
     /// search a node using an XPath expression
     /*!
       \param doc the xmlDoc to search in

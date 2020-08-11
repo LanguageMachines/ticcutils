@@ -187,8 +187,8 @@ namespace TiCC {
 
   std::list<xmlNode*> FindNodes( const xmlNode *, const std::string& );
   xmlNode *xPath( const xmlNode *, const std::string& );
-  std::list<xmlNode*> FindNodes( const xmlDoc *, const std::string& );
-  xmlNode *xPath( const xmlDoc *, const std::string& );
+  std::list<xmlNode*> FindNodes( xmlDoc *, const std::string& );
+  xmlNode *xPath( xmlDoc *, const std::string& );
 
 } // namespace TiCC
 
