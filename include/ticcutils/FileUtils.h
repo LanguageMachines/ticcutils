@@ -56,7 +56,9 @@ namespace TiCC {
   /// a class to maintain a temporary named stream
   class tmp_stream {
   public:
-    tmp_stream( const std::string&, bool = false );
+    tmp_stream( const std::string& pf, bool keep = false ):
+      tmp_stream( pf, "/tmp/", keep ) {};
+    tmp_stream( const std::string&, const std::string&, bool = false );
     ~tmp_stream();
     void close()
     /// close the associated file

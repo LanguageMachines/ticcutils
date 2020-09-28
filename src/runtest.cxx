@@ -705,6 +705,35 @@ void test_fileutils( const string& path ){
   assertNoThrow( createPath( dn + "/test") );
   assertNoThrow( erase( dn+"/test" ) );
   assertNoThrow( erase( dn ) );
+  {
+    tmp_stream ts( "runtest1" );
+    fn = ts.tmp_name();
+    ofstream& os = ts.os();
+    os << "TEST" << endl;
+    ts.close();
+    ifstream is( fn );
+    string line;
+    getline( is, line );
+    assertEqual( line, "TEST" );
+  }
+  assertFalse( isFile( fn ) );
+  {
+    tmp_stream ts( "runtest2", "/var/tmp", true );
+    fn = ts.tmp_name();
+    assertTrue( isFile( fn ) );
+    ofstream& os = ts.os();
+    os << "TEST" << endl;
+    ts.close();
+    assertTrue( isFile( fn ) );
+    ifstream is( fn );
+    string line;
+    getline( is, line );
+    assertEqual( line, "TEST" );
+    assertTrue( isFile( fn ) );
+  }
+  assertTrue( isFile( fn ) );
+  assertNoThrow( erase( fn ) );
+  assertFalse( isFile( fn ) );
 }
 
 void test_configuration( const string& path ){

@@ -312,15 +312,16 @@ namespace TiCC {
     return true;
   }
 
-  string tempname( const string& label ){
+  string tempname( const string& label, const string& tmp_dir){
     /// create a temporary directory
     /*!
       \param label a prefix to use
+      \param tmp_dir a path to use . (default /tmp)
       \return the name of the created file
-      The file will be added to /tmp/ with the label as the first part
+      The file will be added to \e tmp_dir with the label as the first part
       of the name, and 6 random characters added.
     */
-    string path = "/tmp/" + label;
+    string path = tmp_dir + "/" + label;
     string temp = path + "XXXXXX";
     char *filename = strdup(temp.c_str());
 
@@ -335,6 +336,10 @@ namespace TiCC {
     // Prevent hitting open files limit in some cases
     close( temp_file );
     return result;
+  }
+
+  std::string tempname( const std::string& label ){
+    return tempname( label, "/tmp" );
   }
 
   string tempdir( const string& label ){
@@ -369,18 +374,22 @@ namespace TiCC {
     }
   }
 
-  tmp_stream::tmp_stream( const string& prefix, bool keep ){
+  tmp_stream::tmp_stream( const string& prefix,
+			  const string& tempdir,
+			  bool keep ){
     /// create a tmp_stream object
     /*!
-      \param prefix a prefix to use to create a temporary file in /tmp
-      \param keep when true, the file wil \e not be temporary. (e.g. for
+      \param prefix a prefix for the name of a temporary file to create in
+      in \e tempdir
+      \param tempdir the directory to insert the file in. (default /tmp )
+      \param keep when true, the file will be permanent. (e.g. for
       debugging). Default is \e false.
       An unique filename will be generated the prefix as the first part
       of the name, and 6 random characters added. It will be inserted in /tmp
       The file will be deleted on destruction of the tmp_stream object, except
       when keep is \e true
     */
-    _temp_name = TiCC::tempname(prefix);
+    _temp_name = TiCC::tempname( prefix, tempdir );
     _os = new ofstream( _temp_name );
     _keep = keep;
   }
