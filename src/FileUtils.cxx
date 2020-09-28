@@ -369,4 +369,29 @@ namespace TiCC {
     }
   }
 
+  tmp_stream::tmp_stream( const string& prefix, bool keep ){
+    /// create a tmp_stream object
+    /*!
+      \param prefix a prefix to use to create a temporary file in /tmp
+      \param keep when true, the file wil \e not be temporary. (e.g. for
+      debugging). Default is \e false.
+      An unique filename will be generated the prefix as the first part
+      of the name, and 6 random characters added. It will be inserted in /tmp
+      The file will be deleted on destruction of the tmp_stream object, except
+      when keep is \e true
+    */
+    _temp_name = TiCC::tempname(prefix);
+    _os = new ofstream( _temp_name );
+    _keep = keep;
+  }
+
+  tmp_stream::~tmp_stream(){
+    /// destruct a tmp_stream object
+    close();
+    delete _os;
+    if ( !_keep ){
+      remove( _temp_name.c_str() );
+    }
+  }
+
 } // namespace TiCC

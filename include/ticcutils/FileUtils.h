@@ -24,11 +24,12 @@
       lamasoftware (at ) science.ru.nl
 */
 
-#include <vector>
-#include <string>
-
 #ifndef TICC_FILE_UTILS_H
 #define TICC_FILE_UTILS_H
+
+#include <vector>
+#include <string>
+#include <fstream>
 
 namespace TiCC {
   std::vector<std::string> glob( const std::string&);
@@ -51,6 +52,26 @@ namespace TiCC {
   std::string tempdir( const std::string& );
 
   void erase( const std::string& );
+
+  /// a class to maintain a temporary named stream
+  class tmp_stream {
+  public:
+    tmp_stream( const std::string&, bool = false );
+    ~tmp_stream();
+    void close()
+    /// close the associated file
+    { _os->close(); };
+    std::ofstream& os()
+      /// return a reference to the associated file
+      { return *_os; };
+    const std::string tmp_name()
+    /// return the generated name of the associated file
+    { return _temp_name; };
+  private:
+    std::string _temp_name;
+    std::ofstream *_os;
+    bool _keep;
+  };
 
 }
 
