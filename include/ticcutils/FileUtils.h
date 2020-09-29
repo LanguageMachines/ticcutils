@@ -48,9 +48,6 @@ namespace TiCC {
 
   bool createPath( const std::string& );
 
-  std::string tempname( const std::string& );
-  std::string tempdir( const std::string& );
-
   void erase( const std::string& );
 
   /// a class to maintain a temporary named stream

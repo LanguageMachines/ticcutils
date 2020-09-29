@@ -697,14 +697,6 @@ void test_fileutils( const string& path ){
   // should match small.txt and sub1/sub.txt
   assertEqual( res.size(), 2 );
   string fn;
-  assertNoThrow( fn = tempname("test") );
-  assertNoThrow( erase( fn ) );
-  assertThrow( fn = tempname("/nonexist/test"), runtime_error );
-  string dn;
-  assertNoThrow( dn = tempdir("/noexist") );
-  assertNoThrow( createPath( dn + "/test") );
-  assertNoThrow( erase( dn+"/test" ) );
-  assertNoThrow( erase( dn ) );
   {
     tmp_stream ts( "runtest1" );
     fn = ts.tmp_name();
