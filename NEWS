@@ -1,3 +1,11 @@
+17 nov 2020 0.25
+[Ko vd Sloot]
+* added new 3.9.1 version of nlohmann JSON library
+* added tmp_stream class, removed tempname and tempdir from the API.
+* cleanup (typos and small modernisations)
+[Maarten van Gompel]
+* removing a const qualifier that caused problems on older libxml2 (CentOS 7) #23
+
 15 apr 2020 0.24
 [Ko vd Sloot]
 * added documentation in Doxygen format
