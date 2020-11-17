@@ -5,6 +5,7 @@
 * cleanup (typos and small modernisations)
 [Maarten van Gompel]
 * removing a const qualifier that caused problems on older libxml2 (CentOS 7) #23
+* bumped the .so version to 9.0
 
 15 apr 2020 0.24
 [Ko vd Sloot]
