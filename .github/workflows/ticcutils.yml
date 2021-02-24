@@ -27,5 +27,4 @@ jobs:
         run: make check
       - name: make distcheck
         run: make distcheck
-        if: failed()
       - run: echo src/test-suite.log
