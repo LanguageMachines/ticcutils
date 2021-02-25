@@ -12,14 +12,30 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, ubuntu-18.04]
+        os: [ubuntu-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v2
       - name: Install Build Environment
-        run: sudo apt-get install pkg-config autoconf-archive
+        run: |
+	     if [ "$RUNNER_OS == "Linux" ] then
+                sudo apt-get install pkg-config autoconf-archive
+             else
+                brew update;
+                brew install pkg-config;
+                brew install autoconf-archive;
+             fi
       - name: Install Dependencies
-        run: sudo apt-get install libicu-dev libxml2-dev libbz2-dev zlib1g-dev libtar-dev
+        run: |
+	     if [ "$RUNNER_OS == "Linux" ] then
+	        sudo apt-get install libicu-dev libxml2-dev libbz2-dev zlib1g-dev libtar-dev
+             else
+	        brew install icu4c;
+                brew install libxml2;
+                brew brew install bzip2;
+                brew install zlib;
+                brew install libtar;
+	     fi
       - name: bootstrap
         run: sh bootstrap.sh
       - name: configure
