@@ -25,7 +25,5 @@ jobs:
         run: make
       - name: make check
         run: make check
-        if: ${{ failure() }}
-      - run: cat src/test-suite.log
       - name: make distcheck
         run: make distcheck
