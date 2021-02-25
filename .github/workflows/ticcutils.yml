@@ -25,5 +25,8 @@ jobs:
         run: make
       - name: make check
         run: make check
+	continue-on-error: true
+      - name: show log
+        run: cat src/test-suite.log
       - name: make distcheck
         run: make distcheck
