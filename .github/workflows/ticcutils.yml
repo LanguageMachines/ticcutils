@@ -35,7 +35,7 @@ jobs:
                 brew brew install bzip2;
                 brew install zlib;
                 brew install libtar
-	     fi
+             fi
       - name: bootstrap
         run: sh bootstrap.sh
       - name: configure
