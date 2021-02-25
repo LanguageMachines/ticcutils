@@ -30,7 +30,6 @@ jobs:
              if [ "$RUNNER_OS" == "Linux" ]; then
                 sudo apt-get install libicu-dev libxml2-dev libbz2-dev zlib1g-dev libtar-dev
              else
-#                brew install icu4c;
                 brew install libxml2;
                 brew install bzip2;
                 brew install zlib;
