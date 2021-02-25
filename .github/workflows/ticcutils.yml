@@ -28,7 +28,7 @@ jobs:
       - name: Install Dependencies
         run: |
              if [ "$RUNNER_OS" == "Linux" ]; then
-	        sudo apt-get install libicu-dev libxml2-dev libbz2-dev zlib1g-dev libtar-dev
+                sudo apt-get install libicu-dev libxml2-dev libbz2-dev zlib1g-dev libtar-dev
              else
 	        brew install icu4c;
                 brew install libxml2;
