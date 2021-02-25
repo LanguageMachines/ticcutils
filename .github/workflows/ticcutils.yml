@@ -19,8 +19,9 @@ jobs:
       uses: Gottox/irc-message-action@v1
       with:
         server: irc.uvt.nl
-        channel: '##gitlama'
+        channel: '#gitlama'
         nickname: surprise
+	notice: true
         message: |-
           ${{ github.actor }} pushed ${{ github.event.ref }} ${{ github.event.compare }}
 
