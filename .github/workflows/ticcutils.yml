@@ -21,9 +21,8 @@ jobs:
         server: irc.uvt.nl
         channel: '#gitlama'
         nickname: surprise
-        notice: true
         message: |-
-          ${{ github.actor }} pushed ${{ github.event.ref }} ${{ github.event.compare }}
+          ${{ github.actor }} pushed to ${{ github.event.compare }}
 
   build:
     runs-on: ${{ matrix.os }}
