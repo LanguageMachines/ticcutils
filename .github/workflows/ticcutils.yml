@@ -4,8 +4,8 @@ on:
   push:
     branches: [master]
     paths:
-    - 'src/**'
-    - 'include/**'
+      - 'src/**'
+      - 'include/**'
 
   pull_request:
     branches: [master]
@@ -15,14 +15,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Notifications
     steps:
-    - name: IRC notification
-      uses: Gottox/irc-message-action@v1
-      with:
-        server: irc.uvt.nl
-        channel: '#gitlama'
-        nickname: surprise
-        message: |-
-          ${{ github.actor }} pushed to ${{ github.event.compare }}
+      - name: IRC notification
+        uses: Gottox/irc-message-action@v1
+        with:
+          server: irc.uvt.nl
+          channel: '#gitlama'
+          nickname: GitHub
+          message: |-
+            ${{ github.actor }} pushed to ${{ github.event.compare }}
 
   build:
     runs-on: ${{ matrix.os }}
@@ -32,6 +32,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - uses: webiny/action-post-run@1.0.0
+        id: post-run-command
+        with:
+          command: echo "this thing works!"
       - name: Install Build Environment
         run: |
              if [ "$RUNNER_OS" == "Linux" ]; then
@@ -46,7 +50,8 @@ jobs:
       - name: Install Dependencies
         run: |
              if [ "$RUNNER_OS" == "Linux" ]; then
-                sudo apt-get install libicu-dev libxml2-dev libbz2-dev zlib1g-dev libtar-dev
+                sudo apt-get install libicu-dev libxml2-dev libbz2-dev;
+                sudo apt-get install zlib1g-dev libtar-dev
              else
                 brew install libxml2;
                 brew install bzip2;
