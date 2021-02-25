@@ -16,13 +16,16 @@ jobs:
       - name: Install Build Environment
         run: sudo apt-get install pkg-config autoconf-archive
       - name: Install Dependencies
-        run: sudo apt-get install libicu-dev  libxml2-dev libbz2-dev zlib1g-dev libtar-dev
+        run: sudo apt-get install libicu-dev libxml2-dev libbz2-dev |
+	      zlib1g-dev libtar-dev git2cl
       - name: bootstrap
         run: sh bootstrap.sh
       - name: configure
         run: ./configure
       - name: make
         run: make
+      - name: install
+        run: make install
       - name: make check
         run: make check
         continue-on-error: true
