@@ -11,8 +11,20 @@ on:
     branches: [master]
 
 jobs:
-  build:
+  notification:
+    runs-on: ubuntu-latest
+    name: Notifications
+    steps:
+    - name: IRC notification
+      uses: Gottox/irc-message-action@v1
+      with:
+        server: irc.uvt.nl
+        channel: '##gitlama'
+        nickname: surprise
+        message: |-
+          ${{ github.actor }} pushed ${{ github.event.ref }} ${{ github.event.compare }}
 
+  build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
