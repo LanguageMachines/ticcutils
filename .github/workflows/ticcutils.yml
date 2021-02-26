@@ -22,7 +22,7 @@ jobs:
           channel: '#gitlama'
           nickname: GitHub
           message: |-
-            ${{ github.actor }} pushed to ${{ github.event.compare }}
+            ${{ github.actor }} pushed ${{ github.event.repository.name }}
 
   build:
     runs-on: ${{ matrix.os }}
