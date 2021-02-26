@@ -71,14 +71,12 @@ jobs:
         continue-on-error: true
       - name: show log
         run: cat src/test-suite.log
-#      - name: make distcheck
-#        run: make distcheck
-      -name Notify IRC
-       if: ${{ always() }}
-       uses: Gottox/irc-message-action@v1
-       with:
-         server: irc.uvt.nl
-         channel: '#gitlama'
-         nickname: GitHub
-         message: |-
+      - name: Notify IRC
+        if: ${{ always() }}
+        uses: Gottox/irc-message-action@v1
+        with:
+          server: irc.uvt.nl
+          channel: '#gitlama'
+          nickname: GitHub
+          message: |-
             ${{ github.actor }} build is completed
