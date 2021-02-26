@@ -22,7 +22,7 @@ jobs:
           channel: '#gitlama'
           nickname: GitHub
           message: |-
-            ${{ github.actor }} pushed ${{ github.event.repository.name }}
+            ${{ github.actor }} pushed to ${{ github.event.repository.name }}
 
   build:
     runs-on: ${{ matrix.os }}
@@ -79,7 +79,7 @@ jobs:
           channel: '#gitlama'
           nickname: GitHub
           message: |-
-            ${{ github.actor }} build FAILED on ${{ matrix.os }}
+            ${{ github.event.repository.name }} build by ${{ github.actor }} on ${{ matrix.os }}: FAIL
       - name: Notify IRC of succes
         if: ${{ success() }}
         uses: Gottox/irc-message-action@v1
@@ -88,4 +88,4 @@ jobs:
           channel: '#gitlama'
           nickname: GitHub
           message: |-
-            ${{ github.actor }} build SUCCEEDED on ${{ matrix.os }}
+            ${{ github.event.repository.name }} build by ${{ github.actor }} on ${{ matrix.os }}: SUCCESS
