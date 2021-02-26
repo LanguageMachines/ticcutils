@@ -71,12 +71,21 @@ jobs:
         continue-on-error: true
       - name: show log
         run: cat src/test-suite.log
-      - name: Notify IRC
-        if: ${{ always() }}
+      - name: Notify IRC of failure
+        if: ${{ failure() }}
         uses: Gottox/irc-message-action@v1
         with:
           server: irc.uvt.nl
           channel: '#gitlama'
           nickname: GitHub
           message: |-
-            ${{ github.actor }} build is completed
+            ${{ github.actor }} build FAILED on ${{ matrix.os }}
+      - name: Notify IRC of succes
+        if: ${{ success() }}
+        uses: Gottox/irc-message-action@v1
+        with:
+          server: irc.uvt.nl
+          channel: '#gitlama'
+          nickname: GitHub
+          message: |-
+            ${{ github.actor }} build SUCCEEDED on ${{ matrix.os }}
