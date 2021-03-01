@@ -438,7 +438,7 @@ namespace TiCC {
     for ( const auto& s : sections ){
       // for every section, get all at-val pairs
       auto avs = in.lookUpAll( s );
-      for ( const auto av : avs ){
+      for ( const auto& av : avs ){
 	// merge every at-val in the wanted section
 	if ( !override
 	     &&  myMap[s].find( av.first ) != myMap[s].end() ){
