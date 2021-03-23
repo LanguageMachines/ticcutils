@@ -30,6 +30,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
+        compiler: [g++, clang++]
 
     steps:
       - uses: actions/checkout@v2
@@ -63,15 +64,24 @@ jobs:
       - name: bootstrap
         run: sh bootstrap.sh
       - name: configure
+        env:
+	  CXX: ${{ matrix.compiler }}
         run: ./configure
       - name: Static Code-check
         run: cppcheck --enable=all --quiet --error-exitcode=0 .
       - name: make
+        env:
+	  CXX: ${{ matrix.compiler }}
         run: make
       - name: install
+        env:
+	  CXX: ${{ matrix.compiler }}
         run: sudo make install
       - name: make check
-        run: LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib make check
+        env:
+	  CXX: ${{ matrix.compiler }}
+          LD_LIBRARY_PATH: $LD_LIBRARY_PATH:/usr/local/lib
+        run: make check
         continue-on-error: true
       - name: show log
         run: cat src/test-suite.log
