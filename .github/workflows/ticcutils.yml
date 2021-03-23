@@ -69,6 +69,11 @@ jobs:
         run: ./configure
       - name: Static Code-check
         run: cppcheck --enable=all --quiet --error-exitcode=0 .
+      - name: Dynamic Check
+        env:
+          CXX: ${{ matrix.compiler }}
+        if: [ ${{ matrix.compiler }} == "clang++ ]
+        run: scan-build --status-bugs make
       - name: make
         env:
           CXX: ${{ matrix.compiler }}
@@ -91,7 +96,7 @@ jobs:
         with:
           server: irc.uvt.nl
           channel: '#gitlama'
-          nickname: GH-${{ matrix.os }}-${{ matrix.compiler }}
+          nickname: GitHub
           message: |-
             ${{ github.event.repository.name }} build by ${{ github.actor }} on ${{ matrix.os }}: FAIL
       - name: Notify IRC of succes
@@ -100,6 +105,6 @@ jobs:
         with:
           server: irc.uvt.nl
           channel: '#gitlama'
-          nickname: GH-${{ matrix.os }}-${{ matrix.compiler }}
+          nickname: GitHub
           message: |-
             ${{ github.event.repository.name }} build by ${{ github.actor }} on ${{ matrix.os }}: SUCCESS
