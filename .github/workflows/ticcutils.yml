@@ -72,7 +72,7 @@ jobs:
       - name: Dynamic Check
         env:
           CXX: ${{ matrix.compiler }}
-        if: ${{ matrix.compiler }} == "clang++"
+        if: ${{ matrix.compiler == "clang++" }}
         run: scan-build --status-bugs make
       - name: make
         env:
