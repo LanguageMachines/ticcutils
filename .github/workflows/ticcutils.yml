@@ -65,21 +65,21 @@ jobs:
         run: sh bootstrap.sh
       - name: configure
         env:
-	  CXX: ${{ matrix.compiler }}
+          CXX: ${{ matrix.compiler }}
         run: ./configure
       - name: Static Code-check
         run: cppcheck --enable=all --quiet --error-exitcode=0 .
       - name: make
         env:
-	  CXX: ${{ matrix.compiler }}
+          CXX: ${{ matrix.compiler }}
         run: make
       - name: install
         env:
-	  CXX: ${{ matrix.compiler }}
+          CXX: ${{ matrix.compiler }}
         run: sudo make install
       - name: make check
         env:
-	  CXX: ${{ matrix.compiler }}
+          CXX: ${{ matrix.compiler }}
           LD_LIBRARY_PATH: $LD_LIBRARY_PATH:/usr/local/lib
         run: make check
         continue-on-error: true
