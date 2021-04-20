@@ -717,4 +717,59 @@ namespace TiCC {
     return TiCC::UnicodeToUTF8( us );
   }
 
+  UnicodeString utrim( const UnicodeString& us,
+		       const UnicodeString& filter ){
+    UnicodeString result;
+    int start_p = 0;
+    for ( int i=0; i < us.length(); ++i ){
+      int pos = filter.indexOf( us[i] );
+      if ( pos < 0 ){
+	// not found
+	start_p = i;
+	break;
+      }
+    }
+    int end_p = us.length()-1;
+    for ( int i = end_p; i > start_p; --i ){
+      int pos = filter.indexOf( us[i] );
+      if ( pos < 0 ){
+	// not found
+	end_p = i;
+	break;
+      }
+    }
+    return UnicodeString( us, start_p, end_p - start_p + 1 );
+  }
+
+  UnicodeString ltrim( const UnicodeString& us,
+		       const UnicodeString& filter ){
+    UnicodeString result;
+    int start_p = 0;
+    for ( int i=0; i < us.length(); ++i ){
+      int pos = filter.indexOf( us[i] );
+      if ( pos < 0 ){
+	// not found
+	start_p = i;
+	break;
+      }
+    }
+    return UnicodeString( us, start_p, us.length() - start_p + 1 );
+  }
+
+  UnicodeString rtrim( const UnicodeString& us,
+		       const UnicodeString& filter ){
+    UnicodeString result;
+    int start_p = 0;
+    int end_p = us.length()-1;
+    for ( int i = end_p; i > start_p; --i ){
+      int pos = filter.indexOf( us[i] );
+      if ( pos < 0 ){
+	// not found, done
+	end_p = i;
+	break;
+      }
+    }
+    return UnicodeString( us, start_p, end_p - start_p + 1 );
+  }
+
 }

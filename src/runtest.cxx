@@ -854,6 +854,21 @@ void test_unicode( const string& path ){
   assertEqual( TiCC::utf8_uppercase( "æ en ß en œ" ), "Æ EN SS EN Œ" );
 }
 
+void test_unicode_trim(){
+  UnicodeString tr1 = "dit is een test";
+  UnicodeString tr2 = "\t  dit is een test \r ";
+  UnicodeString tr3 = "    \ndit is een test";
+  assertEqual( utrim(tr1), "dit is een test" );
+  assertEqual( utrim(tr2), "dit is een test" );
+  assertEqual( utrim(tr3), "dit is een test" );
+  assertEqual( ltrim(tr1), "dit is een test" );
+  assertEqual( ltrim(tr2), "dit is een test \r " );
+  assertEqual( ltrim(tr3), "dit is een test" );
+  assertEqual( rtrim(tr1), "dit is een test" );
+  assertEqual( rtrim(tr2), "\t  dit is een test" );
+  assertEqual( rtrim(tr3), "    \ndit is een test" );
+}
+
 void test_unicode_split(){
   string line8 = "De kat krabt de krullen\n van de   trap.";
   UnicodeString line = TiCC::UnicodeFromUTF8( line8 );
@@ -1033,6 +1048,7 @@ int main( const int argc, const char* argv[] ){
   test_logstream( testdir );
   test_unicode( testdir );
   test_unicode_split();
+  test_unicode_trim();
   test_unicode_regex();
   test_unicode_filters( testdir );
   test_conversion();
