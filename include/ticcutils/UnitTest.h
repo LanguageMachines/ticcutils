@@ -210,7 +210,12 @@ void MyTSerie::stop( const std::string& fun ){
   }									\
   catch( const std::exception& e ){					\
     last_what = e.what();						\
-    std::cerr << __func__ << "(" << __LINE__ << ") error: '" << e.what() << "'" << std::endl; \
+    ++currentTestContext._fails;					\
+    std::cerr << __func__ << "(" << __LINE__ << ") error:'" << e.what() << "' ";\
+    if ( currentTestContext.isDefault() )				\
+      std::cout << FAIL << std::endl;					\
+    else								\
+      std::cerr << "\t";						\
   }
 
 #define assertFalse( YY )						\
@@ -220,7 +225,12 @@ void MyTSerie::stop( const std::string& fun ){
   }									\
   catch( const std::exception& e ){					\
     last_what = e.what();						\
-    std::cerr << __func__ << "(" << __LINE__ << ") error:'" << e.what() << "'" << std::endl; \
+    ++currentTestContext._fails;					\
+    std::cerr << __func__ << "(" << __LINE__ << ") error:'" << e.what() << "' "; \
+    if ( currentTestContext.isDefault() )				\
+      std::cout << FAIL << std::endl;					\
+    else								\
+      std::cerr << "\t";						\
   }
 
 #define assertMessage( MM, YY )						\

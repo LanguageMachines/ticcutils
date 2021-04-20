@@ -974,6 +974,15 @@ void test_conversion(){
   }
 }
 
+bool faal(){
+  throw runtime_error( "I failed it" );
+  return true;
+}
+
+void test_assert() {
+  assertTrue( faal() );
+}
+
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
   Timer t1;
@@ -1027,10 +1036,11 @@ int main( const int argc, const char* argv[] ){
   test_unicode_regex();
   test_unicode_filters( testdir );
   test_conversion();
+  test_assert();
   t1.stop();
   t2.stop();
   cerr << t1 << endl;
   cerr << t2 << endl;
   cerr << t1 + t2 << endl;
-  summarize_tests(4);
+  summarize_tests(5);
 }
