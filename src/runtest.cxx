@@ -867,6 +867,8 @@ void test_unicode_trim(){
   assertEqual( rtrim(tr1), "dit is een test" );
   assertEqual( rtrim(tr2), "\t  dit is een test" );
   assertEqual( rtrim(tr3), "    \ndit is een test" );
+  assertEqual( utrim(tr2, " \n\r"), "\t  dit is een test" );
+  assertEqual( utrim(tr2, " \t"), "dit is een test \r" );
 }
 
 void test_unicode_split(){
