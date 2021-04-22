@@ -96,7 +96,7 @@ jobs:
           message: |-
             ${{ github.event.repository.name }} build by ${{ github.actor }} on ${{ matrix.os }}: FAIL
       - name: Notify IRC of succes
-        if: ${{ ${{ steps.check.conclusion == 'success' }}
+        if: ${{ steps.check.conclusion == 'success' }}
         uses: Gottox/irc-message-action@v1
         with:
           server: irc.uvt.nl
