@@ -23,7 +23,7 @@ jobs:
           channel: '#gitlama'
           nickname: GitHub
           message: |-
-            ${{ github.actor }} started a build of ticcutils $GITHUB_RUN_NUMBER
+            ${{ github.actor }} started a build of ticcutils
 
   build:
     runs-on: ${{ matrix.os }}
@@ -97,7 +97,7 @@ jobs:
         with:
           server: irc.uvt.nl
           channel: '#gitlama'
-          nickname: GH-${{ runner.os }}-${{ steps.compiler.outputs.id }}
+          nickname: ${{ github.run_number }}
           message: |-
             ${{ github.event.repository.name }} build by ${{ github.actor }} on ${{ matrix.os }}: FAIL
       - name: Notify IRC of succes
