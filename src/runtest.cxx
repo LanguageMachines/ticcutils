@@ -1060,5 +1060,5 @@ int main( const int argc, const char* argv[] ){
   cerr << t1 << endl;
   cerr << t2 << endl;
   cerr << t1 + t2 << endl;
-  summarize_tests(5);
+  summarize_tests(6);
 }

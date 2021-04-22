@@ -78,6 +78,7 @@ jobs:
           CXX: ${{ matrix.compiler }}
         run: sudo make install
       - name: make check
+        id: check
         env:
           CXX: ${{ matrix.compiler }}
           LD_LIBRARY_PATH: $LD_LIBRARY_PATH:/usr/local/lib
@@ -86,7 +87,7 @@ jobs:
       - name: show log
         run: cat src/test-suite.log
       - name: Notify IRC of failure
-        if: ${{ failure() }}
+        if: ${{ steps.check.conclusion != 'success' }}
         uses: Gottox/irc-message-action@v1
         with:
           server: irc.uvt.nl
@@ -95,7 +96,7 @@ jobs:
           message: |-
             ${{ github.event.repository.name }} build by ${{ github.actor }} on ${{ matrix.os }}: FAIL
       - name: Notify IRC of succes
-        if: ${{ success() }}
+        if: ${{ ${{ steps.check.conclusion == 'success' }}
         uses: Gottox/irc-message-action@v1
         with:
           server: irc.uvt.nl
