@@ -23,7 +23,7 @@ jobs:
           channel: '#gitlama'
           nickname: GitHub
           message: |-
-            ${{ github.actor }} pushed to ${{ github.event.repository.name }}
+            ${{ github.actor }} started a build of ticcutils
 
   build:
     runs-on: ${{ matrix.os }}
@@ -87,7 +87,7 @@ jobs:
       - name: show log
         run: cat src/test-suite.log
       - name: Notify IRC of failure
-        if: ${{ steps.check.conclusion != 'success' }}
+        if: ${{ steps.check.outcome != 'success' }}
         uses: Gottox/irc-message-action@v1
         with:
           server: irc.uvt.nl
@@ -96,7 +96,7 @@ jobs:
           message: |-
             ${{ github.event.repository.name }} build by ${{ github.actor }} on ${{ matrix.os }}: FAIL
       - name: Notify IRC of succes
-        if: ${{ steps.check.conclusion == 'success' }}
+        if: ${{ steps.check.outcome == 'success' }}
         uses: Gottox/irc-message-action@v1
         with:
           server: irc.uvt.nl
