@@ -106,6 +106,6 @@ jobs:
         with:
           server: irc.uvt.nl
           channel: '#gitlama'
-          nickname: GH-${{ runner.os }}-${{ steps.compiler.outputs.id }}
+          nickname: $HITHUB_RUN_NUMBER
           message: |-
             ${{ github.event.repository.name }} build by ${{ github.actor }} on ${{ matrix.os }}: SUCCESS
