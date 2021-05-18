@@ -244,7 +244,7 @@ namespace TiCCServer {
     return 0;
   }
 
-  static bool keepGoing = true;
+  volatile static bool keepGoing = true;
 
   void KillServerFun( int Signal ){
     /// function to handle SIGTERM signals
