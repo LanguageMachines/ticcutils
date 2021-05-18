@@ -161,7 +161,8 @@ namespace TiCCServer {
 	_debug = true;
       }
       else {
-	string mess = "ServerBase: invalid value '" + value + "' for --debug";
+	string mess = "ServerBase: invalid value '" + value
+	  + "' for --debug; use 'yes' or 'no'";
 	throw runtime_error( mess );
       }
     }
