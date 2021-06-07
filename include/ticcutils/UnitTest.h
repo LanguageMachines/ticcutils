@@ -127,8 +127,10 @@ void MyTSerie::stop( const std::string& fun ){
 		<< " out of " << _tests << " tests" << FAIL << std::endl;
       currentTestContext._fails += _fails;
     }
-    else
-      std::cout << "\t" << fun << "(): all " << _tests << " tests" << OK << std::endl;
+    else {
+      std::cout << "\t" << fun << "(): all " << _tests
+		<< " tests" << OK << std::endl;
+    }
   };
 }
 
@@ -136,15 +138,19 @@ void MyTSerie::stop( const std::string& fun ){
   last_what.clear();							\
   try {									\
     test_eq<decltype(XX), decltype(YY)>( __func__, __LINE__, (XX), (YY), currentTestContext ); \
-      }									\
+  }									\
   catch ( const std::exception& e ){					\
     last_what = e.what();						\
     ++currentTestContext._fails;					\
-    if ( currentTestContext.isDefault() )				\
+    if ( currentTestContext.isDefault() ){				\
       std::cout << FAIL << std::endl;					\
-    else								\
+    }             							\
+    else {								\
       std::cerr << "\t";						\
-    std::cerr << __func__ << "(" << __LINE__ << ") : caucht exception, what='" << e.what() << "'" << std::endl; \
+    }									\
+    std::cerr << __func__ << "(" << __LINE__				\
+	      << ") : caucht exception, what='" << e.what() << "'"	\
+	      << std::endl;						\
   }
 
 #define assertThrow( XX, EE )						\
@@ -164,19 +170,26 @@ void MyTSerie::stop( const std::string& fun ){
     catch ( const std::exception& e ){					\
       last_what = e.what();						\
       ++currentTestContext._fails;					\
-      if ( currentTestContext.isDefault() )				\
+      if ( currentTestContext.isDefault() ) {				\
 	std::cout << FAIL << std::endl;					\
-      else								\
+      }									\
+      else {								\
 	std::cerr << "\t";						\
-      std::cerr << __func__ << "(" << __LINE__ << ") : wrong exception, what='" << e.what() << "'" << std::endl; \
+      }									\
+      std::cerr << __func__ << "(" << __LINE__				\
+		<< ") : wrong exception, what='" << e.what()		\
+		<< "'" << std::endl;					\
       break;								\
     }									\
     ++currentTestContext._fails;					\
-    if ( currentTestContext.isDefault() )				\
+    if ( currentTestContext.isDefault() ){				\
       std::cout << FAIL << std::endl;					\
-    else								\
+    }									\
+    else {								\
       std::cerr << "\t";						\
-    std::cerr << __func__ << "(" << __LINE__ << ") : no exception thrown" << std::endl; \
+    }									\
+    std::cerr << __func__ << "(" << __LINE__				\
+	      << ") : no exception thrown" << std::endl;		\
   }									\
   while( false )
 
@@ -191,11 +204,14 @@ void MyTSerie::stop( const std::string& fun ){
     catch ( const std::exception& e ){					\
       last_what = e.what();						\
       ++currentTestContext._fails;					\
-      if ( currentTestContext.isDefault() )				\
+      if ( currentTestContext.isDefault() ){				\
 	std::cout << FAIL << std::endl;					\
-      else								\
+      }									\
+      else {								\
 	std::cerr << "\t";						\
-      std::cerr << __func__ << "(" << __LINE__ << ") error: '" << e.what() << "'" << std::endl; \
+      }									\
+      std::cerr << __func__ << "(" << __LINE__ << ") error: '"		\
+		<< e.what() << "'" << std::endl;			\
       break;								\
     }									\
     if (  !testSilent && currentTestContext.isDefault() )		\
@@ -211,11 +227,14 @@ void MyTSerie::stop( const std::string& fun ){
   catch( const std::exception& e ){					\
     last_what = e.what();						\
     ++currentTestContext._fails;					\
-    std::cerr << __func__ << "(" << __LINE__ << ") error:'" << e.what() << "' ";\
-    if ( currentTestContext.isDefault() )				\
+    std::cerr << __func__ << "(" << __LINE__ << ") error:'"		\
+	      << e.what() << "' ";					\
+    if ( currentTestContext.isDefault() ){				\
       std::cout << FAIL << std::endl;					\
-    else								\
+    }									\
+    else {								\
       std::cerr << "\t";						\
+    }									\
   }
 
 #define assertFalse( YY )						\
@@ -226,11 +245,14 @@ void MyTSerie::stop( const std::string& fun ){
   catch( const std::exception& e ){					\
     last_what = e.what();						\
     ++currentTestContext._fails;					\
-    std::cerr << __func__ << "(" << __LINE__ << ") error:'" << e.what() << "' "; \
-    if ( currentTestContext.isDefault() )				\
+    std::cerr << __func__ << "(" << __LINE__ << ") error:'"		\
+	      << e.what() << "' ";					\
+    if ( currentTestContext.isDefault() ){				\
       std::cout << FAIL << std::endl;					\
-    else								\
+    }									\
+    else {								\
       std::cerr << "\t";						\
+    }									\
   }
 
 #define assertMessage( MM, YY )						\
@@ -240,7 +262,8 @@ void MyTSerie::stop( const std::string& fun ){
   }									\
   catch( const std::exception& e ){					\
     last_what = e.what();						\
-    std::cerr << __func__ << "(" << __LINE__ << ") error: '" << e.what() << "'" << std::endl; \
+    std::cerr << __func__ << "(" << __LINE__ << ") error: '"		\
+	      << e.what() << "'" << std::endl;				\
   }
 
 std::string lastError() {
@@ -280,7 +303,7 @@ template <typename T1, typename T2>
     else {
       std::cerr << "\t";
     }
-    std::cerr << F << "(" << L << ") : '" << s1 << "' != '"
+    std::cerr << F << "(" << L << ") : \n'" << s1 << "'\n != \n'"
 	      << s2 << "'" << std::endl;
   }
   else if ( !testSilent && T.isDefault() ){
