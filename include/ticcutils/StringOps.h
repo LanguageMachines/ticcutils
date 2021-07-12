@@ -83,13 +83,16 @@ namespace TiCC {
   template<>
     inline bool stringTo<bool>( const std::string& str ) {
     std::string b = TiCC::uppercase( str );
-    if ( b == "YES" || b == "TRUE" || b == "1" )
+    if ( b == "YES" || b == "TRUE" || b == "1" ){
       return true;
-    else if ( b == "FALSE" || b == "NO" || b == "0" )
+    }
+    else if ( b == "FALSE" || b == "NO" || b == "0" ) {
       return false;
-    else
+    }
+    else {
       throw( std::runtime_error( "conversion from string '"
 				 + str + "' to type:bool failed" ) );
+    }
   }
 
   template< typename T >
