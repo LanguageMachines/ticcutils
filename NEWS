@@ -1,3 +1,10 @@
+12 july 2021 0.27
+[Ko vd Sloot]
+* added new 3.9.1 version of nlohmann JSON library
+* replaced TravisCI by GitHub actions
+* improved code in UnitTest.h
+* better error message from ServerBase
+
 20 april 2021 0.26
 [Ko vd Sloot]
 * added utrim, ltrim and ltrim functions for UnicodeString
@@ -6,7 +13,7 @@
 
 17 nov 2020 0.25
 [Ko vd Sloot]
-* added new 3.9.1 version of nlohmann JSON library
+* added new 3.9.0 version of nlohmann JSON library
 * added tmp_stream class, removed tempname and tempdir from the API.
 * cleanup (typos and small modernisations)
 [Maarten van Gompel]
