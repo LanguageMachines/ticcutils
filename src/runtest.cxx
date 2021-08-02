@@ -820,7 +820,8 @@ void test_logstream( const string& path ){
 }
 
 void test_unicode( const string& path ){
-  UnicodeString u1 = L'私';
+  UChar32 uc0 = L'私';
+  UnicodeString u1 = uc0;
   UChar32 uc1 = U'\U00007981';
   UChar32 uc2 = U'\U00007982';
   UnicodeString u2 = uc1;
