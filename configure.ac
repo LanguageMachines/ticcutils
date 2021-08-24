@@ -73,7 +73,6 @@ AC_CHECK_TYPES( [ptrdiff_t] )
 AC_CHECK_FUNCS([localtime_r gettimeofday mkdir getaddrinfo gethostbyaddr gethostbyname inet_ntoa memset socket strerror dup2 memmove floor localeconv realpath strtoull strdup])
 AC_FUNC_FORK
 AC_FUNC_STRTOD
-# AC_FUNC_MALLOC seems to drive clang nuts  <==== WARNING
 
 AX_PTHREAD([],[AC_MSG_ERROR([We need pthread support!])])
 
