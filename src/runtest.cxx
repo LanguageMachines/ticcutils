@@ -783,6 +783,14 @@ void test_configuration( const string& path ){
   assertEqual( att, "normaal" ); // is overridden now?
   att = c3.lookUp( "piet", "test" ); // empty in c2, still not changed in c3
   assertEqual( att, "ook gek" );
+  c3.setatt( "mik", "mak", "extra" );
+  c3.setatt( "pim", "pam", "extra" );
+  c3.setatt( "tip", "top", "extra" );
+  assertEqual( c3.hasSection( "extra" ), true );
+  Configuration::ssMap extra = c3.lookUpAll( "extra" );
+  assertEqual( extra.size(), 3 );
+  c3.erasesection( "extra" );
+  assertEqual( c3.hasSection( "extra" ), false );
 }
 
 void test_logstream( const string& path ){

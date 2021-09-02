@@ -345,6 +345,14 @@ namespace TiCC {
     return oldVal;
   }
 
+  void Configuration::erasesection( const string& insect ){
+    /// remove all attributes from a section and removes the section
+    /*!
+      \param insect the section to search,  When empty, use the "global" one.
+    */
+    myMap.erase( insect );
+  }
+
   string Configuration::getatt( const string& inatt,
 				const string& insect ) const {
     /// return the value for an attribute

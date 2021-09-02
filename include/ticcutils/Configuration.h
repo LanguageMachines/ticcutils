@@ -45,9 +45,9 @@ namespace TiCC {
   ///
   /// There is an implicit \b global section when the section is unnamed.
   class Configuration {
+  public:
     typedef std::map<std::string,std::string> ssMap;
     typedef std::map<std::string, ssMap> sssMap;
-  public:
     Configuration();
     void merge( const Configuration&, bool = false );
     bool fill( const std::string& );
@@ -67,6 +67,7 @@ namespace TiCC {
 			const std::string& = "" );
     std::string clearatt( const std::string&,
 			  const std::string& = "" );
+    void erasesection( const std::string& );
     void dump( std::ostream& ) const;
     void create_configfile( const std::string& ) const;
     std::string configDir() const {
