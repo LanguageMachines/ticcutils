@@ -38,10 +38,10 @@ namespace Hash {
   using namespace Tries;
 
   UniInfo::UniInfo( const UnicodeString& value, unsigned int index ):
-    _value(value), _ID(index){
+    _value(value),_ID(index){
     /// create a UniInfo record
     /*!
-      \param value the value to store
+      \param value the value to store, assumed to be normalized!
       \param index the index to store
     */
   }
@@ -73,14 +73,15 @@ namespace Hash {
 
       when a new hash is inserted, the reverse index is also updated
     */
-    unsigned int idx = 0;
-    string utf8 = TiCC::UnicodeToUTF8( value );
+    static TiCC::UnicodeNormalizer norm;
+    UnicodeString val = norm.normalize( value );
+    string utf8 = TiCC::UnicodeToUTF8( val );
     UniInfo *info = _tree.Retrieve( utf8 );
     if ( !info ){
       info = new UniInfo( value, ++_num_of_tokens );
       info = reinterpret_cast<UniInfo *>(_tree.Store( utf8, info ));
     }
-    idx = info->index();
+    unsigned int idx = info->index();
     if ( idx >= _rev_index.size() ){
       _rev_index.resize( _rev_index.size() + 1000 );
     }
@@ -94,7 +95,9 @@ namespace Hash {
       \param value the string to lookup
       \return the hash value, or 0 when not found
     */
-    string utf8 = TiCC::UnicodeToUTF8( value );
+    static TiCC::UnicodeNormalizer norm;
+    UnicodeString val = norm.normalize( value );
+    string utf8 = TiCC::UnicodeToUTF8( val );
     UniInfo *info = _tree.Retrieve( utf8 );
     if ( info ){
       return info->index();

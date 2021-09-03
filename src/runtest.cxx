@@ -33,6 +33,7 @@
 
 #include "ticcutils/StringOps.h"
 #include "ticcutils/TreeHash.h"
+#include "ticcutils/UniHash.h"
 #include "ticcutils/PrettyPrint.h"
 #include "ticcutils/zipper.h"
 #include "ticcutils/Tar.h"
@@ -591,6 +592,26 @@ void test_treehash(){
   assertEqual( sh.ReverseLookup( 3 ), "appeltaart" );
 }
 
+void test_unicodehash(){
+  Hash::UnicodeHash uh;
+  size_t index = uh.hash( "appel" );
+  assertEqual( index, 1 );
+  index = uh.hash( "peer" );
+  assertEqual( index, 2 );
+  index = uh.hash( "禁禂" );
+  assertEqual( index, 3 );
+  index = uh.hash( "peer" );
+  assertEqual( index, 2 );
+  UnicodeString greek1 = "ἀντιϰειμένου";
+  UnicodeString greek2 = "ἀντιϰειμένου"; //different normalizations!
+  index = uh.hash( greek1 );
+  assertEqual( index, 4 );
+  index = uh.hash( greek2 );
+  assertEqual( index, 4 );
+  assertEqual( uh.num_of_entries(), 4 );
+  assertEqual( uh.reverse_lookup( 3 ), "禁禂" );
+}
+
 void test_base_dir(){
   assertEqual( TiCC::basename("/foo/bar" ), "bar" );
   assertEqual( TiCC::dirname("/foo/bar" ), "/foo" );
@@ -1038,6 +1059,7 @@ int main( const int argc, const char* argv[] ){
   test_uppercase();
   test_lowercase();
   test_treehash();
+  test_unicodehash();
   test_realpath();
   string testdir;
   bool dummy;

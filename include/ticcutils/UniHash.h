@@ -24,8 +24,8 @@
       lamasoftware (at ) science.ru.nl
 */
 
-#ifndef TICC_TREE_H
-#define TICC_TREE_H
+#ifndef TICC_UNITREE_H
+#define TICC_UNITREE_H
 
 #include <vector>
 #include <ostream>
