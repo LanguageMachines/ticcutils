@@ -79,8 +79,8 @@ namespace Hash {
       */
       return _num_of_tokens;
     };
-    unsigned int hash( const icu::UnicodeString& );
-    unsigned int lookup( const icu::UnicodeString& ) const;
+    unsigned int hash( const icu::UnicodeString& value );
+    unsigned int lookup( const icu::UnicodeString& value ) const;
     const icu::UnicodeString& reverse_lookup( unsigned int ) const;
   private:
     unsigned int _num_of_tokens;

@@ -37,7 +37,7 @@ namespace Hash {
 
   using namespace Tries;
 
-  UniInfo::UniInfo( const UnicodeString& value, unsigned int index ):
+  UniInfo::UniInfo( const icu::UnicodeString& value, const unsigned int index ):
     _value(value),_ID(index){
     /// create a UniInfo record
     /*!
@@ -70,7 +70,6 @@ namespace Hash {
     /*!
       \param value the string to hash
       \return the hash value
-
       when a new hash is inserted, the reverse index is also updated
     */
     static TiCC::UnicodeNormalizer norm;

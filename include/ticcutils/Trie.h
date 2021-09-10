@@ -43,8 +43,8 @@ namespace Tries {
     ~TrieNode();
     Info *add_to_tree( Info *, const std::string& );
     Info *scan_tree( const std::string& ) const;
-    void Iterate( void ( Info *, void * ), void * );
-    void Iterate( void ( Info * ) );
+    void Iterate( void(*)( Info *, void * ), void * );
+    void Iterate( void(*)( Info * ) );
   private:
     char label;                //!< the label.
     Info *the_info;            //!< The information at this pnt.
@@ -118,7 +118,7 @@ namespace Tries {
   }
 
   template <class Info>
-    inline void TrieNode<Info>::Iterate( void F( Info * ) ){
+    inline void TrieNode<Info>::Iterate( void (*F)( Info * ) ){
     /// execute the function F on each entry in the Trie
     if ( the_info )
 #pragma omp critical(trie_mod)
@@ -134,7 +134,7 @@ namespace Tries {
   }
 
   template <class Info>
-    inline void TrieNode<Info>::Iterate( void F( Info *, void * ),
+    inline void TrieNode<Info>::Iterate( void (*F)( Info *, void * ),
 					 void *arg ){
     /// execute the function F on each entry in the Trie
     if ( the_info )
