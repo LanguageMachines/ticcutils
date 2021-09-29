@@ -119,5 +119,7 @@ namespace TiCC {
   std::string utf8_lowercase( const std::string& ); // Unicode safe version
   std::string utf8_uppercase( const std::string& ); // Unicode safe version
 
+  std::istream& getline( std::istream&, icu::UnicodeString&, char='\n' );
+
 }
 #endif // TICC_UNICODE_H
