@@ -40,7 +40,7 @@ namespace TiCC {
   using namespace icu;
 
   UnicodeString UnicodeFromEnc( const string& s, const string& enc ){
-    /// convert a character buffer in some encoding to an UnicodeString
+    /// convert a character buffer in some encoding to a UnicodeString
     /*!
       \param s the string to interpret as a character buffer
       \param enc the encoding to use
@@ -50,7 +50,7 @@ namespace TiCC {
   }
 
   string UnicodeToUTF8( const UnicodeString& s ){
-    /// convert an UnicodeString to an UTF-8 string
+    /// convert a UnicodeString to a UTF-8 string
     /*!
       \param s the UnicodeString to convert
       \return an UTF-8 encoded string
@@ -63,7 +63,7 @@ namespace TiCC {
   UnicodeNormalizer::UnicodeNormalizer( const string& enc ): _normalizer(0) {
     /// create an UnicodeNormalizer object
     /*!
-      \param enc a string describing the wanted normaliztion.
+      \param enc a string describing the wanted normalization.
       valid values are: NFC (the default), NFD, NFKC, NFKD
     */
     string mode = enc;
@@ -772,8 +772,11 @@ namespace TiCC {
     return UnicodeString( us, start_p, end_p - start_p + 1 );
   }
 
-  istream& getline( istream& is, UnicodeString& us, char delim ){
-    /// read a UnicodeStirng from a UTF8 encoded file
+  istream& getline( istream& is,
+		    UnicodeString& us,
+		    const char delim,
+		    const string& encoding ){
+    /// read a UnicodeString from an encoded file
     /*!
       \param is The stream to read from
       \param us the UnicodeString to read. (will be cleared before reading)
@@ -781,8 +784,8 @@ namespace TiCC {
       \return the stream
     */
     string line;
-    getline( is, line, delim );
-    us = TiCC::UnicodeFromUTF8( line );
+    std::getline( is, line, delim );
+    us = TiCC::UnicodeFromEnc( line, encoding );
     return is;
   }
 
