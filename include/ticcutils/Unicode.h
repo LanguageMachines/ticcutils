@@ -121,7 +121,12 @@ namespace TiCC {
 
   std::istream& getline( std::istream&,
 			 icu::UnicodeString&,
-			 const char ch = '\n',
-			 const std::string& = "UTF8" );
+			 const std::string&,
+			 const char = '\n' );
+
+  std::istream& getline( std::istream&,
+			 icu::UnicodeString&,
+			 const char = '\n' );
+
 }
 #endif // TICC_UNICODE_H
