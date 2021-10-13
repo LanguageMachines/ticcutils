@@ -71,16 +71,14 @@ namespace Hash {
       \param value the string to hash
       \return the hash value
       when a new hash is inserted, the reverse index is also updated
+      the UnicodeString will be NFC normalized first.
     */
-    static TiCC::UnicodeNormalizer norm;
-    UnicodeString val = norm.normalize( _value );
-    cerr << "hash: " << val << endl;
+    static TiCC::UnicodeNormalizer nfc_norm;
+    UnicodeString val = nfc_norm.normalize( _value );
     UniInfo *info = _tree.Retrieve( val );
     if ( !info ){
-      cerr << "  not found: create a new one" << endl;
       info = new UniInfo( val, ++_num_of_tokens );
       info = reinterpret_cast<UniInfo *>(_tree.Store( val, info ));
-      cerr << "  created: " << *info << endl;
     }
     unsigned int idx = info->index();
     if ( idx >= _rev_index.size() ){
@@ -96,8 +94,8 @@ namespace Hash {
       \param value the string to lookup
       \return the hash value, or 0 when not found
     */
-    static TiCC::UnicodeNormalizer norm;
-    UnicodeString val = norm.normalize( _value );
+    static TiCC::UnicodeNormalizer nfc_norm;
+    UnicodeString val = nfc_norm.normalize( _value );
     UniInfo *info = _tree.Retrieve( val );
     if ( info ){
       return info->index();
