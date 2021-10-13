@@ -35,7 +35,7 @@ using namespace icu;
 
 namespace Hash {
 
-  using namespace Tries;
+  using namespace UniTries;
 
   UniInfo::UniInfo( const icu::UnicodeString& value, const unsigned int index ):
     _value(value),_ID(index){
@@ -65,7 +65,7 @@ namespace Hash {
     /// destroy a UnicodeHash
   }
 
-  unsigned int UnicodeHash::hash( const UnicodeString& value ){
+  unsigned int UnicodeHash::hash( const UnicodeString& _value ){
     /// lookup or create a hash for the string parameter
     /*!
       \param value the string to hash
@@ -73,12 +73,14 @@ namespace Hash {
       when a new hash is inserted, the reverse index is also updated
     */
     static TiCC::UnicodeNormalizer norm;
-    UnicodeString val = norm.normalize( value );
-    string utf8 = TiCC::UnicodeToUTF8( val );
-    UniInfo *info = _tree.Retrieve( utf8 );
+    UnicodeString val = norm.normalize( _value );
+    cerr << "hash: " << val << endl;
+    UniInfo *info = _tree.Retrieve( val );
     if ( !info ){
-      info = new UniInfo( value, ++_num_of_tokens );
-      info = reinterpret_cast<UniInfo *>(_tree.Store( utf8, info ));
+      cerr << "  not found: create a new one" << endl;
+      info = new UniInfo( val, ++_num_of_tokens );
+      info = reinterpret_cast<UniInfo *>(_tree.Store( val, info ));
+      cerr << "  created: " << *info << endl;
     }
     unsigned int idx = info->index();
     if ( idx >= _rev_index.size() ){
@@ -88,16 +90,15 @@ namespace Hash {
     return idx;
   }
 
-  unsigned int UnicodeHash::lookup( const UnicodeString& value ) const {
+  unsigned int UnicodeHash::lookup( const UnicodeString& _value ) const {
     /// lookup the hash for a string in the UnicodeHash
     /*!
       \param value the string to lookup
       \return the hash value, or 0 when not found
     */
     static TiCC::UnicodeNormalizer norm;
-    UnicodeString val = norm.normalize( value );
-    string utf8 = TiCC::UnicodeToUTF8( val );
-    UniInfo *info = _tree.Retrieve( utf8 );
+    UnicodeString val = norm.normalize( _value );
+    UniInfo *info = _tree.Retrieve( val );
     if ( info ){
       return info->index();
     }

@@ -1036,6 +1036,8 @@ int main( const int argc, const char* argv[] ){
   Timer t2;
   t1.start();
   t2.start();
+  test_unicodehash();
+  exit(1);
   test_opts_basic();
   CL_Options opts1;
   opts1.set_short_options( "t:qf:d:" );

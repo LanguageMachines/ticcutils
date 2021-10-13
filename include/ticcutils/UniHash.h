@@ -29,11 +29,11 @@
 
 #include <vector>
 #include <ostream>
-#include "ticcutils/Trie.h"
+#include "ticcutils/UniTrie.h"
 #include "ticcutils/Unicode.h"
 
 namespace Hash {
-  using namespace Tries;
+  using namespace UniTries;
 
   /// \brief UniInfo is a structure used by UnicodeHash to store a
   /// UnicodeString and an unique ID
@@ -67,7 +67,7 @@ namespace Hash {
   ///
   /// It also keeps a reverse index from the id back to the string.
   ///
-  /// Internally it uses a Trie for fast inserting en retrieving
+  /// Internally it uses a UniTrie for fast inserting en retrieving
   class UnicodeHash {
     friend std::ostream& operator << ( std::ostream&, const UnicodeHash& );
   public:
@@ -85,7 +85,7 @@ namespace Hash {
   private:
     unsigned int _num_of_tokens;
     std::vector<UniInfo*> _rev_index;
-    Trie<UniInfo> _tree;
+    UniTrie<UniInfo> _tree;
     UnicodeHash( const UnicodeHash& );
     UnicodeHash& operator=( const UnicodeHash& );
   };
