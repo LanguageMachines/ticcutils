@@ -55,12 +55,12 @@ namespace UniTries {
     UniTrieNode *sub_node;        //!< Pointer to the sub node.
     UniTrieNode( const UniTrieNode& );
     UniTrieNode& operator=( const UniTrieNode& );
-    Info *add_to_tree( Info *, StringCharacterIterator& );
-    Info *scan_tree( StringCharacterIterator& ) const;
+    Info *add_to_tree( Info *, icu::StringCharacterIterator& );
+    Info *scan_tree( icu::StringCharacterIterator& ) const;
   };
 
   template <class Info>
-    inline Info *UniTrieNode<Info>::scan_tree( StringCharacterIterator& sit ) const {
+    inline Info *UniTrieNode<Info>::scan_tree( icu::StringCharacterIterator& sit ) const {
     /// search a matching field in the UniTrie
     /*!
       \param name the string to match in the UniTrie
