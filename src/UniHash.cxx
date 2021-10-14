@@ -35,7 +35,7 @@ using namespace icu;
 
 namespace Hash {
 
-  using namespace UniTries;
+  using namespace Tries;
 
   UniInfo::UniInfo( const icu::UnicodeString& value, const unsigned int index ):
     _value(value),_ID(index){

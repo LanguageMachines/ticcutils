@@ -30,7 +30,8 @@
 #include <iostream>
 #include "unicode/schriter.h"
 #include "unicode/ustream.h"
-namespace UniTries {
+
+namespace Tries {
   // A node in the generic trie.
   template <class Info> class UniTrieNode;
   template <class Info> std::ostream& operator<<( std::ostream&,

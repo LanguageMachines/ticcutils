@@ -33,7 +33,6 @@
 #include "ticcutils/Unicode.h"
 
 namespace Hash {
-  using namespace UniTries;
 
   /// \brief UniInfo is a structure used by UnicodeHash to store a
   /// UnicodeString and an unique ID
@@ -85,7 +84,7 @@ namespace Hash {
   private:
     unsigned int _num_of_tokens;
     std::vector<UniInfo*> _rev_index;
-    UniTrie<UniInfo> _tree;
+    Tries::UniTrie<UniInfo> _tree;
     UnicodeHash( const UnicodeHash& );
     UnicodeHash& operator=( const UnicodeHash& );
   };
