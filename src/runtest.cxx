@@ -604,6 +604,7 @@ void test_unicodehash(){
   assertEqual( index, 2 );
   UnicodeString greek1 = "ἀντιϰειμένου";
   UnicodeString greek2 = "ἀντιϰειμένου"; //different normalizations!
+  assertFalse( greek1 == greek2 );
   index = uh.hash( greek1 );
   assertEqual( index, 4 );
   index = uh.hash( greek2 );
