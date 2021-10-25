@@ -793,7 +793,7 @@ namespace TiCC {
     /*!
       \param is The stream to read from
       \param us the UnicodeString to read. (will be cleared before reading)
-      \param encoding. The Unicode encoding of the input stream. It is up to the
+      \param encoding The Unicode encoding of the input stream. It is up to the
       caller to assure this encoding is valid.
       \param delim The delimiter. Default '\n'
       \return the stream

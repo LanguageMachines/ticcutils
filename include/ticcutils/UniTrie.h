@@ -51,7 +51,7 @@ namespace Tries {
     void Iterate( void(*)( Info * ) );
   private:
     UChar32 label;                //!< the label.
-    Info *the_info;            //!< The information at this pnt.
+    Info *the_info;               //!< The information at this pnt.
     UniTrieNode *next_node;       //!< Pointer to the next node.
     UniTrieNode *sub_node;        //!< Pointer to the sub node.
     UniTrieNode( const UniTrieNode& );
@@ -182,16 +182,16 @@ namespace Tries {
 
   template <class Info>
     inline Info *UniTrieNode<Info>::add_to_tree( Info *info,
-						 icu::StringCharacterIterator& lab ){
-    /// add an Info record to the UniTrie, using the label \e lab
+						 icu::StringCharacterIterator& uit ){
+    /// add an Info record to the UniTrie
     /*!
       \param info The information to store
-      \param lab a Unicode Character iterator
-      If the lab string is empty, we are at the bottom, and we can store the
+      \param uit a Unicode Character iterator
+      If the \e uit iterator is done, we are at the bottom, and we can store the
       info. If there is already Info, we discard the new \e info
     */
-    if ( lab.current32() == icu::CharacterIterator::DONE ){
-      // we reached the end of 'lab'
+    if ( uit.current32() == icu::CharacterIterator::DONE ){
+      // we reached the end of 'uit'
       if ( !the_info ){
 	the_info = info;
       }
@@ -206,42 +206,40 @@ namespace Tries {
       //
       UniTrieNode<Info> **subNodePtr = &sub_node; // First one.
       while (*subNodePtr != NULL) {
-	if ( (*subNodePtr)->label == lab.current32() ) {
+	if ( (*subNodePtr)->label == uit.current32() ) {
 	  // it matches, insert more here
-	  lab.next32(); // move to next character
-	  return (*subNodePtr)->add_to_tree( info, lab );
+	  uit.next32(); // move to next character
+	  return (*subNodePtr)->add_to_tree( info, uit );
 	}
-	else if ( (*subNodePtr)->label > lab.current32() ) {
+	else if ( (*subNodePtr)->label > uit.current32() ) {
 	  // we have to insert a new UniTrieNode to store info
 	  UniTrieNode<Info> *tmp = *subNodePtr;
-	  *subNodePtr = new UniTrieNode<Info>( lab.current32() );
+	  *subNodePtr = new UniTrieNode<Info>( uit.current32() );
 	  (*subNodePtr)->next_node = tmp; // and use this als starting point
 	  // for further insertions
-	  lab.next32(); // move to next character
-	  return (*subNodePtr)->add_to_tree( info, lab );
+	  uit.next32(); // move to next character
+	  return (*subNodePtr)->add_to_tree( info, uit );
 	}
 	// we have to move to the next node
 	subNodePtr = &((*subNodePtr)->next_node);
       }
       // no match, so we create a new one at the end, and continue inserting.
       //
-      *subNodePtr = new UniTrieNode<Info>( lab.current32() );
-      lab.next32();
-      return (*subNodePtr)->add_to_tree( info, lab );
+      *subNodePtr = new UniTrieNode<Info>( uit.current32() );
+      uit.next32();
+      return (*subNodePtr)->add_to_tree( info, uit );
     }
   }
 
   template <class Info>
     inline Info *UniTrieNode<Info>::add_to_tree( Info *info,
-						 const icu::UnicodeString& lab ){
-    /// add an Info record to the UniTrie, using the label \e lab
+						 const icu::UnicodeString& value ){
+    /// add an Info record to the UniTrie, using the label \e value
     /*!
       \param info The information to store
-      \param lab a character array with the label
-      If the lab string is empty, we are at the bottom, and we can store the
-      info. If there is already Info, we discard the new \e info
+      \param value a character array with a label
     */
-    icu::StringCharacterIterator sit( lab );
+    icu::StringCharacterIterator sit( value );
     return add_to_tree( info, sit );
   }
 

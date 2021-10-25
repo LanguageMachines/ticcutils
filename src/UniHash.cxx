@@ -37,11 +37,11 @@ namespace Hash {
 
   using namespace Tries;
 
-  UniInfo::UniInfo( const icu::UnicodeString& value, const unsigned int index ):
+  UniInfo::UniInfo( const UnicodeString& value, const unsigned int index ):
     _value(value),_ID(index){
     /// create a UniInfo record
     /*!
-      \param value the value to store, assumed to be normalized!
+      \param value the value to store, assumed to be NFC normalized!
       \param index the index to store
     */
   }
