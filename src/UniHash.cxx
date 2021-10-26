@@ -68,7 +68,7 @@ namespace Hash {
   unsigned int UnicodeHash::hash( const UnicodeString& _value ){
     /// lookup or create a hash for the string parameter
     /*!
-      \param value the string to hash
+      \param _value the string to hash
       \return the hash value
       when a new hash is inserted, the reverse index is also updated
       the UnicodeString will be NFC normalized first.
