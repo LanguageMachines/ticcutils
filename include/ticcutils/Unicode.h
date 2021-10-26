@@ -132,7 +132,7 @@ namespace TiCC {
   template< typename T >
     inline T stringTo( const icu::UnicodeString& str ) {
     T result;
-    std::stringstream dummy ( str );
+    std::stringstream dummy( TiCC::UnicodeToUTF8(str) );
     if ( !( dummy >> result ) ) {
       throw( std::runtime_error( "conversion from string '" + str + "' to type:"
 				 + typeid(result).name() + " failed" ) );
