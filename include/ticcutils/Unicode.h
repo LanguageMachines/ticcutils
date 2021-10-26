@@ -30,6 +30,7 @@
 
 #include <string>
 #include <vector>
+#include <sstream>
 #include "unicode/unistr.h"
 #include "unicode/ustream.h"
 #include "unicode/normalizer2.h"
@@ -127,6 +128,39 @@ namespace TiCC {
   std::istream& getline( std::istream&,
 			 icu::UnicodeString&,
 			 const char = '\n' );
+
+  template< typename T >
+    inline T stringTo( const icu::UnicodeString& str ) {
+    T result;
+    std::stringstream dummy ( str );
+    if ( !( dummy >> result ) ) {
+      throw( std::runtime_error( "conversion from string '" + str + "' to type:"
+				 + typeid(result).name() + " failed" ) );
+    }
+    return result;
+  }
+
+  template< typename T >
+    inline bool stringTo( const icu::UnicodeString& str, T& result ) {
+    try {
+      result = stringTo<T>( str );
+      return true;
+    }
+    catch( ... ){
+     return false;
+    }
+  }
+
+  template< typename T >
+    inline icu::UnicodeString toUnicodeString ( const T& obj, bool=false ) {
+    std::stringstream dummy;
+    if ( !( dummy << obj ) ) {
+      throw( std::runtime_error( std::string("conversion from type:")
+				 + typeid(obj).name()
+				 + " to UnicodeString failed" ) );
+    }
+    return TiCC::UnicodeFromUTF8(dummy.str());
+  }
 
 }
 #endif // TICC_UNICODE_H
