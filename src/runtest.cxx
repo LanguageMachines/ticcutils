@@ -933,6 +933,63 @@ void test_unicode_split(){
   assertEqual( res[6], "HyphenMinus," );
 }
 
+void test_unicode_split_exact(){
+  UnicodeString vies = "em—dash, en–dash,, bar―, bar―――, 3em⸻dash, FullWidth－HyphenMinus,";
+  vector<UnicodeString> res = split_exact_at( vies, "," );
+  assertEqual( res.size(), 8 );
+  assertEqual( res[6], " FullWidth－HyphenMinus" );
+  UnicodeString seps =  "—–―⸻－";
+  res = split_exact_at_first_of( vies, seps );
+  assertEqual( res.size(), 9 );
+  assertEqual( res[0], "em" );
+  assertEqual( res[1], "dash, en" );
+  assertEqual( res[2], "dash,, bar" );
+  assertEqual( res[3], ", bar" );
+  assertEqual( res[4], "" );
+  assertEqual( res[5], "" );
+  assertEqual( res[6], ", 3em" );
+  assertEqual( res[7], "dash, FullWidth" );
+  assertEqual( res[8], "HyphenMinus," );
+}
+
+void test_unicode_split_at_exact(){
+  UnicodeString line = "1/2//4////8//10";
+  vector<UnicodeString> res = split_exact_at( line, "/" );
+  assertEqual( res.size(), 10 );
+  assertEqual( res[5], "" );
+}
+
+void test_unicode_split_at(){
+  UnicodeString line = "Derarekatrarekrabtrarederarekrullen\nrarevanrarederaretrap.";
+  vector<UnicodeString> res = split_at( line, "rare" );
+  assertEqual( res.size(), 8 );
+  assertEqual( res[5], "van" );
+  vector<UnicodeString> res2 = split_at( line, "rare", 4 );
+  assertEqual( res2.size(), 4 );
+  assertEqual( res2[2], "krabt" );
+  assertEqual( res2[3], "derarekrullen\nrarevanrarederaretrap." );
+}
+
+void test_unicode_split_at_first(){
+  UnicodeString line = "De.kat,krabt:de;krullen?van.,;.;de!trap.";
+  vector<UnicodeString> res = split_at_first_of( line, ".,?!:;" );
+  assertEqual( res.size(), 8 );
+  assertEqual( res[5], "van" );
+  vector<UnicodeString> res2 = split_at_first_of( line, ".,?!:;", 7 );
+  assertEqual( res2.size(), 7 );
+  assertEqual( res2[4], "krullen" );
+  assertEqual( res2[6], ",;.;de!trap." );
+}
+
+void test_unicode_split_at_first_exact(){
+  UnicodeString line = "De.kat,krabt:de;krullen?van.,;.;de!trap.";
+  vector<UnicodeString> res = split_exact_at_first_of( line, ".,?!:;" );
+  assertEqual( res.size(), 13 );
+  //  cerr << "after split: " << res << endl;
+  assertEqual( res[5], "van" );
+  assertEqual( res[9], "" );
+}
+
 void test_unicode_regex( ){
   string pattern1 = "^(\\p{Lu}{1,2}\\.{1,2}(\\p{Lu}{1,2}\\.{1,2})*)(\\p{Lu}{0,2})$";
   UnicodeRegexMatcher test1( UnicodeFromUTF8(pattern1), "test1" );
@@ -1038,7 +1095,6 @@ int main( const int argc, const char* argv[] ){
   t1.start();
   t2.start();
   test_unicodehash();
-  exit(1);
   test_opts_basic();
   CL_Options opts1;
   opts1.set_short_options( "t:qf:d:" );
@@ -1084,6 +1140,11 @@ int main( const int argc, const char* argv[] ){
   test_logstream( testdir );
   test_unicode( testdir );
   test_unicode_split();
+  test_unicode_split_exact();
+  test_unicode_split_at();
+  test_unicode_split_at_exact();
+  test_unicode_split_at_first();
+  test_unicode_split_at_first_exact();
   test_unicode_trim();
   test_unicode_regex();
   test_unicode_filters( testdir );

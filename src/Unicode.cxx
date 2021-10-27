@@ -619,6 +619,38 @@ namespace TiCC {
     return results;
   }
 
+  vector<UnicodeString> split_exact_at( const UnicodeString& src,
+					const UnicodeString& sep ){
+    /// split an UnicodeString
+    /*!
+      \param src the UnicodeString to split
+      \param sep the separator string to split at
+      \return a vector with the splitted parts
+
+      \note this function creates empty entries (e.g. when two or more
+      separators co-incide)
+    */
+    if ( sep.isEmpty() ){
+      throw runtime_error( "TiCC::split_at(): separator is empty!" );
+    }
+    vector<UnicodeString> results;
+    int pos = 0;
+    while ( pos != -1 ){
+      UnicodeString res;
+      int p = src.indexOf( sep, pos );
+      if ( p == -1 ){
+	res = src.tempSubString( pos );
+	pos = p;
+      }
+      else {
+	res = src.tempSubString( pos, p - pos );
+	pos = p + sep.length();
+      }
+      results.push_back( res );
+    }
+    return results;
+  }
+
   int find_first_of( const UnicodeString& src,
 		     const UnicodeString& seps,
 		     int pos ){
@@ -701,6 +733,38 @@ namespace TiCC {
     */
     static UnicodeString spaces = TiCC::UnicodeFromUTF8( " \r\t\n" );
     return split_at_first_of( src, spaces, max );
+  }
+
+  vector<UnicodeString> split_exact_at_first_of( const UnicodeString& src,
+						 const UnicodeString& seps ){
+    /// split an UnicodeString
+    /*!
+      \param src the UnicodeString to split
+      \param seps a list of separator characters
+      \return a vector with the splitted parts
+
+      \note this function may create empty entries (e.g. when two or more
+      separators co-incide)
+    */
+    if ( seps.isEmpty() ){
+      throw runtime_error( "TiCC::split_at_first_of(): separators are empty!" );
+    }
+    vector<UnicodeString> results;
+    int pos = 0;
+    while ( pos != -1 ){
+      UnicodeString res;
+      int e = find_first_of( src, seps, pos );
+      if ( e == -1 ){
+	res = src.tempSubString( pos );
+	pos = e;
+      }
+      else {
+	res = src.tempSubString( pos, e - pos );
+	pos = e+1;
+      }
+      results.push_back( res ); // evan when empty
+    }
+    return results;
   }
 
   string utf8_lowercase( const string& in ){

@@ -114,6 +114,15 @@ namespace TiCC {
   std::vector<UnicodeString> split( const UnicodeString&,
 				    size_t = 0 );
 
+  std::vector<icu::UnicodeString> split_exact_at( const icu::UnicodeString&,
+						  const icu::UnicodeString& );
+  std::vector<icu::UnicodeString> split_exact_at_first_of( const icu::UnicodeString&,
+							   const icu::UnicodeString& );
+  inline  std::vector<icu::UnicodeString> split_exact( const icu::UnicodeString& s ){
+    return split_exact_at_first_of( s, " \r\t\n" );
+  }
+
+
   UnicodeString utrim( const UnicodeString&, const UnicodeString& = "\r\n\t " );
   UnicodeString ltrim( const UnicodeString&, const UnicodeString& = "\r\n\t " );
   UnicodeString rtrim( const UnicodeString&, const UnicodeString& = "\r\n\t " );
@@ -132,9 +141,10 @@ namespace TiCC {
   template< typename T >
     inline T stringTo( const icu::UnicodeString& str ) {
     T result;
-    std::stringstream dummy( TiCC::UnicodeToUTF8(str) );
+    std::string tmp = TiCC::UnicodeToUTF8(str);
+    std::stringstream dummy( tmp );
     if ( !( dummy >> result ) ) {
-      throw( std::runtime_error( "conversion from string '" + str + "' to type:"
+      throw( std::runtime_error( "conversion from string '" + tmp + "' to type:"
 				 + typeid(result).name() + " failed" ) );
     }
     return result;
