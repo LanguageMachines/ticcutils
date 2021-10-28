@@ -426,7 +426,7 @@ namespace TiCC {
     if ( Argc == 0 ){
       if ( Argv != 0 &&
 	   Argv[0] != 0 ){
-	split( Argv[0], local_argv );
+	local_argv = split( Argv[0] );
 	local_argv = fix_quotes( local_argv );
       }
       else {
