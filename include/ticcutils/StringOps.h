@@ -46,20 +46,16 @@ namespace TiCC {
   bool match_front( const std::string&, const std::string& );
   bool match_back( const std::string&, const std::string& );
 
-  size_t split( const std::string&, std::vector<std::string>& );
-  size_t split_at( const std::string&,
-		   std::vector<std::string>&,
-		   const std::string& seps );
-  size_t split_at_first_of( const std::string&,
-			    std::vector<std::string>&,
-			    const std::string& );
-  size_t split_exact( const std::string&, std::vector<std::string>& );
-  size_t split_exact_at( const std::string&,
-			 std::vector<std::string>&,
-			 const std::string& );
-  size_t split_exact_at_first_of( const std::string&,
-				  std::vector<std::string>&,
-				  const std::string& );
+  size_t split_at( const std::string&, std::vector<std::string>&,
+		   const std::string&, bool = false );
+  size_t split_at_first_of( const std::string&, std::vector<std::string>&,
+			    const std::string&, bool = false );
+  inline size_t split( const std::string& s,
+		       std::vector<std::string>& vec,
+		       bool exact = false ){
+    return split_at_first_of( s, vec, " \r\t\n", exact );
+  }
+
   std::vector<std::string> split_at( const std::string&,
 				     const std::string&,
 				     size_t = 0 );

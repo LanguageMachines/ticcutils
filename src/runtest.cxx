@@ -501,7 +501,7 @@ void test_split(){
 void test_split_exact(){
   string line = "1 2  4    8  10";
   vector<string> res;
-  int cnt = split_exact( line, res );
+  int cnt = split( line, res, true );
   assertEqual( cnt, 10 );
   assertEqual( res[5], "" );
 }
@@ -509,7 +509,7 @@ void test_split_exact(){
 void test_split_at_exact(){
   string line = "1/2//4////8//10";
   vector<string> res;
-  int cnt = split_exact_at( line, res, "/" );
+  int cnt = split_at( line, res, "/", true );
   assertEqual( cnt, 10 );
   assertEqual( res[5], "" );
 }
@@ -547,7 +547,7 @@ void test_split_at_first(){
 void test_split_at_first_exact(){
   string line = "De.kat,krabt:de;krullen?van.,;.;de!trap.";
   vector<string> res;
-  int cnt = split_exact_at_first_of( line, res, ".,?!:;" );
+  int cnt = split_at_first_of( line, res, ".,?!:;", true );
   assertEqual( cnt, 13 );
   //  cerr << "after split: " << res << endl;
   assertEqual( res[5], "van" );

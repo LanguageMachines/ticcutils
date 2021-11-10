@@ -164,8 +164,8 @@ namespace TiCC {
     return false;
   }
 
-  size_t local_split_at( const string& src, vector<string>& results,
-			 const string& sep, bool exact ){
+  size_t split_at( const string& src, vector<string>& results,
+		   const string& sep, bool exact ){
     /// split a string into substrings.
     /*!
       \param src the string to split
@@ -241,8 +241,8 @@ namespace TiCC {
     return results;
   }
 
-  size_t local_split_at_first_of( const string& src, vector<string>& results,
-				  const string& seps, bool exact ){
+  size_t split_at_first_of( const string& src, vector<string>& results,
+			    const string& seps, bool exact ){
     /// split a string into substrings.
     /*!
       \param src the string to split
@@ -318,40 +318,6 @@ namespace TiCC {
       }
     }
     return results;
-  }
-
-  size_t split_at( const std::string& s,
-		   std::vector<std::string>& v,
-		   const std::string& seps ){
-    return local_split_at( s, v, seps, false );
-  }
-
-  size_t split_at_first_of( const std::string& s,
-			    std::vector<std::string>& v,
-			    const std::string& seps ){
-    return local_split_at_first_of( s, v, seps, false );
-  }
-
-  size_t split( const std::string& s,
-		std::vector<std::string>& vec ){
-    return local_split_at_first_of( s, vec, " \r\t\n", false );
-  }
-
-  size_t split_exact( const std::string& s,
-		      std::vector<std::string>& vec ){
-    return local_split_at_first_of( s, vec, " \r\t\n", true );
-  }
-
-  size_t split_exact_at( const std::string& s,
-			 std::vector<std::string>& v,
-			 const std::string& m ){
-    return local_split_at( s, v, m, true );
-  }
-
-  size_t split_exact_at_first_of( const std::string& s,
-				  std::vector<std::string>& v,
-					 const std::string& m ){
-    return local_split_at_first_of( s, v, m, true );
   }
 
   string format_nonascii( const string& s ){
