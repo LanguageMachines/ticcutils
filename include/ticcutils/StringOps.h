@@ -49,7 +49,7 @@ namespace TiCC {
   size_t split( const std::string&, std::vector<std::string>& );
   size_t split_at( const std::string&,
 		   std::vector<std::string>&,
-		   const std::string& seps );
+		   const std::string& );
   size_t split_at_first_of( const std::string&,
 			    std::vector<std::string>&,
 			    const std::string& );
@@ -71,6 +71,8 @@ namespace TiCC {
 					 size_t num = 0 ){
     return split_at_first_of( s, " \r\t\n", num );
   }
+
+  std::string join( const std::vector<std::string>&, const std::string& = " " );
 
   std::string format_nonascii( const std::string& );
 

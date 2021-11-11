@@ -122,6 +122,8 @@ namespace TiCC {
     return split_exact_at_first_of( s, " \r\t\n" );
   }
 
+  icu::UnicodeString join( const std::vector<icu::UnicodeString>&,
+			   const icu::UnicodeString& = " " );
 
   UnicodeString utrim( const UnicodeString&, const UnicodeString& = "\r\n\t " );
   UnicodeString ltrim( const UnicodeString&, const UnicodeString& = "\r\n\t " );

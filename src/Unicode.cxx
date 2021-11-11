@@ -767,6 +767,18 @@ namespace TiCC {
     return results;
   }
 
+  UnicodeString join( const vector<UnicodeString>& vec,
+		     const UnicodeString& sep ){
+    UnicodeString result;
+    for ( const auto& s : vec ){
+      result += s;
+      if ( &s != &vec.back() ){
+	result += sep;
+      }
+    }
+    return result;
+  }
+
   string utf8_lowercase( const string& in ){
     /// convert an UTF-8 string to lowercase
     UnicodeString us = TiCC::UnicodeFromUTF8( in );

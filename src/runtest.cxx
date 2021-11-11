@@ -477,6 +477,10 @@ void test_split(){
   vector<string> res2 = split( line );
   assertEqual( res2.size(), 8 );
   assertEqual( res2[6], "de" );
+  string outline = join( res2 );
+  assertEqual( outline, "De kat krabt de krullen van de trap." );
+  outline = join( res2, "\t" );
+  assertEqual( outline, "De\tkat\tkrabt\tde\tkrullen\tvan\tde\ttrap." );
   vector<string> res3 = split( line, 3 );
   assertEqual( res3.size(), 3 );
   assertEqual( res3[1], "kat" );
@@ -964,6 +968,8 @@ void test_unicode_split_at(){
   vector<UnicodeString> res = split_at( line, "rare" );
   assertEqual( res.size(), 8 );
   assertEqual( res[5], "van" );
+  UnicodeString vuil = join( res, "rare" );
+  assertEqual( vuil, line );
   vector<UnicodeString> res2 = split_at( line, "rare", 4 );
   assertEqual( res2.size(), 4 );
   assertEqual( res2[2], "krabt" );
