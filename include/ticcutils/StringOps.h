@@ -67,10 +67,8 @@ namespace TiCC {
   std::vector<std::string> split_at_first_of( const std::string&,
 					      const std::string&,
 					      size_t = 0 );
-  inline std::vector<std::string> split( const std::string& s,
-					 size_t num = 0 ){
-    return split_at_first_of( s, " \r\t\n", num );
-  }
+  std::vector<std::string> split( const std::string& s,
+				  size_t num = 0 );
 
   std::string join( const std::vector<std::string>&, const std::string& = " " );
 

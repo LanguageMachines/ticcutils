@@ -164,22 +164,22 @@ namespace TiCC {
     return false;
   }
 
-  size_t local_split_at( const string& src, vector<string>& results,
-			 const string& sep, bool exact ){
+  static vector<string> local_split_at( const string& src,
+					const string& sep,
+					bool exact ){
     /// split a string into substrings.
     /*!
       \param src the string to split
-      \param results a vector of split parts
-      \param sep a separator string. May be a multi-character string.
+      \param sep a separator string. This may be a multi-character string.
       \param exact normally, we silently skip empty entries (e.g. when two or
       more separators co-incide), but not when exact=true. In that case result
       may contain empty strings.
-      \return the number of parts found
+      \return a vector of substrings
     */
     if ( sep.empty() ){
       throw runtime_error( "TiCC::split_at(): separator is empty!" );
     }
-    results.clear();
+    vector<string> results;
     string::size_type pos = 0;
     while ( pos != string::npos ){
       string res;
@@ -196,12 +196,12 @@ namespace TiCC {
 	results.push_back( res );
       }
     }
-    return results.size();
+    return results;
   }
 
-  vector<string> split_at( const string& src,
-			   const string& sep,
-			   size_t max ){
+  static vector<string> local_split_at( const string& src,
+					const string& sep,
+					size_t max ){
     /// split a string into substrings.
     /*!
       \param src the string to split
@@ -241,23 +241,23 @@ namespace TiCC {
     return results;
   }
 
-  size_t local_split_at_first_of( const string& src, vector<string>& results,
-				  const string& seps, bool exact ){
+  static vector<string> local_split_at_first_of( const string& src,
+						 const string& seps,
+						 bool exact ){
     /// split a string into substrings.
     /*!
       \param src the string to split
-      \param results a vector of split parts
       \param seps a string with separator characters. one of those should match
       for a split to happen.
       \param exact normally, we silently skip empty entries (e.g. when two or
       more separators co-incide), but not when exact=true. In that case result
       may contain empty strings.
-      \return the number of parts found
+      \return a vector of split parts
     */
     if ( seps.empty() ){
       throw runtime_error( "TiCC::split_at_first_of(): separators are empty!" );
     }
-    results.clear();
+    vector<string> results;
     string::size_type s = 0;
     while ( s != string::npos ){
       string res;
@@ -274,12 +274,12 @@ namespace TiCC {
 	results.push_back( res );
       }
     }
-    return results.size();
+    return results;
   }
 
-  vector<string> split_at_first_of( const string& src,
-				    const string& seps,
-				    size_t max ){
+  static vector<string> local_split_at_first_of( const string& src,
+						 const string& seps,
+						 size_t max ){
     /// split a string into substrings.
     /*!
       \param src the string to split
@@ -320,38 +320,69 @@ namespace TiCC {
     return results;
   }
 
+  vector<string> split_at( const string& src,
+			   const string& sep,
+			   size_t max ){
+    /// split a string into substrings.
+    /*!
+      \param src the string to split
+      \param sep a separator string. May be a multi-character string.
+      \param max if max > 0, limit the size of the result to \e max strings,
+      leaving the remainder in the last part of the result
+      \return a vector of split parts
+    */
+    return local_split_at( src, sep, max );
+  }
+
   size_t split_at( const std::string& s,
 		   std::vector<std::string>& v,
 		   const std::string& seps ){
-    return local_split_at( s, v, seps, false );
+    v = local_split_at( s, seps, false );
+    return v.size();
+  }
+
+  std::vector<std::string> split( const std::string& s,
+				  size_t num ){
+    return local_split_at_first_of( s, " \r\t\n", num );
+  }
+
+  vector<string> split_at_first_of( const string& s,
+				    const string& seps,
+				    size_t num ){
+    return local_split_at_first_of( s, seps, num );
   }
 
   size_t split_at_first_of( const std::string& s,
 			    std::vector<std::string>& v,
 			    const std::string& seps ){
-    return local_split_at_first_of( s, v, seps, false );
+    v = local_split_at_first_of( s, seps, false );
+    return v.size();
   }
 
   size_t split( const std::string& s,
-		std::vector<std::string>& vec ){
-    return local_split_at_first_of( s, vec, " \r\t\n", false );
+		std::vector<std::string>& v ){
+    v = local_split_at_first_of( s, " \r\t\n", false );
+    return v.size();
   }
 
   size_t split_exact( const std::string& s,
-		      std::vector<std::string>& vec ){
-    return local_split_at_first_of( s, vec, " \r\t\n", true );
+		      std::vector<std::string>& v ){
+    v = local_split_at_first_of( s, " \r\t\n", true );
+    return v.size();
   }
 
   size_t split_exact_at( const std::string& s,
 			 std::vector<std::string>& v,
 			 const std::string& m ){
-    return local_split_at( s, v, m, true );
+    v = local_split_at( s, m, true );
+    return v.size();
   }
 
   size_t split_exact_at_first_of( const std::string& s,
 				  std::vector<std::string>& v,
-					 const std::string& m ){
-    return local_split_at_first_of( s, v, m, true );
+				  const std::string& m ){
+    v = local_split_at_first_of( s, m, true );
+    return v.size();
   }
 
   string join( const vector<string>& vec, const string& sep ){
