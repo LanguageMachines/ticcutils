@@ -159,7 +159,6 @@ namespace TiCC {
       if (result->type != XPATH_NODESET) {
 	xmlXPathFreeObject(result);
 	throw runtime_error( "sorry, only nodeset types supported for now." );
-	return nodes;
       }
       xmlNodeSet* nodeset = result->nodesetval;
       if ( nodeset ){

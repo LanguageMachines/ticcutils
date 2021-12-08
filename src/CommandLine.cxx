@@ -32,6 +32,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <algorithm>
 #include <ostream>
 #include <iostream>
 
@@ -206,14 +207,14 @@ namespace TiCC {
       \return true if a result is found
       \note when NO result is found, \e opt_val is NOT changed
     */
-    for ( const auto& pos : Opts ){
-      if ( pos.option() == w ){
-	opt_val = pos.value();
-	if ( debug ){
-	  cerr << "is_present '" << w << "' ==> '" << opt_val << "'" << endl;
-	}
-	return true;
+    auto it = find_if( Opts.begin(), Opts.end(),
+		       [&w]( const CL_item& o ){ return o.option() == w; } );
+    if ( it != Opts.end() ){
+      opt_val = it->value();
+      if ( debug ){
+	cerr << "is_present '" << w << "' ==> '" << opt_val << "'" << endl;
       }
+      return true;
     }
     if ( debug ){
       cerr << "is_present '" << w << "' FAILS " << endl;

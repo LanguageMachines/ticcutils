@@ -56,7 +56,6 @@ void helper(){
 
 int helper2(){
   throw runtime_error("mis");
-  return 8;
 }
 
 void test_throw(){
@@ -1087,7 +1086,6 @@ void test_conversion(){
 
 bool faal(){
   throw runtime_error( "I failed it" );
-  return true;
 }
 
 void test_assert() {
