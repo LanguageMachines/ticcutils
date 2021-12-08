@@ -32,7 +32,6 @@
 #include <stdexcept>
 
 #include "ticcutils/StringOps.h"
-#include "ticcutils/TreeHash.h"
 #include "ticcutils/UniHash.h"
 #include "ticcutils/PrettyPrint.h"
 #include "ticcutils/zipper.h"
@@ -581,20 +580,6 @@ void test_lowercase(){
   assertEqual( res, "een camelcapped zin." );
 }
 
-void test_treehash(){
-  Hash::StringHash sh;
-  size_t index = sh.Hash( "appel" );
-  assertEqual( index, 1 );
-  index = sh.Hash( "peer" );
-  assertEqual( index, 2 );
-  index = sh.Hash( "appeltaart" );
-  assertEqual( index, 3 );
-  index = sh.Hash( "peer" );
-  assertEqual( index, 2 );
-  assertEqual( sh.NumOfEntries(), 3 );
-  assertEqual( sh.ReverseLookup( 3 ), "appeltaart" );
-}
-
 void test_unicodehash(){
   Hash::UnicodeHash uh;
   size_t index = uh.hash( "appel" );
@@ -1129,7 +1114,6 @@ int main( const int argc, const char* argv[] ){
   test_to_lower();
   test_uppercase();
   test_lowercase();
-  test_treehash();
   test_unicodehash();
   test_realpath();
   string testdir;
