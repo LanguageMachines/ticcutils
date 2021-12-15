@@ -1,3 +1,16 @@
+15 december 2021 0.28
+[Ko vd Sloot]
+* replaced Trie.h and TreeHash.h/.cxx by Unicode aware variants
+* refactoring in StringOps, weeding split* functions. Added join() function
+* added functionality to Unicode.cxx, like split* and join() and converters
+  also a dedicated getline() function to directly read UnicodeString's
+* several refactoringsin CommandLine.cxx
+* added a fnction to CommandLne.cxx to remove a section
+  (https://github.com/LanguageMachines/ticcutils/issues/24)
+* adapted runtest.cxx to new and changed functions
+* added new 3.10.3 version of nlohmann JSON library
+* fix for: https://gitlab.alpinelinux.org/proycon/aports/-/jobs/452481#L1005
+
 12 july 2021 0.27
 [Ko vd Sloot]
 * added new 3.9.1 version of nlohmann JSON library
