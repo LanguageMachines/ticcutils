@@ -2,7 +2,7 @@
 #define TICC_UNICODE_H
 
 /*
-  Copyright (c) 2006 - 2021
+  Copyright (c) 2006 - 2022
   CLST  - Radboud University
   ILK   - Tilburg University
 
