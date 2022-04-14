@@ -35,7 +35,7 @@ const std::string FAIL = "\033[1;31m  FAILED  \033[0m";
 
 /// \brief class that defines a series of tests
 class MyTSerie {
- public:
+public:
   MyTSerie( const std::string& fun, int lineno, const std::string& line ){
     start( fun, lineno, line );
   }
@@ -48,7 +48,7 @@ class MyTSerie {
   int _series;
   int _start_line;
   std::string _fun;
- private:
+private:
   void start( const std::string& fun, int lineno, const std::string& line );
   void stop( const std::string& fun );
 };
@@ -56,16 +56,18 @@ class MyTSerie {
 /// the default test serie where all other series run in
 static MyTSerie currentTestContext( "default", 0, "default" );
 
-int exit_status = 0;
-bool summarized = false;
-bool testSilent = false;
-std::string last_what;      ///!< global variable to hold the last what() from
-/// any exception
+static int exit_status = 0;
+static bool summarized = false;
+static bool testSilent = false;
+static std::string last_what;      ///!< global variable to hold the last what()
+/// from any exception
 
 #define TEST_SILENT_ON() testSilent = true;
 #define TEST_SILENT_OFF() testSilent = false;
 
-void MyTSerie::start( const std::string& fun, int lineno, const std::string& line ){
+inline void MyTSerie::start( const std::string& fun,
+			     int lineno,
+			     const std::string& line ){
   /// start a new TestSerie
   /*!
     \param fun the function name
@@ -109,7 +111,7 @@ inline void summarize_tests( int expected=0 ){
   exit_status = diff;
 }
 
-void MyTSerie::stop( const std::string& fun ){
+inline void MyTSerie::stop( const std::string& fun ){
   /// stop a Test Serie
   /*!
     \param fun a label for printing
@@ -266,20 +268,21 @@ void MyTSerie::stop( const std::string& fun ){
 	      << e.what() << "'" << std::endl;				\
   }
 
-std::string lastError() {
+inline std::string lastError() {
   /*!
     \return the value of the what() last exception
   */
   return last_what;
 }
-bool hasThrown() {
+
+inline bool hasThrown() {
   /*!
     \return true when the last test has thrown, false otherwise
    */
   return !last_what.empty();
 }
 
-void decrementError() {
+inline void decrementError() {
   /// decrement the error count
   --currentTestContext._fails;
 }
@@ -303,7 +306,7 @@ template <typename T1, typename T2>
     else {
       std::cerr << "\t";
     }
-    std::cerr << F << "(" << L << ") : \n'" << s1 << "'\n != \n'"
+    std::cerr << F << "(" << L << ") : '" << s1 << "' != '"
 	      << s2 << "'" << std::endl;
   }
   else if ( !testSilent && T.isDefault() ){
