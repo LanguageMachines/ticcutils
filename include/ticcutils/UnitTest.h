@@ -36,8 +36,11 @@ const std::string FAIL = "\033[1;31m  FAILED  \033[0m";
 /// \brief class that defines a series of tests
 class MyTSerie {
 public:
-  MyTSerie( const std::string& fun, int lineno, const std::string& line ){
-    start( fun, lineno, line );
+  MyTSerie( const std::string& fun,
+	    const std::string& file,
+	    int lineno,
+	    const std::string& line ){
+    start( fun, file, lineno, line );
   }
   ~MyTSerie(){
     stop( _fun );
@@ -49,12 +52,13 @@ public:
   int _start_line;
   std::string _fun;
 private:
-  void start( const std::string& fun, int lineno, const std::string& line );
+  void start( const std::string& fun, const std::string& file,
+	      int lineno, const std::string& line );
   void stop( const std::string& fun );
 };
 
 /// the default test serie where all other series run in
-static MyTSerie currentTestContext( "default", 0, "default" );
+static MyTSerie currentTestContext( "default", "main", 0, "default" );
 
 static int exit_status = 0;
 static bool summarized = false;
@@ -66,11 +70,13 @@ static std::string last_what;      ///!< global variable to hold the last what()
 #define TEST_SILENT_OFF() testSilent = false;
 
 inline void MyTSerie::start( const std::string& fun,
+			     const std::string& file,
 			     int lineno,
 			     const std::string& line ){
   /// start a new TestSerie
   /*!
     \param fun the function name
+    \param file the source file name
     \param lineno the line number
     \param line a message to print
   */
@@ -81,7 +87,8 @@ inline void MyTSerie::start( const std::string& fun,
   _start_line = lineno;
   if ( !isDefault() ){
     ++currentTestContext._series;
-    std::cout << "Serie:\t" << fun << " (" << line << ")" << std::endl;
+    std::cout << file << ":Serie:\t" << fun << " (" << line
+	      << ")" << std::endl;
   }
 }
 
@@ -139,7 +146,7 @@ inline void MyTSerie::stop( const std::string& fun ){
 #define assertEqual( XX , YY )						\
   last_what.clear();							\
   try {									\
-    test_eq<decltype(XX), decltype(YY)>( __func__, __LINE__, (XX), (YY), currentTestContext ); \
+    test_eq<decltype(XX), decltype(YY)>( __func__, __FILE__, __LINE__, (XX), (YY), currentTestContext ); \
   }									\
   catch ( const std::exception& e ){					\
     last_what = e.what();						\
@@ -150,7 +157,7 @@ inline void MyTSerie::stop( const std::string& fun ){
     else {								\
       std::cerr << "\t";						\
     }									\
-    std::cerr << __func__ << "(" << __LINE__				\
+    std::cerr << __func__ << "(" << __FILE__ << ":" << __LINE__		\
 	      << ") : caucht exception, what='" << e.what() << "'"	\
 	      << std::endl;						\
   }
@@ -224,7 +231,7 @@ inline void MyTSerie::stop( const std::string& fun ){
 #define assertTrue( YY ) 			                        \
   last_what.clear();							\
   try {									\
-    test_true( __func__, __LINE__, (YY), currentTestContext );		\
+    test_true( __func__, __FILE__, __LINE__, (YY), currentTestContext ); \
   }									\
   catch( const std::exception& e ){					\
     last_what = e.what();						\
@@ -242,13 +249,13 @@ inline void MyTSerie::stop( const std::string& fun ){
 #define assertFalse( YY )						\
   last_what.clear();							\
   try {									\
-    test_false( __func__, __LINE__, (YY), currentTestContext );		\
+    test_false( __func__, __FILE__, __LINE__, (YY), currentTestContext ); \
   }									\
   catch( const std::exception& e ){					\
     last_what = e.what();						\
     ++currentTestContext._fails;					\
-    std::cerr << __func__ << "(" << __LINE__ << ") error:'"		\
-	      << e.what() << "' ";					\
+    std::cerr << __func__ << "(" << __FILE__ << ":" << __LINE__         \
+	      << ") error:'" << e.what() << "' ";			\
     if ( currentTestContext.isDefault() ){				\
       std::cout << FAIL << std::endl;					\
     }									\
@@ -260,7 +267,7 @@ inline void MyTSerie::stop( const std::string& fun ){
 #define assertMessage( MM, YY )						\
   last_what.clear();							\
   try {									\
-    test_true_message( __func__, __LINE__, (MM), (YY), currentTestContext ); \
+    test_true_message( __func__, __FILE__, __LINE__, (MM), (YY), currentTestContext ); \
   }									\
   catch( const std::exception& e ){					\
     last_what = e.what();						\
@@ -287,13 +294,13 @@ inline void decrementError() {
   --currentTestContext._fails;
 }
 
-#define startTestSerie( SS ) MyTSerie currentTestContext( __func__, __LINE__, (SS) )
+#define startTestSerie( SS ) MyTSerie currentTestContext( __func__, __FILE__, __LINE__, (SS) )
 
 template <typename T1, typename T2>
-  inline void test_eq( const char* F, int L,
-		       const T1& s1, const T2& s2, MyTSerie& T ){
+inline void test_eq( const char* F, const char* fun, int L,
+		     const T1& s1, const T2& s2, MyTSerie& T ){
   if ( !testSilent && T.isDefault() ){
-    std::cout << "test: " << F << "(" << L << "): ";
+    std::cout << "test: " << F << "(" << fun << ":" << L << "): ";
   }
   ++T._tests;
   typename std::common_type<T1,T2>::type s11 = s1;
@@ -306,7 +313,7 @@ template <typename T1, typename T2>
     else {
       std::cerr << "\t";
     }
-    std::cerr << F << "(" << L << ") : '" << s1 << "' != '"
+    std::cerr << F << "(" << fun << ":" << L << ") : '" << s1 << "' != '"
 	      << s2 << "'" << std::endl;
   }
   else if ( !testSilent && T.isDefault() ){
@@ -314,9 +321,10 @@ template <typename T1, typename T2>
   }
 }
 
-inline void test_true( const char* F, int L, bool b, MyTSerie& T ){
+inline void test_true( const char* F, const char* fun,
+		       int L, bool b, MyTSerie& T ){
   if ( !testSilent && T.isDefault() ){
-    std::cout << "test: " << F << "(" << L << "): ";
+    std::cout << "test: " << F << "(" << fun << ":" << L << "): ";
   }
   ++T._tests;
   if ( !b ){
@@ -327,16 +335,18 @@ inline void test_true( const char* F, int L, bool b, MyTSerie& T ){
     else {
       std::cerr << "\t";
     }
-    std::cerr << F << "(" << L << ") : '"  << b << "' != TRUE" << std::endl;
+    std::cerr << F << "(" << fun << ":" << L << ") : '"
+	      << b << "' != TRUE" << std::endl;
   }
   else if ( !testSilent && T.isDefault() ){
     std::cout << OK << std::endl;
   }
 }
 
-inline void test_false( const char* F, int L, bool b, MyTSerie& T ){
+inline void test_false( const char* F, const char* fun,
+			int L, bool b, MyTSerie& T ){
   if ( !testSilent && T.isDefault() ){
-    std::cout << "test: " << F << "(" << L << "): ";
+    std::cout << "test: " << F << "(" << fun << ":" << L << "): ";
   }
   ++T._tests;
   if ( b ){
@@ -347,17 +357,19 @@ inline void test_false( const char* F, int L, bool b, MyTSerie& T ){
     else {
       std::cerr << "\t";
     }
-    std::cerr << F << "(" << L << ") : '"  << b << "' != TRUE" << std::endl;
+    std::cerr << F << "(" << fun << ":" << L << ") : '"
+	      << b << "' != TRUE" << std::endl;
   }
   else if ( !testSilent && T.isDefault() ){
     std::cout << OK << std::endl;
   }
 }
 
-inline void test_true_message( const char* F, int L, const std::string& m,
+inline void test_true_message( const char* F, const char *fun,
+			       int L, const std::string& m,
 			       bool b, MyTSerie& T ){
   if ( !testSilent && T.isDefault() ){
-    std::cout << "test: " << F << "(" << L << "): ";
+    std::cout << "test: " << F << "(" << fun << ":" << L << "): ";
   }
   ++T._tests;
   if ( !b ){
@@ -368,7 +380,8 @@ inline void test_true_message( const char* F, int L, const std::string& m,
     else {
       std::cerr << "\t";
     }
-    std::cerr << F << "(" << L << ") : '"  << m << "'" << std::endl;
+    std::cerr << F << "(" << fun << ":" << L << ") : '"
+	      << m << "'" << std::endl;
   }
   else if ( !testSilent && T.isDefault() ){
     std::cout << OK << std::endl;
