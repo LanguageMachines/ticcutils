@@ -25,6 +25,7 @@
 */
 
 #include "ticcutils/FdStream.h"
+#include "ticcutils/Timer.h"
 
 #include <cstring>
 #include <cstdio>
@@ -37,20 +38,6 @@
 #include <cstdlib>
 
 using namespace std;
-
-void milli_wait( int m_secs ){
-  /// sleep for some milli-seconds
-  /*!
-    \param m_secs the milliseconds to sleep
-  */
-  struct timespec tv;
-  ldiv_t div = ldiv( m_secs, 1000 );
-  tv.tv_sec = div.quot;               // seconds
-  tv.tv_nsec = div.rem * 1000000;     // nanoseconds
-  while ( nanosleep( &tv, &tv ) < 0 ){
-    // continue when interrupted
-  }
-}
 
 fdoutbuf::fdoutbuf(): fd(-1) {
   /// constructor for a non-initialized fd output buffer
@@ -191,7 +178,7 @@ bool nb_getline( istream& is, string& result, int& timeout ){
 #endif
       is.clear();
       errno = 0;
-      milli_wait(100);
+      TiCC::Timer::milli_wait(100);
       if ( ++count == 10 ){
 	--timeout;
 	count = 0;
@@ -235,7 +222,7 @@ bool nb_putline( ostream& os, const string& what, int& timeout ){
 #endif
       os.clear();
       errno = 0;
-      milli_wait(100);
+      TiCC::Timer::milli_wait(100);
       if ( ++count == 10 ){
 	--timeout;
 	count = 0;
