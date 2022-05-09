@@ -34,6 +34,20 @@ using namespace std;
 
 namespace TiCC {
 
+  void Timer::milli_wait( int m_secs ){
+    /// sleep for some milli-seconds
+    /*!
+      \param m_secs the milliseconds to sleep
+    */
+    struct timespec tv;
+    ldiv_t div = ldiv( m_secs, 1000 );
+    tv.tv_sec = div.quot;               // seconds
+    tv.tv_nsec = div.rem * 1000000;     // nanoseconds
+    while ( nanosleep( &tv, &tv ) < 0 ){
+      // continue when interrupted
+    }
+  }
+
   void Timer::stop(){
     /// stop the current timer and add the current lap
     timeval now;

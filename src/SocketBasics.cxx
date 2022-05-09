@@ -39,6 +39,7 @@
 
 #include "config.h"
 #include "ticcutils/StringOps.h"
+#include "ticcutils/Timer.h"
 
 using namespace std;
 
@@ -51,22 +52,8 @@ namespace Sockets {
     }
   }
 
-  void milli_wait( int m_secs ){
-    /// sleep for some milli-seconds
-    /*!
-      \param m_secs the milliseconds to sleep
-    */
-    struct timespec tv;
-    ldiv_t div = ldiv( m_secs, 1000 );
-    tv.tv_sec = div.quot;               // seconds
-    tv.tv_nsec = div.rem * 1000000;     // nanoseconds
-    while ( nanosleep( &tv, &tv ) < 0 ){
-      // continue when interrupted
-    }
-  }
-
   // #define KEEP // experiment with keep-alive
-  //#define DEBUG
+  // #define DEBUG
 
   bool Socket::read( string& line ) {
     /// read a string from the Socket
@@ -161,7 +148,7 @@ namespace Sockets {
 	  result += c;
 	}
 	else if ( res == -1 || res == EAGAIN || res == EWOULDBLOCK ){
-	  milli_wait(100);
+	  TiCC::Timer::milli_wait(100);
 	  if ( ++count == 10 ){
 	    --timeout;
 	    count = 0;
@@ -241,7 +228,7 @@ namespace Sockets {
 	  ++str;
 	}
 	else if ( res == EAGAIN || res == EWOULDBLOCK ){
-	  milli_wait(100);
+	  TiCC::Timer::milli_wait(100);
 	  if ( ++count == 10 ){
 	    --timeout;
 	    count = 0;

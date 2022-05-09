@@ -50,6 +50,7 @@ namespace TiCC {
     friend Timer operator+( Timer, const Timer& );
     std::string toString();
     static std::string now();
+    static void milli_wait( int );
   private:
     timeval startTime;
     timeval myTime;
