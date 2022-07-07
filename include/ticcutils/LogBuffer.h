@@ -171,9 +171,7 @@ template <class charT, class traits >
 
 template <class charT, class traits >
 void basic_log_buffer<charT,traits>::Threshold( LogLevel l ){
-  if ( threshold_level != l ){
-    threshold_level = l;
-  }
+  threshold_level = l;
 }
 
 template <class charT, class traits >
@@ -183,9 +181,7 @@ LogLevel basic_log_buffer<charT,traits>::Threshold() const {
 
 template <class charT, class traits >
 void basic_log_buffer<charT,traits>::Level( LogLevel l ){
-  if ( level != l ){
-    level = l;
-  }
+  level = l;
 }
 
 template <class charT, class traits >
@@ -205,9 +201,7 @@ void basic_log_buffer<charT,traits>::AssocStream( std::basic_ostream<charT,trait
 
 template <class charT, class traits >
 void basic_log_buffer<charT,traits>::StampFlag( const LogFlag b ){
-  if ( stamp_flag != b ){
-    stamp_flag = b;
-  }
+  stamp_flag = b;
 }
 
 template <class charT, class traits >

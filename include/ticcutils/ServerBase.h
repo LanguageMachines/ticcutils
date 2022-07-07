@@ -184,8 +184,8 @@ namespace TiCCServer {
   /// \brief HttpServerBase is a baseclass for Http connections
   class HttpServerBase : public ServerBase {
   public:
-    void socketChild( childArgs * );
-    virtual void sendReject( std::ostream& os ) const;
+    void socketChild( childArgs * ) override;
+    virtual void sendReject( std::ostream& os ) const override;
     explicit HttpServerBase( const TiCC::Configuration *c,
 			     void *cb ): ServerBase( c, cb ){};
   };
