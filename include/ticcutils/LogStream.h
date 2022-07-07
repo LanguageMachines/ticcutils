@@ -48,7 +48,7 @@ namespace TiCC {
 	       LogFlag = StampBoth );
     LogStream( const LogStream&, const std::string&, LogFlag );
     LogStream( const LogStream&, const std::string& );
-    explicit LogStream( const LogStream * );
+    LogStream( const LogStream * );
     bool set_single_threaded_mode();
     bool single_threaded() const { return single_threaded_mode; };
     void setthreshold( LogLevel t ){ buf.Threshold( t ); };
