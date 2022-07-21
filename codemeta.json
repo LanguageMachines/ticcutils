@@ -1,7 +1,8 @@
 {
     "@context": [
         "https://doi.org/10.5063/schema/codemeta-2.0",
-        "http://schema.org"
+        "http://schema.org",
+        "https://w3id.org/software-types"
     ],
     "@type": "SoftwareSourceCode",
     "identifier": "ticcutils",
@@ -47,7 +48,7 @@
 		"identifier": "c++",
 		"name": "C++"
 	},
-	"operatingSystem": "POSIX",
+	"operatingSystem": [ "Linux", "BSD", "macOS" ],
 	"codeRepository": "https://github.com/LanguageMachines/ticcutils",
     "softwareRequirements": [
         {
@@ -65,7 +66,16 @@
 	"issueTracker": "https://github.com/LanguageMachines/ticcutils/issues",
 	"contIntegration": "https://travis-ci.org/LanguageMachines/ticcutils",
 	"releaseNotes": "https://github.com/LanguageMachines/ticcutils/releases",
-	"developmentStatus": "active",
+	"developmentStatus": "https://www.repostatus.org/#active",
 	"keywords":  [ "nlp", "natural language processing" ],
-	"dateCreated": "2011-03-27"
+	"dateCreated": "2011-03-27",
+    "targetProduct": [
+        {
+            "@type": "SoftwareLibrary",
+            "executableName": "ticcutils",
+            "name": "ticcutils",
+            "runtimePlatform": [ "Linux", "BSD", "macOS" ],
+            "description": "Software library with generic utility functions"
+        }
+    ]
 }
