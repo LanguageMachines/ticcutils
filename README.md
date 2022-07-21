@@ -1,6 +1,7 @@
 [![GitHub build](https://github.com/LanguageMachines/ticcutils/actions/workflows/ticcutils.yml/badge.svg?branch=master)](https://github.com/LanguageMachines/ticcutils/actions/)
 [![Language Machines Badge](http://applejack.science.ru.nl/lamabadge.php/ticcutils)](http://applejack.science.ru.nl/languagemachines/)
 [![DOI](https://zenodo.org/badge/9028755.svg)](https://zenodo.org/badge/latestdoi/9028755)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 
 TiCC utils
 ==============
