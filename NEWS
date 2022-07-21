@@ -1,3 +1,14 @@
+22 july 2021 0.29
+[Ko vd Sloot]
+* some c++11 additions
+* export and use the Timer::milli_wait function as a member of Timer
+* updated JSON code
+* include the filename in messages while unit-testing
+* made functions inline, to prevent multiple inclusion errors
+
+[Maarten van Gompel]
+* software metadata update (codemeta.json)
+
 15 december 2021 0.28
 [Ko vd Sloot]
 * replaced Trie.h and TreeHash.h/.cxx by Unicode aware variants
