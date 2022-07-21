@@ -11,6 +11,7 @@ TiCC utils
 
     Tilburg centre for Cognition and Communication, Tilburg University.
     Centre for Language and Speach Technology, Radboud University
+    KNAW Humanities Cluster
 
 This module contains useful functions for general use in the TiCC software
 stack and beyond.
