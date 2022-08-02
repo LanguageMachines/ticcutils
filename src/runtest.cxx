@@ -44,6 +44,7 @@
 #include "ticcutils/Timer.h"
 #include "ticcutils/LogStream.h"
 #include "ticcutils/Unicode.h"
+#include "ticcutils/json.hpp"
 
 using namespace std;
 using namespace TiCC;
@@ -1077,6 +1078,13 @@ void test_assert() {
   assertTrue( faal() );
 }
 
+void test_json() {
+  using namespace nlohmann;
+  string J = "{\"label\":\"Dit is een test.\"}";
+  json parsed = json::parse( J );
+  assertEqual( parsed["label"] , "Dit is een test." )
+}
+
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
   Timer t1;
@@ -1138,6 +1146,7 @@ int main( const int argc, const char* argv[] ){
   test_unicode_filters( testdir );
   test_conversion();
   test_assert();
+  test_json();
   t1.stop();
   t2.stop();
   cerr << t1 << endl;
