@@ -64,9 +64,13 @@ namespace TiCC {
 				   const std::string& elem,
 				   const std::string& val ){
     if ( val.empty() )
-      return xmlNewTextChild( node, 0, (xmlChar*)elem.c_str(), 0 );
+      return xmlNewTextChild( node,
+			      0,
+			      reinterpret_cast<const xmlChar*>(elem.c_str()),
+			      0 );
     else
-      return xmlNewTextChild( node, 0,
+      return xmlNewTextChild( node,
+			      0,
 			      reinterpret_cast<const xmlChar*>(elem.c_str()),
 			      reinterpret_cast<const xmlChar*>(val.c_str()) );
   }

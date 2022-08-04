@@ -42,9 +42,9 @@ enum LogFlag { NoStamp=0, StampTime=1, StampMessage=2, StampBoth=3 };
 template <class charT, class traits = std::char_traits<charT> >
   class basic_log_buffer : public std::basic_streambuf<charT, traits> {
  public:
- basic_log_buffer( std::basic_ostream<charT,traits>& a,
-		   const std::string& mess = "",
-		   const LogFlag flag = StampBoth ):
+ explicit basic_log_buffer( std::basic_ostream<charT,traits>& a,
+			    const std::string& mess = "",
+			    const LogFlag flag = StampBoth ):
  ass_stream( &a ),
  stamp_flag( flag ),
  in_sync(true),
