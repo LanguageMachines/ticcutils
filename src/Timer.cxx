@@ -50,10 +50,10 @@ namespace TiCC {
 
   void Timer::stop(){
     /// stop the current timer and add the current lap
-    timeval now;
-    gettimeofday( &now, 0 );
-    long usecs = (myTime.tv_sec + now.tv_sec - startTime.tv_sec) * 1000000
-      + myTime.tv_usec + now.tv_usec - startTime.tv_usec;
+    timeval now_time;
+    gettimeofday( &now_time, 0 );
+    long usecs = (myTime.tv_sec + now_time.tv_sec - startTime.tv_sec) * 1000000
+      + myTime.tv_usec + now_time.tv_usec - startTime.tv_usec;
     ldiv_t div = ldiv( usecs, 1000000 );
     myTime.tv_sec = div.quot;
     myTime.tv_usec = div.rem;
@@ -61,10 +61,10 @@ namespace TiCC {
 
   string Timer::now(){
     /// return the current system time as a string
-    time_t now;
-    time( &now );
+    time_t now_time;
+    time( &now_time );
     char buffer[256];
-    strftime( buffer, 100, "%c", localtime( &now ) );
+    strftime( buffer, 100, "%c", localtime( &now_time ) );
     return buffer;
   }
 

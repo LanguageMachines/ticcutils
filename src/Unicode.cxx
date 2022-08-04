@@ -66,11 +66,11 @@ namespace TiCC {
       \param enc a string describing the wanted normalization.
       valid values are: NFC (the default), NFD, NFKC, NFKD
     */
-    string mode = enc;
-    if ( mode.empty() ){
-      mode = "NFC";
+    string my_enc = enc;
+    if ( my_enc.empty() ){
+      my_enc = "NFC";
     }
-    setMode(mode);
+    setMode(my_enc);
   }
 
   UnicodeNormalizer::~UnicodeNormalizer(){

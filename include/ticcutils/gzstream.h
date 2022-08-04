@@ -92,9 +92,9 @@ namespace GZSTREAM_NAMESPACE {
   /// compression.
   class igzstream : public gzstreambase, public std::istream {
   public:
-  igzstream() : std::istream( &buf) {}
-  igzstream( const std::string& name, int open_mode = std::ios::in )
-    : gzstreambase( name, open_mode ), std::istream( &buf ) {}
+    igzstream() : std::istream( &buf) {}
+    explicit igzstream( const std::string& name, int open_mode = std::ios::in )
+      : gzstreambase( name, open_mode ), std::istream( &buf ) {}
     gzstreambuf* rdbuf() { return gzstreambase::rdbuf(); }
     void open( const std::string& name, int open_mode = std::ios::in ) {
       gzstreambase::open( name, open_mode);
@@ -108,9 +108,9 @@ namespace GZSTREAM_NAMESPACE {
   /// compression.
   class ogzstream : public gzstreambase, public std::ostream {
   public:
-  ogzstream() : std::ostream( &buf) {}
-  ogzstream( const std::string& name, int mode = std::ios::out )
-    : gzstreambase( name, mode ), std::ostream( &buf ) {}
+    ogzstream() : std::ostream( &buf) {}
+    explicit ogzstream( const std::string& name, int mode = std::ios::out )
+      : gzstreambase( name, mode ), std::ostream( &buf ) {}
     gzstreambuf* rdbuf() { return gzstreambase::rdbuf(); }
     void open( const std::string& name, int open_mode = std::ios::out ) {
       gzstreambase::open( name, open_mode );

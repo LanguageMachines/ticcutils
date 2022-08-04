@@ -59,7 +59,7 @@ namespace TiCC {
     //  std::ostream& associate() const { return buf.AssocStream(); };
     void setstamp( LogFlag f ){ buf.StampFlag( f ); };
     LogFlag getstamp() const { return buf.StampFlag(); };
-    void message( const std::string& s ){ buf.Message( s.c_str() ); };
+    void message( const std::string& s ){ buf.Message( s ); };
     void addmessage( const std::string& );
     void addmessage( const int );
     const std::string& message() const { return buf.Message(); };

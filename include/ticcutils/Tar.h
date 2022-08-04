@@ -47,8 +47,8 @@ namespace TiCC {
     bool extract_ifstream( const std::string&, std::ifstream& );
     bool close();
   private:
-    TAR *tar_file;
-    std::string tarname;
+    TAR *_tar_file;
+    std::string _tar_name;
     tar( const tar& ); // no copies
     tar& operator=( const tar& ); // no copies
   };

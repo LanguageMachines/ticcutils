@@ -36,27 +36,27 @@
 namespace TiCC {
 
   inline xmlNode *XmlNewNode( const std::string& elem ){
-    return xmlNewNode( 0, (const xmlChar*)elem.c_str() );
+    return xmlNewNode( 0, reinterpret_cast<const xmlChar*>(elem.c_str()) );
   }
 
   inline xmlNode *XmlNewNode( xmlNs *ns, const std::string& elem ){
-    return xmlNewNode( ns, (const xmlChar*)elem.c_str() );
+    return xmlNewNode( ns, reinterpret_cast<const xmlChar*>(elem.c_str()) );
   }
 
   inline xmlNode *XmlNewComment( const std::string& elem ){
-    return xmlNewComment( (const xmlChar*)elem.c_str() );
+    return xmlNewComment( reinterpret_cast<const xmlChar*>(elem.c_str()) );
   }
 
   inline xmlNode *XmlNewChild( xmlNode *node,
 			       const std::string& elem ){
-    xmlNode *chld = xmlNewNode( 0, (const xmlChar*)elem.c_str() );
+    xmlNode *chld = xmlNewNode( 0, reinterpret_cast<const xmlChar*>(elem.c_str()) );
     return xmlAddChild( node, chld );
   }
 
   inline xmlNode *XmlNewChild( xmlNode *node,
 			       xmlNs *ns,
 			       const std::string& elem ){
-    xmlNode *chld = xmlNewNode( ns, (const xmlChar*)elem.c_str() );
+    xmlNode *chld = xmlNewNode( ns, reinterpret_cast<const xmlChar*>(elem.c_str()) );
     return xmlAddChild( node, chld );
   }
 
@@ -67,8 +67,8 @@ namespace TiCC {
       return xmlNewTextChild( node, 0, (xmlChar*)elem.c_str(), 0 );
     else
       return xmlNewTextChild( node, 0,
-			      (const xmlChar*)elem.c_str(),
-			      (const xmlChar*)val.c_str() );
+			      reinterpret_cast<const xmlChar*>(elem.c_str()),
+			      reinterpret_cast<const xmlChar*>(val.c_str()) );
   }
 
   inline xmlNode *XmlNewTextChild( xmlNode *node,
@@ -77,23 +77,24 @@ namespace TiCC {
 				   const std::string& val ){
     if ( val.empty() )
       return xmlNewTextChild( node, ns,
-			      (xmlChar*)elem.c_str(), 0 );
+			      reinterpret_cast<const xmlChar*>(elem.c_str())
+			      , 0 );
     else
       return xmlNewTextChild( node, ns,
-			      (const xmlChar*)elem.c_str(),
-			      (const xmlChar*)val.c_str() );
+			      reinterpret_cast<const xmlChar*>(elem.c_str()),
+			      reinterpret_cast<const xmlChar*>(val.c_str()) );
   }
 
   inline void XmlAddContent( xmlNode *node, const std::string& cont ){
-    xmlNodeAddContent( node, (const xmlChar*)cont.c_str() );
+    xmlNodeAddContent( node, reinterpret_cast<const xmlChar*>(cont.c_str()) );
   }
 
   inline xmlAttr *XmlSetAttribute( xmlNode *node,
 				   const std::string& att,
 				   const std::string& val ){
     return xmlSetProp( node,
-		       (const xmlChar*)att.c_str(),
-		       (const xmlChar*)val.c_str() );
+		       reinterpret_cast<const xmlChar*>(att.c_str()),
+		       reinterpret_cast<const xmlChar*>(val.c_str()) );
   }
 
   inline std::string getAttribute( const xmlNode *node,
@@ -101,8 +102,8 @@ namespace TiCC {
     if ( node ){
       xmlAttr *a = node->properties;
       while ( a ){
-	if ( att == (char*)a->name )
-	  return (char *)a->children->content;
+	if ( att == reinterpret_cast<const char*>(a->name) )
+	  return reinterpret_cast<const char*>(a->children->content);
 	a = a->next;
       }
     }
@@ -114,7 +115,8 @@ namespace TiCC {
     if ( node ){
       xmlAttr *a = node->properties;
       while ( a ){
-	result[(char*)a->name ] = (char *)a->children->content;
+	result[reinterpret_cast<const char*>(a->name) ]
+	  = reinterpret_cast<const char*>(a->children->content);
 	a = a->next;
       }
     }
@@ -135,7 +137,7 @@ namespace TiCC {
   inline std::string Name( const xmlNode *node ){
     std::string result;
     if ( node ){
-      result = (char *)node->name;
+      result = reinterpret_cast<const char*>(node->name);
     }
     return result;
   }
@@ -145,7 +147,7 @@ namespace TiCC {
     if ( node ){
       xmlChar *tmp = xmlNodeListGetString( node->doc, node->children, 1 );
       if ( tmp ){
-	result = std::string( (char *)tmp );
+	result = std::string( reinterpret_cast<const char*>(tmp) );
 	xmlFree( tmp );
       }
     }

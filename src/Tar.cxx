@@ -41,7 +41,7 @@ using namespace std;
 
 namespace TiCC {
 
-  tar::tar() : tar_file(0) {
+  tar::tar() : _tar_file(0) {
     /// create a tar object
   }
 
@@ -56,18 +56,18 @@ namespace TiCC {
       \param name the name of a .tar file
       \return true on succes, false otherwise
     */
-    if ( !tarname.empty() ){
+    if ( !_tar_name.empty() ){
       cerr << "tar already opened!" << endl;
       return false;
     }
-    TAR *tar_file;
-    int res = tar_open( &tar_file, name.c_str(), 0, O_RDONLY, 0, TAR_GNU );
+    TAR *t_file;
+    int res = tar_open( &t_file, name.c_str(), 0, O_RDONLY, 0, TAR_GNU );
     if ( res < 0 ){
       cerr << "tar_open(): " << strerror(errno) << endl;
       return false;
     }
-    tar_close( tar_file );
-    tarname = name;
+    tar_close( t_file );
+    _tar_name = name;
     return true;
   }
 
@@ -80,13 +80,14 @@ namespace TiCC {
       \return true on succes, false otherwise
     */
     result.clear();
-    if ( tarname.empty() ){
+    if ( _tar_name.empty() ){
       cerr << "no tar opened yet" << endl;
       return false;
     }
     TAR local_tar_blob;
     TAR *local_tar = &local_tar_blob;
-    int stat = tar_open( &local_tar, tarname.c_str(), 0, O_RDONLY, 0, TAR_GNU );
+    int stat = tar_open( &local_tar, _tar_name.c_str(),
+			 0, O_RDONLY, 0, TAR_GNU );
     if ( stat < 0 ){
       cerr << "tar_open(): " << strerror(errno) << endl;
       return false;
@@ -138,13 +139,14 @@ namespace TiCC {
       \return true on succes, false otherwise
     */
     result.clear();
-    if ( tarname.empty() ){
+    if ( _tar_name.empty() ){
       cerr << "no tar opened yet" << endl;
       return false;
     }
     TAR local_tar_blob;
     TAR *local_tar = &local_tar_blob;
-    int stat = tar_open( &local_tar, tarname.c_str(), 0, O_RDONLY, 0, TAR_GNU );
+    int stat = tar_open( &local_tar,
+			 _tar_name.c_str(), 0, O_RDONLY, 0, TAR_GNU );
     if ( stat < 0 ){
       cerr << "tar_open(): " << strerror(errno) << endl;
       return false;
@@ -181,7 +183,7 @@ namespace TiCC {
       \result true on succes, false otherwise
     */
     result.close();
-    if ( tarname.empty() ){
+    if ( _tar_name.empty() ){
       cerr << "no tar opened yet" << endl;
       return false;
     }
@@ -189,7 +191,8 @@ namespace TiCC {
     string tmpfile = "/tmp/ticc-tar-" + toString( pid ) + ".tmp";
     TAR local_tar_blob;
     TAR *local_tar = &local_tar_blob;
-    int stat = tar_open( &local_tar, tarname.c_str(), 0, O_RDONLY, 0, TAR_GNU );
+    int stat = tar_open( &local_tar,
+			 _tar_name.c_str(), 0, O_RDONLY, 0, TAR_GNU );
     if ( stat < 0 ){
       cerr << "tar_open(): " << strerror(errno) << endl;
       return false;
@@ -236,13 +239,13 @@ namespace TiCC {
       until it returns false.
     */
     result.close();
-    if ( tarname.empty() ){
+    if ( _tar_name.empty() ){
       cerr << "no tar opened yet" << endl;
       return false;
     }
     int stat;
-    if ( !tar_file ){
-      stat = tar_open( &tar_file, tarname.c_str(), 0, O_RDONLY, 0, TAR_GNU );
+    if ( !_tar_file ){
+      stat = tar_open( &_tar_file, _tar_name.c_str(), 0, O_RDONLY, 0, TAR_GNU );
       if ( stat < 0 ){
 	cerr << "tar_open(): " << strerror(errno) << endl;
 	return false;
@@ -250,15 +253,15 @@ namespace TiCC {
     }
     pid_t pid = getpid();
     string tmpfile = "/tmp/ticc-tar-" + toString( pid ) + ".tmp";
-    stat = th_read(tar_file);
+    stat = th_read(_tar_file);
     if ( stat < 0 ){
       cerr << "th_read(): " << strerror(errno) << endl;
       return false;
     }
     //    th_print( local_tar );
     while ( stat == 0  ) {
-      if ( TH_ISREG( tar_file ) ){
-	stat = tar_extract_regfile( tar_file,
+      if ( TH_ISREG( _tar_file ) ){
+	stat = tar_extract_regfile( _tar_file,
 				    const_cast<char*>(tmpfile.c_str()) );
 	if ( stat < 0 ){
 	  cerr << "tar_extract_regfile(): " << strerror(errno) << endl;
@@ -266,7 +269,7 @@ namespace TiCC {
 	}
 	result.open( tmpfile );
 	if ( result.good() ){
-	  name = tar_file->th_buf.name;
+	  name = _tar_file->th_buf.name;
 	  return true;
 	}
 	else {
@@ -274,15 +277,15 @@ namespace TiCC {
 	  return false;
 	}
       }
-      stat = th_read( tar_file );
+      stat = th_read( _tar_file );
     }
     return false;
   }
 
   bool tar::close() {
     /// close the tar object
-    if ( tar_file != 0 ){
-      int res = tar_close( tar_file );
+    if ( _tar_file != 0 ){
+      int res = tar_close( _tar_file );
       if ( res < 0 ){
 	cerr << "tar_close() failed" << endl;
 	return false;

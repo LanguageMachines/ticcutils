@@ -65,7 +65,8 @@ namespace TiCC {
   /// \brief a class that can match UnicodeStrings to Regex patterns
   class UnicodeRegexMatcher {
   public:
-    UnicodeRegexMatcher( const UnicodeString&, const UnicodeString& name="" );
+    explicit UnicodeRegexMatcher( const UnicodeString&,
+				  const UnicodeString& name="" );
     ~UnicodeRegexMatcher();
     bool match_all( const UnicodeString&, UnicodeString&, UnicodeString&  );
     const UnicodeString get_match( unsigned int ) const;
