@@ -41,7 +41,7 @@ namespace TiCC {
     /*!
       \param elem the tag of the root node
     */
-    the_doc = xmlNewDoc( (const xmlChar*)"1.0" );
+    the_doc = xmlNewDoc( reinterpret_cast<const xmlChar*>("1.0") );
     MakeRoot( elem );
   }
 
@@ -50,7 +50,7 @@ namespace TiCC {
     xmlChar *buf;
     int size;
     xmlDocDumpFormatMemoryEnc( the_doc, &buf, &size, "UTF-8", 1 );
-    const string result = string( (const char *)buf, size );
+    const string result = string( reinterpret_cast<const char *>(buf), size );
     xmlFree( buf );
     return result;
   }
@@ -77,7 +77,10 @@ namespace TiCC {
       \return the newly created node
     */
     xmlNode *root;
-    root = xmlNewDocNode( the_doc, 0, (const xmlChar*)elem.c_str(), 0 );
+    root = xmlNewDocNode( the_doc,
+			  0,
+			  reinterpret_cast<const xmlChar*>(elem.c_str()),
+			  0 );
     xmlDocSetRootElement( the_doc, root );
     return root;
   }
@@ -94,9 +97,9 @@ namespace TiCC {
     xmlNs *p = node->ns;
     if ( p ){
       if ( p->prefix ){
-	prefix = (char *)p->prefix;
+	prefix = reinterpret_cast<const char *>(p->prefix);
       }
-      result = (char *)p->href;
+      result = reinterpret_cast<const char *>(p->href);
     }
     return result;
   }
@@ -113,9 +116,9 @@ namespace TiCC {
       string pre;
       string val;
       if ( p->prefix ){
-	pre = (char *)p->prefix;
+	pre = reinterpret_cast<const char *>(p->prefix);
       }
-      val = (char *)p->href;
+      val = reinterpret_cast<const char *>(p->href);
       result[pre] = val;
       p = p->next;
     }
@@ -134,9 +137,9 @@ namespace TiCC {
       string pre;
       string val;
       if ( p->prefix ){
-	pre = (char *)p->prefix;
+	pre = reinterpret_cast<const char *>(p->prefix);
       }
-      val = (char *)p->href;
+      val = reinterpret_cast<const char *>(p->href);
       result[pre] = val;
       p = p->next;
     }
@@ -154,7 +157,7 @@ namespace TiCC {
       \return a list of all matching nodes
     */
     list<xmlNode*> nodes;
-    xmlXPathObject* result = xmlXPathEval((xmlChar*)xpath.c_str(), ctxt);
+    xmlXPathObject* result = xmlXPathEval( reinterpret_cast<const xmlChar*>(xpath.c_str()), ctxt);
     if ( result ){
       if (result->type != XPATH_NODESET) {
 	xmlXPathFreeObject(result);
@@ -197,13 +200,13 @@ namespace TiCC {
       if ( it.first.empty() ){
 	// the anonymous namespace
 	xmlXPathRegisterNs( ctxt,
-			    (xmlChar*)defaultP.c_str(),
-			    (xmlChar*)it.second.c_str() );
+			    reinterpret_cast<const xmlChar*>(defaultP.c_str()),
+			    reinterpret_cast<const xmlChar*>(it.second.c_str()) );
       }
       else {
 	xmlXPathRegisterNs( ctxt,
-			    (xmlChar*)it.first.c_str(),
-			    (xmlChar*)it.second.c_str() );
+			    reinterpret_cast<const xmlChar*>(it.first.c_str()),
+			    reinterpret_cast<const xmlChar*>(it.second.c_str()) );
       }
     }
   }
@@ -240,7 +243,7 @@ namespace TiCC {
     cerr << "replaced " << xPath << " by " << xpath << endl;
 #endif
     xmlXPathContext* ctxt = xmlXPathNewContext( node->doc );
-    ctxt->node = (xmlNode *)node;
+    ctxt->node = const_cast<xmlNode *>(node);
     register_namespaces( ctxt );
     list<xmlNode*> nodes = FindLocal( ctxt, xpath );
 #ifdef DEBUG_XPATH
@@ -302,7 +305,7 @@ namespace TiCC {
     /// serialize an xmlNode to a string (XML fragment)
     xmlBuffer *buf = xmlBufferCreate();
     xmlNodeDump( buf, 0, const_cast<xmlNode*>(&node), 0, 0 );
-    string result = (const char*)xmlBufferContent( buf );
+    string result = reinterpret_cast<const char*>(xmlBufferContent( buf ));
     xmlBufferFree( buf );
     return result;
   }

@@ -61,7 +61,7 @@ namespace TiCC {
       return false;
     }
     TAR *tar_file;
-    int res = tar_open( &tar_file, (char*)name.c_str(), 0, O_RDONLY, 0, TAR_GNU );
+    int res = tar_open( &tar_file, name.c_str(), 0, O_RDONLY, 0, TAR_GNU );
     if ( res < 0 ){
       cerr << "tar_open(): " << strerror(errno) << endl;
       return false;
@@ -86,7 +86,7 @@ namespace TiCC {
     }
     TAR local_tar_blob;
     TAR *local_tar = &local_tar_blob;
-    int stat = tar_open( &local_tar, (char*)tarname.c_str(), 0, O_RDONLY, 0, TAR_GNU );
+    int stat = tar_open( &local_tar, tarname.c_str(), 0, O_RDONLY, 0, TAR_GNU );
     if ( stat < 0 ){
       cerr << "tar_open(): " << strerror(errno) << endl;
       return false;
@@ -144,7 +144,7 @@ namespace TiCC {
     }
     TAR local_tar_blob;
     TAR *local_tar = &local_tar_blob;
-    int stat = tar_open( &local_tar, (char*)tarname.c_str(), 0, O_RDONLY, 0, TAR_GNU );
+    int stat = tar_open( &local_tar, tarname.c_str(), 0, O_RDONLY, 0, TAR_GNU );
     if ( stat < 0 ){
       cerr << "tar_open(): " << strerror(errno) << endl;
       return false;
@@ -189,7 +189,7 @@ namespace TiCC {
     string tmpfile = "/tmp/ticc-tar-" + toString( pid ) + ".tmp";
     TAR local_tar_blob;
     TAR *local_tar = &local_tar_blob;
-    int stat = tar_open( &local_tar, (char*)tarname.c_str(), 0, O_RDONLY, 0, TAR_GNU );
+    int stat = tar_open( &local_tar, tarname.c_str(), 0, O_RDONLY, 0, TAR_GNU );
     if ( stat < 0 ){
       cerr << "tar_open(): " << strerror(errno) << endl;
       return false;
@@ -198,7 +198,8 @@ namespace TiCC {
     while ( stat == 0  ) {
       if ( TH_ISREG( local_tar ) ){
 	if ( string(local_tar->th_buf.name) == name ){
-	  int res = tar_extract_regfile( local_tar, (char*)tmpfile.c_str() );
+	  int res = tar_extract_regfile( local_tar,
+					 const_cast<char*>(tmpfile.c_str()) );
 	  if ( res < 0 ){
 	    cerr << "tar_extract_regfile(): " << strerror(errno) << endl;
 	    return false;
@@ -241,7 +242,7 @@ namespace TiCC {
     }
     int stat;
     if ( !tar_file ){
-      stat = tar_open( &tar_file, (char*)tarname.c_str(), 0, O_RDONLY, 0, TAR_GNU );
+      stat = tar_open( &tar_file, tarname.c_str(), 0, O_RDONLY, 0, TAR_GNU );
       if ( stat < 0 ){
 	cerr << "tar_open(): " << strerror(errno) << endl;
 	return false;
@@ -257,7 +258,8 @@ namespace TiCC {
     //    th_print( local_tar );
     while ( stat == 0  ) {
       if ( TH_ISREG( tar_file ) ){
-	stat = tar_extract_regfile( tar_file, (char*)tmpfile.c_str() );
+	stat = tar_extract_regfile( tar_file,
+				    const_cast<char*>(tmpfile.c_str()) );
 	if ( stat < 0 ){
 	  cerr << "tar_extract_regfile(): " << strerror(errno) << endl;
 	  return false;

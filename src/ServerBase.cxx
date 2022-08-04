@@ -512,7 +512,7 @@ namespace TiCCServer {
 	// and release its socket handle)
 	//
 	childArgs *args = new childArgs( this, newSocket );
-	pthread_create( &chld_thr, &attr, callChild, (void *)args );
+	pthread_create( &chld_thr, &attr, callChild, static_cast<void *>(args) );
       }
       // the server is now free to accept another socket request
     }
