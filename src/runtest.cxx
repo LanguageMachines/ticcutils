@@ -45,6 +45,7 @@
 #include "ticcutils/LogStream.h"
 #include "ticcutils/Unicode.h"
 #include "ticcutils/json.hpp"
+#include "ticcutils/enum_flags.h"
 
 using namespace std;
 using namespace TiCC;
@@ -1085,6 +1086,46 @@ void test_json() {
   assertEqual( parsed["label"] , "Dit is een test." )
 }
 
+enum flags { No = 0, One = 1, Two= 2, Four = 4};
+std::ostream& operator<<( std::ostream& os, const flags& f ){
+  os << int(f) << endl;
+  return os;
+}
+
+enum class class_flags { nope = 0, ok = 1, warning = 1<<1, error = 1<<2 };
+std::ostream& operator<<( std::ostream& os, const class_flags& f ){
+  os << int(f) << endl;
+  return os;
+}
+
+DEFINE_ENUM_FLAG_OPERATORS(flags);
+DEFINE_ENUM_FLAG_OPERATORS(class_flags);
+
+void test_enum_flags() {
+  {
+    flags f = flags::Two|flags::Four;
+    assertTrue( f == 6 );
+    f = ~f;
+    assertEqual( f, -7 );
+    f &= flags::One;
+    assertEqual( f, 1 );
+  }
+  {
+    //  DEFINE_ENUM_FLAGS works for both 'enum' and 'enum class'
+    // BUT: the assertion macro's have a problem with the latter
+    //      needs work. Now we need an explixit cast
+    class_flags f = class_flags::warning|class_flags::error;
+    cerr << f << endl;
+    assertTrue( (int)f == 6 );
+    f = ~f;
+    cerr << f << endl;
+    assertEqual( (int)f, -7 );
+    f &= class_flags::ok;
+    cerr << f << endl;
+    assertEqual( (int)f, 1 );
+  }
+}
+
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
   Timer t1;
@@ -1147,6 +1188,7 @@ int main( const int argc, const char* argv[] ){
   test_conversion();
   test_assert();
   test_json();
+  test_enum_flags();
   t1.stop();
   t2.stop();
   cerr << t1 << endl;
