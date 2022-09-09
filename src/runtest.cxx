@@ -28,6 +28,7 @@
 #include <string>
 #include "config.h"
 #include <iostream>
+#include <sstream>
 #include <unistd.h>
 #include <stdexcept>
 
@@ -1087,16 +1088,8 @@ void test_json() {
 }
 
 enum flags { No = 0, One = 1, Two= 2, Four = 4};
-std::ostream& operator<<( std::ostream& os, const flags& f ){
-  os << int(f) << endl;
-  return os;
-}
 
 enum class class_flags { nope = 0, ok = 1, warning = 1<<1, error = 1<<2 };
-std::ostream& operator<<( std::ostream& os, const class_flags& f ){
-  os << int(f) << endl;
-  return os;
-}
 
 DEFINE_ENUM_FLAG_OPERATORS(flags);
 DEFINE_ENUM_FLAG_OPERATORS(class_flags);
@@ -1108,6 +1101,9 @@ void test_enum_flags() {
     f = ~f;
     assertEqual( f, -7 );
     f &= flags::One;
+    std::stringstream ss;
+    ss << f;
+    assertEqual( ss.str(), "1" );
     assertEqual( f, 1 );
   }
   {
@@ -1115,13 +1111,13 @@ void test_enum_flags() {
     // BUT: the assertion macro's have a problem with the latter
     //      needs work. Now we need an explixit cast
     class_flags f = class_flags::warning|class_flags::error;
-    cerr << f << endl;
+    std::stringstream ss;
+    ss << f;
+    assertEqual( ss.str(), "6" );
     assertTrue( (int)f == 6 );
     f = ~f;
-    cerr << f << endl;
     assertEqual( (int)f, -7 );
     f &= class_flags::ok;
-    cerr << f << endl;
     assertEqual( (int)f, 1 );
   }
 }
