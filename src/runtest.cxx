@@ -1116,7 +1116,7 @@ void test_enum_flags() {
     assertEqual( ss.str(), "6" );
     assertTrue( (int)f == 6 );
     f = ~f;
-    assertEqual( (int)f, -7 );
+    assertEqual( int(f), -7 );
     f &= class_flags::ok;
     assertEqual( (int)f, 1 );
   }
