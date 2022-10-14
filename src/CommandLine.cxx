@@ -786,9 +786,12 @@ namespace TiCC {
     for ( auto value: parts ){
       string::size_type pos = value.find( ':' );
       if ( pos != string::npos ){
+	// found a ':'
 	if ( pos == value.size()-2){
 	  if ( value[value.size()-1] == ':' ){
-	    value = value.substr(0,value.size()-2);
+	    // Ok, two ':' at the end
+	    // remove them
+	    value.resize(value.size()-2);
 	    valid_long_opt.insert( value );
 	  }
 	  else {
@@ -797,7 +800,9 @@ namespace TiCC {
 	  }
 	}
 	else if ( pos == value.size()-1){
-	  value = value.substr(0,value.size()-1);
+	  // Ok, one ':' at the end
+	  // remove it
+	  value.pop_back();
 	  valid_long_par.insert( value );
 	}
 	else {
@@ -827,7 +832,7 @@ namespace TiCC {
       result += ",";
     }
     if ( !result.empty() ){
-      result = result.substr(0,result.size()-1);
+      result.pop_back(); // remove last ','
     }
     return result;
   }
