@@ -84,7 +84,7 @@ namespace TiCC {
 	return false;
       }
       else {
-	outname = outname.substr( 0, pos );
+	outname.resize( pos );
       }
     }
     ofstream outfile( outname, ios::binary);
@@ -268,7 +268,7 @@ namespace TiCC {
 	return false;
       }
       else {
-	outname = outname.substr( 0, pos );
+	outname.resize( pos );
       }
     }
     ofstream outfile( outname, ios::binary);
