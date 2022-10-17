@@ -583,6 +583,38 @@ void test_lowercase(){
   assertEqual( res, "een camelcapped zin." );
 }
 
+void test_pretty_print(){
+  stringstream out;
+  set<string> s = {"jan","piet","klaas"};
+  out << s << endl;
+  assertEqual( out.str(), "{jan,klaas,piet}\n" );
+  out.str("");
+  out.clear();
+  vector<string> v = {"jan","piet","klaas"};
+  out << v << endl;
+  assertEqual( out.str(), "[jan,piet,klaas]\n" );
+  out.str("");
+  out.clear();
+  list<int> l = {5,34,3};
+  out << l << endl;
+  assertEqual( out.str(), "[5,34,3]\n" );
+  out.str("");
+  out.clear();
+  multiset<string> ms = {"jan","jan","klaas"};
+  out << ms << endl;
+  assertEqual( out.str(), "{jan,jan,klaas}\n" );
+  out.str("");
+  out.clear();
+  map<string,int> m = { {"jan",3},{"piet",55}, {"klaas",5} };
+  out << m << endl;
+  assertEqual( out.str(), "{<jan,3>,<klaas,5>,<piet,55>}\n" );
+  out.str("");
+  out.clear();
+  multimap<string,int> mm = { {"jan",3},{"piet",55}, {"jan",5} };
+  out << mm << endl;
+  assertEqual( out.str(), "{<jan,3>,<jan,5>,<piet,55>}\n" );
+}
+
 void test_unicodehash(){
   Hash::UnicodeHash uh;
   size_t index = uh.hash( "appel" );
@@ -1170,6 +1202,7 @@ int main( const int argc, const char* argv[] ){
   test_base_dir();
   test_fileutils( testdir );
   test_configuration( testdir );
+  test_pretty_print();
   test_logstream( testdir );
   test_unicode( testdir );
   test_unicode_split();

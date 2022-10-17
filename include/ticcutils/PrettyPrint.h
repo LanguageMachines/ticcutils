@@ -58,6 +58,21 @@ namespace TiCC {
   }
 
   template< typename T >
+  inline std::ostream& operator<< ( std::ostream& os,
+				    const std::multiset<T>& ms ){
+    os << "{";
+    auto it = ms.begin();
+    while ( it != ms.end() ){
+      os << *it;
+      ++it;
+      if ( it != ms.end() )
+	os << ",";
+    }
+    os << "}";
+    return os;
+  }
+
+  template< typename T >
     inline std::ostream& operator<<( std::ostream& os, const std::list<T>& s ){
     os << "[";
     typename std::list<T>::const_iterator it = s.begin();
