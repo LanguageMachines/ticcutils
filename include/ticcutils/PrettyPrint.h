@@ -46,12 +46,11 @@ namespace TiCC {
   template< typename T >
     inline std::ostream& operator<< ( std::ostream& os, const std::set<T>& s ){
     os << "{";
-    typename std::set<T>::const_iterator it = s.begin();
-    while ( it != s.end() ){
-      os << *it;
-      ++it;
-      if ( it != s.end() )
+    for( const auto& it : s ){
+      if ( &it != &(*s.begin()) ){
 	os << ",";
+      }
+      os << it;
     }
     os << "}";
     return os;
@@ -61,25 +60,23 @@ namespace TiCC {
   inline std::ostream& operator<< ( std::ostream& os,
 				    const std::multiset<T>& ms ){
     os << "{";
-    auto it = ms.begin();
-    while ( it != ms.end() ){
-      os << *it;
-      ++it;
-      if ( it != ms.end() )
+    for( const auto& it : ms ){
+      if ( &it != &(*ms.begin()) ){
 	os << ",";
+      }
+      os << it;
     }
     os << "}";
     return os;
   }
 
   template< typename T >
-    inline std::ostream& operator<<( std::ostream& os, const std::list<T>& s ){
+    inline std::ostream& operator<<( std::ostream& os,
+				     const std::list<T>& ls ){
     os << "[";
-    typename std::list<T>::const_iterator it = s.begin();
-    while ( it != s.end() ){
-      os << *it;
-      ++it;
-      if ( it != s.end() )
+    for ( const auto& it : ls ){
+      os << it;
+      if ( &it != &ls.back() )
 	os << ",";
     }
     os << "]";
@@ -87,70 +84,70 @@ namespace TiCC {
   }
 
   template< typename T >
-    inline std::ostream& operator<< ( std::ostream& os, const std::vector<T>& s ){
+  inline std::ostream& operator<< ( std::ostream& os,
+				    const std::vector<T>& v ){
     os << "[";
-    typename std::vector<T>::const_iterator it = s.begin();
-    while ( it != s.end() ){
-      os << *it;
-      ++it;
-      if ( it != s.end() )
+    for( const auto& it : v ){
+      os << it;
+      if ( &it != &v.back() ){
 	os << ",";
+      }
     }
     os << "]";
     return os;
   }
 
   template< typename S, typename T >
-    inline std::ostream& operator<< ( std::ostream& os, const std::map<S,T>& s ){
+  inline std::ostream& operator<< ( std::ostream& os,
+				    const std::map<S,T>& m ){
     os << "{";
-    typename std::map<S,T>::const_iterator it = s.begin();
-    while ( it != s.end() ){
-      os << "<" << it->first << "," << it->second << ">";
-      ++it;
-      if ( it != s.end() )
+    for( const auto& it : m ){
+      if ( &it != &(*m.begin()) ){
 	os << ",";
+      }
+      os << "<" << it.first << "," << it.second << ">";
     }
     os << "}";
     return os;
   }
 
   template< typename S, typename T, typename U >
-    std::ostream& operator<< ( std::ostream& os, const std::map<S,T,U>& s ){
+  std::ostream& operator<< ( std::ostream& os,
+			     const std::map<S,T,U>& m ){
     os << "{";
-    typename std::map<S,T,U>::const_iterator it = s.begin();
-    while ( it != s.end() ){
-      os << "<" << it->first << "," << it->second << ">";
-      ++it;
-      if ( it != s.end() )
+    for ( const auto& it : m ){
+      if ( &it != &(*m.begin()) ){
 	os << ",";
+      }
+      os << "<" << it.first << "," << it.second << ">";
     }
     os << "}";
     return os;
   }
 
   template< typename S, typename T >
-    inline std::ostream& operator<< ( std::ostream& os, const std::multimap<S,T>& s ){
+  inline std::ostream& operator<< ( std::ostream& os,
+				    const std::multimap<S,T>& mm ){
     os << "{";
-    typename std::multimap<S,T>::const_iterator it = s.begin();
-    while ( it != s.end() ){
-      os << "<" << it->first << "," << it->second << ">";
-      ++it;
-      if ( it != s.end() )
+    for ( const auto& it : mm ){
+      if ( &it != &(*mm.begin()) ){
 	os << ",";
+      }
+      os << "<" << it.first << "," << it.second << ">";
     }
     os << "}";
     return os;
   }
 
   template< typename S, typename T, typename SORT >
-    inline std::ostream& operator<< ( std::ostream& os, const std::multimap<S,T,SORT>& s ){
+  inline std::ostream& operator<< ( std::ostream& os,
+				    const std::multimap<S,T,SORT>& mm ){
     os << "{";
-    typename std::multimap<S,T,SORT>::const_iterator it = s.begin();
-    while ( it != s.end() ){
-      os << "<" << it->first << "," << it->second << ">";
-      ++it;
-      if ( it != s.end() )
+    for ( const auto& it : mm ){
+      if ( &it != &(*mm.begin()) ){
 	os << ",";
+      }
+      os << "<" << it.first << "," << it.second << ">";
     }
     os << "}";
     return os;
