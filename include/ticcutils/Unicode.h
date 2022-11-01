@@ -31,6 +31,8 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <typeinfo>
+#include <stdexcept>
 #include "unicode/unistr.h"
 #include "unicode/ustream.h"
 #include "unicode/normalizer2.h"
