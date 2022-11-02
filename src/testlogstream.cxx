@@ -45,10 +45,11 @@ public:
     ls = new LogStream( log, "-SUB1" );
     *Log(ls) << "created a sub1 " << endl;
   }
+  ~Sub1(){ delete ls; };
   void exec( int i ){
     int sleeps = rand()%(i+1) + 1;
     sleep(sleeps);
-    *Log(ls) << " 1" << endl;
+    *Log(ls) << i << " x" << endl;
   }
   LogStream *ls;
 private:
@@ -61,10 +62,11 @@ public:
     ls = log;
     *Log(*ls) << "created a sub2 " << endl;
   }
+  ~Sub2(){};
   void exec( int i ){
     int sleeps = rand()%(i+1) + 1;
     sleep(sleeps);
-    *Log(ls) << " 2" << endl;
+    *Log(ls) << i << " y" << endl;
   }
   LogStream *ls;
 };
@@ -75,10 +77,11 @@ public:
     ls = new LogStream( s.ls, "-SUB3", StampMessage );
     *Log(ls) << "created a sub3 " << endl;
   }
+  ~Sub3(){ delete ls; };
   void exec( int i ){
     int sleeps = rand()%(i+1) + 1;
     sleep(sleeps);
-    *Log(ls) << " 3" << endl;
+    *Log(ls) << i << " z" << endl;
   }
   LogStream *ls;
 private:
@@ -90,11 +93,13 @@ int main(){
   Sub1 sub1( the_log );
   Sub2 sub2( &the_log );
   assert( IsActive( the_log ) );
+  sub1.exec(1);
 #pragma omp parallel for schedule(dynamic)
   for ( int i = 0; i < 5; ++i ){
-    sub1.exec(i);
-    sub2.exec(i);
+    sub1.exec(i+2);
+    sub2.exec(i+2);
     Sub3 sub3( sub2 );
-    sub3.exec(i);
+    sub3.exec(i+2);
   }
+    sub2.exec(1);
 }
