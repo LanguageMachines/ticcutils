@@ -37,8 +37,9 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <glob.h>
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <dirent.h>
 #include "config.h"
 #include <regex>
@@ -67,14 +68,23 @@ namespace TiCC {
     return result;
   }
 
-  bool isDir( const string& name ){
-    /// check if 'name' is an accessible directory
+  bool isDir( const string& name,
+	      bool writable ){
+    /// check if 'name' is a readable directory, or writable when asked
     struct stat st_buf;
     int status = stat( name.c_str(), &st_buf );
     if ( status < 0 ){
       return false;
     }
-    return S_ISDIR (st_buf.st_mode);
+    if ( S_ISDIR (st_buf.st_mode) ){
+      if ( writable ){
+	return access( name.c_str(), W_OK ) == 0;
+      }
+      else {
+	return true;
+      }
+    }
+    return false;
   }
 
   bool isFile( const string& name ){
@@ -277,7 +287,8 @@ namespace TiCC {
 	for ( auto const& p : parts ){
 	  newpath += p + "/";
 	  //	  cerr << "mkdir path = " << newpath << endl;
-	  int status = mkdir( newpath.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
+	  int status = mkdir( newpath.c_str(),
+			      S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
 	  if ( status != 0 && errno != EEXIST ){
 	    return false;
 	  }
