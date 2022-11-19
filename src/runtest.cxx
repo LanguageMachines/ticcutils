@@ -772,7 +772,7 @@ void test_fileutils( const string& path ){
   assertNoThrow( erase( fn ) );
   assertFalse( isFile( fn ) );
   assertTrue( isDir( "/boot" ) );
-  assertFalse( isDir( "/boot", true ) );
+  assertFalse( isWritableDir( "/boot" ) );
 }
 
 void test_configuration( const string& path ){

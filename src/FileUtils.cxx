@@ -68,21 +68,20 @@ namespace TiCC {
     return result;
   }
 
-  bool isDir( const string& name,
-	      bool writable ){
-    /// check if 'name' is a readable directory, or writable when asked
+  bool isDir( const string& name ){
+    /// check if 'name' is a directory
     struct stat st_buf;
     int status = stat( name.c_str(), &st_buf );
     if ( status < 0 ){
       return false;
     }
-    if ( S_ISDIR (st_buf.st_mode) ){
-      if ( writable ){
-	return access( name.c_str(), W_OK ) == 0;
-      }
-      else {
-	return true;
-      }
+    return S_ISDIR (st_buf.st_mode);
+  }
+
+  bool isWritableDir( const string& name ){
+    /// check if 'name' is a writable directory
+    if ( isDir( name ) ){
+      return access( name.c_str(), W_OK ) == 0;
     }
     return false;
   }

@@ -43,7 +43,8 @@ namespace TiCC {
   std::vector<std::string> searchFilesMatch( const std::string&,
 					     const std::string&,
 					     bool = true );
-  bool isDir( const std::string&, bool = false );
+  bool isDir( const std::string& );
+  bool isWritableDir( const std::string& );
   bool isFile( const std::string& );
 
   bool createPath( const std::string& );
