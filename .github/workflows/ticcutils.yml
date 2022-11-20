@@ -33,6 +33,11 @@ jobs:
         compiler: [g++, clang++]
 
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.0
+        with:
+          access_token: ${{ github.token }}
+
       - uses: actions/checkout@v2
       - uses: webiny/action-post-run@1.0.0
         id: post-run-command
