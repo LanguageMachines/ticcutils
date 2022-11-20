@@ -79,9 +79,9 @@ jobs:
         run: sudo make install
       - id: compiler
         run: |
-          compiler-id=$(echo ${{matrix.compiler}} | cut -d\+ -f1)
-          echo "compiler-id=$compiler-id" >> $GITHUB_ENV
-      - run: echo "${{env.compiler-id}}"
+          cid=$(echo ${{matrix.compiler}} | cut -d\+ -f1)
+          echo "cid=$cid" >> $GITHUB_ENV
+      - run: echo "${{env.cid}}"
       - name: make check
         id: check
         env:
@@ -97,7 +97,7 @@ jobs:
         with:
           server: irc.uvt.nl
           channel: '#gitlama'
-          nickname: GH-${{ runner.os }}-${{ env.compiler-id }}
+          nickname: GH-${{ runner.os }}-${{ env.cid }}
           message: |-
             ${{ github.event.repository.name }} build by ${{ github.actor }} on ${{ matrix.os }}: FAIL
       - name: Notify IRC of succes
@@ -106,6 +106,6 @@ jobs:
         with:
           server: irc.uvt.nl
           channel: '#gitlama'
-          nickname: GH-${{ runner.os }}-${{ env.compiler-id }}
+          nickname: GH-${{ runner.os }}-${{ env.cid }}
           message: |-
             ${{ github.event.repository.name }} build by ${{ github.actor }} on ${{ matrix.os }}: SUCCESS
