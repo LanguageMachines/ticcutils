@@ -148,6 +148,7 @@ namespace TiCC {
   }
 
   template<>
+  /// specialization for std::string
   inline std::string join( const std::vector<std::string>& vec,
 			   const std::string& sep ){
     std::string result;

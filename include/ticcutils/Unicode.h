@@ -125,9 +125,6 @@ namespace TiCC {
     return split_exact_at_first_of( s, " \r\t\n" );
   }
 
-  icu::UnicodeString join( const std::vector<icu::UnicodeString>&,
-			   const icu::UnicodeString& = " " );
-
   UnicodeString utrim( const UnicodeString&, const UnicodeString& = "\r\n\t " );
   UnicodeString ltrim( const UnicodeString&, const UnicodeString& = "\r\n\t " );
   UnicodeString rtrim( const UnicodeString&, const UnicodeString& = "\r\n\t " );
@@ -175,6 +172,33 @@ namespace TiCC {
 				 + " to UnicodeString failed" ) );
     }
     return TiCC::UnicodeFromUTF8(dummy.str());
+  }
+
+    template< typename T>
+  inline icu::UnicodeString u_join( const std::vector<T>& vec,
+				    const icu::UnicodeString& sep = " " ){
+    icu::UnicodeString result;
+    for ( const auto& it : vec ){
+      result += TiCC::toUnicodeString(it);
+      if ( &it != &vec.back() ){
+	result += sep;
+      }
+    }
+    return result;
+  }
+
+  template<>
+  /// specialization for UnicodeString
+  inline icu::UnicodeString u_join( const std::vector<icu::UnicodeString>& vec,
+				    const icu::UnicodeString& sep ){
+    icu::UnicodeString result;
+    for ( const auto& it : vec ){
+      result += it;
+      if ( &it != &vec.back() ){
+	result += sep;
+      }
+    }
+    return result;
   }
 
 }

@@ -989,7 +989,7 @@ void test_unicode_split_at(){
   vector<UnicodeString> res = split_at( line, "rare" );
   assertEqual( res.size(), 8 );
   assertEqual( res[5], "van" );
-  UnicodeString vuil = join( res, "rare" );
+  UnicodeString vuil = u_join( res, "rare" );
   assertEqual( vuil, line );
   vector<UnicodeString> res2 = split_at( line, "rare", 4 );
   assertEqual( res2.size(), 4 );
@@ -1089,6 +1089,11 @@ void test_join(){
   assertEqual( joined, "1 2.1 3.2 4.3 5.4" );
   joined = join(v2,", ");
   assertEqual( joined, "1, 2.1, 3.2, 4.3, 5.4" );
+  vector<UnicodeString> v3 = { "ἀντιϰειμένου", "禁禂" };
+  UnicodeString u_joined = u_join( v3 );
+  assertEqual( u_joined, "ἀντιϰειμένου 禁禂" );;
+  u_joined = u_join( v3, " | " );
+  assertEqual( u_joined, "ἀντιϰειμένου | 禁禂" );;
 }
 
 void test_conversion(){
