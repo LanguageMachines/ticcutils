@@ -1078,6 +1078,19 @@ void test_unicode_filters( const string& path ){
   assertEqual( filter_diacritics( "de reeën zijn reeël" ), "de reeen zijn reeel" );
 }
 
+void test_join(){
+  vector<int> v1 = {1,2,3,4,5};
+  string joined = join(v1);
+  assertEqual( joined, "1 2 3 4 5" );
+  joined = join(v1,", ");
+  assertEqual( joined, "1, 2, 3, 4, 5" );
+  vector<double> v2 = {1.0,2.1,3.2,4.3,5.4};
+  joined = join(v2);
+  assertEqual( joined, "1 2.1 3.2 4.3 5.4" );
+  joined = join(v2,", ");
+  assertEqual( joined, "1, 2.1, 3.2, 4.3, 5.4" );
+}
+
 void test_conversion(){
   int i = 8;
   double d = 3.14;
@@ -1216,6 +1229,7 @@ int main( const int argc, const char* argv[] ){
   test_unicode_trim();
   test_unicode_regex();
   test_unicode_filters( testdir );
+  test_join();
   test_conversion();
   test_assert();
   test_json();
