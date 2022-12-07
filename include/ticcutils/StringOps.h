@@ -139,10 +139,10 @@ namespace TiCC {
 			   const std::string& sep = " " ){
     std::string result;
     for ( const auto& it : vec ){
-      result += TiCC::toString(it);
-      if ( &it != &vec.back() ){
+      if ( &it != &(*vec.begin()) ){
 	result += sep;
       }
+      result += TiCC::toString(it);
     }
     return result;
   }
@@ -153,10 +153,10 @@ namespace TiCC {
 			   const std::string& sep ){
     std::string result;
     for ( const auto& it : vec ){
-      result += it;
-      if ( &it != &vec.back() ){
+      if ( &it != &(*vec.begin()) ){
 	result += sep;
       }
+      result += it;
     }
     return result;
   }

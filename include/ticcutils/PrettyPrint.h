@@ -33,6 +33,7 @@
 #include <vector>
 #include <map>
 #include <ostream>
+#include "ticcutils/StringOps.h"
 
 namespace TiCC {
 
@@ -86,14 +87,7 @@ namespace TiCC {
   template< typename T >
   inline std::ostream& operator<< ( std::ostream& os,
 				    const std::vector<T>& v ){
-    os << "[";
-    for( const auto& it : v ){
-      os << it;
-      if ( &it != &v.back() ){
-	os << ",";
-      }
-    }
-    os << "]";
+    os << "[" << join( v, "," ) << "]";
     return os;
   }
 

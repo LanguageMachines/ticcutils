@@ -179,10 +179,10 @@ namespace TiCC {
 				    const icu::UnicodeString& sep = " " ){
     icu::UnicodeString result;
     for ( const auto& it : vec ){
-      result += TiCC::toUnicodeString(it);
-      if ( &it != &vec.back() ){
+      if ( &it != &(*vec.begin() ) ){
 	result += sep;
       }
+      result += TiCC::toUnicodeString(it);
     }
     return result;
   }
@@ -193,10 +193,10 @@ namespace TiCC {
 				    const icu::UnicodeString& sep ){
     icu::UnicodeString result;
     for ( const auto& it : vec ){
-      result += it;
-      if ( &it != &vec.back() ){
+      if ( &it != &(*vec.begin() ) ){
 	result += sep;
       }
+      result += it;
     }
     return result;
   }
