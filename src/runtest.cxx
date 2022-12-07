@@ -1094,6 +1094,11 @@ void test_join(){
   assertEqual( u_joined, "ἀντιϰειμένου 禁禂" );;
   u_joined = u_join( v3, " | " );
   assertEqual( u_joined, "ἀντιϰειμένου | 禁禂" );;
+  vector<double> v4 = { 1.2e3, 4.5e6 };
+  u_joined = u_join( v4 );
+  assertEqual( u_joined, "1200 4.5e+06" );;
+  u_joined = u_join( v4, " | " );
+  assertEqual( u_joined, "1200 | 4.5e+06" );
 }
 
 void test_conversion(){
