@@ -15,18 +15,26 @@ jobs:
   notification:
     runs-on: ubuntu-latest
     name: Notifications
+    outputs:
+      branch: ${{ steps.extract_branch.outputs.branch }}
     steps:
+      - name: Extract Branch name
+        id: extract_branch
+        shell: bash
+        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
       - name: IRC notification
         uses: Gottox/irc-message-action@v1
         with:
           server: irc.uvt.nl
           channel: '#gitlama'
           nickname: GitHub
-          message: |-
+          message: >
             ${{ github.actor }} started a build of ticcutils
+            [${{ steps.extract_branch.outputs.branch }}]
 
   build:
     runs-on: ${{ matrix.os }}
+    needs: notification
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -105,10 +113,10 @@ jobs:
           channel: '#gitlama'
           nickname: GH-${{ runner.os }}-${{ env.cid }}
           message: >
-            ${{ github.event.repository.name }}
+            "${{ github.event.repository.name }}
             [${{ needs.notification.outputs.branch }}]
             build with ${{ matrix.compiler }} by ${{ github.actor }}
-            on ${{ matrix.os }}: \u00034FAIL\u0003
+            on ${{ matrix.os }}: \u00034FAIL\u0003"
       - name: Notify IRC of succes
         if: ${{ steps.check.outcome == 'success' }}
         uses: Gottox/irc-message-action@v1
@@ -117,7 +125,7 @@ jobs:
           channel: '#gitlama'
           nickname: GH-${{ runner.os }}-${{ env.cid }}
           message: >
-            ${{ github.event.repository.name }}
+            "${{ github.event.repository.name }}
             [${{ needs.notification.outputs.branch }}]
             build with ${{ matrix.compiler }} by ${{ github.actor }}
-            on ${{ matrix.os }}: \u00033FAIL\u0003
+            on ${{ matrix.os }}: \u00033FAIL\u0003"
