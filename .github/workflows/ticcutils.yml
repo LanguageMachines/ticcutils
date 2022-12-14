@@ -104,8 +104,7 @@ jobs:
           server: irc.uvt.nl
           channel: '#gitlama'
           nickname: GH-${{ runner.os }}-${{ env.cid }}
-          message: |-
-            ${{ github.event.repository.name }} build by ${{ github.actor }} on ${{ matrix.os }}: FAIL
+          message: "${{ github.event.repository.name }} build by ${{ github.actor }} on ${{ matrix.os }}: \u00034FAIL\u0003"
       - name: Notify IRC of succes
         if: ${{ steps.check.outcome == 'success' }}
         uses: Gottox/irc-message-action@v1
@@ -113,5 +112,4 @@ jobs:
           server: irc.uvt.nl
           channel: '#gitlama'
           nickname: GH-${{ runner.os }}-${{ env.cid }}
-          message: |-
-            ${{ github.event.repository.name }} build by ${{ github.actor }} on ${{ matrix.os }}: SUCCESS
+          message: "${{ github.event.repository.name }} build by ${{ github.actor }} on ${{ matrix.os }}: \u00033SUCCESS\u0003"
