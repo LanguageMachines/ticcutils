@@ -70,10 +70,13 @@ namespace TiCC {
   std::vector<std::string> split( const std::string& s,
 				  size_t num = 0 );
 
+  std::string join( const std::vector<std::string>&,
+		    const std::string& = " " );
+
   std::string format_nonascii( const std::string& );
 
   template< typename T >
-  inline T stringTo( const std::string& str ) {
+    inline T stringTo( const std::string& str ) {
     T result;
     std::stringstream dummy ( str );
     if ( !( dummy >> result ) ) {
@@ -125,40 +128,13 @@ namespace TiCC {
   }
 
   template< typename T >
-  inline std::string toString ( const T& obj, bool=false ) {
+    inline std::string toString ( const T& obj, bool=false ) {
     std::stringstream dummy;
     if ( !( dummy << obj ) ) {
       throw( std::runtime_error( std::string("conversion from type:")
 				 + typeid(obj).name() + " to string failed" ) );
     }
    return dummy.str();
-  }
-
-  template< typename T>
-  inline std::string join( const std::vector<T>& vec,
-			   const std::string& sep = " " ){
-    std::string result;
-    for ( const auto& it : vec ){
-      if ( &it != &(*vec.begin()) ){
-	result += sep;
-      }
-      result += TiCC::toString(it);
-    }
-    return result;
-  }
-
-  template<>
-  /// specialization for std::string
-  inline std::string join( const std::vector<std::string>& vec,
-			   const std::string& sep ){
-    std::string result;
-    for ( const auto& it : vec ){
-      if ( &it != &(*vec.begin()) ){
-	result += sep;
-      }
-      result += it;
-    }
-    return result;
   }
 
   std::string basename( const std::string& );

@@ -174,9 +174,9 @@ namespace TiCC {
     return TiCC::UnicodeFromUTF8(dummy.str());
   }
 
-    template< typename T>
-  inline icu::UnicodeString u_join( const std::vector<T>& vec,
-				    const icu::UnicodeString& sep = " " ){
+  template< typename T>
+  inline icu::UnicodeString join( const std::vector<T>& vec,
+				  const icu::UnicodeString& sep = " " ){
     icu::UnicodeString result;
     for ( const auto& it : vec ){
       if ( &it != &(*vec.begin() ) ){
@@ -189,8 +189,8 @@ namespace TiCC {
 
   template<>
   /// specialization for UnicodeString
-  inline icu::UnicodeString u_join( const std::vector<icu::UnicodeString>& vec,
-				    const icu::UnicodeString& sep ){
+  inline icu::UnicodeString join( const std::vector<icu::UnicodeString>& vec,
+				  const icu::UnicodeString& sep ){
     icu::UnicodeString result;
     for ( const auto& it : vec ){
       if ( &it != &(*vec.begin() ) ){

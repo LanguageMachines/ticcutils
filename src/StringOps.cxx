@@ -385,6 +385,17 @@ namespace TiCC {
     return v.size();
   }
 
+  string join( const vector<string>& vec, const string& sep ){
+    string result;
+    for ( const auto& s : vec ){
+      result += s;
+      if ( &s != &vec.back() ){
+	result += sep;
+      }
+    }
+    return result;
+  }
+
   string format_nonascii( const string& s ){
     /// format weird strings (like UTF8, LATIN1) printable
     // useful for debugging

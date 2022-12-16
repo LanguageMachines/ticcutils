@@ -989,8 +989,6 @@ void test_unicode_split_at(){
   vector<UnicodeString> res = split_at( line, "rare" );
   assertEqual( res.size(), 8 );
   assertEqual( res[5], "van" );
-  UnicodeString vuil = u_join( res, "rare" );
-  assertEqual( vuil, line );
   vector<UnicodeString> res2 = split_at( line, "rare", 4 );
   assertEqual( res2.size(), 4 );
   assertEqual( res2[2], "krabt" );
@@ -1076,29 +1074,6 @@ void test_unicode_filters( const string& path ){
   assertEqual( schoon, "Jan en Kees, Klaas en Mies" );
   assertEqual( filter_diacritics( "een appél is geen appèl" ), "een appel is geen appel" );
   assertEqual( filter_diacritics( "de reeën zijn reeël" ), "de reeen zijn reeel" );
-}
-
-void test_join(){
-  vector<int> v1 = {1,2,3,4,5};
-  string joined = join(v1);
-  assertEqual( joined, "1 2 3 4 5" );
-  joined = join(v1,", ");
-  assertEqual( joined, "1, 2, 3, 4, 5" );
-  vector<double> v2 = {1.0,2.1,3.2,4.3,5.4};
-  joined = join(v2);
-  assertEqual( joined, "1 2.1 3.2 4.3 5.4" );
-  joined = join(v2,", ");
-  assertEqual( joined, "1, 2.1, 3.2, 4.3, 5.4" );
-  vector<UnicodeString> v3 = { "ἀντιϰειμένου", "禁禂" };
-  UnicodeString u_joined = u_join( v3 );
-  assertEqual( u_joined, "ἀντιϰειμένου 禁禂" );;
-  u_joined = u_join( v3, " | " );
-  assertEqual( u_joined, "ἀντιϰειμένου | 禁禂" );;
-  vector<double> v4 = { 1.2e3, 4.5e6 };
-  u_joined = u_join( v4 );
-  assertEqual( u_joined, "1200 4.5e+06" );;
-  u_joined = u_join( v4, " | " );
-  assertEqual( u_joined, "1200 | 4.5e+06" );
 }
 
 void test_conversion(){
@@ -1239,7 +1214,6 @@ int main( const int argc, const char* argv[] ){
   test_unicode_trim();
   test_unicode_regex();
   test_unicode_filters( testdir );
-  test_join();
   test_conversion();
   test_assert();
   test_json();
