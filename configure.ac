@@ -40,7 +40,7 @@ AX_CHECK_ZLIB( [],
 	       [AC_MSG_ERROR([zlib not found. Please install libzlib1g-dev.])] )
 
 # Checks for header files.
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h sys/socket.h unistd.h sys/time.h])
+AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h sys/socket.h unistd.h sys/time.h stdint.h])
 
 AC_CHECK_HEADERS([bzlib.h],
 		[LIBS="$LIBS -lbz2"],
@@ -72,6 +72,7 @@ AC_CHECK_TYPES( [ptrdiff_t] )
 AC_CHECK_FUNCS([localtime_r gettimeofday mkdir getaddrinfo gethostbyaddr gethostbyname inet_ntoa memset socket strerror dup2 memmove floor localeconv realpath strtoull strdup])
 AC_FUNC_FORK
 AC_FUNC_STRTOD
+AC_FUNC_MALLOC
 
 AX_PTHREAD([],[AC_MSG_ERROR([We need pthread support!])])
 
