@@ -54,6 +54,7 @@ public:
   LogStream *ls;
 private:
   Sub1( const Sub1& );
+  const Sub1& operator=( const Sub1& ) = delete;
 };
 
 class Sub2 {
@@ -86,6 +87,7 @@ public:
   LogStream *ls;
 private:
   Sub3( const Sub3& );
+  const Sub3& operator=( const Sub3& ) = delete;
 };
 
 int main(){
