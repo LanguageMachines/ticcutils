@@ -1,4 +1,15 @@
-22 july 2021 0.29
+01 jan 2023 0.30
+[Ko van der Sloot]
+* added test in fileutils::isDir() tot check for Writability
+* added eneum_flahs.h for handling enums as bitflags
+* updated Json tot  Nlohmann JSON 3.11.2
+* implement fix for https://github.com/LanguageMachines/ticcltools/issues/46
+* code modernizing
+* code cleaning, fixed warnings by CppCheck
+* added more tests to 'make check'
+* improved GitHub action
+
+22 july 2022 0.29
 [Ko vd Sloot]
 * some c++11 additions
 * export and use the Timer::milli_wait function as a member of Timer
