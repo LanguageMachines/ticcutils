@@ -36,7 +36,6 @@
 #include "ticcutils/UniHash.h"
 #include "ticcutils/PrettyPrint.h"
 #include "ticcutils/zipper.h"
-#include "ticcutils/Tar.h"
 #include "ticcutils/Version.h"
 #include "ticcutils/UnitTest.h"
 #include "ticcutils/FileUtils.h"
@@ -686,31 +685,6 @@ void test_gzcompression( const string& path ){
   assertEqual( system( cmd.c_str() ), 0 );
 }
 
-void test_tar( const string& path ){
-  tar mytar;
-  assertNoThrow( mytar.open( path + "test.tar" ) );
-  vector<string> res;
-  assertNoThrow( mytar.extract_file_names( res ) );
-  //  cerr << res << endl;
-  assertEqual( res.size(), 4 );
-  ifstream tmp;
-  string name;
-  assertTrue( mytar.next_ifstream( tmp, name ) );
-  assertEqual( name, "small.txt" );
-  assertTrue( mytar.next_ifstream( tmp, name ) );
-  assertEqual( name, "sub.txt" );
-  assertTrue( mytar.next_ifstream( tmp, name ) );
-  assertEqual( name, "sub1/sub.txt" );
-  assertNoThrow( mytar.extract_ifstream( "sub1/sub.txt", tmp ) );
-  string line;
-  assertTrue( getline( tmp, line ).good() );
-  assertEqual( line, "a testfile." );
-  assertNoThrow( mytar.extract_file_names( res, ".xml" ) );
-  assertEqual( res.size(), 1 );
-  assertNoThrow( mytar.extract_file_names_match( res, "s*b" ) );
-  assertEqual( res.size(), 3 );
-}
-
 void test_fileutils( const string& path ){
   vector<string> res;
   assertNoThrow( res = searchFilesExt( path, ".txt", false ) );
@@ -1198,7 +1172,6 @@ int main( const int argc, const char* argv[] ){
   opts1.is_present( 'd', testdir, dummy );
   test_bz2compression( testdir );
   test_gzcompression( testdir );
-  test_tar( testdir );
   test_base_dir();
   test_fileutils( testdir );
   test_configuration( testdir );

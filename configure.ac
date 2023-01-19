@@ -46,10 +46,6 @@ AC_CHECK_HEADERS([bzlib.h],
 		[LIBS="$LIBS -lbz2"],
 		[AC_MSG_ERROR([bz2lib not found. Please install libbz2-dev])] )
 
-AC_CHECK_HEADERS([libtar.h],
-		[LIBS="$LIBS -ltar"],
-		[AC_MSG_ERROR([libtar not found. Please install libtar.])] )
-
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_INLINE
 AC_HEADER_STDBOOL
