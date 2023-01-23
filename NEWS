@@ -1,3 +1,7 @@
+23 jan 2023 0.31
+[Ko van der Sloot]
+*  removed Tar module and dependency on libtar (obsolete)
+
 01 jan 2023 0.30
 [Ko van der Sloot]
 * added test in fileutils::isDir() tot check for Writability
