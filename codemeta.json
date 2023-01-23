@@ -7,7 +7,7 @@
     "@type": "SoftwareSourceCode",
     "identifier": "ticcutils",
     "name": "ticcutils",
-    "version": "0.31",
+    "version": "0.32",
     "description": "This module contains useful functions for general use in the TiCC software stack and beyond.",
     "license": "https://spdx.org/licenses/GPL-3.0",
 	"url": "https://github.com/LanguageMachines/ticcutils",
