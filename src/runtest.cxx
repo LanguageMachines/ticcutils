@@ -448,6 +448,14 @@ void test_trim_back(){
   assertEqual( res, " aha" );
 }
 
+void test_pad(){
+  string val = "Q";
+  string res = pad(val,10,'x');
+  assertEqual( res, "xxxxxxxxxQ" );
+  res = pad(val,5);
+  assertEqual( res, "    Q" );
+}
+
 void test_match_front(){
   assertTrue( match_front("janklaassenenkatrien", "janklaassen" ) );
   assertFalse( match_front("janklaassenenkatrien", "anklaassen" ) );
@@ -1152,6 +1160,7 @@ int main( const int argc, const char* argv[] ){
   test_trim();
   test_trim_front();
   test_trim_back();
+  test_pad();
   test_match_front();
   test_match_back();
   test_format_non_ascii();

@@ -104,6 +104,18 @@ namespace TiCC {
     return result;
   }
 
+  string pad( const std::string& in, size_t len, const char pad_char ){
+    if ( len <= in.length() ){
+      return in;
+    }
+    else {
+      size_t to_add = len - in.length();
+      string out = string( to_add, pad_char ) + in;
+      cerr << "padded: '" << in << "' to: '" << out << "'" << endl;
+      return out;
+    }
+  }
+
   static int toLower( const int& i ){ return tolower(i); }
   static int toUpper( const int& i ){ return toupper(i); }
 

@@ -38,6 +38,8 @@ namespace TiCC {
   std::string trim_front( const std::string&, const std::string& = " \t\r\n" );
   std::string trim_back( const std::string&, const std::string& = " \t\r\n" );
 
+  std::string pad( const std::string&, size_t, const char = ' ' );
+
   void to_lower( std::string& );
   void to_upper( std::string& );
   std::string lowercase( const std::string& );
