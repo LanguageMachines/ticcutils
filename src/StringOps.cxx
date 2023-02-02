@@ -111,7 +111,6 @@ namespace TiCC {
     else {
       size_t to_add = len - in.length();
       string out = string( to_add, pad_char ) + in;
-      cerr << "padded: '" << in << "' to: '" << out << "'" << endl;
       return out;
     }
   }
