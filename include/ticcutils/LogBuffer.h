@@ -34,6 +34,7 @@
 #include <typeinfo>
 #include <iostream>
 #include <sys/time.h>
+#include "ticcutils/StringOps.h"
 
 enum LogLevel{ LogSilent, LogNormal, LogDebug, LogHeavy, LogExtreme };
 enum LogFlag { NoStamp=0, StampTime=1, StampMessage=2, StampBoth=3 };
@@ -104,8 +105,9 @@ inline std::string time_stamp(){
   struct tm tmp;
   curtime = localtime_r(&lTime,&tmp);
   strftime( time_line, 45, "%Y%m%d:%H%M%S", curtime );
-  sprintf( time_line+strlen(time_line), ":%03ld:", millitm() );
-  return time_line;
+  std::string milli_line = std::to_string( millitm() );
+  milli_line = TiCC::pad( milli_line, 3, '0' );
+  return std::string(time_line)+ ":" + milli_line + ":";
 }
 
 /// for a derived output stream, we must provide implementations for
