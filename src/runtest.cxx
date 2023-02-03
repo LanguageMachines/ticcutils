@@ -454,6 +454,11 @@ void test_pad(){
   assertEqual( res, "xxxxxxxxxQ" );
   res = pad(val,5);
   assertEqual( res, "    Q" );
+  UnicodeString u_val = "τ";
+  UnicodeString u_res = pad( u_val,10,u'έ' );
+  assertEqual( u_res, "έέέέέέέέέτ" );
+  u_res = pad(u_val,5);
+  assertEqual( u_res, "    τ" );
 }
 
 void test_match_front(){

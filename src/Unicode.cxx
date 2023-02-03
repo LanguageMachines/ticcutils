@@ -836,6 +836,19 @@ namespace TiCC {
     return UnicodeString( us, start_p, end_p - start_p + 1 );
   }
 
+  UnicodeString pad( const UnicodeString& in,
+		     int len,
+		     const UChar32 pad_char ){
+    if ( len <= in.length() ){
+      return in;
+    }
+    else {
+      size_t to_add = len - in.length();
+      UnicodeString out = UnicodeString( to_add, pad_char, to_add ) + in;
+      return out;
+    }
+  }
+
   istream& getline( istream& is,
 		    UnicodeString& us,
 		    const char delim ){

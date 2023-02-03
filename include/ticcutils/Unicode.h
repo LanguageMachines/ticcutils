@@ -128,6 +128,7 @@ namespace TiCC {
   UnicodeString utrim( const UnicodeString&, const UnicodeString& = "\r\n\t " );
   UnicodeString ltrim( const UnicodeString&, const UnicodeString& = "\r\n\t " );
   UnicodeString rtrim( const UnicodeString&, const UnicodeString& = "\r\n\t " );
+  UnicodeString pad( const UnicodeString&, int, const UChar32 = ' ' );
   std::string utf8_lowercase( const std::string& ); // Unicode safe version
   std::string utf8_uppercase( const std::string& ); // Unicode safe version
 
