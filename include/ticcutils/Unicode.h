@@ -165,7 +165,7 @@ namespace TiCC {
   }
 
   template< typename T >
-    inline icu::UnicodeString toUnicodeString ( const T& obj, bool=false ) {
+    inline icu::UnicodeString toUnicodeString ( const T& obj ) {
     std::stringstream dummy;
     if ( !( dummy << obj ) ) {
       throw( std::runtime_error( std::string("conversion from type:")
@@ -173,6 +173,12 @@ namespace TiCC {
 				 + " to UnicodeString failed" ) );
     }
     return TiCC::UnicodeFromUTF8(dummy.str());
+  }
+
+  template<>
+  // specialization for std::string
+  inline icu::UnicodeString toUnicodeString ( const std::string& obj ) {
+    return TiCC::UnicodeFromUTF8(obj);
   }
 
   template< typename T>
