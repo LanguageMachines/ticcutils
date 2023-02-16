@@ -1141,6 +1141,82 @@ void test_enum_flags() {
   }
 }
 
+#include <type_traits>
+
+#define MAKE_FUN_CHECK( NAME ) \
+template<typename, typename T>			\
+struct has_##NAME {			\
+  static_assert(						\
+		std::integral_constant<T, false>::value,		\
+		"Second template parameter needs to be of function type." ); \
+};									\
+
+MAKE_FUN_CHECK( string_fun )
+MAKE_FUN_CHECK( unistring_fun )
+
+template<typename C, typename Ret, typename... Args>
+struct has_string_fun<C, Ret(Args...)> {
+private:
+  template<typename T>
+  static constexpr auto check(T*)
+    -> typename
+    std::is_same<
+  decltype( std::declval<T>().string_fun( std::declval<Args>()... ) ),
+  Ret    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  >::type;  // attempt to call it and see if the return type is correct
+
+  template<typename>
+  static constexpr std::false_type check(...);
+
+  typedef decltype(check<C>(0)) type;
+
+public:
+  static constexpr bool value = type::value;
+};
+
+template<typename C, typename Ret, typename... Args>
+struct has_unistring_fun<C, Ret(Args...)> {
+private:
+  template<typename T>
+  static constexpr auto check(T*)
+    -> typename
+    std::is_same<
+  decltype( std::declval<T>().unistring_fun( std::declval<Args>()... ) ),
+  Ret    // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  >::type;  // attempt to call it and see if the return type is correct
+
+  template<typename>
+  static constexpr std::false_type check(...);
+
+  typedef decltype(check<C>(0)) type;
+
+public:
+  static constexpr bool value = type::value;
+};
+
+void test_templates(){
+
+  struct X {
+    bool string_fun( const std::string& ){
+      return true;
+    }
+  };
+  struct Y:X {
+    bool unistring_fun( const icu::UnicodeString& ){
+      return true;
+    }
+  };
+
+  bool test_string = has_string_fun<Y,bool(const std::string&)>::value;
+  assertEqual( test_string, true );
+  test_string = has_unistring_fun<Y,bool(const icu::UnicodeString&)>::value;
+  assertEqual( test_string, true );
+  test_string = has_string_fun<X,bool(const std::string&)>::value;
+  assertEqual( test_string, true );
+  test_string = has_unistring_fun<X,bool(const icu::UnicodeString&)>::value;
+  assertEqual( test_string, false );
+}
+
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
   Timer t1;
@@ -1205,6 +1281,7 @@ int main( const int argc, const char* argv[] ){
   test_assert();
   test_json();
   test_enum_flags();
+  test_templates();
   t1.stop();
   t2.stop();
   cerr << t1 << endl;
