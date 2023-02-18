@@ -762,20 +762,20 @@ namespace TiCC {
 	res = src.tempSubString( pos, e - pos );
 	pos = e+1;
       }
-      results.push_back( res ); // evan when empty
+      results.push_back( res ); // even when empty
     }
     return results;
   }
 
   string utf8_lowercase( const string& in ){
-    /// convert an UTF-8 string to lowercase
+    /// Unicode aware conversion of an UTF-8 string to lowercase
     UnicodeString us = TiCC::UnicodeFromUTF8( in );
     us.toLower();
     return TiCC::UnicodeToUTF8( us );
   }
 
   string utf8_uppercase( const string& in ){
-    /// convert an UTF-8 string to uppercase
+    /// Unicode aware conversion of an UTF-8 string to uppercase
     UnicodeString us = TiCC::UnicodeFromUTF8( in );
     us.toUpper();
     return TiCC::UnicodeToUTF8( us );

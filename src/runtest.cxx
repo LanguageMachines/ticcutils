@@ -1143,18 +1143,14 @@ void test_enum_flags() {
 
 #include <type_traits>
 
-#define MAKE_FUN_CHECK( NAME ) \
+#define ADD_FUN_CHECK( FUN ) \
 template<typename, typename T>			\
-struct has_##NAME {			\
+struct has_##FUN {			\
   static_assert(						\
 		std::integral_constant<T, false>::value,		\
 		"Second template parameter needs to be of function type." ); \
 };									\
-
-MAKE_FUN_CHECK( string_fun )
-MAKE_FUN_CHECK( unistring_fun )
-
-#define MAKE_AGAIN( FUN ) \
+									\
 template<typename C, typename Ret, typename... Args> \
 struct has_##FUN<C, Ret(Args...)> { \
 private: \
@@ -1175,8 +1171,8 @@ public:						\
  static constexpr bool value = type::value;	\
 };
 
-MAKE_AGAIN( string_fun )
-MAKE_AGAIN( unistring_fun )
+ADD_FUN_CHECK( string_fun )
+ADD_FUN_CHECK( unistring_fun )
 
 void test_templates(){
 
@@ -1198,6 +1194,8 @@ void test_templates(){
   test_string = has_string_fun<X,bool(const std::string&)>::value;
   assertEqual( test_string, true );
   test_string = has_unistring_fun<X,bool(const icu::UnicodeString&)>::value;
+  assertEqual( test_string, false );
+  test_string = has_string_fun<X,bool(int,double)>::value;
   assertEqual( test_string, false );
 }
 

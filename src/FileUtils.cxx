@@ -359,7 +359,9 @@ namespace TiCC {
 
   tmp_stream::tmp_stream( const string& prefix,
 			  const string& tempdir,
-			  bool keep ){
+			  bool keep ):
+    _temp_name( TiCC::tempname( prefix, tempdir ) )
+  {
     /// create a tmp_stream object
     /*!
       \param prefix a prefix for the name of a temporary file to create in
@@ -372,7 +374,6 @@ namespace TiCC {
       The file will be deleted on destruction of the tmp_stream object, except
       when keep is \e true
     */
-    _temp_name = TiCC::tempname( prefix, tempdir );
     _os = new ofstream( _temp_name );
     _keep = keep;
   }
