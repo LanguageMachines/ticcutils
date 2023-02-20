@@ -1,3 +1,12 @@
+20 feb 2023 0.32
+* started a Templates.h to gather template programming goodies.
+  (nowhere used yet. Hanlde with care)
+* StringOps:
+  - added a pas() function, so sprintf should never be needed again
+* UnicodeString support:
+  - Added ad UnicodeString pad() function
+* numerous code refactoring
+
 23 jan 2023 0.31
 [Ko van der Sloot]
 *  removed Tar module and dependency on libtar (obsolete)
