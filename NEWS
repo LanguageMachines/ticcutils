@@ -1,10 +1,11 @@
 20 feb 2023 0.32
+[Ko van der Sloot]
 * started a Templates.h to gather template programming goodies.
-  (nowhere used yet. Hanlde with care)
+  (nowhere used yet. Handle with care)
 * StringOps:
-  - added a pas() function, so sprintf should never be needed again
+  - added a pad() function, so sprintf should never be needed again
 * UnicodeString support:
-  - Added ad UnicodeString pad() function
+  - Added an UnicodeString pad() function
 * numerous code refactoring
 
 23 jan 2023 0.31
