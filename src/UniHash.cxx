@@ -37,7 +37,8 @@ namespace Hash {
 
   using namespace Tries;
 
-  UniInfo::UniInfo( const UnicodeString& value, const unsigned int index ):
+  UniInfo::UniInfo( const UnicodeString& value,
+		    const unsigned int index ):
     _value(value),_ID(index){
     /// create a UniInfo record
     /*!
@@ -50,7 +51,8 @@ namespace Hash {
     /// destroy a UniInfo record
   }
 
-  ostream& operator<<( ostream& os, const UniInfo& tok ){
+  ostream& operator<<( ostream& os,
+		       const UniInfo& tok ){
     /// output a UniInfo record
     os << tok._ID << " " << tok._value;
     return os;
@@ -65,16 +67,16 @@ namespace Hash {
     /// destroy a UnicodeHash
   }
 
-  unsigned int UnicodeHash::hash( const UnicodeString& _value ){
+  unsigned int UnicodeHash::hash( const UnicodeString& value ){
     /// lookup or create a hash for the string parameter
     /*!
-      \param _value the string to hash
+      \param value the string to hash
       \return the hash value
       when a new hash is inserted, the reverse index is also updated
       the UnicodeString will be NFC normalized first.
     */
     static TiCC::UnicodeNormalizer nfc_norm;
-    UnicodeString val = nfc_norm.normalize( _value );
+    UnicodeString val = nfc_norm.normalize( value );
     UniInfo *info = _tree.Retrieve( val );
     if ( !info ){
       info = new UniInfo( val, ++_num_of_tokens );
@@ -88,14 +90,14 @@ namespace Hash {
     return idx;
   }
 
-  unsigned int UnicodeHash::lookup( const UnicodeString& _value ) const {
+  unsigned int UnicodeHash::lookup( const UnicodeString& value ) const {
     /// lookup the hash for a string in the UnicodeHash
     /*!
       \param value the string to lookup
       \return the hash value, or 0 when not found
     */
     static TiCC::UnicodeNormalizer nfc_norm;
-    UnicodeString val = nfc_norm.normalize( _value );
+    UnicodeString val = nfc_norm.normalize( value );
     UniInfo *info = _tree.Retrieve( val );
     if ( info ){
       return info->index();

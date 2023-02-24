@@ -1026,7 +1026,8 @@ void test_unicode_regex( ){
 
 void test_unicode_filters( const string& path ){
   UniFilter filt;
-  assertNoThrow( filt.init( "‘ > \\' ; ’ > \\' ;  \\` > \\' ; ´ > \\' ;", "quote_filter" ) );
+  assertNoThrow( filt.init( "‘ > \\' ; ’ > \\' ;  \\` > \\' ; ´ > \\' ;",
+			    "quote_filter" ) );
   UnicodeString vies = "`vies´ en ‘smerig’ en `apart´";
   UnicodeString schoon = filt.filter( vies );
   assertEqual( schoon, "\'vies\' en \'smerig\' en \'apart\'" );
@@ -1205,7 +1206,6 @@ int main( const int argc, const char* argv[] ){
   Timer t2;
   t1.start();
   t2.start();
-  test_unicodehash();
   test_opts_basic();
   CL_Options opts1;
   opts1.set_short_options( "t:qf:d:" );

@@ -740,6 +740,9 @@ namespace TiCC {
     /// set the valid short options
     /*!
       \param s a string representing the valid options
+
+      such a line looks like: "ab:cde:" defining options a,b,c,d and e, were
+      options b and e must have a parameter
      */
     char last = '\0';
     for ( size_t i=0; i < s.size(); ++i ){
