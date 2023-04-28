@@ -48,10 +48,11 @@ jobs:
           access_token: ${{ github.token }}
 
       - uses: actions/checkout@v3
-      - uses: webiny/action-post-run@1.0.0
+      - uses: webiny/action-post-run@3.0.0
         id: post-run-command
         with:
           command: echo "this thing works!"
+
       - name: Install Build Environment
         run: |
              if [ "$RUNNER_OS" == "Linux" ]; then
