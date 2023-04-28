@@ -47,7 +47,7 @@ jobs:
         with:
           access_token: ${{ github.token }}
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: webiny/action-post-run@1.0.0
         id: post-run-command
         with:
