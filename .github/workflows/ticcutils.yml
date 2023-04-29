@@ -51,7 +51,7 @@ jobs:
       - uses: webiny/action-post-run@3.0.0
         id: post-run-command
         with:
-          command: echo "this thing works!"
+          run: echo "this thing works!"
 
       - name: Install Build Environment
         run: |
