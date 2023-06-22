@@ -30,8 +30,10 @@
 #include <string>
 #include <map>
 #include <list>
-#include <map>
-#include "libxml/tree.h"
+#include <iosfwd>
+#include "libxml/xmlstring.h"
+#include "libxml/globals.h"
+#include "libxml/parser.h"
 
 namespace TiCC {
 

@@ -26,11 +26,13 @@
 
 #include "ticcutils/XMLtools.h"
 
-#include <iostream>
 #include <string>
+#include <cstddef>
 #include <stdexcept>
+#include <utility>
 #include "libxml/xpath.h"
 #include "libxml/xpathInternals.h"
+#include "libxml/parser.h"
 
 using namespace std;
 

@@ -27,11 +27,12 @@
 #ifndef TICC_STRING_OPS_H
 #define TICC_STRING_OPS_H
 
-#include <string>
-#include <vector>
-#include <typeinfo>
+#include <cstddef>
 #include <sstream>
 #include <stdexcept>
+#include <string>
+#include <typeinfo>
+#include <vector>
 
 namespace TiCC {
   std::string trim( const std::string&, const std::string& = " \t\r\n" );

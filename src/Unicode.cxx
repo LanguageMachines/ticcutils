@@ -26,12 +26,13 @@
 */
 
 #include "ticcutils/Unicode.h"
-#include <exception>
 #include <stdexcept>
 #include <iostream>
 #include <fstream>
-#include "unicode/normalizer2.h"
-#include "unicode/ustream.h"
+#include <algorithm>
+#include "unicode/parseerr.h"
+#include "unicode/utrans.h"
+#include "unicode/utypes.h"
 #include "ticcutils/StringOps.h"
 
 using namespace std;

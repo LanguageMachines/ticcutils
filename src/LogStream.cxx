@@ -28,8 +28,6 @@
 #include "ticcutils/LogStream.h"
 
 #include <ctime>
-#include <cstdlib>
-#include <cstdio>
 
 #include <string>
 #include <typeinfo>

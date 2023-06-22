@@ -29,6 +29,8 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <ctime>
+#include <cstdlib>
 
 using namespace std;
 

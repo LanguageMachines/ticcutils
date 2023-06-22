@@ -28,6 +28,7 @@
 #include "ticcutils/Configuration.h"
 
 #include <string>
+#include <utility> // for pair
 #include <map>
 #include <set>
 #include <fstream>

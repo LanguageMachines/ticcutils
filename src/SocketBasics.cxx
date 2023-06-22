@@ -27,15 +27,16 @@
 #include "ticcutils/SocketBasics.h"
 
 #include <string>
-#include <stdexcept>
 #include <iostream>
 
-#include <cstdio>
 #include <cstring>
-#include <cstdlib>
 #include <cerrno>
-#include <climits>
 #include <fcntl.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
 #include "config.h"
 #include "ticcutils/StringOps.h"

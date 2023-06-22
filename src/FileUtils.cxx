@@ -30,18 +30,17 @@
 #include <cerrno>
 #include <cstdio>
 #include <cstring>
+#include <stdexcept>
 #include <vector>
+#include <map>
 #include <string>
-#include <iostream>
 #include <fstream>
+#include <sstream>
 #include <cstdlib>
 #include <unistd.h>
 #include <glob.h>
 #include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
 #include <dirent.h>
-#include "config.h"
 #include <regex>
 #include "ticcutils/StringOps.h"
 

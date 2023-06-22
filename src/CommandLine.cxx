@@ -28,12 +28,11 @@
 
 #include "ticcutils/CommandLine.h"
 
-#include <cassert>
+#include <ext/alloc_traits.h>
+#include <cstddef> // for size_t
 #include <string>
 #include <vector>
-#include <map>
-#include <algorithm>
-#include <ostream>
+#include <algorithm> // for find_if
 #include <iostream>
 
 #include "ticcutils/StringOps.h"

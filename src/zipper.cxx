@@ -28,8 +28,7 @@
 
 #include <stdexcept>
 #include <fstream>
-#include "config.h"
-#include "bzlib.h"
+#include <iterator>
 #include "ticcutils/bz2stream.h"
 #include "ticcutils/gzstream.h"
 

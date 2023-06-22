@@ -29,6 +29,7 @@
 
 #include <set>
 #include <vector>
+#include <string>
 #include <iosfwd>
 #include <stdexcept>
 #include <ticcutils/StringOps.h>

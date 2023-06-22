@@ -26,9 +26,9 @@
 #ifndef TICC_TIMER_H
 #define TICC_TIMER_H
 
-#include <cstdlib>
 #include <sys/time.h>
 #include <iostream>
+#include <string>
 
 namespace TiCC {
 

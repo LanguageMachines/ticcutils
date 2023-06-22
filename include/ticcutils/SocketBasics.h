@@ -32,13 +32,6 @@
 #ifdef _WIN32
 #include <winsock.h>
 #else
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <netdb.h>
-#include <arpa/inet.h>
 #endif
 
 namespace Sockets {

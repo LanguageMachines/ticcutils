@@ -25,10 +25,7 @@
 */
 
 #include "ticcutils/UniHash.h"
-
-#include <iostream>
-#include <cstdlib>
-#include <cstring>
+#include "ticcutils/Unicode.h"
 
 using namespace std;
 using namespace icu;

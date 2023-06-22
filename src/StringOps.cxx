@@ -27,12 +27,10 @@
 
 #include "ticcutils/StringOps.h"
 
-#include <cerrno>
-#include <cfloat>
 #include <cstdlib>
+#include <cctype>
 #include <algorithm>
 #include <string>
-#include <iostream>
 #include <sstream>
 #include "ticcutils/Version.h"
 

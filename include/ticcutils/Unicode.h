@@ -28,15 +28,18 @@
 
 */
 
+#include <cstddef>
 #include <string>
 #include <vector>
 #include <sstream>
 #include <typeinfo>
 #include <stdexcept>
+#include "unicode/umachine.h"
+#include "unicode/uversion.h"
 #include "unicode/unistr.h"
+#include "unicode/translit.h"
 #include "unicode/ustream.h"
 #include "unicode/normalizer2.h"
-#include "unicode/translit.h"
 #include "unicode/regex.h"
 
 namespace TiCC {

@@ -27,12 +27,14 @@
 #ifndef SERVERBASE_H
 #define SERVERBASE_H
 
+#include <iosfwd>
+#include <string>
 #include "ticcutils/LogStream.h"
 #include "ticcutils/Configuration.h"
-#include "ticcutils/CommandLine.h"
 #include "ticcutils/SocketBasics.h"
 #include "ticcutils/FdStream.h"
 
+namespace TiCC { class CL_Options; }
 namespace TiCCServer {
 
   extern const std::string serv_short_opts;

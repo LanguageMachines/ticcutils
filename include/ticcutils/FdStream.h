@@ -27,8 +27,8 @@
 #ifndef FD_STREAM_H
 #define FD_STREAM_H
 
+#include <string>
 #include <iostream>
-#include <streambuf>
 
 /// \brief Specialization of std::streambuf for output to a Unix file descriptor
 class fdoutbuf: public std::streambuf {

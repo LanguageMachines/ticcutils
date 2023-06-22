@@ -29,11 +29,19 @@
 #ifndef HAVE_DAEMON
 #include <fcntl.h> // for implementing daemon
 #endif
-#include <string>
+#include <pthread.h>
+#include <unistd.h>
+#include <stdint.h>
+#include <cstdlib>
 #include <cerrno>
 #include <csignal>
+#include <cstring>
+#include <string>
+#include <iostream>
 #include <fstream>
+#include <stdexcept>
 #include "ticcutils/Configuration.h"
+#include "ticcutils/CommandLine.h"
 #include "ticcutils/Timer.h"
 #include "ticcutils/StringOps.h"
 #include "config.h"

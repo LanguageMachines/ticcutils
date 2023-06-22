@@ -32,10 +32,8 @@
 #include <cerrno>
 #include <csignal>
 #include <iostream>
-#include <streambuf>
 #include <stdexcept>
 #include <unistd.h>
-#include <cstdlib>
 
 using namespace std;
 
