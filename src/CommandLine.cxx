@@ -28,7 +28,7 @@
 
 #include "ticcutils/CommandLine.h"
 
-#include <ext/alloc_traits.h>
+#include <memory>
 #include <cstddef> // for size_t
 #include <string>
 #include <vector>
