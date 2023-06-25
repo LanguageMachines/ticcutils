@@ -43,7 +43,6 @@ following pakages:
 - ``pkg-config``
 - ``libxml2-dev``
 - ``icu-dev``
-- ``libtar-dev``
 - ``libbz2-dev``
 - ``zlib1g-dev``
 
