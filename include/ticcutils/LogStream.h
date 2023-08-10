@@ -46,16 +46,12 @@ namespace TiCC {
     explicit LogStream( const std::string&, LogFlag = StampBoth );
     explicit LogStream( const char *cs, LogFlag lf = StampBoth ):
       LogStream( std::string( cs, lf ) ) {};
-    explicit LogStream( std::ostream&,
-			const std::string& = "",
-			LogFlag = StampBoth );
-    explicit LogStream( std::ostream& os,
-			const char* cs= 0,
-			LogFlag lf=StampBoth ):
-      LogStream( os, std::string(cs), lf ){};
+    LogStream( std::ostream&,
+	       const std::string& = "",
+	       LogFlag = StampBoth );
     LogStream( const LogStream&, const std::string&, LogFlag );
     LogStream( const LogStream&, const std::string& );
-    explicit LogStream( const LogStream * );
+    LogStream( const LogStream * );
     bool set_single_threaded_mode();
     bool single_threaded() const { return single_threaded_mode; };
     void setthreshold( LogLevel t ){ buf.Threshold( t ); };
