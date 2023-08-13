@@ -77,9 +77,11 @@ namespace Sockets {
     long int bytes_read = -1;
 #ifdef KEEP
     val = 1;
-    setsockopt( sock, SOL_SOCKET, SO_KEEPALIVE, (void *)&val, sizeof(val) );
+    setsockopt( sock, SOL_SOCKET, SO_KEEPALIVE,
+		static_cast<void *)(&val), sizeof(val) );
     val = 20;
-    setsockopt( sock, SOL_TCP, TCP_KEEPIDLE, (void *)&val, sizeof(val) );
+    setsockopt( sock, SOL_TCP, TCP_KEEPIDLE,
+		static_cast<void *>(&val_, sizeof(val) );
 #endif
     while ( last_read != 10 ) { // read 1 character at a time upto \n
       bytes_read = ::read( sock, &last_read, 1 );
@@ -380,9 +382,11 @@ namespace Sockets {
       else {
 	// connect the socket
 	int val = 1;
-	setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, (void *)&val, sizeof(val) );
+	setsockopt( sock, SOL_SOCKET, SO_REUSEADDR,
+		    static_cast<void *>(&val), sizeof(val) );
 	val = 1;
-	setsockopt( sock, IPPROTO_TCP, TCP_NODELAY, (void *)&val, sizeof(val) );
+	setsockopt( sock, IPPROTO_TCP, TCP_NODELAY,
+		    static_cast<void *>(&val), sizeof(val) );
 	if ( ::connect( sock, aip->ai_addr, aip->ai_addrlen ) < 0 ){
 	  mess = string( "ClientSocket: Connection on ") + hostString + ":"
 	    + TiCC::toString(sock) + " failed (" + strerror(errno) + ")";
@@ -422,10 +426,10 @@ namespace Sockets {
 	if ( sock >= 0 ){
 	  int val = 1;
 	  if ( setsockopt( sock, SOL_SOCKET, SO_REUSEADDR,
-			   (void *)&val, sizeof(val) ) == 0 ){
+			   static_cast<void *>(&val), sizeof(val) ) == 0 ){
 	    val = 1;
 	    if ( setsockopt( sock, IPPROTO_TCP, TCP_NODELAY,
-			     (void *)&val, sizeof(val) ) == 0 ){
+			     static_cast<void *>(&val), sizeof(val) ) == 0 ){
 	      if ( ::bind( sock, res->ai_addr, res->ai_addrlen ) == 0 ){
 		break;
 	      }
@@ -450,7 +454,9 @@ namespace Sockets {
     newSocket.sock = -1;
     struct sockaddr_storage cli_addr;
     socklen_t clilen = sizeof(cli_addr);
-    int newsock = ::accept( sock, (struct sockaddr *)&cli_addr, &clilen );
+    int newsock = ::accept( sock,
+			    reinterpret_cast<struct sockaddr*>(&cli_addr),
+			    &clilen );
     if ( newsock < 0 ){
       if ( errno == EINTR ){
 	mess = string("server-accept interrupted." );
@@ -462,7 +468,7 @@ namespace Sockets {
     }
     else {
       char host_name[NI_MAXHOST];
-      int err = getnameinfo( (struct sockaddr *)&cli_addr,
+      int err = getnameinfo( reinterpret_cast<struct sockaddr *>(&cli_addr),
 			     clilen,
 			     host_name, sizeof(host_name),
 			     0, 0,
@@ -474,7 +480,7 @@ namespace Sockets {
       else {
 	name = host_name;
       }
-      err = getnameinfo( (struct sockaddr *)&cli_addr,
+      err = getnameinfo( reinterpret_cast<struct sockaddr *>(&cli_addr),
 			 clilen,
 			 host_name, sizeof(host_name),
 			 0, 0,
@@ -504,7 +510,7 @@ namespace Sockets {
     }
     host = gethostbyname(add);
     if (host != NULL) {
-      return (struct in_addr *) *host->h_addr_list;
+      return static_cast<struct in_addr *>(*host->h_addr_list);
     }
     return NULL;
   }
@@ -522,14 +528,14 @@ namespace Sockets {
       mess = "ClientSocket connect: invalid port number";
       return false;
     }
-    struct in_addr *addr = atoaddr( hostString );
+    const struct in_addr *addr = atoaddr( hostString );
     if (addr == NULL) {
       mess = "ClientSocket connect:  Invalid host.";
       return false;
     }
 
     struct sockaddr_in address;
-    memset((char *) &address, 0, sizeof(address));
+    memset( static_cast<char *>(&address), 0, sizeof(address));
     address.sin_family = AF_INET;
     address.sin_port = htons(port);
     address.sin_addr.s_addr = addr->s_addr;
@@ -539,10 +545,13 @@ namespace Sockets {
     }
     else {
       int val = 1;
-      setsockopt( sock, SOL_SOCKET, SO_REUSEADDR, (void *)&val, sizeof(val) );
+      setsockopt( sock, SOL_SOCKET, SO_REUSEADDR,
+		  static_cast<void *>(&val), sizeof(val) );
       val = 1;
-      setsockopt( sock, IPPROTO_TCP, TCP_NODELAY, (void *)&val, sizeof(val) );
-      int connected = ::connect( sock, (struct sockaddr *) &address,
+      setsockopt( sock, IPPROTO_TCP, TCP_NODELAY,
+		  static_cast<void *>(&val), sizeof(val) );
+      int connected = ::connect( sock,
+				 static_cast<struct sockaddr *>(&address),
 				 sizeof(address));
       if (connected < 0) {
 	mess = string( "ClientSocket connect: ") + host + ":" + portNum +
@@ -567,17 +576,19 @@ namespace Sockets {
     else {
       int val = 1;
       setsockopt( sock, SOL_SOCKET, SO_REUSEADDR,
-		  (void *)&val, sizeof(val) );
+		  static_cast<void *>(&val), sizeof(val) );
       val = 1;
       setsockopt( sock, IPPROTO_TCP, TCP_NODELAY,
-		  (void *)&val, sizeof(val) );
+		  static_cast<void *>(&val), sizeof(val) );
       struct sockaddr_in serv_addr;
-      memset((char *) &serv_addr, 0, sizeof(serv_addr));
+      memset( static_cast<char *>(&serv_addr), 0, sizeof(serv_addr));
       serv_addr.sin_family = AF_INET;
       serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
       int TCP_PORT = TiCC::stringTo<int>(port);
       serv_addr.sin_port = htons(TCP_PORT);
-      if ( bind( sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr) ) < 0 ){
+      if ( bind( sock,
+		 static_cast<struct sockaddr *>(&serv_addr),
+		 sizeof(serv_addr) ) < 0 ){
 	mess = string( "ServerSocket connect: bind failed (" )
 	  + strerror( errno ) + ")";
       }
@@ -594,7 +605,9 @@ namespace Sockets {
     newSocket.sock = -1;
     struct sockaddr_storage cli_addr;
     socklen_t clilen = sizeof(cli_addr);
-    int newsock = ::accept( sock, (struct sockaddr *)&cli_addr, &clilen );
+    int newsock = ::accept( sock,
+			    static_cast<struct sockaddr *>(&cli_addr),
+			    &clilen );
     if ( newsock < 0 ){
       if ( errno == EINTR ){
 	mess = string("server-accept interrupted." );
@@ -608,10 +621,13 @@ namespace Sockets {
       string clientname;
       struct sockaddr_in rem;
       socklen_t remlen = sizeof(rem);
-      if ( getpeername( newsock, (struct sockaddr *)&rem, &remlen ) >= 0 ){
-	struct hostent *host = gethostbyaddr( (char *)&rem.sin_addr,
-					      sizeof rem.sin_addr,
-					      AF_INET );
+      if ( getpeername( newsock,
+			static_cast<struct sockaddr *>(&rem),
+			&remlen ) >= 0 ){
+	struct hostent *host
+	  = gethostbyaddr( static_cast<char *>(&rem.sin_addr),
+			   sizeof rem.sin_addr,
+			   AF_INET );
 	if ( host ){
 	  clientname = host->h_name;
 	  char **p;
