@@ -78,10 +78,10 @@ namespace Sockets {
 #ifdef KEEP
     val = 1;
     setsockopt( sock, SOL_SOCKET, SO_KEEPALIVE,
-		static_cast<void *)(&val), sizeof(val) );
+		static_cast<void *>(&val), sizeof(val) );
     val = 20;
     setsockopt( sock, SOL_TCP, TCP_KEEPIDLE,
-		static_cast<void *>(&val_, sizeof(val) );
+		static_cast<void *>(&val), sizeof(val) );
 #endif
     while ( last_read != 10 ) { // read 1 character at a time upto \n
       bytes_read = ::read( sock, &last_read, 1 );
