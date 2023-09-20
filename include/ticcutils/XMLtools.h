@@ -37,28 +37,32 @@
 
 namespace TiCC {
 
-  inline xmlNode *XmlNewNode( const std::string& elem ){
-    return xmlNewNode( 0, reinterpret_cast<const xmlChar*>(elem.c_str()) );
+  inline const xmlChar *to_xmlChar( const char *in ){
+    return reinterpret_cast<const xmlChar *>(in);
+  }
+
+  inline const char *to_char( const xmlChar *in ){
+    return reinterpret_cast<const char *>(in);
   }
 
   inline xmlNode *XmlNewNode( xmlNs *ns, const std::string& elem ){
-    return xmlNewNode( ns, reinterpret_cast<const xmlChar*>(elem.c_str()) );
+    return xmlNewNode( ns, to_xmlChar(elem.c_str()) );
   }
 
   inline xmlNode *XmlNewComment( const std::string& elem ){
-    return xmlNewComment( reinterpret_cast<const xmlChar*>(elem.c_str()) );
+    return xmlNewComment( to_xmlChar(elem.c_str()) );
   }
 
   inline xmlNode *XmlNewChild( xmlNode *node,
 			       const std::string& elem ){
-    xmlNode *chld = xmlNewNode( 0, reinterpret_cast<const xmlChar*>(elem.c_str()) );
+    xmlNode *chld = xmlNewNode( 0, to_xmlChar(elem.c_str()) );
     return xmlAddChild( node, chld );
   }
 
   inline xmlNode *XmlNewChild( xmlNode *node,
 			       xmlNs *ns,
 			       const std::string& elem ){
-    xmlNode *chld = xmlNewNode( ns, reinterpret_cast<const xmlChar*>(elem.c_str()) );
+    xmlNode *chld = xmlNewNode( ns, to_xmlChar(elem.c_str()) );
     return xmlAddChild( node, chld );
   }
 
@@ -68,13 +72,13 @@ namespace TiCC {
     if ( val.empty() )
       return xmlNewTextChild( node,
 			      0,
-			      reinterpret_cast<const xmlChar*>(elem.c_str()),
+			      to_xmlChar(elem.c_str()),
 			      0 );
     else
       return xmlNewTextChild( node,
 			      0,
-			      reinterpret_cast<const xmlChar*>(elem.c_str()),
-			      reinterpret_cast<const xmlChar*>(val.c_str()) );
+			      to_xmlChar(elem.c_str()),
+			      to_xmlChar(val.c_str()) );
   }
 
   inline xmlNode *XmlNewTextChild( xmlNode *node,
@@ -83,24 +87,24 @@ namespace TiCC {
 				   const std::string& val ){
     if ( val.empty() )
       return xmlNewTextChild( node, ns,
-			      reinterpret_cast<const xmlChar*>(elem.c_str())
+			      to_xmlChar(elem.c_str())
 			      , 0 );
     else
       return xmlNewTextChild( node, ns,
-			      reinterpret_cast<const xmlChar*>(elem.c_str()),
-			      reinterpret_cast<const xmlChar*>(val.c_str()) );
+			      to_xmlChar(elem.c_str()),
+			      to_xmlChar(val.c_str()) );
   }
 
   inline void XmlAddContent( xmlNode *node, const std::string& cont ){
-    xmlNodeAddContent( node, reinterpret_cast<const xmlChar*>(cont.c_str()) );
+    xmlNodeAddContent( node, to_xmlChar(cont.c_str()) );
   }
 
   inline xmlAttr *XmlSetAttribute( xmlNode *node,
 				   const std::string& att,
 				   const std::string& val ){
     return xmlSetProp( node,
-		       reinterpret_cast<const xmlChar*>(att.c_str()),
-		       reinterpret_cast<const xmlChar*>(val.c_str()) );
+		       to_xmlChar(att.c_str()),
+		       to_xmlChar(val.c_str()) );
   }
 
   inline std::string getAttribute( const xmlNode *node,
@@ -108,8 +112,8 @@ namespace TiCC {
     if ( node ){
       xmlAttr *a = node->properties;
       while ( a ){
-	if ( att == reinterpret_cast<const char*>(a->name) )
-	  return reinterpret_cast<const char*>(a->children->content);
+	if ( att == to_char(a->name) )
+	  return to_char(a->children->content);
 	a = a->next;
       }
     }
@@ -121,8 +125,8 @@ namespace TiCC {
     if ( node ){
       xmlAttr *a = node->properties;
       while ( a ){
-	result[reinterpret_cast<const char*>(a->name) ]
-	  = reinterpret_cast<const char*>(a->children->content);
+	result[to_char(a->name) ]
+	  = to_char(a->children->content);
 	a = a->next;
       }
     }
@@ -143,7 +147,7 @@ namespace TiCC {
   inline std::string Name( const xmlNode *node ){
     std::string result;
     if ( node ){
-      result = reinterpret_cast<const char*>(node->name);
+      result = to_char(node->name);
     }
     return result;
   }
@@ -153,7 +157,7 @@ namespace TiCC {
     if ( node ){
       xmlChar *tmp = xmlNodeListGetString( node->doc, node->children, 1 );
       if ( tmp ){
-	result = std::string( reinterpret_cast<const char*>(tmp) );
+	result = std::string( to_char(tmp) );
 	xmlFree( tmp );
       }
     }
