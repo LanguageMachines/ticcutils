@@ -882,4 +882,18 @@ namespace TiCC {
     return is;
   }
 
+  UnicodeString format_non_printable( const UnicodeString& in ){
+    UnicodeString result;
+    for ( int n=0; n < in.length(); ++n ){
+      if ( u_isprint( in[n] ) ){
+	result += in[n];
+      }
+      else {
+	string tmp = TiCC::format_non_printable( TiCC::UnicodeToUTF8(UnicodeString(in[n])) );
+	result += TiCC::UnicodeFromUTF8( tmp );
+      }
+    }
+    return result;
+  }
+
 }

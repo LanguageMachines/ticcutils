@@ -211,5 +211,7 @@ namespace TiCC {
     return result;
   }
 
+  UnicodeString format_non_printable( const UnicodeString& );
+
 }
 #endif // TICC_UNICODE_H

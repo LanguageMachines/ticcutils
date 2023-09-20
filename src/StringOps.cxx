@@ -405,7 +405,7 @@ namespace TiCC {
     return result;
   }
 
-  string format_nonascii( const string& s ){
+  string format_non_printable( const string& s ){
     /// format weird strings (like UTF8, LATIN1) printable
     // useful for debugging
     stringstream os;

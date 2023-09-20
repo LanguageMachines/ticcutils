@@ -76,7 +76,11 @@ namespace TiCC {
   std::string join( const std::vector<std::string>&,
 		    const std::string& = " " );
 
-  std::string format_nonascii( const std::string& );
+  std::string format_non_printable( const std::string& );
+  inline std::string format_nonascii( const std::string& val ){
+    // backward compatability
+    return format_non_printable( val );
+  }
 
   template< typename T >
     inline T stringTo( const std::string& str ) {
