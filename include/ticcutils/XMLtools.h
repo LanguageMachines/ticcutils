@@ -45,6 +45,10 @@ namespace TiCC {
     return reinterpret_cast<const char *>(in);
   }
 
+  inline xmlNode *XmlNewNode( const std::string& elem ){
+    return xmlNewNode( 0, to_xmlChar(elem.c_str()) );
+  }
+
   inline xmlNode *XmlNewNode( xmlNs *ns, const std::string& elem ){
     return xmlNewNode( ns, to_xmlChar(elem.c_str()) );
   }
