@@ -1,3 +1,12 @@
+21 sep 2023 0.33
+[Ko van der Sloot]
+* started requring C++14 (would prefer C++17, but to early yet)
+* added some more XMLtools goodies
+* added a format_non_printable() function to output wierd Unicode
+* Some C++ modernization, refactoring and reformatting
+* removed references to libtar in READNE.md
+* some include file cleanup
+
 20 feb 2023 0.32
 [Ko van der Sloot]
 * started a Templates.h to gather template programming goodies.
