@@ -1,3 +1,7 @@
+21 sep 2023 0.33.1
+[Ko van der Sloot]
+* bug fix release. A function definition was dropped out
+
 21 sep 2023 0.33
 [Ko van der Sloot]
 * started requiring C++14 (would prefer C++17, but to early yet)
