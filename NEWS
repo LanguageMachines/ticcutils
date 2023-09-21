@@ -1,10 +1,10 @@
 21 sep 2023 0.33
 [Ko van der Sloot]
-* started requring C++14 (would prefer C++17, but to early yet)
+* started requiring C++14 (would prefer C++17, but to early yet)
 * added some more XMLtools goodies
-* added a format_non_printable() function to output wierd Unicode
+* added a format_non_printable() function to output weird Unicode
 * Some C++ modernization, refactoring and reformatting
-* removed references to libtar in READNE.md
+* removed references to libtar in README.md
 * some include file cleanup
 
 20 feb 2023 0.32
