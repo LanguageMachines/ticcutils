@@ -35,6 +35,7 @@
 #include <stdexcept>
 #include <iostream>
 #include "ticcutils/StringOps.h"
+#include "ticcutils/PrettyPrint.h"
 
 using namespace std;
 
@@ -115,7 +116,12 @@ namespace TiCC {
 	val = val.substr(1, val.length()-2);
       }
       val = fixControls( val );
-      myMap[section][att] = val;
+      if ( val.size() == 0 ){
+	myMap[section].erase(att);
+      }
+      else {
+	myMap[section][att] = val;
+      }
       return true;
     }
     return false;
@@ -139,8 +145,9 @@ namespace TiCC {
     else {
       cdir += "/";
     }
-    //  cerr << "dirname= " << cdir << endl;
-    myMap["global"]["configDir"] = cdir; // can be overidden below
+    if ( !cdir.empty() ){
+      myMap["global"]["configDir"] = cdir; // can be overidden below
+    }
     string inLine;
     string section = "global";
     while ( getline( is, inLine ) ){
