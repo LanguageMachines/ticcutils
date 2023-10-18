@@ -50,15 +50,26 @@ namespace TiCC {
     return UnicodeString( s.c_str(), s.length(), enc.c_str() );
   }
 
-  string UnicodeToUTF8( const UnicodeString& s ){
+  string UnicodeToUTF8( const UnicodeString& s,
+			const string& normalization ){
     /// convert a UnicodeString to a UTF-8 string
     /*!
       \param s the UnicodeString to convert
+      \param normalization the normalization to use. Default NFC
       \return an UTF-8 encoded string
     */
+    UnicodeNormalizer UN( normalization);
+    UnicodeString normalized = UN.normalize( s );
     string result;
-    s.toUTF8String(result);
+    normalized.toUTF8String(result);
     return result;
+  }
+
+  UnicodeString UnicodeFromUTF8( const string& s,
+				 const string& normalization ){
+    UnicodeNormalizer UN( normalization);
+    UnicodeString result = UnicodeString::fromUTF8( s );
+    return UN.normalize( result );
   }
 
   UnicodeNormalizer::UnicodeNormalizer( const string& enc ): _normalizer(0) {

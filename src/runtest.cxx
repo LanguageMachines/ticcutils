@@ -889,13 +889,14 @@ void test_unicode( const string& path ){
   UnicodeString ng1 = N.normalize( greek1 );
   UnicodeString ng2 = N.normalize( greek2 );
   assertEqual( UnicodeToUTF8(ng1), UnicodeToUTF8(ng2) );
+  assertEqual( UnicodeToUTF8(ng1,"NFD"), UnicodeToUTF8(ng2,"NFD") );
   N.setMode("NFD");
   UnicodeString ng11 = N.normalize( greek1 );
   UnicodeString ng12 = N.normalize( greek2 );
   assertEqual( UnicodeToUTF8(ng11), UnicodeToUTF8(ng12) );
   string utf8_1 = "ἀντιϰειμένου";
-  string utf8_2 = "ἀντικειμένου";
-  assertEqual( TiCC::utf8_uppercase( utf8_1 ), "ἈΝΤΙΚΕΙΜΈΝΟΥ" );
+  string utf8_2 = "ἀντικειμένου";
+  assertEqual( TiCC::utf8_uppercase( utf8_1 ), "ἈΝΤΙΚΕΙΜΈΝΟΥ" );
   assertEqual( TiCC::utf8_lowercase( "ἈΝΤΙΚΕΙΜΈΝΟΥ" ), utf8_2 );
   assertEqual( TiCC::utf8_uppercase( "æ en ß en œ" ), "Æ EN SS EN Œ" );
 }

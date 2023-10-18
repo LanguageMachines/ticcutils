@@ -45,14 +45,14 @@
 namespace TiCC {
   using namespace icu;
 
-  std::string UnicodeToUTF8( const UnicodeString&  );
+  std::string UnicodeToUTF8( const UnicodeString&,
+			     const std::string& = "" );
 
   UnicodeString UnicodeFromEnc( const std::string& ,
 				const std::string& = "UTF8" );
 
-  inline UnicodeString UnicodeFromUTF8( const std::string& s ){
-    return UnicodeString::fromUTF8( s );
-  }
+  UnicodeString UnicodeFromUTF8( const std::string&,
+				 const std::string& = "" );
 
   /// \brief a class that can normalize UnicodeStrings to NFC/NFD/NFKC/NFKD
   class UnicodeNormalizer {
