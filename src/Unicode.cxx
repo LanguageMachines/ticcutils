@@ -40,14 +40,21 @@ using namespace std;
 namespace TiCC {
   using namespace icu;
 
-  UnicodeString UnicodeFromEnc( const string& s, const string& enc ){
+  UnicodeString UnicodeFromEnc( const string& s,
+				const string& encoding,
+				const string& normalization ){
     /// convert a character buffer in some encoding to a UnicodeString
     /*!
       \param s the string to interpret as a character buffer
-      \param enc the encoding to use
-      \return an UnicodeString object
+      \param encoding the encoding assumed for s. Default UTF8
+      \param normalization the normalization to use. Default NFC
+      \return a normalized UnicodeString object
     */
-    return UnicodeString( s.c_str(), s.length(), enc.c_str() );
+    UnicodeString result = UnicodeString( s.c_str(),
+					  s.length(),
+					  encoding.c_str() );
+    UnicodeNormalizer UN( normalization);
+    return UN.normalize( result );
   }
 
   string UnicodeToUTF8( const UnicodeString& s,
@@ -868,6 +875,7 @@ namespace TiCC {
     /*!
       \param is The stream to read from
       \param us the UnicodeString to read. (will be cleared before reading)
+      the string is normalized in NFC.
       \param delim The delimiter. Default '\n'
       \return the stream
     */
@@ -882,6 +890,7 @@ namespace TiCC {
     /*!
       \param is The stream to read from
       \param us the UnicodeString to read. (will be cleared before reading)
+      the string is normalized in NFC.
       \param encoding The Unicode encoding of the input stream. It is up to the
       caller to assure this encoding is valid.
       \param delim The delimiter. Default '\n'
@@ -889,7 +898,7 @@ namespace TiCC {
     */
     string line;
     std::getline( is, line, delim );
-    us = TiCC::UnicodeFromEnc( line, encoding );
+    us = TiCC::UnicodeFromEnc( line, encoding, "NFC" );
     return is;
   }
 
