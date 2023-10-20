@@ -96,7 +96,7 @@ namespace TiCC {
     */
     string result;
     prefix = "";
-    xmlNs *p = node->ns;
+    const xmlNs *p = node->ns;
     if ( p ){
       if ( p->prefix ){
 	prefix = to_char(p->prefix);
