@@ -1,3 +1,9 @@
+21 okt 2023 0.34
+[Ko van der Sloot]
+* The Unicode functions now assure that all Unicode is normalized to NFC
+* some code quality improvements, like:
+  const correctness, explicit constructors etc
+
 21 sep 2023 0.33.1
 [Ko van der Sloot]
 * bug fix release. A function definition was dropped out
