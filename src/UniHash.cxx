@@ -95,7 +95,7 @@ namespace Hash {
     */
     static TiCC::UnicodeNormalizer nfc_norm;
     UnicodeString val = nfc_norm.normalize( value );
-    UniInfo *info = _tree.Retrieve( val );
+    const UniInfo *info = _tree.Retrieve( val );
     if ( info ){
       return info->index();
     }

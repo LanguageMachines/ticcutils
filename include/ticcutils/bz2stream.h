@@ -127,8 +127,8 @@ extern "C" {
 /// buffer at all costs.
 class bz2outbuf : public std::streambuf {
  private:
-  bz2outbuf( const bz2outbuf& ); // no copies please
-  bz2outbuf& operator=( const bz2outbuf& ); // no copies please
+  bz2outbuf( const bz2outbuf& ) = delete; // no copies please
+  bz2outbuf& operator=( const bz2outbuf& ) = delete; // no copies please
  protected:
   std::streambuf* dest;
   std::vector<char> buffer;
@@ -305,12 +305,12 @@ class bz2outbuf : public std::streambuf {
   /// std::exception derived exception.  All exceptions but
   /// std::bad_alloc include descriptions of what went bad.  Thus
   /// using the what() member makes sense.
- bz2outbuf(std::streambuf* _dest, unsigned int block_size_100K = 9,
-	   unsigned int verbosity = 0, unsigned int work_factor = 0,
-	   bzalloc_ptr bzalloc = NULL, bzfree_ptr bzfree = NULL,
-	   void* opaque = NULL, size_t stream_buffer_size = 2048,
-	   size_t out_buffer_size = 2048)
-   : dest(_dest)
+explicit  bz2outbuf(std::streambuf* _dest, unsigned int block_size_100K = 9,
+		    unsigned int verbosity = 0, unsigned int work_factor = 0,
+		    bzalloc_ptr bzalloc = NULL, bzfree_ptr bzfree = NULL,
+		    void* opaque = NULL, size_t stream_buffer_size = 2048,
+		    size_t out_buffer_size = 2048)
+  : dest(_dest)
   {
     // check the parameters
     if (block_size_100K > 9)
@@ -386,19 +386,19 @@ class bz2outbuf : public std::streambuf {
 /// stream buffer you want.
 class bz2ostream : public std::ostream {
 protected:
-    bz2outbuf buf;
+  bz2outbuf buf;
 public:
-    /// \brief Creates a new bz2ostream object.  See
-    /// bz2outbuf::bz2outbuf for an explanation of the parameters.
-    bz2ostream(std::streambuf* dest, unsigned int block_size_100K = 9,
-               unsigned int verbosity = 0, unsigned int work_factor = 0,
-               bzalloc_ptr bzalloc = NULL, bzfree_ptr bzfree = NULL,
-               void* opaque = NULL, size_t buffer_size = 1024,
-               size_t out_buffer_size = 1024)
-        : std::ostream(&buf),
-        buf(dest, block_size_100K, verbosity, work_factor, bzalloc, bzfree,
-            opaque, buffer_size, out_buffer_size)
-    {}
+  /// \brief Creates a new bz2ostream object.  See
+  /// bz2outbuf::bz2outbuf for an explanation of the parameters.
+  explicit bz2ostream(std::streambuf* dest, unsigned int block_size_100K = 9,
+		      unsigned int verbosity = 0, unsigned int work_factor = 0,
+		      bzalloc_ptr bzalloc = NULL, bzfree_ptr bzfree = NULL,
+		      void* opaque = NULL, size_t buffer_size = 1024,
+		      size_t out_buffer_size = 1024)
+    : std::ostream(&buf),
+      buf(dest, block_size_100K, verbosity, work_factor, bzalloc, bzfree,
+	  opaque, buffer_size, out_buffer_size)
+  {}
 };
 
 /// \brief A stream buffer reading from another stream buffer and
@@ -408,8 +408,8 @@ public:
 /// constructor.
 class bz2inbuf : public std::streambuf {
  private:
-  bz2inbuf( const bz2inbuf& ); // no copies please
-  bz2inbuf& operator=( const bz2inbuf& ); // no copies please
+  bz2inbuf( const bz2inbuf& ) = delete; // no copies please
+  bz2inbuf& operator=( const bz2inbuf& ) = delete; // no copies please
  protected:
   std::streambuf* source;
   std::vector<char> buffer;
@@ -531,12 +531,12 @@ class bz2inbuf : public std::streambuf {
   ///
   /// For future compatibility, expect this constructor to throw any
   /// std::exception derived exception.
- bz2inbuf(std::streambuf* _source, unsigned int verbosity = 0,
-	  bool small_but_slow = false, bzalloc_ptr bzalloc = NULL,
-	  bzfree_ptr bzfree = NULL, void* opaque = NULL,
-	  size_t stream_buffer_size = 1024, size_t in_buffer_size = 1024,
-	  size_t max_putback_size = 64)
-   : source(_source)
+explicit  bz2inbuf(std::streambuf* _source, unsigned int verbosity = 0,
+		   bool small_but_slow = false, bzalloc_ptr bzalloc = NULL,
+		   bzfree_ptr bzfree = NULL, void* opaque = NULL,
+		   size_t stream_buffer_size = 1024, size_t in_buffer_size = 1024,
+		   size_t max_putback_size = 64)
+  : source(_source)
   {
     // check the parameters
     if (verbosity > 4)
@@ -606,15 +606,15 @@ public:
     /// buffer to read data from.
     ///
     /// See bz2inbuf::bz2inbuf for an explanation of the parameters.
-    bz2istream(std::streambuf* source, unsigned int verbosity = 0,
-               bool small_but_slow = false, bzalloc_ptr bzalloc = NULL,
-               bzfree_ptr bzfree = NULL, void* opaque = NULL,
-               size_t buffer_size = 1024, size_t in_buffer_size = 1024,
-               size_t max_putback_size = 64)
-        : std::istream(&buf),
-          buf(source, verbosity, small_but_slow, bzalloc, bzfree, opaque,
-              buffer_size, in_buffer_size, max_putback_size)
-    {}
+  explicit bz2istream(std::streambuf* source, unsigned int verbosity = 0,
+		      bool small_but_slow = false, bzalloc_ptr bzalloc = NULL,
+		      bzfree_ptr bzfree = NULL, void* opaque = NULL,
+		      size_t buffer_size = 1024, size_t in_buffer_size = 1024,
+		      size_t max_putback_size = 64)
+    : std::istream(&buf),
+      buf(source, verbosity, small_but_slow, bzalloc, bzfree, opaque,
+	  buffer_size, in_buffer_size, max_putback_size)
+  {}
 };
 
 #endif // !BZ2STREAM_BZ2STREAM_HPP

@@ -80,9 +80,9 @@ namespace GZSTREAM_NAMESPACE {
     gzstreambase() { init(&buf); }
     gzstreambase( const std::string&, int );
     ~gzstreambase();
-    void open( const std::string&, int );
+    virtual void open( const std::string&, int );
     void close();
-    gzstreambuf* rdbuf() { return &buf; }
+    virtual gzstreambuf* rdbuf() { return &buf; }
   };
 
   /// \brief A stream class to support .gz files
@@ -95,8 +95,9 @@ namespace GZSTREAM_NAMESPACE {
     igzstream() : std::istream( &buf) {}
     explicit igzstream( const std::string& name, int open_mode = std::ios::in )
       : gzstreambase( name, open_mode ), std::istream( &buf ) {}
-    gzstreambuf* rdbuf() { return gzstreambase::rdbuf(); }
-    void open( const std::string& name, int open_mode = std::ios::in ) {
+    gzstreambuf* rdbuf() override { return gzstreambase::rdbuf(); }
+    void open( const std::string& name,
+	       int open_mode = std::ios::in ) override {
       gzstreambase::open( name, open_mode);
     }
   };
@@ -111,8 +112,9 @@ namespace GZSTREAM_NAMESPACE {
     ogzstream() : std::ostream( &buf) {}
     explicit ogzstream( const std::string& name, int mode = std::ios::out )
       : gzstreambase( name, mode ), std::ostream( &buf ) {}
-    gzstreambuf* rdbuf() { return gzstreambase::rdbuf(); }
-    void open( const std::string& name, int open_mode = std::ios::out ) {
+    gzstreambuf* rdbuf() override { return gzstreambase::rdbuf(); }
+    void open( const std::string& name,
+	       int open_mode = std::ios::out ) override {
       gzstreambase::open( name, open_mode );
     }
   };
