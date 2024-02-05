@@ -58,7 +58,9 @@ namespace TiCC {
   /// \brief a class that can normalize UnicodeStrings to NFC/NFD/NFKC/NFKD
   class UnicodeNormalizer {
   public:
-    UnicodeNormalizer( const std::string& = "" );
+    explicit UnicodeNormalizer( const std::string& = "" );
+    explicit UnicodeNormalizer( const char * str ):
+      UnicodeNormalizer( std::string(str) ){};
     ~UnicodeNormalizer();
     UnicodeString normalize( const UnicodeString& );
     const std::string setMode( const std::string& );

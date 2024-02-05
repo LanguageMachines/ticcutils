@@ -885,15 +885,20 @@ void test_unicode( const string& path ){
   UnicodeString greek1 = "ἀντιϰειμένου";
   UnicodeString greek2 = "ἀντιϰειμένου";
   assertFalse( greek1 == greek2 ); // different normalizations!
-  UnicodeNormalizer N;
-  UnicodeString ng1 = N.normalize( greek1 );
-  UnicodeString ng2 = N.normalize( greek2 );
-  assertEqual( UnicodeToUTF8(ng1), UnicodeToUTF8(ng2) );
-  assertEqual( UnicodeToUTF8(ng1,"NFD"), UnicodeToUTF8(ng2,"NFD") );
-  N.setMode("NFD");
-  UnicodeString ng11 = N.normalize( greek1 );
-  UnicodeString ng12 = N.normalize( greek2 );
+  UnicodeNormalizer N1;
+  UnicodeString ng11 = N1.normalize( greek1 );
+  UnicodeString ng12 = N1.normalize( greek2 );
   assertEqual( UnicodeToUTF8(ng11), UnicodeToUTF8(ng12) );
+  assertEqual( UnicodeToUTF8(ng11,"NFD"), UnicodeToUTF8(ng12,"NFD") );
+  UnicodeNormalizer N2("NFD");
+  UnicodeString ng21 = N2.normalize( greek1 );
+  UnicodeString ng22 = N2.normalize( greek2 );
+  assertEqual( UnicodeToUTF8(ng21), UnicodeToUTF8(ng22) );
+  string mode="NFKD";
+  UnicodeNormalizer N3(mode);
+  UnicodeString ng31 = N3.normalize( greek1 );
+  UnicodeString ng32 = N3.normalize( greek2 );
+  assertEqual( UnicodeToUTF8(ng31), UnicodeToUTF8(ng32) );
   string utf8_1 = "ἀντιϰειμένου";
   string utf8_2 = "ἀντικειμένου";
   assertEqual( TiCC::utf8_uppercase( utf8_1 ), "ἈΝΤΙΚΕΙΜΈΝΟΥ" );
