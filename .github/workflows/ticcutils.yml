@@ -75,6 +75,15 @@ jobs:
                 brew install zlib;
                 brew install cppcheck
              fi
+      - name: Configure CppCheck
+        run: |
+             if [ "$RUNNER_OS" == "Linux" ]; then
+                cpc_opts="--enable=all --inline-suppr --force -I include -I /usr/local/include --quiet --error-exitcode=0"
+             else
+                cpc_opts="--enable=all --inline-suppr --force -I include -I /usr/local/include -I /usr/local/opt/icu4c/include --suppress=missingIncludeSystem --quiet --error-exitcode=0"
+             fi
+             echo "cpc_opts=$cpc_opts" >> $GITHUB_ENV
+
       - name: bootstrap
         run: sh bootstrap.sh
       - name: configure
@@ -82,7 +91,7 @@ jobs:
           CXX: ${{ matrix.compiler }}
         run: ./configure
       - name: Static Code-check
-        run: cppcheck --enable=all --quiet --error-exitcode=0 -I include .
+        run: cppcheck ${{ env.cpc_opts }} .
       - name: make
         env:
           CXX: ${{ matrix.compiler }}
