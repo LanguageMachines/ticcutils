@@ -100,10 +100,9 @@ inline long millitm() {
 inline std::string time_stamp(){
   char time_line[50];
   time_t lTime;
-  struct tm *curtime;
   time(&lTime);
   struct tm tmp;
-  curtime = localtime_r(&lTime,&tmp);
+  const struct tm *curtime = localtime_r(&lTime,&tmp);
   strftime( time_line, 45, "%Y%m%d:%H%M%S", curtime );
   std::string milli_line = std::to_string( millitm() );
   milli_line = TiCC::pad( milli_line, 3, '0' );

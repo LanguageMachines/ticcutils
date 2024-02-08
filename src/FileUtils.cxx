@@ -109,7 +109,7 @@ namespace TiCC {
       string mess = "TiCC::gatherFilesExt: unable to open dir " + dirName;
       throw runtime_error( mess );
     }
-    struct dirent *entry = readdir( dir );
+    const struct dirent *entry = readdir( dir );
     while ( entry ){
       string name = entry->d_name;
       string fullName = dirName + "/" + name;
@@ -169,7 +169,7 @@ namespace TiCC {
       string mess = "TiCC::gatherFilesMatch: unable to open dir " + dirName;
       throw runtime_error( mess );
     }
-    struct dirent *entry = readdir( dir );
+    const struct dirent *entry = readdir( dir );
     while ( entry ){
       string name = entry->d_name;
       string fullName = dirName + "/" + name;

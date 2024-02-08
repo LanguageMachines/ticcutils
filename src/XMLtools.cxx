@@ -113,7 +113,7 @@ namespace TiCC {
       \return a map of prefix to href
     */
     map<string,string> result;
-    xmlNs *p = node->ns;
+    const xmlNs *p = node->ns;
     while ( p ){
       string pre;
       string val;
@@ -134,7 +134,7 @@ namespace TiCC {
       \return a map of prefix to href
     */
     map<string,string> result;
-    xmlNs *p = node->nsDef;
+    const xmlNs *p = node->nsDef;
     while ( p ){
       string pre;
       string val;

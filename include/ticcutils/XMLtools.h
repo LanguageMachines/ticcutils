@@ -114,7 +114,7 @@ namespace TiCC {
   inline std::string getAttribute( const xmlNode *node,
 				   const std::string& att ){
     if ( node ){
-      xmlAttr *a = node->properties;
+      const xmlAttr *a = node->properties;
       while ( a ){
 	if ( att == to_char(a->name) )
 	  return to_char(a->children->content);
@@ -127,7 +127,7 @@ namespace TiCC {
   inline std::map<std::string,std::string> getAttributes( const xmlNode *node ){
     std::map<std::string,std::string> result;
     if ( node ){
-      xmlAttr *a = node->properties;
+      const xmlAttr *a = node->properties;
       while ( a ){
 	result[to_char(a->name) ]
 	  = to_char(a->children->content);
