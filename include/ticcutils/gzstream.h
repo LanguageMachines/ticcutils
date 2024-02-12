@@ -80,7 +80,7 @@ namespace GZSTREAM_NAMESPACE {
     gzstreambase() { init(&buf); }
     gzstreambase( const std::string&, int );
     ~gzstreambase();
-    virtual void open( const std::string&, int );
+    void my_open( const std::string&, int );
     void close();
     virtual gzstreambuf* rdbuf() { return &buf; }
   };
@@ -97,8 +97,8 @@ namespace GZSTREAM_NAMESPACE {
       : gzstreambase( name, open_mode ), std::istream( &buf ) {}
     gzstreambuf* rdbuf() override { return gzstreambase::rdbuf(); }
     void open( const std::string& name,
-	       int open_mode = std::ios::in ) override {
-      gzstreambase::open( name, open_mode);
+	       int open_mode = std::ios::in ) {
+      gzstreambase::my_open( name, open_mode);
     }
   };
 
@@ -114,8 +114,8 @@ namespace GZSTREAM_NAMESPACE {
       : gzstreambase( name, mode ), std::ostream( &buf ) {}
     gzstreambuf* rdbuf() override { return gzstreambase::rdbuf(); }
     void open( const std::string& name,
-	       int open_mode = std::ios::out ) override {
-      gzstreambase::open( name, open_mode );
+	       int open_mode = std::ios::out ) {
+      gzstreambase::my_open( name, open_mode );
     }
   };
 
@@ -215,14 +215,14 @@ namespace GZSTREAM_NAMESPACE {
 
   gzstreambase::gzstreambase( const std::string& name, int mode ) {
     init( &buf );
-    open( name, mode );
+    my_open( name, mode );
   }
 
   gzstreambase::~gzstreambase() {
     buf.close();
   }
 
-  void gzstreambase::open( const std::string& name, int open_mode ) {
+  void gzstreambase::my_open( const std::string& name, int open_mode ) {
     if ( ! buf.open( name, open_mode ) )
       clear( rdstate() | std::ios::badbit );
   }
