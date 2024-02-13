@@ -276,8 +276,9 @@ namespace TiCC {
       return false;
     }
     char c;
-    while ( infile.get(c))
+    while ( infile.get(c) ){
       outfile << c;
+    }
     return true;
   }
 
