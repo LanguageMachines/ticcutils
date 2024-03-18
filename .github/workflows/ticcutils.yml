@@ -61,7 +61,7 @@ jobs:
                 brew upgrade
                 brew unlink pkg-config
                 brew install pkgconf
-		brew link pkg-config
+                brew link pkg-config
                 brew install autoconf-archive
                 brew install autoconf
                 brew install automake
