@@ -59,6 +59,7 @@ jobs:
                 sudo apt-get install pkgconf autoconf-archive
              else
                 brew upgrade;
+                brew unlink pkg-config;
                 brew install pkgconf;
                 brew install autoconf-archive;
                 brew install autoconf;
