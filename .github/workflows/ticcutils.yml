@@ -56,10 +56,10 @@ jobs:
       - name: Install Build Environment
         run: |
              if [ "$RUNNER_OS" == "Linux" ]; then
-                sudo apt-get install pkg-config autoconf-archive
+                sudo apt-get install pkgconf autoconf-archive
              else
                 brew upgrade;
-                brew install pkg-config;
+                brew install pkgconf;
                 brew install autoconf-archive;
                 brew install autoconf;
                 brew install automake;
