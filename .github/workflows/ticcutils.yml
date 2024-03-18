@@ -58,12 +58,13 @@ jobs:
              if [ "$RUNNER_OS" == "Linux" ]; then
                 sudo apt-get install pkgconf autoconf-archive
              else
-                brew upgrade;
-                brew unlink pkg-config;
-                brew install pkgconf;
-                brew install autoconf-archive;
-                brew install autoconf;
-                brew install automake;
+                brew upgrade
+                brew unlink pkg-config
+                brew install pkgconf
+		brew link pkg-config
+                brew install autoconf-archive
+                brew install autoconf
+                brew install automake
              fi
       - name: Install Dependencies
         run: |
