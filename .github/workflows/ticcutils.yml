@@ -60,7 +60,7 @@ jobs:
              else
                 # installing the newer pkgconf is a PITA, just forget about it
                 brew upgrade
-                brew install -f pkgconf
+                brew install pkg-config
                 brew install autoconf-archive
                 brew install autoconf
                 brew install automake
