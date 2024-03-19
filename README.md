@@ -40,7 +40,7 @@ To be able to succesfully build libticcl from the tarball, you need the
 following pakages:
 - ``autotools``
 - ``autoconf-archive``
-- ``pkg-config``
+- ``pkgconf`` (or ``pkg-config`` which gets obsolete)
 - ``libxml2-dev``
 - ``icu-dev``
 - ``libbz2-dev``
