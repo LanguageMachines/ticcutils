@@ -214,6 +214,7 @@ namespace TiCC {
     return result;
   }
 
+  UnicodeString format_non_printable( const UChar32 );
   UnicodeString format_non_printable( const UnicodeString& );
 
 }

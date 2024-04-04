@@ -481,7 +481,13 @@ void test_format_non_printable(){
   assertEqual( res, "-0xffc3--0xffb8- en -0xffe2--0xff82--0xffac-" );
   UnicodeString uval = "‌A";  // starts with a ZWNJ
   UnicodeString ures = format_non_printable( uval );
-  assertEqual( ures, "-0xffe2--0xff80--0xff8c-A" );
+  assertEqual( ures, "-0x200c-A" );
+  UChar32 uc = L'私';
+  ures = format_non_printable( uc );
+  assertEqual( ures, "-0x79c1-" );
+  uc = U'\U00007982';
+  ures = format_non_printable( uc );
+  assertEqual( ures, "-0x7982-" );
 }
 
 void test_split(){
