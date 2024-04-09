@@ -160,7 +160,7 @@ namespace TiCC {
     /// collect all files matching a regular expression
     /*!
       \param dirName path to search
-      \param match a regular expressiin to match each file
+      \param match a regular expression to match each file
       \param result a list of matching filenames. New finds will be added
       \param recurse if true recurse into all subdirs
     */
