@@ -34,6 +34,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
@@ -112,7 +113,11 @@ namespace TiCC {
     const struct dirent *entry = readdir( dir );
     while ( entry ){
       string name = entry->d_name;
-      string fullName = dirName + "/" + name;
+      string fullName = dirName;
+      if ( !match_back( fullName, "/" ) ){
+	fullName += '/';
+      }
+      fullName += name;
       if ( isDir( fullName ) ){
 	if ( recurse && name[0] != '.' ){
 	  gatherFilesExt( fullName, ext, result, recurse );
