@@ -634,6 +634,11 @@ void test_pretty_print(){
   multimap<string,int> mm = { {"jan",3},{"piet",55}, {"jan",5} };
   out << mm << endl;
   assertEqual( out.str(), "{<jan,3>,<jan,5>,<piet,55>}\n" );
+  out.str("");
+  out.clear();
+  vector<pair<string,int>> pv = { {"marie",35},{"piet",34}, {"klaas",5} };
+  out << pv << endl;
+  assertEqual( out.str(), "[<marie,35>,<piet,34>,<klaas,5>]\n" );
 }
 
 void test_unicodehash(){
