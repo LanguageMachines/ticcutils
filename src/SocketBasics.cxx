@@ -72,7 +72,6 @@ namespace Sockets {
       return false;
     }
     line = "";
-    long int total_count = 0;
     char last_read = 0;
     long int bytes_read = -1;
 #ifdef KEEP
@@ -96,7 +95,6 @@ namespace Sockets {
       }
       if ( ( last_read != 10 ) && ( last_read != 13 ) ) {
 	line += last_read;
-	total_count++;
       }
     }
     if ( bytes_read < 0 ) {
