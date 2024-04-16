@@ -59,9 +59,10 @@ jobs:
                 sudo apt-get install pkgconf autoconf-archive
              else
                 # installing the newer pkgconf on Mac is a PITA,
-                # just forget about it
+                # just use old pkgcfg
                 brew upgrade
                 brew install pkg-config
+                brew install libtool
                 brew install autoconf
                 brew install autoconf-archive
                 brew install automake
