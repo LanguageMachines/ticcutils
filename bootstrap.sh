@@ -28,7 +28,7 @@ if $automake --version|head -1 |grep ' 1\.[^1][0-9]'; then
 fi
 
 # autoconf-archive Debian package, aclocal-archive RPM, obsolete/badly supported OS, installed in home dir
-acdirs="/usr/share/autoconf-archive/ /usr/share/aclocal/ /usr/local/share/aclocal/ $HOME/local/share/autoconf-archive/ /opt/homebrew/share/autoconf-archive/"
+acdirs="/usr/share/autoconf-archive/ /usr/share/aclocal/ /usr/local/share/aclocal/ $HOME/local/share/autoconf-archive/ /opt/homebrew/share/autoconf-archive/*"
 
 found=false
 for d in $acdirs
