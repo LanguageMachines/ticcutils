@@ -35,7 +35,7 @@ acdirs='/usr/share/autoconf-archive/ /usr/share/aclocal/ /usr/local/share/acloca
 found=false
 for d in $acdirs
 do
-    if test -f ${d}libtool.m4
+    if test -f ${d}pkg.m4
     then
         found=true
         break
