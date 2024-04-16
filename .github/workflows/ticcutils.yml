@@ -62,7 +62,7 @@ jobs:
                 # just use old pkgcfg
                 brew upgrade
                 brew install pkg-config
-                # brew install libtool
+                brew install libtool
                 brew install autoconf
                 brew install autoconf-archive
                 brew install automake
