@@ -47,9 +47,9 @@ You need the autoconf-archive Debian package, or the aclocal-archive
 RPM package.  Alternatively, you could install the GNU Autoconf Macro
 Archive's http://autoconf-archive.cryp.to/ac_path_lib.html
 as `pwd`/acinclude.m4.
+SEARCH_PATH: $acdirs
 EOT
 fi
-
 
 # Debian automake package installs as automake-version.  Use this
 # to make sure the right automake is being used.
