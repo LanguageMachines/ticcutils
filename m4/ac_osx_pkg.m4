@@ -40,6 +40,13 @@ case ${host_os} in
         export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/opt/$i/lib/pkgconfig"
       fi
     done
+    for i in `ls /opt/homewbrew/opt`
+    do
+      if test -d "/opt/homebrew/opt/$i/lib/pkgconfig"
+      then
+        export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/opt/homebrew/opt/$i/lib/pkgconfig"
+      fi
+    done
     ;;
 esac
 ])
