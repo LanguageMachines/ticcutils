@@ -75,7 +75,7 @@ jobs:
                 sudo apt-get install zlib1g-dev cppcheck
              else
                 brew install libxml2
-                brew install icu4c
+                brew reinstall icu4c
                 brew install bzip2
                 brew install zlib
                 brew install cppcheck
