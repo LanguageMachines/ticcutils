@@ -64,7 +64,7 @@ namespace TiCC {
     std::ofstream& os()
       /// return a reference to the associated file
       { return *_os; };
-    const std::string tmp_name()
+    const std::string& tmp_name()
     /// return the generated name of the associated file
     { return _temp_name; };
   private:
