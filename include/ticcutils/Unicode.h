@@ -64,7 +64,7 @@ namespace TiCC {
     ~UnicodeNormalizer();
     UnicodeString normalize( const UnicodeString& );
     const std::string setMode( const std::string& );
-    const std::string getMode() const { return mode; };
+    const std::string& getMode() const { return mode; };
   private:
     const Normalizer2 *_normalizer;
     std::string mode;
