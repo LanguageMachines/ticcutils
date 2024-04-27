@@ -126,7 +126,7 @@ namespace TiCC {
     }
     void set_short_options( const std::string& s );
     void set_long_options( const std::string& s );
-    std::string prog_name() const {
+    const std::string& prog_name() const {
       /// return the stored name of the calling program (normally argv[0])
       return _prog_name;
     };

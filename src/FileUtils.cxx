@@ -308,13 +308,12 @@ namespace TiCC {
       \param name path description
       \return true if the file is created and available for writing
     */
-    string path;
     string::size_type pos = name.rfind('/');
     if ( pos == name.length()-1 ){
       return createTruePath( name );
     }
     else if ( pos != string::npos ){
-      path = name.substr( 0, pos+1 );
+      string path = name.substr( 0, pos+1 );
       if ( !createTruePath( path ) ){
 	return false;
       }

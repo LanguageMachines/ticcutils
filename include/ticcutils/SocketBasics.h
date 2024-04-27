@@ -81,7 +81,7 @@ namespace Sockets {
     friend class ServerSocket;
   public:
     bool connect( const std::string&, const std::string& );
-    std::string getClientName() const {
+    const std::string& getClientName() const {
       /*!
 	\return the name of the Client (auto-generated on creation)
       */
