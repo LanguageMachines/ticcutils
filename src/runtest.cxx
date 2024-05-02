@@ -1137,8 +1137,10 @@ DEFINE_ENUM_FLAG_OPERATORS(class_flags);
 void test_enum_flags() {
   {
     flags f = flags::Two|flags::Four;
+    // cppcheck-suppress knownConditionTrueFalse
     assertTrue( f == 6 );
     f = ~f;
+    // cppcheck-suppress knownConditionTrueFalse
     assertEqual( f, -7 );
     f &= flags::One;
     std::stringstream ss;
@@ -1154,6 +1156,7 @@ void test_enum_flags() {
     std::stringstream ss;
     ss << f;
     assertEqual( ss.str(), "6" );
+    // cppcheck-suppress knownConditionTrueFalse
     assertTrue( (int)f == 6 );
     f = ~f;
     assertEqual( int(f), -7 );
