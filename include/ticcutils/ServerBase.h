@@ -49,8 +49,8 @@ namespace TiCCServer {
   /// HTTP connections
   class ServerBase {
   private:
-    ServerBase( const ServerBase& ); // no copies allowed
-    ServerBase& operator=( const ServerBase& );  // no copies allowed
+    ServerBase( const ServerBase& ) = delete; // no copies allowed
+    ServerBase& operator=( const ServerBase& ) = delete;  // no copies allowed
   public:
     explicit ServerBase( const TiCC::Configuration *, void * );
     virtual ~ServerBase(){ delete _socket; delete _config; };
@@ -172,8 +172,8 @@ namespace TiCCServer {
     int _id;
     fdistream _is;
     fdostream _os;
-    childArgs( const childArgs& ); // no copies allowed
-    childArgs& operator=( const childArgs& ); // no copies allowed
+    childArgs( const childArgs& ) = delete; // no copies allowed
+    childArgs& operator=( const childArgs& ) = delete; // no copies allowed
   };
 
   /// \brief TcpServerBase is a baseclass for TCP connections

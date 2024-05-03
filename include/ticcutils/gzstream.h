@@ -42,8 +42,8 @@ namespace GZSTREAM_NAMESPACE {
   /// \brief Internal class to implement gzstream. See below for user classes.
   class gzstreambuf : public std::streambuf {
   private:
-    gzstreambuf( const gzstreambuf& ); // no copies please
-    gzstreambuf& operator=( const gzstreambuf& ); // no copies please
+    gzstreambuf( const gzstreambuf& ) =delete; // no copies please
+    gzstreambuf& operator=( const gzstreambuf& ) =delete; // no copies please
 
     static const int bufferSize = 47+256;    // size of data buff
     // totals 512 bytes under g++ for igzstream at the end.

@@ -83,8 +83,9 @@ namespace TiCC {
     UnicodeString Pattern() const;
     bool set_debug( bool b ){ bool r = _debug; _debug = b; return r; };
   private:
-    UnicodeRegexMatcher( const UnicodeRegexMatcher& );  // inhibit copies
-    UnicodeRegexMatcher& operator=( const UnicodeRegexMatcher& ); // inhibit copies
+     // inhibit copies!
+    UnicodeRegexMatcher( const UnicodeRegexMatcher& ) =delete;
+    UnicodeRegexMatcher& operator=( const UnicodeRegexMatcher& ) = delete;
     RegexPattern *pattern;
     RegexMatcher *matcher;
     UnicodeRegexMatcher();
