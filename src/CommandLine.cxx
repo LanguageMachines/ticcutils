@@ -193,7 +193,7 @@ namespace TiCC {
       }
     }
     if ( debug ){
-      cerr << "is_present '" << c << "' FAILS " << endl;
+      cerr << "is_present '" << c << "' No " << endl;
     }
     return false;
   }
@@ -217,7 +217,7 @@ namespace TiCC {
       return true;
     }
     if ( debug ){
-      cerr << "is_present '" << w << "' FAILS " << endl;
+      cerr << "is_present '" << w << "' No " << endl;
     }
     return false;
   }
@@ -249,7 +249,7 @@ namespace TiCC {
       }
     }
     if ( debug ){
-      cerr << "extract '" << c << "' FAILS " << endl;
+      cerr << "extract '" << c << "' No " << endl;
     }
     return false;
   }
@@ -275,7 +275,7 @@ namespace TiCC {
       }
     }
     if ( debug ){
-      cerr << "extract '" << w << "' FAILS " << endl;
+      cerr << "extract '" << w << "' No " << endl;
     }
     return false;
   }
