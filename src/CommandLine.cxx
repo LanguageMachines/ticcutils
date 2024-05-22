@@ -29,6 +29,7 @@
 #include "ticcutils/CommandLine.h"
 
 #include <memory>
+#include <iomanip>
 #include <cstddef> // for size_t
 #include <string>
 #include <vector>
@@ -524,6 +525,11 @@ namespace TiCC {
 	      Optword = Option.substr( 2, pos-2 );
 	      OptValue = Option.substr( pos+1 );
 	    }
+	    if ( Optword == "SetCommandLineDebug" ){
+	      debug = true;
+	      cerr << Optword << " SET DEBUG TRUE!!" << endl;
+	      break;
+	    }
 	    argument.stat = LONG;
 	    argument.s = Optword;
 	    argument.val = OptValue;
@@ -576,14 +582,15 @@ namespace TiCC {
 	  bool has_par = valid_long_par.find( it->s ) != valid_long_par.end();
 	  bool has_opt = valid_long_opt.find( it->s ) != valid_long_opt.end();
 	  if ( debug ){
+	    cerr << std::quoted(it->s);
 	    if ( has_par ){
-	      cerr << "\"" << it->s << "\" must have a parameter." << endl;
+	      cerr << " must have a parameter." << endl;
 	    }
 	    else if ( has_opt ){
-	      cerr << "\"" << it->s << "\" may have a parameter!" << endl;
+	      cerr << " may have a parameter!" << endl;
 	    }
 	    else {
-	      cerr << "\"" << it->s << "\" doesn't take a parameter." << endl;
+	      cerr << " doesn't take a parameter." << endl;
 	    }
 	  }
 	  if ( it->val.empty() ){

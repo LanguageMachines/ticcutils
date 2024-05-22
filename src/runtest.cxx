@@ -1237,7 +1237,7 @@ int main( const int argc, const char* argv[] ){
   test_opts( opts1 );
   CL_Options opts2;
   opts2.allow_args( "t:qf:d:", "test:,raar" );
-  opts2.parse_args( "-ffalse +t true --test=test -d iets -q --raar blaat arg1 arg2" );
+  opts2.parse_args( "-ffalse +t true --test=test -d iets -q --raar blaat arg1 arg2 --SetCommandLineDebug" );
   test_opts( opts2 );
   test_subtests_fail();
   test_subtests_ok();
