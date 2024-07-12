@@ -18,10 +18,6 @@ if $cxx_flags_were_set; then
   CXXFLAGS=$CXXFLAGS
 fi
 
-# Checks for programs.
-AC_PROG_CXX([g++ clang++] )
-LT_INIT
-
 AX_CHECK_COMPILE_FLAG(
 	-std=c++17,
 	[CXXFLAGS="$CXXFLAGS -std=c++17"],
@@ -32,6 +28,10 @@ AX_CHECK_COMPILE_FLAG(
 		[AC_MSG_ERROR([c++17 is required])]
 				) ]
 		    )
+# Checks for programs.
+AC_PROG_CXX([g++ clang++] )
+LT_INIT
+
 # when running tests, use CXX
 AC_LANG([C++])
 
