@@ -18,14 +18,14 @@ if $cxx_flags_were_set; then
   CXXFLAGS=$CXXFLAGS
 fi
 
-AX_CHECK_COMPILE_FLAG(
-	-std=c++17,
-	[CXXFLAGS="$CXXFLAGS -std=c++17"],
-	[ AX_CHECK_COMPILE_FLAG(
-		-std=c++14,
-		[CXXFLAGS="$CXXFLAGS -std=c++14"
-		 AC_MSG_NOTICE([using obsolete C++14, may not work on newer systems])],
-		[AC_MSG_ERROR([c++17 is required])]
+# AX_CHECK_COMPILE_FLAG(
+#	-std=c++17,
+#	[CXXFLAGS="$CXXFLAGS -std=c++17"],
+#	[ AX_CHECK_COMPILE_FLAG(
+#		-std=c++14,
+#		[CXXFLAGS="$CXXFLAGS -std=c++14"
+#		 AC_MSG_NOTICE([using obsolete C++14, may not work on newer systems])],
+#		[AC_MSG_ERROR([c++17 is required])]
 				) ]
 		    )
 # Checks for programs.
