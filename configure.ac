@@ -29,6 +29,8 @@ fi
 #				) ]
 #		    )
 
+CXXFLAGS="$CXXFLAGS -std=c++14"
+
 # Checks for programs.
 AC_PROG_CXX([g++ clang++] )
 LT_INIT
