@@ -26,7 +26,7 @@ fi
 #		[CXXFLAGS="$CXXFLAGS -std=c++14"
 #		 AC_MSG_NOTICE([using obsolete C++14, may not work on newer systems])],
 #		[AC_MSG_ERROR([c++17 is required])]
-				) ]
+#				) ]
 		    )
 # Checks for programs.
 AC_PROG_CXX([g++ clang++] )
