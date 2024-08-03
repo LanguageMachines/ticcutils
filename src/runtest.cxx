@@ -50,6 +50,7 @@
 using namespace std;
 using namespace TiCC;
 using namespace icu;
+using icu::operator<<;
 
 void helper(){
   throw runtime_error("fout");
