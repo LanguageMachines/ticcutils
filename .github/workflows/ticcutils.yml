@@ -41,7 +41,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-14]
-        compiler: [g++-12, clang++]
+        compiler: [g++-13, clang++]
 
     steps:
       - name: Cancel Previous Runs
@@ -114,7 +114,6 @@ jobs:
         run: |
           cid=$(echo ${{matrix.compiler}} | cut -d\+ -f1)
           echo "cid=$cid" >> $GITHUB_ENV
-      - run: echo "${{env.cid}}"
       - name: make check
         id: check
         env:
