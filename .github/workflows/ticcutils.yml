@@ -98,6 +98,8 @@ jobs:
         env:
           CXX: ${{ matrix.compiler }}
         run: ./configure
+      - name: show config.log
+        run: cat config.log
       - name: Static Code-check
         run: cppcheck ${{ env.cpc_opts }} .
       - name: make
