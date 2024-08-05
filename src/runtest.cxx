@@ -80,12 +80,12 @@ inline void test_eq( const char* F, const char* fun, int L,
 
 template <>
 inline void test_eq( const char* F, const char* fun, int L,
-		     const UnicodeString& s1, const char& s2, MyTSerie& T ){
+		     const UnicodeString& s1, const string& s2, MyTSerie& T ){
   if ( !testSilent && T.isDefault() ){
     std::cout << "test: " << F << "(" << fun << ":" << L << "): ";
   }
   ++T._tests;
-  if ( s1 != s2 ){
+  if ( s1 != TiCC::UnicodeFromUTF8(s2) ){
     ++T._fails;
     if ( T.isDefault() ){
       std::cout << FAIL << std::endl;
@@ -97,6 +97,32 @@ inline void test_eq( const char* F, const char* fun, int L,
     s1.toUTF8String( utf8_1 );
     std::cerr << F << "(" << fun << ":" << L << ") : '" << utf8_1 << "' != '"
 	      << s2 << "'" << std::endl;
+  }
+  else if ( !testSilent && T.isDefault() ){
+    std::cout << OK << std::endl;
+  }
+}
+
+template <>
+inline void test_eq( const char* F, const char* fun, int L,
+		     const UnicodeString& s1, const char& s2, MyTSerie& T ){
+  if ( !testSilent && T.isDefault() ){
+    std::cout << "test: " << F << "(" << fun << ":" << L << "): ";
+  }
+  ++T._tests;
+  string ss1 = TiCC::UnicodeToUTF8(s1);
+  string ss2;
+  ss2 += s2;
+  if ( ss1 != ss2 ){
+    ++T._fails;
+    if ( T.isDefault() ){
+      std::cout << FAIL << std::endl;
+    }
+    else {
+      std::cerr << "\t";
+    }
+    std::cerr << F << "(" << fun << ":" << L << ") : '" << ss1 << "' != '"
+	      << ss2 << "'" << std::endl;
   }
   else if ( !testSilent && T.isDefault() ){
     std::cout << OK << std::endl;
@@ -1058,11 +1084,11 @@ void test_unicode_split_at(){
   UnicodeString line = "Derarekatrarekrabtrarederarekrullen\nrarevanrarederaretrap.";
   vector<UnicodeString> res = split_at( line, "rare" );
   assertEqual( res.size(), 8 );
-  assertEqual( res[5], "van" );
+  assertEqual( res[5], TiCC::UnicodeFromUTF8("van") );
   vector<UnicodeString> res2 = split_at( line, "rare", 4 );
   assertEqual( res2.size(), 4 );
-  assertEqual( res2[2], "krabt" );
-  assertEqual( res2[3], "derarekrullen\nrarevanrarederaretrap." );
+  assertEqual( res2[2], TiCC::UnicodeFromUTF8("krabt") );
+  assertEqual( res2[3], TiCC::UnicodeFromUTF8("derarekrullen\nrarevanrarederaretrap.") );
 }
 
 void test_unicode_split_at_first(){
