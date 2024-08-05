@@ -483,13 +483,16 @@ void test_format_non_printable(){
   assertEqual( res, "-0xffc3--0xffb8- en -0xffe2--0xff82--0xffac-" );
   UnicodeString uval = "‌A";  // starts with a ZWNJ
   UnicodeString ures = format_non_printable( uval );
-  assertEqual( ures, "-0x200c-A" );
+  UnicodeString ures_ok = "-0x200c-A";
+  assertEqual( ures, ures_ok );
   UChar32 uc = L'私';
   ures = format_non_printable( uc );
-  assertEqual( ures, "-0x79c1-" );
+  UnicodeString ures_ok2 = "-0x79c1-";
+  assertEqual( ures, ures_ok2 );
   uc = U'\U00007982';
   ures = format_non_printable( uc );
-  assertEqual( ures, "-0x7982-" );
+  UnicodeString ures_ok3 = "-0x7982-";
+  assertEqual( ures, ures_ok3 );
 }
 
 void test_split(){
@@ -649,7 +652,8 @@ void test_unicodehash(){
   assertEqual( index, 1 );
   index = uh.hash( "peer" );
   assertEqual( index, 2 );
-  index = uh.hash( "禁禂" );
+  UnicodeString jap = "禁禂";
+  index = uh.hash( jap );
   assertEqual( index, 3 );
   index = uh.hash( "peer" );
   assertEqual( index, 2 );
@@ -661,7 +665,7 @@ void test_unicodehash(){
   index = uh.hash( greek2 );
   assertEqual( index, 4 );
   assertEqual( uh.num_of_entries(), 4 );
-  assertEqual( uh.reverse_lookup( 3 ), "禁禂" );
+  assertEqual( uh.reverse_lookup( 3 ), jap );
 }
 
 void test_base_dir(){
@@ -923,17 +927,22 @@ void test_unicode_trim(){
   UnicodeString tr1 = "dit is een test";
   UnicodeString tr2 = "\t  dit is een test \r ";
   UnicodeString tr3 = "    \ndit is een test";
-  assertEqual( utrim(tr1), "dit is een test" );
-  assertEqual( utrim(tr2), "dit is een test" );
-  assertEqual( utrim(tr3), "dit is een test" );
-  assertEqual( ltrim(tr1), "dit is een test" );
-  assertEqual( ltrim(tr2), "dit is een test \r " );
-  assertEqual( ltrim(tr3), "dit is een test" );
-  assertEqual( rtrim(tr1), "dit is een test" );
-  assertEqual( rtrim(tr2), "\t  dit is een test" );
-  assertEqual( rtrim(tr3), "    \ndit is een test" );
-  assertEqual( utrim(tr2, " \n\r"), "\t  dit is een test" );
-  assertEqual( utrim(tr2, " \t"), "dit is een test \r" );
+  UnicodeString ok = "dit is een test";
+  UnicodeString ok2 = "dit is een test \r ";
+  UnicodeString ok3 = "\t  dit is een test";
+  UnicodeString ok4 = "    dit is een test";
+  UnicodeString ok5 = "dit is een test \r";
+  assertEqual( utrim(tr1), ok );
+  assertEqual( utrim(tr2), ok );
+  assertEqual( utrim(tr3), ok );
+  assertEqual( ltrim(tr1), ok );
+  assertEqual( ltrim(tr2), ok2 );
+  assertEqual( ltrim(tr3), ok );
+  assertEqual( rtrim(tr1), ok );
+  assertEqual( rtrim(tr2), ok3 );
+  assertEqual( rtrim(tr3), tr3 );
+  assertEqual( utrim(tr2, " \n\r"), ok3 );
+  assertEqual( utrim(tr2, " \t"), ok5 );
 }
 
 void test_unicode_split(){
