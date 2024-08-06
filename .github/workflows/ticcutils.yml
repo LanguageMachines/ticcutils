@@ -60,7 +60,10 @@ jobs:
              if [ "$RUNNER_OS" == "Linux" ]; then
                 sudo apt-get install pkgconf autoconf-archive
              else
+                # installing the newer pkgconf on Mac is a PITA,
+                # just use old pkgcfg
                 brew upgrade
+                brew install pkg-config
                 brew install libtool
                 brew install autoconf
                 brew install autoconf-archive
@@ -73,10 +76,10 @@ jobs:
                 sudo apt-get install libicu-dev libxml2-dev libbz2-dev;
                 sudo apt-get install zlib1g-dev cppcheck
              else
-                # brew install libxml2
-                brew install icu4c
-                # brew install bzip2
-                # brew install zlib
+                brew install libxml2
+                # brew reinstall icu4c
+                brew install bzip2
+                brew install zlib
                 brew install cppcheck
              fi
       - name: Configure CppCheck
