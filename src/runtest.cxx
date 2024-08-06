@@ -51,52 +51,6 @@ using namespace std;
 using namespace TiCC;
 using namespace icu;
 
-template <>
-inline void test_eq( const char* F, const char* fun, int L,
-		     const UnicodeString& s1, const UnicodeString& s2, MyTSerie& T ){
-  if ( !testSilent && T.isDefault() ){
-    std::cout << "test: " << F << "(" << fun << ":" << L << "): ";
-  }
-  ++T._tests;
-  if ( s1 != s2 ){
-    ++T._fails;
-    if ( T.isDefault() ){
-      std::cout << FAIL << std::endl;
-    }
-    else {
-      std::cerr << "\t";
-    }
-    std::cerr << F << "(" << fun << ":" << L << ") : '" << s1 << "' != '"
-	      << s2 << "'" << std::endl;
-  }
-  else if ( !testSilent && T.isDefault() ){
-    std::cout << OK << std::endl;
-  }
-}
-
-template <>
-inline void test_eq( const char* F, const char* fun, int L,
-		     const UnicodeString& s1, const char& s2, MyTSerie& T ){
-  if ( !testSilent && T.isDefault() ){
-    std::cout << "test: " << F << "(" << fun << ":" << L << "): ";
-  }
-  ++T._tests;
-  if ( s1 != s2 ){
-    ++T._fails;
-    if ( T.isDefault() ){
-      std::cout << FAIL << std::endl;
-    }
-    else {
-      std::cerr << "\t";
-    }
-    std::cerr << F << "(" << fun << ":" << L << ") : '" << s1 << "' != '"
-	      << s2 << "'" << std::endl;
-  }
-  else if ( !testSilent && T.isDefault() ){
-    std::cout << OK << std::endl;
-  }
-}
-
 void helper(){
   throw runtime_error("fout");
 }
