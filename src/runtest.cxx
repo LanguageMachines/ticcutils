@@ -967,11 +967,9 @@ void test_unicode( const string& path ){
   UnicodeString u2 = uc1;
   u2 += UnicodeString( uc2 );
   string s1 = UnicodeToUTF8( u1 );
-  UnicodeString ok1 = "私";
-  assertEqual( s1 , ok1 );
+  assertEqual( s1 , "私" );
   string s2 = UnicodeToUTF8( u2 );
-  UnicodeString ok2 = "禁禂";
-  assertEqual( s2 , ok2 );
+  assertEqual( s2 , "禁禂" );
   ifstream in( path + "utf16bom.nl" );
   string line;
   getline( in, line );
