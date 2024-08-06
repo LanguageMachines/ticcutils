@@ -124,6 +124,7 @@ jobs:
       - name: show log
         if: ${{ steps.check.outcome != 'success' }}
         run: cat src/test-suite.log
+        continue-on-error: true
       - name: Notify IRC of failure
         if: ${{ steps.check.outcome != 'success' }}
         uses: Gottox/irc-message-action@v2
