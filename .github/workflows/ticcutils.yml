@@ -74,7 +74,7 @@ jobs:
                 sudo apt-get install zlib1g-dev cppcheck
              else
                 # brew install libxml2
-                # brew install icu4c
+                brew install icu4c
                 # brew install bzip2
                 # brew install zlib
                 brew install cppcheck
@@ -120,7 +120,7 @@ jobs:
         continue-on-error: true
       - name: show log
         run: cat src/test-suite.log
-        continue-on-error: true
+
       - name: Notify IRC of failure
         if: ${{ steps.check.outcome != 'success' }}
         uses: Gottox/irc-message-action@v2
