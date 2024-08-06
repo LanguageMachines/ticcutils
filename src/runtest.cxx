@@ -37,6 +37,7 @@
 #include "ticcutils/PrettyPrint.h"
 #include "ticcutils/zipper.h"
 #include "ticcutils/Version.h"
+#include "ticcutils/UnitTest.h"
 #include "ticcutils/FileUtils.h"
 #include "ticcutils/CommandLine.h"
 #include "ticcutils/Configuration.h"
@@ -45,7 +46,6 @@
 #include "ticcutils/Unicode.h"
 #include "ticcutils/json.hpp"
 #include "ticcutils/enum_flags.h"
-#include "ticcutils/UnitTest.h"
 
 using namespace std;
 using namespace TiCC;
