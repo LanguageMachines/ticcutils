@@ -66,12 +66,8 @@ inline void test_eq( const char* F, const char* fun, int L,
     else {
       std::cerr << "\t";
     }
-    string utf8_1;
-    s1.toUTF8String( utf8_1 );
-    string utf8_2;
-    s1.toUTF8String( utf8_2 );
-    std::cerr << F << "(" << fun << ":" << L << ") : '" << utf8_1 << "' != '"
-	      << utf8_2 << "'" << std::endl;
+    std::cerr << F << "(" << fun << ":" << L << ") : '" << s1 << "' != '"
+	      << s2 << "'" << std::endl;
   }
   else if ( !testSilent && T.isDefault() ){
     std::cout << OK << std::endl;
@@ -93,9 +89,7 @@ inline void test_eq( const char* F, const char* fun, int L,
     else {
       std::cerr << "\t";
     }
-    string utf8_1;
-    s1.toUTF8String( utf8_1 );
-    std::cerr << F << "(" << fun << ":" << L << ") : '" << utf8_1 << "' != '"
+    std::cerr << F << "(" << fun << ":" << L << ") : '" << s1 << "' != '"
 	      << s2 << "'" << std::endl;
   }
   else if ( !testSilent && T.isDefault() ){
