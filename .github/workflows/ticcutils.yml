@@ -99,7 +99,8 @@ jobs:
           CXX: ${{ matrix.compiler }}
         run: ./configure
         continue-on-error: true
-      - name: show config.log
+      - name: config.log
+        if: ${{ steps.configure.outcome != 'success' }}
         run: cat config.log
       - name: Static Code-check
         run: cppcheck ${{ env.cpc_opts }} .
