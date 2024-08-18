@@ -34,6 +34,7 @@ jobs:
           message: >
             ${{ github.actor }} started a build of ticcutils
             [${{ steps.extract_branch.outputs.branch }}]
+            " ${{ github.event.head_commit.message }}"
 
   build:
     runs-on: ${{ matrix.os }}
