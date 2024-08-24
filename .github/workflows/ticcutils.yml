@@ -51,20 +51,13 @@ jobs:
           access_token: ${{ github.token }}
 
       - uses: actions/checkout@v4.1.1
-      - uses: webiny/action-post-run@3.1.0
-        id: post-run-command
-        with:
-          run: echo "this thing works!"
 
       - name: Install Build Environment
         run: |
              if [ "$RUNNER_OS" == "Linux" ]; then
                 sudo apt-get install pkgconf autoconf-archive
              else
-                # installing the newer pkgconf on Mac is a PITA,
-                # just use old pkgcfg
                 brew upgrade
-                brew install pkg-config
                 brew install libtool
                 brew install autoconf
                 brew install autoconf-archive
@@ -91,32 +84,47 @@ jobs:
                 cpc_opts="--enable=warning,style --inline-suppr --force -I include --check-level=exhaustive --quiet --error-exitcode=0"
              fi
              echo "cpc_opts=$cpc_opts" >> $GITHUB_ENV
+      - name: compiler ID
+        run: |
+          cid=$(echo ${{matrix.compiler}} | cut -d\+ -f1)
+          echo "cid=$cid" >> $GITHUB_ENV
 
       - name: bootstrap
         run: sh bootstrap.sh
 
       - name: configure
+        id: configure
         env:
           CXX: ${{ matrix.compiler }}
         run: ./configure
         continue-on-error: true
-      - name: config.log
+      - name: get status configure
         if: ${{ steps.configure.outcome != 'success' }}
+        run: echo "action_status=configure" >> $GITHUB_ENV
+      - name: config.log
+        if: ${{ env.action_status != '' }}
         run: cat config.log
       - name: Static Code-check
         run: cppcheck ${{ env.cpc_opts }} .
       - name: make
+        id: make
+        if: ${{ env.action_status == '' }}
         env:
           CXX: ${{ matrix.compiler }}
         run: make
+        continue-on-error: true
+      - name: get status make
+        if: ${{ steps.make.outcome != 'success' }}
+        run: echo "action_status=make" >> $GITHUB_ENV
       - name: install
+        id: install
         env:
           CXX: ${{ matrix.compiler }}
         run: sudo make install
-      - id: compiler
-        run: |
-          cid=$(echo ${{matrix.compiler}} | cut -d\+ -f1)
-          echo "cid=$cid" >> $GITHUB_ENV
+        continue-on-error: true
+      - name: get status install
+        if: ${{ steps.install.outcome != 'success' }}
+        run: echo "action_status=install" >> $GITHUB_ENV
       - name: make check
         id: check
         env:
@@ -124,20 +132,23 @@ jobs:
           LD_LIBRARY_PATH: $LD_LIBRARY_PATH:/usr/local/lib
         run: make check
         continue-on-error: true
+      - name: get status install
+        if: ${{ steps.check.outcome != 'success' }}
+        run: echo "action_status=check" >> $GITHUB_ENV
       - name: show log
         if: ${{ steps.check.outcome != 'success' }}
         run: cat src/test-suite.log
         continue-on-error: true
       - name: Notify IRC of failure
-        if: ${{ steps.check.outcome != 'success' }}
+        if: ${{ env.action_status != '' }}
         uses: Gottox/irc-message-action@v2
         with:
           server: irc.uvt.nl
           channel: '#gitlama'
           nickname: GH-${{ runner.os }}-${{ env.cid }}
-          message: "ticcutils [${{ needs.notification.outputs.branch }}] build with ${{ matrix.compiler }} by ${{ github.actor }} on ${{ matrix.os }}: \u00034FAILED\u0003"
+          message: "ticcutils [${{ needs.notification.outputs.branch }}] build with ${{ matrix.compiler }} by ${{ github.actor }} on ${{ matrix.os }}: \u00034FAILED\u0003 in step ${{ env.action_status }}"
       - name: Notify IRC of succes
-        if: ${{ steps.check.outcome == 'success' }}
+        if: ${{ env.action_status == '' }}
         uses: Gottox/irc-message-action@v2
         with:
           server: irc.uvt.nl
