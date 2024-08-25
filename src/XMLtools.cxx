@@ -193,22 +193,22 @@ namespace TiCC {
 #ifdef DEBUG_XPATH
     {
       cerr << m.size() << " namespaces for node " << Name( ctxt->node ) << endl;
-      for ( auto const& it : m ){
-	cerr << it.first << ":" << it.second << endl;
+      for ( auto const& [key,val] : m ){
+	cerr << key << ":" << val << endl;
       }
     }
 #endif
-    for ( auto const& it : m ){
-      if ( it.first.empty() ){
+    for ( auto const& [key,value] : m ){
+      if ( key.empty() ){
 	// the anonymous namespace
 	xmlXPathRegisterNs( ctxt,
 			    to_xmlChar(defaultP.c_str()),
-			    to_xmlChar(it.second.c_str()) );
+			    to_xmlChar(value.c_str()) );
       }
       else {
 	xmlXPathRegisterNs( ctxt,
-			    to_xmlChar(it.first.c_str()),
-			    to_xmlChar(it.second.c_str()) );
+			    to_xmlChar(key.c_str()),
+			    to_xmlChar(value.c_str()) );
       }
     }
   }
