@@ -32,7 +32,6 @@
 #include <fstream>
 
 namespace TiCC {
-  std::vector<std::string> glob( const std::string&);
   std::vector<std::string> searchFilesExt( const std::string&,
 					   const std::string&,
 					   bool = true );

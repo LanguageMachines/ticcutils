@@ -41,34 +41,12 @@
 #include <filesystem>
 #include <cstdlib>
 #include <unistd.h>
-#include <glob.h>
 #include <sys/stat.h>
-#include <dirent.h>
 #include <regex>
 #include "ticcutils/StringOps.h"
 
 using namespace std;
 namespace TiCC {
-
-  vector<string> glob( const string& pat ){
-    ///  return a 'globbed; list of files from 'pat'
-    vector<string> result;
-    glob_t glob_result;
-    int res = glob(pat.c_str(),GLOB_TILDE,NULL,&glob_result);
-    if ( res == GLOB_NOMATCH ){
-      return result;
-    }
-    else if ( res != 0 ){
-      string mess = "TiCC::glob: ";
-      mess += strerror( errno );
-      throw runtime_error( mess );
-    }
-    for ( unsigned int i=0; i<glob_result.gl_pathc; ++i ){
-      result.push_back(string(glob_result.gl_pathv[i]));
-    }
-    globfree(&glob_result);
-    return result;
-  }
 
   bool isDir( const string& name ){
     /// check if 'name' is a directory
@@ -90,40 +68,85 @@ namespace TiCC {
     return filesystem::is_regular_file(the_path);
   }
 
-  void gatherFilesExt( const string& dirName, const string& ext,
-		       vector<string>& result, bool recurse ){
-    /// collect all files matching a certain extension
+  bool createDirectory( const filesystem::path& p ){
+    /// create a directory using 'name'
     /*!
-      \param dirName path to search
-      \param ext the extension to match
-      \param result a list of matching filenames. New finds will be added
-      \param recurse if true recurse into all subdirs
+      \param path the path description
+      \return true if the path is created and a directory
+      This function attempts to open a path /a/b/c/ from an expression like:
+      \verbatim
+      /a/b/c/
+      ./a/b/c/
+      a/b/c/
+      \endverbatim
+      It will recursively create all intermediate directories when needed
     */
-    DIR *dir = opendir( dirName.c_str() );
-    if ( !dir ){
-      string mess = "TiCC::gatherFilesExt: unable to open dir " + dirName;
-      throw runtime_error( mess );
+    error_code ec;
+    filesystem::create_directory( p, ec );
+    return ec.value() == 0;
+  }
+
+  bool createPath( const string& name ){
+    /// create a path (directory OR file) using 'name'
+    /*!
+      \param name path description
+      \return true if the file is created and available for writing
+    */
+    string::size_type pos = name.rfind('/');
+    if ( pos == name.length()-1 ){
+      // a directory for sure
+      filesystem::path path(name);
+      return createDirectory( path );
     }
-    const struct dirent *entry = readdir( dir );
-    while ( entry ){
-      string name = entry->d_name;
-      string fullName = dirName;
-      if ( !match_back( fullName, "/" ) ){
-	fullName += '/';
+    else if ( pos != string::npos ){
+      // chop of the possible filename
+      string dir_path = name.substr( 0, pos+1 );
+      filesystem::path path(dir_path);
+      if ( !createDirectory( path ) ){
+	return false;
       }
-      fullName += name;
-      if ( isDir( fullName ) ){
-	if ( recurse && name[0] != '.' ){
-	  gatherFilesExt( fullName, ext, result, recurse );
+    }
+    ofstream os( name );
+    if ( !os.good() ){
+      return false;
+    }
+    return true;
+  }
+
+  void erase( const std::string& name ){
+    /// remove a file
+    filesystem::path p(name);
+    error_code ec;
+    if ( !filesystem::remove( p ) ){
+      throw runtime_error( "could not erase file/path '" + name + "': "
+			   + ec.message() );
+    }
+  }
+
+  vector<string> gather_files_ext( const string& dirName,
+				   const string& ext,
+				   bool recurse ){
+    vector<string> result;
+    filesystem::path dir_path( dirName );
+    if ( recurse ){
+      for ( const auto& entry : filesystem::recursive_directory_iterator(dir_path) ){
+	auto p = entry.path();
+	if ( ext.empty() ||
+	     TiCC::match_back( p, ext ) ){
+	  result.push_back( p );
 	}
       }
-      else if ( ext.empty() ||
-		TiCC::match_back( fullName, ext ) ){
-	result.push_back( fullName );
-      }
-      entry = readdir( dir );
     }
-    closedir( dir );
+    else {
+      for ( const auto& entry : filesystem::directory_iterator(dir_path) ){
+	auto p = entry.path();
+	if ( ext.empty() ||
+	     TiCC::match_back( p, ext ) ){
+	  result.push_back( p );
+	}
+      }
+    }
+    return result;
   }
 
   vector<string> searchFilesExt( const string& name,
@@ -150,39 +173,38 @@ namespace TiCC {
 	+ "' doesn't match a file or directory.";
       throw runtime_error( mess );
     }
-    gatherFilesExt( name, ext, result, recurse );
-    return result;
+    return gather_files_ext( name, ext, recurse );
   }
 
-  void gatherFilesMatch( const string& dirName, const regex& match,
-			 vector<string>& result, bool recurse ){
+  vector<string> gather_files_match( const string& dirName,
+				     const regex& match,
+				     bool recurse ){
     /// collect all files matching a regular expression
     /*!
       \param dirName path to search
       \param match a regular expression to match each file
-      \param result a list of matching filenames. New finds will be added
       \param recurse if true recurse into all subdirs
+      \return  a list of matching filenames.
     */
-    DIR *dir = opendir( dirName.c_str() );
-    if ( !dir ){
-      string mess = "TiCC::gatherFilesMatch: unable to open dir " + dirName;
-      throw runtime_error( mess );
-    }
-    const struct dirent *entry = readdir( dir );
-    while ( entry ){
-      string name = entry->d_name;
-      string fullName = dirName + "/" + name;
-      if ( isDir( fullName ) ){
-	if ( recurse && name[0] != '.' ){
-	  gatherFilesMatch( fullName, match, result, recurse );
+    vector<string> result;
+    filesystem::path dir_path( dirName );
+    if ( recurse ){
+      for ( const auto& entry : filesystem::recursive_directory_iterator(dir_path) ){
+	string p = entry.path();
+	if ( regex_search( p, match ) ){
+	  result.push_back( p );
 	}
       }
-      else if ( regex_search( name, match ) ){
-	result.push_back( fullName );
-      }
-      entry = readdir( dir );
     }
-    closedir( dir );
+    else {
+      for ( const auto& entry : filesystem::directory_iterator(dir_path) ){
+	string p = entry.path();
+	if ( regex_search( p, match ) ){
+	  result.push_back( p );
+	}
+      }
+    }
+    return result;
   }
 
   static string wildToRegExp( const string& wild ){
@@ -241,7 +263,7 @@ namespace TiCC {
 	  + "' doesn't match a file or directory.";
 	throw runtime_error( mess );
       }
-      gatherFilesMatch( name, rx, result, recurse );
+      result = gather_files_match( name, rx, recurse );
     }
     catch( regex_error& e ){
       string mess = "TiCC::searchFilesMatch: invalid regexp: ";
@@ -252,50 +274,6 @@ namespace TiCC {
       throw;
     }
     return result;
-  }
-
-  bool createDirectory( const string& path ){
-    /// create a path using 'name'
-    /*!
-      \param path the path description
-      \return true if the path is created and a directory
-      This function attempts to open a path /a/b/c/ from an expression like:
-      \verbatim
-      /a/b/c/
-      ./a/b/c/
-      a/b/c/
-      \endverbatim
-      It will recursively create all intermediate directories when needed
-    */
-    filesystem::path the_path( path );
-    error_code ec;
-    filesystem::create_directory( path, ec );
-    return isDir( path );
-  }
-
-  bool createPath( const string& name ){
-    /// create a path (directory OR file) using 'name'
-    /*!
-      \param name path description
-      \return true if the file is created and available for writing
-    */
-    string::size_type pos = name.rfind('/');
-    if ( pos == name.length()-1 ){
-      // a directory for sure
-      return createDirectory( name );
-    }
-    else if ( pos != string::npos ){
-      // chop of the possible filename
-      string path = name.substr( 0, pos+1 );
-      if ( !createDirectory( path ) ){
-	return false;
-      }
-    }
-    ofstream os( name );
-    if ( !os.good() ){
-      return false;
-    }
-    return true;
   }
 
   string tempname( const string& label, const string& tmp_dir){
@@ -322,15 +300,6 @@ namespace TiCC {
     // Prevent hitting open files limit in some cases
     close( temp_file );
     return result;
-  }
-
-  void erase( const std::string& name ){
-    /// remove a file
-    int stat = std::remove( name.c_str() );
-    if ( stat != 0 && errno != ENOENT ){
-      throw runtime_error( "could not erase file/path '" + name + "': "
-			   + strerror(errno) );
-    }
   }
 
   tmp_stream::tmp_stream( const string& prefix,
