@@ -37,7 +37,6 @@
 #include <fstream>
 #include <filesystem>
 #include <unistd.h>
-#include <sys/stat.h>
 #include <regex>
 #include "ticcutils/StringOps.h"
 
