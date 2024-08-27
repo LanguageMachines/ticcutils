@@ -28,6 +28,7 @@
 #include "ticcutils/FileUtils.h"
 
 #include <cerrno>
+#include <cassert>
 #include <cstdio>
 #include <cstring>
 #include <stdexcept>
@@ -37,6 +38,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 #include <cstdlib>
 #include <unistd.h>
 #include <glob.h>
@@ -70,12 +72,8 @@ namespace TiCC {
 
   bool isDir( const string& name ){
     /// check if 'name' is a directory
-    struct stat st_buf;
-    int status = stat( name.c_str(), &st_buf );
-    if ( status < 0 ){
-      return false;
-    }
-    return S_ISDIR (st_buf.st_mode);
+    filesystem::path the_path(name);
+    return filesystem::is_directory(the_path);
   }
 
   bool isWritableDir( const string& name ){
@@ -88,12 +86,8 @@ namespace TiCC {
 
   bool isFile( const string& name ){
     /// check if 'name' an accessible file
-    struct stat st_buf;
-    int status = stat( name.c_str(), &st_buf );
-    if ( status < 0 ){
-      return false;
-    }
-    return S_ISREG (st_buf.st_mode);
+    filesystem::path the_path(name);
+    return filesystem::is_regular_file(the_path);
   }
 
   void gatherFilesExt( const string& dirName, const string& ext,
@@ -260,7 +254,7 @@ namespace TiCC {
     return result;
   }
 
-  bool createTruePath( const string& path ){
+  bool createDirectory( const string& path ){
     /// create a path using 'name'
     /*!
       \param path the path description
@@ -273,33 +267,10 @@ namespace TiCC {
       \endverbatim
       It will recursively create all intermediate directories when needed
     */
-    ofstream os1( path );
-    if ( !os1.good() ){
-      // it fails
-      // attempt to create the path
-      vector<string> parts = split_at( path, "/" );
-      if ( parts.size() > 0 ){
-	//  at least one /
-	string newpath;
-	if ( path[0] == '/' ){
-	  newpath = "/";
-	}
-	else {
-	  newpath = "./";
-	}
-	for ( auto const& p : parts ){
-	  newpath += p + "/";
-	  //	  cerr << "mkdir path = " << newpath << endl;
-	  int status = mkdir( newpath.c_str(),
-			      S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH );
-	  if ( status != 0 && errno != EEXIST ){
-	    return false;
-	  }
-	}
-      }
-      return isDir( path );
-    }
-    return true;
+    filesystem::path the_path( path );
+    error_code ec;
+    filesystem::create_directory( path, ec );
+    return isDir( path );
   }
 
   bool createPath( const string& name ){
@@ -310,11 +281,13 @@ namespace TiCC {
     */
     string::size_type pos = name.rfind('/');
     if ( pos == name.length()-1 ){
-      return createTruePath( name );
+      // a directory for sure
+      return createDirectory( name );
     }
     else if ( pos != string::npos ){
+      // chop of the possible filename
       string path = name.substr( 0, pos+1 );
-      if ( !createTruePath( path ) ){
+      if ( !createDirectory( path ) ){
 	return false;
       }
     }
