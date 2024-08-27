@@ -27,19 +27,15 @@
 
 #include "ticcutils/FileUtils.h"
 
-#include <cerrno>
+#include <system_error>
 #include <cassert>
-#include <cstdio>
-#include <cstring>
+#include <cstring> // for strdup()
 #include <stdexcept>
 #include <vector>
-#include <map>
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <filesystem>
-#include <cstdlib>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <regex>
