@@ -63,7 +63,7 @@ namespace TiCC {
     return filesystem::is_regular_file(the_path);
   }
 
-  bool createDirectory( const filesystem::path& p ){
+  bool create_dir( const filesystem::path& p ){
     /// create a directory using 'name'
     /*!
       \param path the path description
@@ -91,13 +91,13 @@ namespace TiCC {
     if ( pos == name.length()-1 ){
       // a directory for sure
       filesystem::path path(name);
-      return createDirectory( path );
+      return create_dir( path );
     }
     else if ( pos != string::npos ){
       // chop of the possible filename
       string dir_path = name.substr( 0, pos+1 );
       filesystem::path path(dir_path);
-      if ( !createDirectory( path ) ){
+      if ( !create_dir( path ) ){
 	return false;
       }
     }
@@ -118,11 +118,11 @@ namespace TiCC {
     }
   }
 
-  vector<string> gather_files_ext( const string& dirName,
+  vector<string> gather_files_ext( const string& dir_name,
 				   const string& ext,
 				   bool recurse ){
     vector<string> result;
-    filesystem::path dir_path( dirName );
+    filesystem::path dir_path( dir_name );
     if ( recurse ){
       for ( const auto& entry : filesystem::recursive_directory_iterator(dir_path) ){
 	auto p = entry.path();
@@ -171,18 +171,18 @@ namespace TiCC {
     return gather_files_ext( name, ext, recurse );
   }
 
-  vector<string> gather_files_match( const string& dirName,
+  vector<string> gather_files_match( const string& dir_name,
 				     const regex& match,
 				     bool recurse ){
     /// collect all files matching a regular expression
     /*!
-      \param dirName path to search
+      \param dir_name path to search
       \param match a regular expression to match each file
       \param recurse if true recurse into all subdirs
       \return  a list of matching filenames.
     */
     vector<string> result;
-    filesystem::path dir_path( dirName );
+    filesystem::path dir_path( dir_name );
     if ( recurse ){
       for ( const auto& entry : filesystem::recursive_directory_iterator(dir_path) ){
 	string p = entry.path();
@@ -202,7 +202,7 @@ namespace TiCC {
     return result;
   }
 
-  static string wildToRegExp( const string& wild ){
+  static string wild2regex( const string& wild ){
     // convert 'shell'-like wildcards into a regexp
     string result;
     for ( const auto& c : wild ){
@@ -235,7 +235,7 @@ namespace TiCC {
       \return a list of matching filenames
     */
     vector<string> result;
-    string reg = wildToRegExp( wild );
+    string reg = wild2regex( wild );
     try {
       regex rx( reg );
       if ( isFile( name ) ){
