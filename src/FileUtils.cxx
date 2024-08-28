@@ -77,8 +77,14 @@ namespace TiCC {
       It will recursively create all intermediate directories when needed
     */
     error_code ec;
-    filesystem::create_directory( p, ec );
-    return ec.value() == 0;
+    filesystem::create_directories( p, ec );
+    if ( ec.value() != EEXIST
+	 && ec.value() != 0 ){
+      throw runtime_error( "create_dir(" + string(p) + ") failed: "
+			   + ec.message() + " (" + std::to_string( ec.value())
+			   + ")" );
+    }
+    return true;
   }
 
   bool createPath( const string& name ){
