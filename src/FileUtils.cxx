@@ -97,19 +97,29 @@ namespace TiCC {
     if ( pos == name.length()-1 ){
       // a directory for sure
       filesystem::path path(name);
-      return create_dir( path );
+      try {
+	create_dir( path );
+      }
+      catch ( const exception& e ){
+	cerr << e.what() << endl;
+	return false;
+      }
     }
     else if ( pos != string::npos ){
       // chop of the possible filename
       string dir_path = name.substr( 0, pos+1 );
       filesystem::path path(dir_path);
-      if ( !create_dir( path ) ){
+      try {
+	create_dir( path );
+      }
+      catch ( const exception& e ){
+	cerr << e.what() << endl;
 	return false;
       }
-    }
-    ofstream os( name );
-    if ( !os.good() ){
-      return false;
+      ofstream os( name );
+      if ( !os.good() ){
+	return false;
+      }
     }
     return true;
   }
@@ -164,9 +174,9 @@ namespace TiCC {
       \param recurse if true recurse into all subdirs
       \return a list of matching filenames.
      */
-    vector<string> result;
     if ( isFile( name ) ){
       // it is just 1 file
+      vector<string> result;
       if ( ext.empty() ||
 	   TiCC::match_back( name, ext ) ){
 	result.push_back( name );
