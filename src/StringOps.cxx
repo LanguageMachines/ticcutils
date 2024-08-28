@@ -102,7 +102,7 @@ namespace TiCC {
     return result;
   }
 
-  string pad( const std::string& in, size_t len, const char pad_char ){
+  string pad( const string& in, size_t len, const char pad_char ){
     if ( len <= in.length() ){
       return in;
     }
@@ -140,7 +140,7 @@ namespace TiCC {
     return result;
   }
 
-  bool match_back( const std::string& s, const std::string& tail ){
+  bool match_back( const string& s, const string& tail ){
     /// check if a string matches another at the back
     /*!
       \param s the string
@@ -159,7 +159,7 @@ namespace TiCC {
     return false;
   }
 
-  bool match_front( const std::string& s, const std::string& head ){
+  bool match_front( const string& s, const string& head ){
     /// check if a string matches another at the front
     /*!
       \param s the string
@@ -343,14 +343,14 @@ namespace TiCC {
     return local_split_at( src, sep, max );
   }
 
-  size_t split_at( const std::string& s,
-		   std::vector<std::string>& v,
-		   const std::string& seps ){
+  size_t split_at( const string& s,
+		   vector<string>& v,
+		   const string& seps ){
     v = local_split_at( s, seps, false );
     return v.size();
   }
 
-  std::vector<std::string> split( const std::string& s,
+  vector<string> split( const string& s,
 				  size_t num ){
     return local_split_at_first_of( s, " \r\t\n", num );
   }
@@ -361,35 +361,35 @@ namespace TiCC {
     return local_split_at_first_of( s, seps, num );
   }
 
-  size_t split_at_first_of( const std::string& s,
-			    std::vector<std::string>& v,
-			    const std::string& seps ){
+  size_t split_at_first_of( const string& s,
+			    vector<string>& v,
+			    const string& seps ){
     v = local_split_at_first_of( s, seps, false );
     return v.size();
   }
 
-  size_t split( const std::string& s,
-		std::vector<std::string>& v ){
+  size_t split( const string& s,
+		vector<string>& v ){
     v = local_split_at_first_of( s, " \r\t\n", false );
     return v.size();
   }
 
-  size_t split_exact( const std::string& s,
-		      std::vector<std::string>& v ){
+  size_t split_exact( const string& s,
+		      vector<string>& v ){
     v = local_split_at_first_of( s, " \r\t\n", true );
     return v.size();
   }
 
-  size_t split_exact_at( const std::string& s,
-			 std::vector<std::string>& v,
-			 const std::string& m ){
+  size_t split_exact_at( const string& s,
+			 vector<string>& v,
+			 const string& m ){
     v = local_split_at( s, m, true );
     return v.size();
   }
 
-  size_t split_exact_at_first_of( const std::string& s,
-				  std::vector<std::string>& v,
-				  const std::string& m ){
+  size_t split_exact_at_first_of( const string& s,
+				  vector<string>& v,
+				  const string& m ){
     v = local_split_at_first_of( s, m, true );
     return v.size();
   }

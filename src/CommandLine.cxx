@@ -454,8 +454,7 @@ namespace TiCC {
 	cleaned.push_back( Option );
 	continue;
       }
-      char first = Option[0];
-      switch ( first ){
+      switch ( Option[0] ){
       case '+':
       case '-':
 	if ( (Option.size() <= 2 || Option[1] == '-' )
@@ -503,9 +502,8 @@ namespace TiCC {
     }
     vector<arg> arguments;
     for ( auto const& Option : cleaned ){
-      char first = Option[0];
       arg argument;
-      switch ( first ){
+      switch ( Option[0] ){
       case '+':
 	argument.stat = PLUS;
 	argument.c = Option[1];
