@@ -132,7 +132,7 @@ jobs:
           LD_LIBRARY_PATH: $LD_LIBRARY_PATH:/usr/local/lib
         run: make check
         continue-on-error: true
-      - name: get status install
+      - name: get status check
         if: ${{ steps.check.outcome != 'success' }}
         run: echo "action_status=check" >> $GITHUB_ENV
       - name: show log
