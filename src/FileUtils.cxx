@@ -81,7 +81,7 @@ namespace TiCC {
     if ( ec.value() != EEXIST
 	 && ec.value() != 0 ){
       throw runtime_error( "create_dir(" + string(p) + ") failed: "
-			   + ec.message() + " (" + std::to_string( ec.value())
+			   + ec.message() + " (" + to_string( ec.value())
 			   + ")" );
     }
     return true;
@@ -124,7 +124,7 @@ namespace TiCC {
     return true;
   }
 
-  void erase( const std::string& name ){
+  void erase( const string& name ){
     /// remove a file
     filesystem::path p(name);
     error_code ec;

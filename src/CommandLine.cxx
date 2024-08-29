@@ -44,9 +44,9 @@ using namespace std;
 namespace TiCC {
 
   /// \cond HIDDEN
-  class ImplementationError: public std::logic_error {
+  class ImplementationError: public logic_error {
   public:
-    explicit ImplementationError( const std::string& s ): std::logic_error( "CommandLine: implementation error." + s ){};
+    explicit ImplementationError( const string& s ): logic_error( "CommandLine: implementation error." + s ){};
   };
   /// \endcond
 
@@ -95,7 +95,7 @@ namespace TiCC {
     return is_init;
   }
 
-  bool CL_Options::parse_args( const std::string& args ){
+  bool CL_Options::parse_args( const string& args ){
     /// parse a commandline and check against the possible options
     /*!
       \param args a string describing a command line
