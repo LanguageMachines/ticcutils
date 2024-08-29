@@ -64,10 +64,10 @@ namespace TiCC {
     ~UnicodeNormalizer();
     UnicodeString normalize( const UnicodeString& );
     const std::string setMode( const std::string& );
-    const std::string& getMode() const { return mode; };
+    const std::string& getMode() const { return _mode; };
   private:
     const Normalizer2 *_normalizer;
-    std::string mode;
+    std::string _mode;
   };
 
   /// \brief a class that can match UnicodeStrings to Regex patterns
@@ -86,10 +86,10 @@ namespace TiCC {
      // inhibit copies!
     UnicodeRegexMatcher( const UnicodeRegexMatcher& ) =delete;
     UnicodeRegexMatcher& operator=( const UnicodeRegexMatcher& ) = delete;
-    RegexPattern *pattern;
-    RegexMatcher *matcher;
+    RegexPattern *_pattern;
+    RegexMatcher *_matcher;
     UnicodeRegexMatcher();
-    std::vector<UnicodeString> results;
+    std::vector<UnicodeString> _results;
     const UnicodeString _name;
     bool _debug;
   };
