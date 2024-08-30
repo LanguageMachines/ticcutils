@@ -37,26 +37,26 @@
 
 using namespace std;
 
-fdoutbuf::fdoutbuf(): fd(-1) {
+fdoutbuf::fdoutbuf(): _fd(-1) {
   /// constructor for a non-initialized fd output buffer
 }
-fdoutbuf::fdoutbuf( int _fd ): fd(_fd) {
+fdoutbuf::fdoutbuf( int fd ): _fd(fd) {
   /// constructor for a fd output buffer connected to a file descriptor
   /*!
-    \param _fd the file descriptor
+    \param fd the file descriptor
   */
 }
 
-bool fdoutbuf::connect( int _fd ){
+bool fdoutbuf::connect( int fd ){
   /// connect a fd output buffer to a file descriptor
   /*!
-    \param _fd the file descriptor
+    \param fd the file descriptor
     \return true on succes. Will throw otherwise
   */
-  if ( fd >= 0 ){
+  if ( _fd >= 0 ){
     throw logic_error( "FDstream: output buffer already connected" );
   }
-  fd = _fd;
+  _fd = fd;
   return true;
 }
 
@@ -68,7 +68,7 @@ int fdoutbuf::overflow( int c ){
   */
   if ( c != EOF ){
     char z = c;
-    if ( write( fd, &z, 1 ) != 1 ) {
+    if ( write( _fd, &z, 1 ) != 1 ) {
       return EOF;
     }
   }
@@ -82,37 +82,37 @@ streamsize fdoutbuf::xsputn( const char *s, streamsize num ){
     \param num the number of characters to write
     \return the number of characters actually written
   */
-  return write( fd, s, num );
+  return write( _fd, s, num );
 }
 
 
-fdinbuf::fdinbuf(): fd(-1) {
+fdinbuf::fdinbuf(): _fd(-1) {
   /// constructor for a non-initialized fd input buffer
-  setg( buffer + putbackSize,
-	buffer + putbackSize,
-	buffer + putbackSize );
+  setg( _buffer + putbackSize,
+	_buffer + putbackSize,
+	_buffer + putbackSize );
 }
 
-fdinbuf::fdinbuf( int _fd ): fd(_fd) {
+fdinbuf::fdinbuf( int fd ): _fd(fd) {
   /// constructor for a fd input buffer connected to a file descriptor
   /*!
-    \param _fd the file descriptor
+    \param fd the file descriptor
   */
-  setg( buffer + putbackSize,
-	buffer + putbackSize,
-	buffer + putbackSize );
+  setg( _buffer + putbackSize,
+	_buffer + putbackSize,
+	_buffer + putbackSize );
 }
 
-bool fdinbuf::connect( int _fd ){
+bool fdinbuf::connect( int fd ){
   /// connect a fd input buffer to a file descriptor
   /*!
-    \param _fd the file descriptor
+    \param fd the file descriptor
     \return true on succes. Will throw otherwise
   */
-  if ( fd >= 0 ){
+  if ( _fd >= 0 ){
     throw logic_error( "FDstream: input buffer already connected" );
   }
-  fd = _fd;
+  _fd = fd;
   return true;
 }
 
@@ -129,17 +129,17 @@ int fdinbuf::underflow(){
     numPutBack = putbackSize;
   }
 
-  std::memmove( buffer + putbackSize - numPutBack,
+  std::memmove( _buffer + putbackSize - numPutBack,
 	       gptr() - numPutBack,
 	       numPutBack );
-  int num = read( fd, buffer+putbackSize, bufferSize - putbackSize );
+  int num = read( _fd, _buffer+putbackSize, bufferSize - putbackSize );
   if ( num <= 0 ){
     setg( 0, 0, 0 );
     return traits_type::eof();
   }
-  setg( buffer + putbackSize - numPutBack,
-	buffer + putbackSize,
-	buffer + putbackSize + num );
+  setg( _buffer + putbackSize - numPutBack,
+	_buffer + putbackSize,
+	_buffer + putbackSize + num );
   return traits_type::to_int_type(*gptr());
 }
 
@@ -239,12 +239,12 @@ bool nb_putline( ostream& os, const string& what, int& timeout ){
 
 bool fdistream::open( int fd ){
   /// open an input stream connected to a file descriptor
-  buf.connect( fd );
+  _buf.connect( fd );
   return true;
 }
 
 bool fdostream::open( int fd ){
   /// open an output stream connected to a file descriptor
-  buf.connect( fd );
+  _buf.connect( fd );
   return true;
 }
