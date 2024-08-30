@@ -76,8 +76,8 @@ namespace TiCC {
       \param short_opts a string describing the acceptable short options
       \param long_opts a string describing the acceptable long options
     */
-    set_short_options( short_opts );
-    set_long_options( long_opts );
+    add_short_options( short_opts );
+    add_long_options( long_opts );
   }
 
   bool CL_Options::parse_args( const int argc, const char * const *argv ){
@@ -740,8 +740,8 @@ namespace TiCC {
     return true;
   }
 
-  void CL_Options::set_short_options( const string& s ){
-    /// set the valid short options
+  void CL_Options::add_short_options( const string& s ){
+    /// add valid short options from \s
     /*!
       \param s a string representing the valid options
 
@@ -769,7 +769,7 @@ namespace TiCC {
     /// return the current short options in a neatly manner
     /*!
       \return a string representation of the short options in such a way
-      that they could be parsed again by set_short_options
+      that they could be parsed again by add_short_options
     */
     string result;
     for ( auto const& it : valid_chars ){
@@ -784,10 +784,14 @@ namespace TiCC {
     return result;
   }
 
-  void CL_Options::set_long_options( const string& s ){
-    /// set the valid long options
+  void CL_Options::add_long_options( const string& s ){
+    /// set the long options from string \s
     /*!
       \param s a string representing the valid options
+
+      such a line looks like: "opt1,opt2:,opt3" defining options opt1, opt2,
+      opt3, wehre option opt2 have a parameter
+
      */
     vector<string> parts = TiCC::split_at( s, "," );
     for ( auto value: parts ){
@@ -825,7 +829,7 @@ namespace TiCC {
     /// return the current long options in a neatly manner
     /*!
       \return a string representation of the long options in such a way
-      that they could be parsed again by set_long_options
+      that they could be parsed again by add_long_options
     */
     string result;
     for ( auto const& s : valid_long ){

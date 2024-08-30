@@ -1231,8 +1231,8 @@ int main( const int argc, const char* argv[] ){
   t2.start();
   test_opts_basic();
   CL_Options opts1;
-  opts1.set_short_options( "t:qf:d:" );
-  opts1.set_long_options( "test:,raar" );
+  opts1.add_short_options( "t:qf:d:" );
+  opts1.add_long_options( "test:,raar" );
   opts1.init( argc, argv );
   test_opts( opts1 );
   CL_Options opts2;
