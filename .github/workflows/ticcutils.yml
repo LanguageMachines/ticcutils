@@ -18,33 +18,26 @@ jobs:
   notification:
     runs-on: ubuntu-latest
     name: Notifications
-    outputs:
-      branch: ${{ steps.extract_branch.outputs.branch }}
     steps:
-      - name: Extract Branch name
-        id: extract_branch
-        shell: bash
-        run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
-      - name: IRC notification
-        uses: Gottox/irc-message-action@v2
-        with:
-          server: irc.uvt.nl
-          channel: '#gitlama'
-          nickname: GitHub
-          message: >
-            ${{ github.actor }} started a build of ticcutils
-            [${{ steps.extract_branch.outputs.branch }}]
-            "${{ github.event.head_commit.message }}"
+      - name: IRC notification of starting the builds
+        uses: LanguageMachines/ticcactions/irc-init@v1
 
   build:
     runs-on: ${{ matrix.os }}
     needs: notification
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-14]
+        os: [ubuntu-latest, macos-latest]
         compiler: [g++-12, clang++]
 
     steps:
+      - name: exclude Mac-OS with g++
+        shell: bash
+        if: ${{ matrix.os == 'macos-latest' && matrix.compiler == 'g++-12' }}
+        run: |
+          echo "action_status=skip" >> $GITHUB_ENV
+          echo "action_details='c++ library issues'" >> $GITHUB_ENV
+
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.12.1
         with:
@@ -52,106 +45,16 @@ jobs:
 
       - uses: actions/checkout@v4.1.1
 
-      - name: Install Build Environment
-        run: |
-             if [ "$RUNNER_OS" == "Linux" ]; then
-                sudo apt-get install pkgconf autoconf-archive
-             else
-                brew upgrade
-                brew install libtool
-                brew install autoconf
-                brew install autoconf-archive
-                brew install automake
-             fi
+      - uses: LanguageMachines/ticcactions/cpp-build-env@v1
+      - uses: LanguageMachines/ticcactions/cpp-dependencies@v1
+      - uses: LanguageMachines/ticcactions/cpp-safe-build@v1
+      - uses: LanguageMachines/ticcactions/irc-nick@v1
 
-      - name: Install Dependencies
-        run: |
-             if [ "$RUNNER_OS" == "Linux" ]; then
-                sudo apt-get install libicu-dev libxml2-dev libbz2-dev;
-                sudo apt-get install zlib1g-dev cppcheck
-             else
-                brew install libxml2
-                # brew reinstall icu4c
-                brew install bzip2
-                brew install zlib
-                brew install cppcheck
-             fi
-      - name: Configure CppCheck
-        run: |
-             if [ "$RUNNER_OS" == "Linux" ]; then
-                cpc_opts="--enable=warning,style --inline-suppr --std=c++17 --force -I include -I /usr/local/include --quiet --error-exitcode=0"
-             else
-                cpc_opts="--enable=warning,style --inline-suppr --std=c++17 --force -I include --check-level=exhaustive --quiet --error-exitcode=0"
-             fi
-             echo "cpc_opts=$cpc_opts" >> $GITHUB_ENV
-      - name: compiler ID
-        run: |
-          cid=$(echo ${{matrix.compiler}} | cut -d\+ -f1)
-          echo "cid=$cid" >> $GITHUB_ENV
-
-      - name: bootstrap
-        run: sh bootstrap.sh
-
-      - name: configure
-        id: configure
-        env:
-          CXX: ${{ matrix.compiler }}
-        run: ./configure
-        continue-on-error: true
-      - name: get status configure
-        if: ${{ steps.configure.outcome != 'success' }}
-        run: echo "action_status=configure" >> $GITHUB_ENV
-      - name: config.log
-        if: ${{ env.action_status != '' }}
-        run: cat config.log
-      - name: Static Code-check
-        run: cppcheck ${{ env.cpc_opts }} .
-      - name: make
-        id: make
-        if: ${{ env.action_status == '' }}
-        env:
-          CXX: ${{ matrix.compiler }}
-        run: make
-        continue-on-error: true
-      - name: get status make
-        if: ${{ steps.make.outcome != 'success' }}
-        run: echo "action_status=make" >> $GITHUB_ENV
-      - name: install
-        id: install
-        env:
-          CXX: ${{ matrix.compiler }}
-        run: sudo make install
-        continue-on-error: true
-      - name: get status install
-        if: ${{ steps.install.outcome != 'success' }}
-        run: echo "action_status=install" >> $GITHUB_ENV
-      - name: make check
-        id: check
-        env:
-          CXX: ${{ matrix.compiler }}
-          LD_LIBRARY_PATH: $LD_LIBRARY_PATH:/usr/local/lib
-        run: make check
-        continue-on-error: true
-      - name: get status check
-        if: ${{ steps.check.outcome != 'success' }}
-        run: echo "action_status=check" >> $GITHUB_ENV
-      - name: show log
-        if: ${{ steps.check.outcome != 'success' }}
-        run: cat src/test-suite.log
-        continue-on-error: true
-      - name: Notify IRC of failure
-        if: ${{ env.action_status != '' }}
-        uses: Gottox/irc-message-action@v2
+      - name: Notify IRC of results
+        uses: LanguageMachines/ticcactions/irc-status@v1
         with:
-          server: irc.uvt.nl
-          channel: '#gitlama'
-          nickname: GH-${{ runner.os }}-${{ env.cid }}
-          message: "ticcutils [${{ needs.notification.outputs.branch }}] build with ${{ matrix.compiler }} by ${{ github.actor }} on ${{ matrix.os }}: \u00034FAILED\u0003 in step ${{ env.action_status }}"
-      - name: Notify IRC of succes
-        if: ${{ env.action_status == '' }}
-        uses: Gottox/irc-message-action@v2
-        with:
-          server: irc.uvt.nl
-          channel: '#gitlama'
-          nickname: GH-${{ runner.os }}-${{ env.cid }}
-          message: "ticcutils [${{ needs.notification.outputs.branch }}] build with ${{ matrix.compiler }} by ${{ github.actor }} on ${{ matrix.os }}: \u00033SUCCESS\u0003"
+          branch: ${{ github.ref_name }}
+          nickname: ${{ env.nick }}
+          step: test
+          status: ${{ env.action_status }}
+          details: ${{ env.action_details }}
