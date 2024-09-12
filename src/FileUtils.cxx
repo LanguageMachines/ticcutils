@@ -45,8 +45,13 @@ namespace TiCC {
 
   bool isDir( const string& name ){
     /// check if 'name' is a directory
-    filesystem::path the_path(name);
-    return filesystem::is_directory(the_path);
+    try {
+      filesystem::path the_path(name);
+      return filesystem::is_directory(the_path);
+    }
+    catch(...){
+      return false;
+    }
   }
 
   bool isWritableDir( const string& name ){
@@ -101,8 +106,8 @@ namespace TiCC {
     string::size_type pos = name.rfind('/');
     if ( pos == name.length()-1 ){
       // a directory for sure
-      filesystem::path path(name);
       try {
+	filesystem::path path(name);
 	create_dir( path );
       }
       catch ( const exception& e ){
@@ -113,8 +118,8 @@ namespace TiCC {
     else if ( pos != string::npos ){
       // chop of the possible filename
       string dir_path = name.substr( 0, pos+1 );
-      filesystem::path path(dir_path);
       try {
+	filesystem::path path(dir_path);
 	create_dir( path );
       }
       catch ( const exception& e ){
