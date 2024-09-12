@@ -136,15 +136,14 @@ namespace TiCC {
 
   void erase( const string& name ){
     /// remove a file
-    filesystem::path p(name);
-    error_code ec;
-    if ( !filesystem::remove( p, ec ) ){
+    try {
+      filesystem::path p(name);
+      filesystem::remove( p );
+    }
+    catch ( const exception& e ){
       // error OR file doesn't exist
-      if ( ec.value() != 0 ) {
-	// so a real error
-	throw runtime_error( "could not erase file/path '" + name + "': "
-			     + ec.message() );
-      }
+      throw runtime_error( "could not erase file/path '" + name + "': "
+			   + e.what() );
     }
   }
 
