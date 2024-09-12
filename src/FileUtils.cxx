@@ -59,8 +59,13 @@ namespace TiCC {
 
   bool isFile( const string& name ){
     /// check if 'name' an accessible file
-    filesystem::path the_path(name);
-    return filesystem::is_regular_file(the_path);
+    try{
+      filesystem::path the_path(name);
+      return filesystem::is_regular_file(the_path);
+    }
+    catch (...){
+      return false;
+    }
   }
 
   bool create_dir( const filesystem::path& p ){
