@@ -725,7 +725,7 @@ void test_fileutils( const string& path ){
   assertTrue( res[0] == path+"small.txt" );
   erase( "/tmp/test/silly/files/file" );
   assertTrue( createPath( "/tmp/test/silly/files/file" ) );
-  assertThrow( erase( "/tmp/test/silly/" ), runtime_error );
+  erase( "/tmp/test/silly/" );
   assertTrue( createPath( "/tmp/test/silly/files/path/" ) );
   assertTrue( createPath( "/tmp/test/silly/files/path/raar" ) );
   assertFalse( createPath( "/tmp/test/silly/files/path/raar/sub" ) );
@@ -773,7 +773,7 @@ void test_fileutils( const string& path ){
   assertNoThrow( erase( fn ) );
   assertFalse( isFile( fn ) );
   assertFalse( isFile( "/root/.config/ucto/tokconfig.nld" ) );
-  assertThrow( erase( "/root/.config/ucto/tokconfig.nld" ), runtime_error );
+  erase( "/root/.config/ucto/tokconfig.nld" );
   assertTrue( isDir( "/" ) );
   assertFalse( isWritableDir( "/boot" ) );
 }

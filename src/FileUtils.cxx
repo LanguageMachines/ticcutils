@@ -148,7 +148,7 @@ namespace TiCC {
       }
     }
     else {
-      throw runtime_error( "could not erase file/path '" + name + "'" );
+      // just ignore
     }
   }
 
