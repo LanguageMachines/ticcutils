@@ -1,3 +1,10 @@
+12 sep 2024 0.35
+[Ko van der Sloot]
+* C++17 is requied now
+* FileUtils is now based on std::filesystem
+* general code cleanup and refactoring
+* Github CI action is streamlined
+
 21 okt 2023 0.34
 [Ko van der Sloot]
 * The Unicode functions now assure that all Unicode is normalized to NFC
