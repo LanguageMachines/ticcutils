@@ -773,6 +773,7 @@ void test_fileutils( const string& path ){
   assertNoThrow( erase( fn ) );
   assertFalse( isFile( fn ) );
   assertFalse( isFile( "/root/.config/ucto/tokconfig.nld" ) );
+  assertThrow( erase( "/root/.config/ucto/tokconfig.nld" ), runtime_error );
   assertTrue( isDir( "/" ) );
   assertFalse( isWritableDir( "/boot" ) );
 }
