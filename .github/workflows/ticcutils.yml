@@ -41,7 +41,6 @@ jobs:
 
       - uses: LanguageMachines/ticcactions/cpp-build-env@v1
       - uses: LanguageMachines/ticcactions/cpp-dependencies@v1
-      - uses: LanguageMachines/ticcactions/add-icu@v1
       - uses: LanguageMachines/ticcactions/cpp-safe-build@v1
       - uses: LanguageMachines/ticcactions/irc-nick@v1
 
