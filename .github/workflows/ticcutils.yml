@@ -10,7 +10,7 @@ on:
       - configure.ac
       - 'src/**'
       - 'include/**'
-      - '.github/workflows/*'
+      - '.github/workflows/**'
 
   pull_request:
     branches: [master]
