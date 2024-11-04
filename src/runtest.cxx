@@ -52,7 +52,7 @@ using namespace TiCC;
 using namespace icu;
 
 void helper(){
-  throw runtime_error("fout");
+  throw runtime_error("expected_error");
 }
 
 int helper2(){
@@ -1149,8 +1149,12 @@ std::ostream& operator<<( std::ostream& os, const class_flags& f ){
 void test_enum_flags() {
   {
     flags f = flags::Two|flags::Four;
+    cerr << f << endl;
+    cerr << (f & (flags::Two|flags::Four) ) << endl;
+    cerr << (f & flags::Two) << endl;
     // cppcheck-suppress knownConditionTrueFalse
     assertTrue( f == 6 );
+    assertTrue( f % (flags::Two|flags::Four) );
     f = ~f;
     // cppcheck-suppress knownConditionTrueFalse
     assertEqual( f, -7 );
@@ -1170,10 +1174,16 @@ void test_enum_flags() {
     assertEqual( ss.str(), "6" );
     // cppcheck-suppress knownConditionTrueFalse
     assertTrue( (int)f == 6 );
+    assertTrue( f%(class_flags::warning|class_flags::error) );
+    assertTrue( f%class_flags::warning );
+    assertTrue( f%class_flags::error );
+    assertFalse( f%class_flags::ok );
     f = ~f;
     assertEqual( int(f), -7 );
     f &= class_flags::ok;
     assertEqual( (int)f, 1 );
+    assertTrue( (f%class_flags::ok) );
+    assertFalse( (f%class_flags::warning) );
   }
 }
 
@@ -1209,6 +1219,7 @@ public:						\
 
 ADD_FUN_CHECK( string_fun )
 ADD_FUN_CHECK( unistring_fun )
+ADD_FUN_CHECK( int_fun )
 
 void test_templates(){
 
@@ -1221,18 +1232,27 @@ void test_templates(){
     bool unistring_fun( const icu::UnicodeString& ){
       return true;
     }
+    int int_fun( const int& i, int j ){
+      return i+j;
+    }
   };
 
-  bool test_string = has_string_fun<Y,bool(const std::string&)>::value;
-  assertEqual( test_string, true );
-  test_string = has_unistring_fun<Y,bool(const icu::UnicodeString&)>::value;
-  assertEqual( test_string, true );
-  test_string = has_string_fun<X,bool(const std::string&)>::value;
-  assertEqual( test_string, true );
-  test_string = has_unistring_fun<X,bool(const icu::UnicodeString&)>::value;
-  assertEqual( test_string, false );
-  test_string = has_string_fun<X,bool(int,double)>::value;
-  assertEqual( test_string, false );
+  bool test_val = has_string_fun<Y,bool(const std::string&)>::value;
+  assertEqual( test_val, true );
+  test_val = has_unistring_fun<Y,bool(const icu::UnicodeString&)>::value;
+  assertEqual( test_val, true );
+  test_val = has_string_fun<X,bool(const std::string&)>::value;
+  assertEqual( test_val, true );
+  test_val = has_unistring_fun<X,bool(const icu::UnicodeString&)>::value;
+  assertEqual( test_val, false );
+  test_val = has_string_fun<X,bool(int,double)>::value;
+  assertEqual( test_val, false );
+  test_val = has_int_fun<Y,int(int,int)>::value;
+  assertEqual( test_val, true );
+  test_val = has_int_fun<Y,int(const int,int)>::value;
+  assertEqual( test_val, true );
+  test_val = has_int_fun<Y,int(const int&,int)>::value;
+  assertEqual( test_val, true );
 }
 
 int main( const int argc, const char* argv[] ){
