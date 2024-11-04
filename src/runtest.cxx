@@ -1136,6 +1136,16 @@ enum class class_flags { nope = 0, ok = 1, warning = 1<<1, error = 1<<2 };
 DEFINE_ENUM_FLAG_OPERATORS(flags);
 DEFINE_ENUM_FLAG_OPERATORS(class_flags);
 
+std::ostream& operator<<( std::ostream& os, const flags& f ){
+  os << int(f);
+  return os;
+}
+
+std::ostream& operator<<( std::ostream& os, const class_flags& f ){
+  os << int(f);
+  return os;
+}
+
 void test_enum_flags() {
   {
     flags f = flags::Two|flags::Four;
@@ -1153,7 +1163,7 @@ void test_enum_flags() {
   {
     //  DEFINE_ENUM_FLAGS works for both 'enum' and 'enum class'
     // BUT: the assertion macro's have a problem with the latter
-    //      needs work. Now we need an explixit cast
+    //      needs work. Now we need an explicit cast
     class_flags f = class_flags::warning|class_flags::error;
     std::stringstream ss;
     ss << f;
