@@ -1211,7 +1211,7 @@ private: \
   template<typename>				\
   static constexpr std::false_type check(...);	\
 						\
-  typedef decltype(check<C>(0)) type;		\
+  using type = decltype(check<C>(0));		\
 						\
 public:						\
  static constexpr bool value = type::value;	\
