@@ -54,18 +54,18 @@ namespace TiCC {
     LogStream( const LogStream * );
     bool set_single_threaded_mode();
     bool single_threaded() const { return single_threaded_mode; };
-    void setthreshold( LogLevel t ){ buf.Threshold( t ); };
-    LogLevel getthreshold() const { return buf.Threshold(); };
-    void setlevel( LogLevel l ){ buf.Level( l ); };
-    LogLevel getlevel() const{ return buf.Level(); };
+    void set_threshold( LogLevel t ){ buf.Threshold( t ); };
+    LogLevel get_threshold() const { return buf.Threshold(); };
+    void set_level( LogLevel l ){ buf.Level( l ); };
+    LogLevel get_level() const{ return buf.Level(); };
     void associate( std::ostream& os ) { buf.AssocStream( os ); };
     //  std::ostream& associate() const { return buf.AssocStream(); };
-    void setstamp( LogFlag f ){ buf.StampFlag( f ); };
-    LogFlag getstamp() const { return buf.StampFlag(); };
-    void message( const std::string& s ){ buf.Message( s ); };
-    void addmessage( const std::string& );
-    void addmessage( const int );
-    const std::string& message() const { return buf.Message(); };
+    void set_stamp( LogFlag f ){ buf.StampFlag( f ); };
+    LogFlag get_stamp() const { return buf.StampFlag(); };
+    void set_message( const std::string& s ){ buf.Message( s ); };
+    void add_message( const std::string& );
+    void add_message( const int );
+    const std::string& get_message() const { return buf.Message(); };
     static bool Problems();
   private:
     LogBuffer buf;

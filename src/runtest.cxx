@@ -846,30 +846,35 @@ void test_configuration( const string& path ){
 void test_logstream( const string& path ){
   ofstream uit( "/tmp/testls.1" );
   LogStream ls( uit );
-  ls.setstamp( NoStamp );
-  *Log( ls ) << "test 1 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
+  ls.set_stamp( NoStamp );
+  *Log( ls ) << "test 1 level=" << ls.get_level() << " threshold="
+	     << ls.get_threshold() << endl;
   *Dbg( ls ) << "debug 1" << endl;
   *xDbg( ls ) << "x_debug 1" << endl;
   *xxDbg( ls ) << "xx_debug 1" << endl;
-  ls.setlevel( LogSilent );
-  *Log( ls ) << "test 2 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
+  ls.set_level( LogSilent );
+  *Log( ls ) << "test 2 level=" << ls.get_level() << " threshold="
+	     << ls.get_threshold() << endl;
   *Dbg( ls ) << "debug 2" << endl;
   *xDbg( ls ) << "x_debug 2" << endl;
   *xxDbg( ls ) << "xx_debug 2" << endl;
-  ls.setlevel( LogDebug );
-  *Log( ls ) << "test 3 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
+  ls.set_level( LogDebug );
+  *Log( ls ) << "test 3 level=" << ls.get_level() << " threshold="
+	     << ls.get_threshold() << endl;
   *Dbg( ls ) << "debug 3" << endl;
   *xDbg( ls ) << "x_debug 3" << endl;
   *xxDbg( ls ) << "xx_debug 3" << endl;
-  ls.setlevel( LogExtreme );
-  *Log( ls ) << "test 4 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
+  ls.set_level( LogExtreme );
+  *Log( ls ) << "test 4 level=" << ls.get_level() << " threshold="
+	     << ls.get_threshold() << endl;
   *Dbg( ls ) << "debug 4" << endl;
   *xDbg( ls ) << "x_debug 4" << endl;
   *xxDbg( ls ) << "xx_debug 4" << endl;
-  ls.setlevel( LogHeavy );
-  *Log( ls ) << "test 5 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
-  ls.addmessage( "AHA:" );
-  ls.setstamp( StampMessage );
+  ls.set_level( LogHeavy );
+  *Log( ls ) << "test 5 level=" << ls.get_level() << " threshold="
+	     << ls.get_threshold() << endl;
+  ls.add_message( "AHA:" );
+  ls.set_stamp( StampMessage );
   *Dbg( ls ) << "debug 5" << endl;
   *xDbg( ls ) << "x_debug 5" << endl;
   *xxDbg( ls ) << "xx_debug 5" << endl;

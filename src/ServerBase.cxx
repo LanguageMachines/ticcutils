@@ -159,7 +159,7 @@ namespace TiCCServer {
     else {
       _name = _protocol + "-server";
     }
-    _my_log.message( _name );
+    _my_log.set_message( _name );
     value = _config->lookUp( "debug" );
     if ( !value.empty() ){
       if ( value == "no" ){
