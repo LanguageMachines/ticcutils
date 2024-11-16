@@ -181,8 +181,8 @@ namespace TiCC {
     xmlNode *MakeRoot( const std::string& );
     const std::string toString() const;
   private:
-    XmlDoc( const XmlDoc& ) =delete; // no copies please
-    XmlDoc& operator= ( const XmlDoc& ) =delete; // no copies please
+    XmlDoc( const XmlDoc& ) = delete; // no copies please
+    XmlDoc& operator= ( const XmlDoc& ) = delete; // no copies please
     xmlDoc *the_doc;
   };
 

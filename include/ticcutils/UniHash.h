@@ -56,8 +56,8 @@ namespace Hash {
   private:
     const icu::UnicodeString _value;
     unsigned int _ID;
-    UniInfo( const UniInfo& ) =delete;
-    UniInfo& operator=( const UniInfo& ) =delete;
+    UniInfo( const UniInfo& ) = delete;
+    UniInfo& operator=( const UniInfo& ) = delete;
   };
 
   /// \brief The UnicodeHash class is used to enumerate Unicode strings.
@@ -85,8 +85,8 @@ namespace Hash {
     unsigned int _num_of_tokens;
     std::vector<UniInfo*> _rev_index;
     Tries::UniTrie<UniInfo> _tree;
-    UnicodeHash( const UnicodeHash& ) =delete;
-    UnicodeHash& operator=( const UnicodeHash& ) =delete;
+    UnicodeHash( const UnicodeHash& ) = delete;
+    UnicodeHash& operator=( const UnicodeHash& ) = delete;
   };
 
 }

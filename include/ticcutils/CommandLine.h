@@ -334,8 +334,8 @@ namespace TiCC {
     bool extract_internal( const std::string&, std::string& );
     std::vector<CL_item> Opts;
     std::vector<std::string> MassOpts;
-    CL_Options( const CL_Options& );
-    CL_Options& operator=( const CL_Options& );
+    CL_Options( const CL_Options& ) = delete;
+    CL_Options& operator=( const CL_Options& ) = delete;
     std::set<char> valid_chars;
     std::set<char> valid_chars_par;
     std::set<char> valid_chars_opt;

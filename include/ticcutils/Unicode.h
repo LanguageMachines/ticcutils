@@ -84,7 +84,7 @@ namespace TiCC {
     bool set_debug( bool b ){ bool r = _debug; _debug = b; return r; };
   private:
      // inhibit copies!
-    UnicodeRegexMatcher( const UnicodeRegexMatcher& ) =delete;
+    UnicodeRegexMatcher( const UnicodeRegexMatcher& ) = delete;
     UnicodeRegexMatcher& operator=( const UnicodeRegexMatcher& ) = delete;
     RegexPattern *_pattern;
     RegexMatcher *_matcher;
