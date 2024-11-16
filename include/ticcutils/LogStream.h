@@ -43,15 +43,10 @@ namespace TiCC {
   public:
     explicit LogStream();
     explicit LogStream( int );
-    explicit LogStream( const std::string&, LogFlag = StampBoth );
-    explicit LogStream( const char *cs, LogFlag lf = StampBoth ):
-      LogStream( std::string( cs ), lf ) {};
     LogStream( std::ostream&,
-	       const std::string& = "",
 	       LogFlag = StampBoth );
-    LogStream( const LogStream&, const std::string&, LogFlag );
-    LogStream( const LogStream&, const std::string& );
     LogStream( const LogStream * );
+    LogStream *create( const std::string&, std::ios_base::openmode = std::ios::out );
     bool set_single_threaded_mode();
     bool single_threaded() const { return single_threaded_mode; };
     void set_threshold( LogLevel t ){ buf.Threshold( t ); };
@@ -59,7 +54,6 @@ namespace TiCC {
     void set_level( LogLevel l ){ buf.Level( l ); };
     LogLevel get_level() const{ return buf.Level(); };
     void associate( std::ostream& os ) { buf.AssocStream( os ); };
-    //  std::ostream& associate() const { return buf.AssocStream(); };
     void set_stamp( LogFlag f ){ buf.StampFlag( f ); };
     LogFlag get_stamp() const { return buf.StampFlag(); };
     void set_message( const std::string& s ){ buf.Message( s ); };
@@ -70,7 +64,7 @@ namespace TiCC {
   private:
     LogBuffer buf;
     // prohibit assignment
-    LogStream& operator=( const LogStream& );
+    LogStream& operator=( const LogStream& ) = delete;
     bool IsBlocking();
     bool single_threaded_mode;
   };
@@ -79,7 +73,7 @@ namespace TiCC {
   bool IsActive( LogStream * );
 
   /// \brief create a LogStream
-  class Log{
+  class Log {
   public:
     explicit Log( LogStream * );
     explicit Log( LogStream& l );
@@ -88,8 +82,8 @@ namespace TiCC {
   private:
     LogStream *my_stream;
     LogLevel my_level;
-    Log( const Log& );
-    Log& operator=( const Log& );
+    Log( const Log& ) = delete;
+    Log& operator=( const Log& ) = delete;
   };
 
   /// \brief create a debugging LogStream
@@ -102,8 +96,8 @@ namespace TiCC {
   private:
     LogStream *my_stream;
     LogLevel my_level;
-    Dbg( const Dbg& );
-    Dbg& operator=( const Dbg& );
+    Dbg( const Dbg& ) = delete;
+    Dbg& operator=( const Dbg& ) = delete;
   };
 
   /// \brief a debugging LogStream for heavy output
@@ -116,8 +110,8 @@ namespace TiCC {
   private:
     LogStream *my_stream;
     LogLevel my_level;
-    xDbg( const xDbg& );
-    xDbg& operator=( const xDbg& );
+    xDbg( const xDbg& ) = delete;
+    xDbg& operator=( const xDbg& ) = delete;
   };
 
   /// \brief a debugging LogStream for extreme output
@@ -130,8 +124,8 @@ namespace TiCC {
   private:
     LogStream *my_stream;
     LogLevel my_level;
-    xxDbg( const xxDbg& );
-    xxDbg& operator=( const xxDbg& );
+    xxDbg( const xxDbg& ) = delete;
+    xxDbg& operator=( const xxDbg& ) = delete;
   };
 
 }

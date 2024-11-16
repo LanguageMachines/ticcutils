@@ -94,7 +94,7 @@ namespace TiCCServer {
 
   ServerBase::ServerBase( const Configuration *config,
 			  void *callback_data ):
-    _my_log("BasicServer"),
+    _my_log(),
     _do_daemon( true ),
     _debug( false ),
     _max_conn( 25 ),

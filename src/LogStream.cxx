@@ -30,6 +30,7 @@
 #include <ctime>
 
 #include <string>
+#include <fstream>
 #include <typeinfo>
 #include <pthread.h>
 
@@ -40,6 +41,7 @@
 //#define LSDEBUG
 
 using std::ostream;
+using std::ofstream;
 using std::streambuf;
 using std::cerr;
 using std::endl;
@@ -63,22 +65,10 @@ namespace TiCC {
     /// create a LogStream connected to cerr
   }
 
-  LogStream::LogStream( const string& message, LogFlag stamp ) :
-    ostream( &buf ),
-    buf( cerr, message, stamp ),
-    single_threaded_mode(false) {
-    /// create a LogStream connected to cerr
-    /*!
-      \param message the prefix message
-      \param stamp the stamping flag to use
-    */
-  }
-
   LogStream::LogStream( ostream& as,
-			const string& message,
 			LogFlag stamp ) :
     ostream( &buf ),
-    buf( as, message, stamp ),
+    buf( as, "", stamp ),
     single_threaded_mode(false){
     /// create a LogStream connected to an output stream
     /*!
@@ -86,48 +76,6 @@ namespace TiCC {
       \param message the prefix message
       \param stamp the stamping flag to use
     */
-  }
-
-  LogStream::LogStream( const LogStream& ls,
-			const string& message,
-			LogFlag stamp ):
-    ostream( &buf ),
-    buf( ls.buf.AssocStream(),
-	 ls.buf.Message(),
-	 stamp ),
-    single_threaded_mode( ls.single_threaded_mode ){
-    /// create a LogStream connected to a LogStream
-    /*!
-      \param ls a LogStream to connect to
-      \param message the prefix message to append to the parents message
-      \param stamp the stamping flag to use
-
-      the new Stream takes all properties from the parent, except for the
-      message and the stamp flag
-    */
-    buf.Level( ls.buf.Level() );
-    buf.Threshold( ls.buf.Threshold() );
-    add_message( message );
-  }
-
-  LogStream::LogStream( const LogStream& ls,
-			const string& message ):
-    ostream( &buf ),
-    buf( ls.buf.AssocStream(),
-	 ls.buf.Message(),
-	 ls.buf.StampFlag() ),
-    single_threaded_mode( ls.single_threaded_mode ){
-    /// create a LogStream connected to a LogStream
-    /*!
-      \param ls a LogStream to connect to
-      \param message the prefix message to append to the parents message
-
-      the new Stream takes all properties from the parent, except for the
-      message
-    */
-    buf.Level( ls.buf.Level() );
-    buf.Threshold( ls.buf.Threshold() );
-    add_message( message );
   }
 
   LogStream::LogStream( const LogStream *ls ):
@@ -143,6 +91,12 @@ namespace TiCC {
     */
     buf.Level( ls->buf.Level() );
     buf.Threshold( ls->buf.Threshold() );
+  }
+
+  LogStream *LogStream::create( const string& filename,
+				std::ios_base::openmode mode ){
+    ofstream os( filename, mode );
+    return new LogStream( os );
   }
 
   void LogStream::add_message( const string& s ){
