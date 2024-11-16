@@ -38,53 +38,28 @@ using namespace std;
 
 namespace TiCC {
 
-  XmlDoc::XmlDoc( const string& elem ){
-    /// create an XmlDoc with a root node
-    /*!
-      \param elem the tag of the root node
-    */
-    the_doc = xmlNewDoc( to_xmlChar("1.0") );
-    MakeRoot( elem );
-  }
-
-  const string XmlDoc::toString() const {
-    /// serialize a complete XmlDoc to an UTF-8 string
-    xmlChar *buf;
-    int size;
-    xmlDocDumpFormatMemoryEnc( the_doc, &buf, &size, "UTF-8", 1 );
-    const string result = string( to_char(buf), size );
-    xmlFree( buf );
+  xmlDoc *create_xmlDocument( const std::string& root_name ){
+    xmlDoc *result=  xmlNewDoc( TiCC::to_xmlChar("1.0") );
+    xmlNode *root = xmlNewDocNode( result,
+				   0,
+				   TiCC::to_xmlChar(root_name),
+				   0 );
+    xmlDocSetRootElement( result, root );
     return result;
   }
 
-  xmlNode *XmlDoc::getRoot() const {
-    /// return the root node
-    if ( the_doc ){
-      return xmlDocGetRootElement(the_doc);
-    }
-    return 0;
+  xmlNode *getRoot( xmlDoc *doc ){
+    return xmlDocGetRootElement(doc);
   }
 
-  void XmlDoc::setRoot( xmlNode *node ){
-    /// set the root node
-    if ( the_doc ){
-      xmlDocSetRootElement(the_doc, node );
-    }
-  }
-
-  xmlNode *XmlDoc::MakeRoot( const string& elem ){
-    /// create a root node with tag \e elem
-    /*!
-      \param elem the tag of the new root node
-      \return the newly created node
-    */
-    xmlNode *root;
-    root = xmlNewDocNode( the_doc,
-			  0,
-			  to_xmlChar(elem.c_str()),
-			  0 );
-    xmlDocSetRootElement( the_doc, root );
-    return root;
+  const string serialize( const xmlDoc& doc ) {
+    /// serialize a complete xmlDoc to an UTF-8 string
+    xmlChar *buf;
+    int size;
+    xmlDocDumpFormatMemoryEnc( const_cast<xmlDoc*>(&doc), &buf, &size, "UTF-8", 1 );
+    const string result = string( to_char(buf), size );
+    xmlFree( buf );
+    return result;
   }
 
   string getNS( const xmlNode *node, string& prefix ){
@@ -159,7 +134,7 @@ namespace TiCC {
       \return a list of all matching nodes
     */
     list<xmlNode*> nodes;
-    xmlXPathObject* result = xmlXPathEval( to_xmlChar(xpath.c_str()), ctxt);
+    xmlXPathObject* result = xmlXPathEval( to_xmlChar(xpath), ctxt);
     if ( result ){
       if (result->type != XPATH_NODESET) {
 	xmlXPathFreeObject(result);
@@ -202,13 +177,13 @@ namespace TiCC {
       if ( key.empty() ){
 	// the anonymous namespace
 	xmlXPathRegisterNs( ctxt,
-			    to_xmlChar(defaultP.c_str()),
-			    to_xmlChar(value.c_str()) );
+			    to_xmlChar(defaultP),
+			    to_xmlChar(value) );
       }
       else {
 	xmlXPathRegisterNs( ctxt,
-			    to_xmlChar(key.c_str()),
-			    to_xmlChar(value.c_str()) );
+			    to_xmlChar(key),
+			    to_xmlChar(value) );
       }
     }
   }
@@ -303,11 +278,11 @@ namespace TiCC {
     return xPath( root, xpath );
   }
 
-  string serialize( const xmlNode& node ){
+  const string serialize( const xmlNode& node ){
     /// serialize an xmlNode to a string (XML fragment)
     xmlBuffer *buf = xmlBufferCreate();
     xmlNodeDump( buf, 0, const_cast<xmlNode*>(&node), 0, 0 );
-    string result = to_char(xmlBufferContent( buf ));
+    const string result = to_char(xmlBufferContent( buf ));
     xmlBufferFree( buf );
     return result;
   }
