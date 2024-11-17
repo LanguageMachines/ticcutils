@@ -48,6 +48,10 @@ namespace TiCC {
     return reinterpret_cast<const char *>(in);
   }
 
+  inline const std::string to_string( const xmlChar *in ){
+    return reinterpret_cast<const char *>(in);
+  }
+
   inline xmlNode *XmlNewNode( const std::string& elem ){
     return xmlNewNode( 0, to_xmlChar(elem) );
   }
@@ -93,11 +97,13 @@ namespace TiCC {
 				   const std::string& elem,
 				   const std::string& val ){
     if ( val.empty() )
-      return xmlNewTextChild( node, ns,
+      return xmlNewTextChild( node,
+			      ns,
 			      to_xmlChar(elem)
-			      , 0 );
+			      ,0 );
     else
-      return xmlNewTextChild( node, ns,
+      return xmlNewTextChild( node,
+			      ns,
 			      to_xmlChar(elem),
 			      to_xmlChar(val) );
   }
