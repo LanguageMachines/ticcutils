@@ -62,6 +62,85 @@ namespace TiCC {
     return result;
   }
 
+  bool isNCName( const string& s ){
+    /// test if a string is a valid NCName value
+    /*!
+      \param s the inputstring
+      \return true if \e s may be used as an NCName (e.g. for xml:id)
+    */
+    int test = xmlValidateNCName( to_xmlChar(s), 0 );
+    if ( test != 0 ){
+      return false;
+    }
+    return true;
+  }
+
+  string create_NCName( const string& s ){
+    /// create a valid NCName
+    /*!
+      \param s a string to be used as template
+      \return a string that is a valid NCname
+
+      Make sure these prerequisites are met:
+      An xsd:NCName value must start with either a letter or underscore ( _ )
+      and may contain only letters, digits, underscores ( _ ), hyphens ( - ),
+      and periods ( . ).
+    */
+    if ( isNCName( s ) ){
+      return s;
+    }
+    else {
+      string result = s;
+      while ( !result.empty()
+	      && ( result.front() == '.'
+		   || result.front() == '-'
+		   || !isalpha(result.front() ) ) ){
+	if ( result.front() == '_' ){
+	  break;
+	}
+	result.erase(result.begin());
+      }
+      if ( result.empty() ){
+	throw runtime_error( "unable to create a valid NCName from '"
+			     + s + "', would be empty" );
+      }
+      if ( isNCName( result ) ){
+	return result;
+      }
+      else {
+	auto it = result.begin();
+	while ( it != result.end() ){
+	  if ( *it == ' ' ){
+	    // replace spaces by '_'
+	    *it = '_';
+	    ++it;
+	  }
+	  else if ( *it == '-'
+		    || *it == '_'
+		    || *it == '.' ){
+	    // not alphanumeric, but allowed
+	    ++it;
+	  }
+	  else if ( !isalnum(*it) ){
+	    it = result.erase(it);
+	  }
+	  else {
+	    ++it;
+	  }
+	}
+	if ( result.empty() ){
+	  throw runtime_error( "unable to create a valid NCName from '"
+			       + s + "', (empty result)" );
+	}
+	else if ( !isNCName( result ) ){
+	  throw runtime_error( "unable to create a valid NCName from '"
+			       + s + "'" );
+	}
+	return result;
+      }
+    }
+  }
+
   string getNS( const xmlNode *node, string& prefix ){
     /// get the NameSpace of a node
     /*!

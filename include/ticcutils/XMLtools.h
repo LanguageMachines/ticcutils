@@ -39,6 +39,8 @@ namespace TiCC {
 
   xmlDoc *create_xmlDocument( const std::string& );
   xmlNode *getRoot( xmlDoc *);
+  bool isNCName( const std::string& );
+  std::string create_NCName( const std::string& );
 
   inline const xmlChar *to_xmlChar( const std::string& in ){
     return reinterpret_cast<const xmlChar *>(in.c_str());

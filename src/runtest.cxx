@@ -46,6 +46,7 @@
 #include "ticcutils/Unicode.h"
 #include "ticcutils/json.hpp"
 #include "ticcutils/enum_flags.h"
+#include "ticcutils/XMLtools.h"
 
 using namespace std;
 using namespace TiCC;
@@ -1260,6 +1261,12 @@ void test_templates(){
   assertEqual( test_val, true );
 }
 
+void test_ncname(){
+  assertFalse( isNCName("123") );
+  assertTrue( isNCName("_123") );
+  assert( create_NCName( "12?name" ) == "name" );
+}
+
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
   Timer t1;
@@ -1299,6 +1306,7 @@ int main( const int argc, const char* argv[] ){
   test_lowercase();
   test_unicodehash();
   test_realpath();
+  test_ncname();
   string testdir;
   bool dummy;
   opts1.is_present( 'd', testdir, dummy );
