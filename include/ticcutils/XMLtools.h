@@ -188,10 +188,6 @@ namespace TiCC {
     return result;
   }
 
-  inline std::string XmlContent( const xmlNode *node ){
-    return TextValue( node );
-  }
-
   inline std::ostream& operator << ( std::ostream& os, const xmlDoc& doc ){
     os << serialize(doc);
     return os;
