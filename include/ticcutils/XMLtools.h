@@ -123,46 +123,6 @@ namespace TiCC {
 		       to_xmlChar(val) );
   }
 
-  inline std::string getAttribute( const xmlNode *node,
-				   const std::string& att ){
-    if ( node ){
-      const xmlAttr *a = node->properties;
-      while ( a ){
-	if ( att == to_string(a->name) ){
-	  return to_string(a->children->content);
-	}
-	a = a->next;
-      }
-    }
-    return "";
-  }
-
-  inline std::map<std::string,std::string> getAttributes( const xmlNode *node ){
-    std::map<std::string,std::string> result;
-    if ( node ){
-      const xmlAttr *a = node->properties;
-      while ( a ){
-	result[to_string(a->name)] = to_string(a->children->content);
-	a = a->next;
-      }
-    }
-    return result;
-  }
-
-  std::string getNS( const xmlNode *, std::string& );
-  inline std::string getNS( const xmlNode *n ) {
-    std::string s;
-    return getNS( n, s);
-  }
-
-  std::map<std::string,std::string> getNSvalues( const xmlNode * );
-  std::map<std::string,std::string> getDefinedNS( const xmlNode * );
-
-  const std::string serialize( const xmlNode& );
-  const std::string serialize( const xmlNode* );
-  const std::string serialize( const xmlDoc& );
-  const std::string serialize( const xmlDoc* );
-
   inline std::string Name( const xmlNode *node ){
     std::string result;
     if ( node ){
@@ -187,6 +147,46 @@ namespace TiCC {
     }
     return result;
   }
+
+  inline std::string getAttribute( const xmlNode *node,
+				   const std::string& att ){
+    if ( node ){
+      const xmlAttr *a = node->properties;
+      while ( a ){
+	if ( att == to_string(a->name) ){
+	  return TextValue(a->children);
+	}
+	a = a->next;
+      }
+    }
+    return "";
+  }
+
+  inline std::map<std::string,std::string> getAttributes( const xmlNode *node ){
+    std::map<std::string,std::string> result;
+    if ( node ){
+      const xmlAttr *a = node->properties;
+      while ( a ){
+	result[to_string(a->name)] = TextValue(a->children);
+	a = a->next;
+      }
+    }
+    return result;
+  }
+
+  std::string getNS( const xmlNode *, std::string& );
+  inline std::string getNS( const xmlNode *n ) {
+    std::string s;
+    return getNS( n, s);
+  }
+
+  std::map<std::string,std::string> getNSvalues( const xmlNode * );
+  std::map<std::string,std::string> getDefinedNS( const xmlNode * );
+
+  const std::string serialize( const xmlNode& );
+  const std::string serialize( const xmlNode* );
+  const std::string serialize( const xmlDoc& );
+  const std::string serialize( const xmlDoc* );
 
   inline std::ostream& operator << ( std::ostream& os, const xmlDoc& doc ){
     os << serialize(doc);
