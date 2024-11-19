@@ -57,7 +57,7 @@ namespace TiCC {
     xmlChar *buf;
     int size;
     xmlDocDumpFormatMemoryEnc( const_cast<xmlDoc*>(&doc), &buf, &size, "UTF-8", 1 );
-    const string result = string( to_char(buf), size );
+    const string result = to_string( buf, size );
     xmlFree( buf );
     return result;
   }
@@ -153,9 +153,9 @@ namespace TiCC {
     const xmlNs *p = node->ns;
     if ( p ){
       if ( p->prefix ){
-	prefix = to_char(p->prefix);
+	prefix = to_string(p->prefix);
       }
-      result = to_char(p->href);
+      result = to_string(p->href);
     }
     return result;
   }
@@ -172,9 +172,9 @@ namespace TiCC {
       string pre;
       string val;
       if ( p->prefix ){
-	pre = to_char(p->prefix);
+	pre = to_string(p->prefix);
       }
-      val = to_char(p->href);
+      val = to_string(p->href);
       result[pre] = val;
       p = p->next;
     }
@@ -193,9 +193,9 @@ namespace TiCC {
       string pre;
       string val;
       if ( p->prefix ){
-	pre = to_char(p->prefix);
+	pre = to_string(p->prefix);
       }
-      val = to_char(p->href);
+      val = to_string(p->href);
       result[pre] = val;
       p = p->next;
     }
@@ -361,7 +361,7 @@ namespace TiCC {
     /// serialize an xmlNode to a string (XML fragment)
     xmlBuffer *buf = xmlBufferCreate();
     xmlNodeDump( buf, 0, const_cast<xmlNode*>(&node), 0, 0 );
-    const string result = to_char(xmlBufferContent( buf ));
+    const string result = to_string(xmlBufferContent( buf ));
     xmlBufferFree( buf );
     return result;
   }

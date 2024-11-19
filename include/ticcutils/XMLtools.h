@@ -27,6 +27,7 @@
 #ifndef TICC_XML_TOOLS_H
 #define TICC_XML_TOOLS_H
 
+#include <cassert>
 #include <string>
 #include <map>
 #include <list>
@@ -46,12 +47,12 @@ namespace TiCC {
     return reinterpret_cast<const xmlChar *>(in.c_str());
   }
 
-  inline const char *to_char( const xmlChar *in ){
+  inline const std::string to_string( const xmlChar *in ){
     return reinterpret_cast<const char *>(in);
   }
 
-  inline const std::string to_string( const xmlChar *in ){
-    return reinterpret_cast<const char *>(in);
+  inline const std::string to_string( const xmlChar *in, size_t len ){
+    return std::string( reinterpret_cast<const char *>(in), len );
   }
 
   inline xmlNode *XmlNewNode( const std::string& elem ){
@@ -127,8 +128,9 @@ namespace TiCC {
     if ( node ){
       const xmlAttr *a = node->properties;
       while ( a ){
-	if ( att == to_char(a->name) )
-	  return to_char(a->children->content);
+	if ( att == to_string(a->name) ){
+	  return to_string(a->children->content);
+	}
 	a = a->next;
       }
     }
@@ -140,8 +142,7 @@ namespace TiCC {
     if ( node ){
       const xmlAttr *a = node->properties;
       while ( a ){
-	result[to_char(a->name) ]
-	  = to_char(a->children->content);
+	result[to_string(a->name)] = to_string(a->children->content);
 	a = a->next;
       }
     }
@@ -165,21 +166,30 @@ namespace TiCC {
   inline std::string Name( const xmlNode *node ){
     std::string result;
     if ( node ){
-      result = to_char(node->name);
+      result = to_string(node->name);
+    }
+    return result;
+  }
+
+  inline std::string TextValue( const xmlNode *node ){
+    /// extract the string content of an xmlNode
+    /*!
+      \param node The xmlNode to extract from
+      \return the string value of node
+    */
+    std::string result;
+    if ( node ){
+      xmlChar *tmp = xmlNodeGetContent( node );
+      if ( tmp ){
+	result = to_string(tmp );
+	xmlFree( tmp );
+      }
     }
     return result;
   }
 
   inline std::string XmlContent( const xmlNode *node ){
-    std::string result;
-    if ( node ){
-      xmlChar *tmp = xmlNodeListGetString( node->doc, node->children, 1 );
-      if ( tmp ){
-	result = std::string( to_char(tmp) );
-	xmlFree( tmp );
-      }
-    }
-    return result;
+    return TextValue( node );
   }
 
   inline std::ostream& operator << ( std::ostream& os, const xmlDoc& doc ){
