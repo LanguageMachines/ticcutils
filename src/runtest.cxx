@@ -1264,7 +1264,11 @@ void test_templates(){
 void test_ncname(){
   assertFalse( isNCName("123") );
   assertTrue( isNCName("_123") );
-  assert( create_NCName( "12?name" ) == "name" );
+  assertEqual( create_NCName( "12?name" ), "name" );
+  assertEqual( create_NCName("aap!noot"), "aapnoot" );
+  assertEqual( create_NCName("A#12!3"), "A123" );
+  assertEqual( create_NCName(".-_!A#12!3"), "_A123" );
+  assertEqual( create_NCName("_appel-taart.met slagroom_"), "_appel-taart.met_slagroom_" );
 }
 
 int main( const int argc, const char* argv[] ){
