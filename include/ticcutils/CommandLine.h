@@ -107,7 +107,7 @@ namespace TiCC {
   class CL_Options {
     friend std::ostream& operator<<( std::ostream&, const CL_Options& );
   public:
-    typedef std::vector<CL_item>::const_iterator const_iterator;
+    using const_iterator = std::vector<CL_item>::const_iterator;
     CL_Options();
     CL_Options( const std::string&, const std::string& );
     void allow_args( const std::string& = "", const std::string& = "" );
