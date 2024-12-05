@@ -46,13 +46,14 @@
 #include "ticcutils/Unicode.h"
 #include "ticcutils/json.hpp"
 #include "ticcutils/enum_flags.h"
+#include "ticcutils/XMLtools.h"
 
 using namespace std;
 using namespace TiCC;
 using namespace icu;
 
 void helper(){
-  throw runtime_error("fout");
+  throw runtime_error("expected_error");
 }
 
 int helper2(){
@@ -846,30 +847,35 @@ void test_configuration( const string& path ){
 void test_logstream( const string& path ){
   ofstream uit( "/tmp/testls.1" );
   LogStream ls( uit );
-  ls.setstamp( NoStamp );
-  *Log( ls ) << "test 1 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
+  ls.set_stamp( NoStamp );
+  *Log( ls ) << "test 1 level=" << ls.get_level() << " threshold="
+	     << ls.get_threshold() << endl;
   *Dbg( ls ) << "debug 1" << endl;
   *xDbg( ls ) << "x_debug 1" << endl;
   *xxDbg( ls ) << "xx_debug 1" << endl;
-  ls.setlevel( LogSilent );
-  *Log( ls ) << "test 2 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
+  ls.set_level( LogSilent );
+  *Log( ls ) << "test 2 level=" << ls.get_level() << " threshold="
+	     << ls.get_threshold() << endl;
   *Dbg( ls ) << "debug 2" << endl;
   *xDbg( ls ) << "x_debug 2" << endl;
   *xxDbg( ls ) << "xx_debug 2" << endl;
-  ls.setlevel( LogDebug );
-  *Log( ls ) << "test 3 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
+  ls.set_level( LogDebug );
+  *Log( ls ) << "test 3 level=" << ls.get_level() << " threshold="
+	     << ls.get_threshold() << endl;
   *Dbg( ls ) << "debug 3" << endl;
   *xDbg( ls ) << "x_debug 3" << endl;
   *xxDbg( ls ) << "xx_debug 3" << endl;
-  ls.setlevel( LogExtreme );
-  *Log( ls ) << "test 4 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
+  ls.set_level( LogExtreme );
+  *Log( ls ) << "test 4 level=" << ls.get_level() << " threshold="
+	     << ls.get_threshold() << endl;
   *Dbg( ls ) << "debug 4" << endl;
   *xDbg( ls ) << "x_debug 4" << endl;
   *xxDbg( ls ) << "xx_debug 4" << endl;
-  ls.setlevel( LogHeavy );
-  *Log( ls ) << "test 5 level=" << ls.getlevel() << " threshold=" << ls.getthreshold() << endl;
-  ls.addmessage( "AHA:" );
-  ls.setstamp( StampMessage );
+  ls.set_level( LogHeavy );
+  *Log( ls ) << "test 5 level=" << ls.get_level() << " threshold="
+	     << ls.get_threshold() << endl;
+  ls.add_message( "AHA:" );
+  ls.set_stamp( StampMessage );
   *Dbg( ls ) << "debug 5" << endl;
   *xDbg( ls ) << "x_debug 5" << endl;
   *xxDbg( ls ) << "xx_debug 5" << endl;
@@ -1136,11 +1142,25 @@ enum class class_flags { nope = 0, ok = 1, warning = 1<<1, error = 1<<2 };
 DEFINE_ENUM_FLAG_OPERATORS(flags);
 DEFINE_ENUM_FLAG_OPERATORS(class_flags);
 
+std::ostream& operator<<( std::ostream& os, const flags& f ){
+  os << int(f);
+  return os;
+}
+
+std::ostream& operator<<( std::ostream& os, const class_flags& f ){
+  os << int(f);
+  return os;
+}
+
 void test_enum_flags() {
   {
     flags f = flags::Two|flags::Four;
+    cerr << f << endl;
+    cerr << (f & (flags::Two|flags::Four) ) << endl;
+    cerr << (f & flags::Two) << endl;
     // cppcheck-suppress knownConditionTrueFalse
     assertTrue( f == 6 );
+    assertTrue( f % (flags::Two|flags::Four) );
     f = ~f;
     // cppcheck-suppress knownConditionTrueFalse
     assertEqual( f, -7 );
@@ -1153,17 +1173,23 @@ void test_enum_flags() {
   {
     //  DEFINE_ENUM_FLAGS works for both 'enum' and 'enum class'
     // BUT: the assertion macro's have a problem with the latter
-    //      needs work. Now we need an explixit cast
+    //      needs work. Now we need an explicit cast
     class_flags f = class_flags::warning|class_flags::error;
     std::stringstream ss;
     ss << f;
     assertEqual( ss.str(), "6" );
     // cppcheck-suppress knownConditionTrueFalse
     assertTrue( (int)f == 6 );
+    assertTrue( f%(class_flags::warning|class_flags::error) );
+    assertTrue( f%class_flags::warning );
+    assertTrue( f%class_flags::error );
+    assertFalse( f%class_flags::ok );
     f = ~f;
     assertEqual( int(f), -7 );
     f &= class_flags::ok;
     assertEqual( (int)f, 1 );
+    assertTrue( (f%class_flags::ok) );
+    assertFalse( (f%class_flags::warning) );
   }
 }
 
@@ -1191,7 +1217,7 @@ private: \
   template<typename>				\
   static constexpr std::false_type check(...);	\
 						\
-  typedef decltype(check<C>(0)) type;		\
+  using type = decltype(check<C>(0));		\
 						\
 public:						\
  static constexpr bool value = type::value;	\
@@ -1199,6 +1225,7 @@ public:						\
 
 ADD_FUN_CHECK( string_fun )
 ADD_FUN_CHECK( unistring_fun )
+ADD_FUN_CHECK( int_fun )
 
 void test_templates(){
 
@@ -1211,18 +1238,37 @@ void test_templates(){
     bool unistring_fun( const icu::UnicodeString& ){
       return true;
     }
+    int int_fun( const int& i, int j ){
+      return i+j;
+    }
   };
 
-  bool test_string = has_string_fun<Y,bool(const std::string&)>::value;
-  assertEqual( test_string, true );
-  test_string = has_unistring_fun<Y,bool(const icu::UnicodeString&)>::value;
-  assertEqual( test_string, true );
-  test_string = has_string_fun<X,bool(const std::string&)>::value;
-  assertEqual( test_string, true );
-  test_string = has_unistring_fun<X,bool(const icu::UnicodeString&)>::value;
-  assertEqual( test_string, false );
-  test_string = has_string_fun<X,bool(int,double)>::value;
-  assertEqual( test_string, false );
+  bool test_val = has_string_fun<Y,bool(const std::string&)>::value;
+  assertEqual( test_val, true );
+  test_val = has_unistring_fun<Y,bool(const icu::UnicodeString&)>::value;
+  assertEqual( test_val, true );
+  test_val = has_string_fun<X,bool(const std::string&)>::value;
+  assertEqual( test_val, true );
+  test_val = has_unistring_fun<X,bool(const icu::UnicodeString&)>::value;
+  assertEqual( test_val, false );
+  test_val = has_string_fun<X,bool(int,double)>::value;
+  assertEqual( test_val, false );
+  test_val = has_int_fun<Y,int(int,int)>::value;
+  assertEqual( test_val, true );
+  test_val = has_int_fun<Y,int(const int,int)>::value;
+  assertEqual( test_val, true );
+  test_val = has_int_fun<Y,int(const int&,int)>::value;
+  assertEqual( test_val, true );
+}
+
+void test_ncname(){
+  assertFalse( isNCName("123") );
+  assertTrue( isNCName("_123") );
+  assertEqual( create_NCName( "12?name" ), "name" );
+  assertEqual( create_NCName("aap!noot"), "aapnoot" );
+  assertEqual( create_NCName("A#12!3"), "A123" );
+  assertEqual( create_NCName(".-_!A#12!3"), "_A123" );
+  assertEqual( create_NCName("_appel-taart.met slagroom_"), "_appel-taart.met_slagroom_" );
 }
 
 int main( const int argc, const char* argv[] ){
@@ -1264,6 +1310,7 @@ int main( const int argc, const char* argv[] ){
   test_lowercase();
   test_unicodehash();
   test_realpath();
+  test_ncname();
   string testdir;
   bool dummy;
   opts1.is_present( 'd', testdir, dummy );

@@ -206,7 +206,7 @@ bool nb_putline( ostream& os, const string& what, int& timeout ){
   unsigned int i=0;
   int count = 0;
   bool result = true;
-  typedef void (*sig_hndl)(int);
+  using sig_hndl = void (*)(int);
   sig_hndl sig;
   // specify that the SIGPIPE signal is to be ignored
   sig=signal(SIGPIPE,SIG_IGN);

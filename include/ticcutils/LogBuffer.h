@@ -78,13 +78,11 @@ template <class charT, class traits = std::char_traits<charT> >
   std::string ass_mess;
   void buffer_out();
   // prohibit copying and assignment
-  basic_log_buffer( const basic_log_buffer& );
-  basic_log_buffer& operator=( const basic_log_buffer& );
+  basic_log_buffer( const basic_log_buffer& ) = delete;
+  basic_log_buffer& operator=( const basic_log_buffer& ) = delete;
 };
 
-typedef basic_log_buffer<char, std::char_traits<char> > LogBuffer;
-typedef basic_log_buffer<wchar_t, std::char_traits<wchar_t> > wLogBuffer;
-
+using LogBuffer = basic_log_buffer<char, std::char_traits<char>>;
 
 template <class charT, class traits >
 basic_log_buffer<charT,traits>::~basic_log_buffer(){

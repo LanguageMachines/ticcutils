@@ -42,7 +42,8 @@ using namespace TiCC;
 class Sub1 {
 public:
   explicit Sub1( LogStream& log ){
-    ls = new LogStream( log, "-SUB1" );
+    ls = new LogStream( &log );
+    ls->set_message( "-SUB1" );
     *Log(ls) << "created a sub1 " << endl;
   }
   ~Sub1(){ delete ls; };
@@ -75,7 +76,9 @@ public:
 class Sub3 {
 public:
   explicit Sub3( Sub2& s ){
-    ls = new LogStream( s.ls, "-SUB3", StampMessage );
+    ls = new LogStream( s.ls );
+    ls->set_stamp( StampMessage );
+    ls->set_message( "-SUB3-" );
     *Log(ls) << "created a sub3 " << endl;
   }
   ~Sub3(){ delete ls; };
@@ -91,7 +94,8 @@ private:
 };
 
 int main(){
-  LogStream the_log( "main-log" );
+  LogStream the_log;
+  the_log.set_message( "main-log" );
   Sub1 sub1( the_log );
   Sub2 sub2( &the_log );
   assert( IsActive( the_log ) );

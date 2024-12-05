@@ -30,6 +30,7 @@
 #include <ctime>
 
 #include <string>
+#include <fstream>
 #include <typeinfo>
 #include <pthread.h>
 
@@ -40,12 +41,12 @@
 //#define LSDEBUG
 
 using std::ostream;
+using std::ofstream;
 using std::streambuf;
 using std::cerr;
 using std::endl;
 using std::bad_cast;
 using std::string;
-using std::to_string;
 
 namespace TiCC {
   LogStream::LogStream( int ) :
@@ -64,22 +65,10 @@ namespace TiCC {
     /// create a LogStream connected to cerr
   }
 
-  LogStream::LogStream( const string& message, LogFlag stamp ) :
-    ostream( &buf ),
-    buf( cerr, message, stamp ),
-    single_threaded_mode(false) {
-    /// create a LogStream connected to cerr
-    /*!
-      \param message the prefix message
-      \param stamp the stamping flag to use
-    */
-  }
-
   LogStream::LogStream( ostream& as,
-			const string& message,
 			LogFlag stamp ) :
     ostream( &buf ),
-    buf( as, message, stamp ),
+    buf( as, "", stamp ),
     single_threaded_mode(false){
     /// create a LogStream connected to an output stream
     /*!
@@ -88,49 +77,6 @@ namespace TiCC {
       \param stamp the stamping flag to use
     */
   }
-
-  LogStream::LogStream( const LogStream& ls,
-			const string& message,
-			LogFlag stamp ):
-    ostream( &buf ),
-    buf( ls.buf.AssocStream(),
-	 ls.buf.Message(),
-	 stamp ),
-    single_threaded_mode( ls.single_threaded_mode ){
-    /// create a LogStream connected to a LogStream
-    /*!
-      \param ls a LogStream to connect to
-      \param message the prefix message to append to the parents message
-      \param stamp the stamping flag to use
-
-      the new Stream takes all properties from the parent, except for the
-      message and the stamp flag
-    */
-    buf.Level( ls.buf.Level() );
-    buf.Threshold( ls.buf.Threshold() );
-    addmessage( message );
-  }
-
-  LogStream::LogStream( const LogStream& ls,
-			const string& message ):
-    ostream( &buf ),
-    buf( ls.buf.AssocStream(),
-	 ls.buf.Message(),
-	 ls.buf.StampFlag() ),
-    single_threaded_mode( ls.single_threaded_mode ){
-    /// create a LogStream connected to a LogStream
-    /*!
-      \param ls a LogStream to connect to
-      \param message the prefix message to append to the parents message
-
-      the new Stream takes all properties from the parent, except for the
-      message
-    */
-    buf.Level( ls.buf.Level() );
-    buf.Threshold( ls.buf.Threshold() );
-    addmessage( message );
-  }
-
 
   LogStream::LogStream( const LogStream *ls ):
     ostream( &buf ),
@@ -147,7 +93,13 @@ namespace TiCC {
     buf.Threshold( ls->buf.Threshold() );
   }
 
-  void LogStream::addmessage( const string& s ){
+  LogStream *LogStream::create( const string& filename,
+				std::ios_base::openmode mode ){
+    ofstream os( filename, mode );
+    return new LogStream( os );
+  }
+
+  void LogStream::add_message( const string& s ){
     /// append a string to the current messsage
     if ( !s.empty() ){
       string tmp = buf.Message();
@@ -156,10 +108,10 @@ namespace TiCC {
     }
   }
 
-  void LogStream::addmessage( const int i ){
+  void LogStream::add_message( const int i ){
     /// append a number to the current messsage
-    string m = "-" + to_string(i);
-    addmessage( m );
+    string m = "-" + std::to_string(i);
+    add_message( m );
   }
 
   static bool static_init = false;
@@ -309,10 +261,10 @@ namespace TiCC {
     /// is the current level below the threshold?
     if ( !bad() ){
 #ifdef LSDEBUG
-      cerr << "IsBlocking( " << getlevel() << "," << getthreshold() << ")"
-	   << " ==> " << ( getlevel() < getthreshold() ) << endl;
+      cerr << "IsBlocking( " << get_level() << "," << get_threshold() << ")"
+	   << " ==> " << ( get_level() < get_threshold() ) << endl;
 #endif
-      return getlevel() < getthreshold();
+      return get_level() < get_threshold();
     }
     else {
       return true;
@@ -336,9 +288,9 @@ namespace TiCC {
       throw( "LogStreams FATAL error: No Stream supplied! " );
     }
     if ( os->single_threaded() || init_mutex() ){
-      my_level = os->getthreshold();
+      my_level = os->get_threshold();
       my_stream = os;
-      os->setthreshold( LogNormal );
+      os->set_threshold( LogNormal );
     }
   }
 
@@ -346,15 +298,15 @@ namespace TiCC {
     /// create a Log object on the LogStream with Normal threshold
     if ( os.single_threaded() || init_mutex() ){
       my_stream = &os;
-      my_level = os.getthreshold();
-      os.setthreshold( LogNormal );
+      my_level = os.get_threshold();
+      os.set_threshold( LogNormal );
     }
   }
 
   Log::~Log(){
     /// destroy the Log object
     my_stream->flush();
-    my_stream->setthreshold( my_level );
+    my_stream->set_threshold( my_level );
     if ( !my_stream->single_threaded() ){
       mutex_release();
     }
@@ -363,7 +315,7 @@ namespace TiCC {
   LogStream& Log::operator *(){
     /// return the LogStream from the Log object
 #ifdef DARE_TO_OPTIMIZE
-    if ( my_stream->getlevel() >= my_stream->getthreshold() ){
+    if ( my_stream->get_level() >= my_stream->get_threshold() ){
       return *my_stream;
     }
     else {
@@ -381,8 +333,8 @@ namespace TiCC {
     }
     if ( os->single_threaded() || init_mutex() ){
       my_stream = os;
-      my_level = os->getthreshold();
-      os->setthreshold( LogDebug );
+      my_level = os->get_threshold();
+      os->set_threshold( LogDebug );
     }
   }
 
@@ -390,15 +342,15 @@ namespace TiCC {
     /// create a Dbg object on the LogStream with Debug threshold
     if ( os.single_threaded() || init_mutex() ){
       my_stream = &os;
-      my_level = os.getthreshold();
-      os.setthreshold( LogDebug );
+      my_level = os.get_threshold();
+      os.set_threshold( LogDebug );
     }
   }
 
   Dbg::~Dbg(){
     /// destroy the Dbg object
     my_stream->flush();
-    my_stream->setthreshold( my_level );
+    my_stream->set_threshold( my_level );
     if ( !my_stream->single_threaded() ){
       mutex_release();
     }
@@ -407,7 +359,7 @@ namespace TiCC {
   LogStream& Dbg::operator *() {
     /// return the LogStream from the Dbg object
 #ifdef DARE_TO_OPTIMIZE
-    if ( my_stream->getlevel() >= my_stream->getthreshold() ){
+    if ( my_stream->get_level() >= my_stream->get_threshold() ){
       return *my_stream;
     }
     else {
@@ -425,8 +377,8 @@ namespace TiCC {
     }
     if ( os->single_threaded() || init_mutex() ){
       my_stream = os;
-      my_level = os->getthreshold();
-      os->setthreshold( LogHeavy );
+      my_level = os->get_threshold();
+      os->set_threshold( LogHeavy );
     }
   }
 
@@ -434,15 +386,15 @@ namespace TiCC {
     /// create a xDbg object on the LogStream with Heavy threshold
     if ( os.single_threaded() || init_mutex() ){
       my_stream = &os;
-      my_level = os.getthreshold();
-      os.setthreshold( LogHeavy );
+      my_level = os.get_threshold();
+      os.set_threshold( LogHeavy );
     }
   }
 
   xDbg::~xDbg(){
     /// destroy the xDbg object
     my_stream->flush();
-    my_stream->setthreshold( my_level );
+    my_stream->set_threshold( my_level );
     if ( !my_stream->single_threaded() ){
       mutex_release();
     }
@@ -451,7 +403,7 @@ namespace TiCC {
   LogStream& xDbg::operator *(){
     /// return the LogStream from the xDbg object
 #ifdef DARE_TO_OPTIMIZE
-    if ( my_stream->getlevel() >= my_stream->getthreshold() ){
+    if ( my_stream->get_level() >= my_stream->get_threshold() ){
       return *my_stream;
     }
     else {
@@ -469,8 +421,8 @@ namespace TiCC {
     }
     if ( os->single_threaded() || init_mutex() ){
       my_stream = os;
-      my_level = os->getthreshold();
-      os->setthreshold( LogExtreme );
+      my_level = os->get_threshold();
+      os->set_threshold( LogExtreme );
     }
   }
 
@@ -478,15 +430,15 @@ namespace TiCC {
     /// create a xxDbg object on the LogStream with Extreme threshold
     if ( os.single_threaded() || init_mutex() ){
       my_stream = &os;
-      my_level = os.getthreshold();
-      os.setthreshold( LogExtreme );
+      my_level = os.get_threshold();
+      os.set_threshold( LogExtreme );
     }
   }
 
   xxDbg::~xxDbg(){
     /// destroy the xxDbg object
     my_stream->flush();
-    my_stream->setthreshold( my_level );
+    my_stream->set_threshold( my_level );
     if ( !my_stream->single_threaded() ){
       mutex_release();
     }
@@ -495,7 +447,7 @@ namespace TiCC {
   LogStream& xxDbg::operator *(){
     /// return the LogStream from the xxDbg object
 #ifdef DARE_TO_OPTIMIZE
-    if ( my_stream->getlevel() >= my_stream->getthreshold() ){
+    if ( my_stream->get_level() >= my_stream->get_threshold() ){
       return *my_stream;
     }
     else {

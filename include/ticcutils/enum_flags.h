@@ -39,7 +39,6 @@ namespace TiCC {
   inline ENUMTYPE operator ~ (ENUMTYPE a) { return ENUMTYPE(~((std::underlying_type<ENUMTYPE>::type)a)); } \
   inline ENUMTYPE operator ^ (ENUMTYPE a, ENUMTYPE b) { return ENUMTYPE(((std::underlying_type<ENUMTYPE>::type)a) ^ ((std::underlying_type<ENUMTYPE>::type)b)); } \
   inline ENUMTYPE &operator ^= (ENUMTYPE &a, ENUMTYPE b) { return (ENUMTYPE &)(((std::underlying_type<ENUMTYPE>::type &)a) ^= ((std::underlying_type<ENUMTYPE>::type)b)); } \
-  inline std::ostream& operator<<( std::ostream& os, const ENUMTYPE& f ){ os << (std::underlying_type<ENUMTYPE>::type &)f; return os; } \
-
+  inline bool operator % ( const ENUMTYPE &a, ENUMTYPE b) { return (a & b) == b; }
 }
 #endif

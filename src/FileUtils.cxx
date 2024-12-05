@@ -63,7 +63,7 @@ namespace TiCC {
   }
 
   bool isFile( const string& name ){
-    /// check if 'name' an accessible file
+    /// check if 'name' a regular file
     try{
       filesystem::path the_path(name);
       return filesystem::is_regular_file(the_path);
@@ -357,7 +357,7 @@ namespace TiCC {
     close();
     delete _os;
     if ( !_keep ){
-      remove( _temp_name.c_str() );
+      filesystem::remove( _temp_name );
     }
   }
 

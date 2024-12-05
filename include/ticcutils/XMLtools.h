@@ -27,46 +27,56 @@
 #ifndef TICC_XML_TOOLS_H
 #define TICC_XML_TOOLS_H
 
+#include <cassert>
 #include <string>
 #include <map>
 #include <list>
-#include <iosfwd>
+#include <iostream>
 #include "libxml/xmlstring.h"
 #include "libxml/globals.h"
 #include "libxml/parser.h"
 
 namespace TiCC {
 
-  inline const xmlChar *to_xmlChar( const char *in ){
-    return reinterpret_cast<const xmlChar *>(in);
+  xmlDoc *create_xmlDocument( const std::string& );
+  xmlNode *getRoot( xmlDoc *);
+  bool isNCName( const std::string& );
+  std::string create_NCName( const std::string& );
+
+  inline const xmlChar *to_xmlChar( const std::string& in ){
+    return reinterpret_cast<const xmlChar *>(in.c_str());
   }
 
-  inline const char *to_char( const xmlChar *in ){
+  inline const std::string to_string( const xmlChar *in ){
     return reinterpret_cast<const char *>(in);
   }
 
+  inline const std::string to_string( const xmlChar *in, size_t len ){
+    return std::string( reinterpret_cast<const char *>(in), len );
+  }
+
   inline xmlNode *XmlNewNode( const std::string& elem ){
-    return xmlNewNode( 0, to_xmlChar(elem.c_str()) );
+    return xmlNewNode( 0, to_xmlChar(elem) );
   }
 
   inline xmlNode *XmlNewNode( xmlNs *ns, const std::string& elem ){
-    return xmlNewNode( ns, to_xmlChar(elem.c_str()) );
+    return xmlNewNode( ns, to_xmlChar(elem) );
   }
 
   inline xmlNode *XmlNewComment( const std::string& elem ){
-    return xmlNewComment( to_xmlChar(elem.c_str()) );
+    return xmlNewComment( to_xmlChar(elem) );
   }
 
   inline xmlNode *XmlNewChild( xmlNode *node,
 			       const std::string& elem ){
-    xmlNode *chld = xmlNewNode( 0, to_xmlChar(elem.c_str()) );
+    xmlNode *chld = xmlNewNode( 0, to_xmlChar(elem) );
     return xmlAddChild( node, chld );
   }
 
   inline xmlNode *XmlNewChild( xmlNode *node,
 			       xmlNs *ns,
 			       const std::string& elem ){
-    xmlNode *chld = xmlNewNode( ns, to_xmlChar(elem.c_str()) );
+    xmlNode *chld = xmlNewNode( ns, to_xmlChar(elem) );
     return xmlAddChild( node, chld );
   }
 
@@ -76,13 +86,13 @@ namespace TiCC {
     if ( val.empty() )
       return xmlNewTextChild( node,
 			      0,
-			      to_xmlChar(elem.c_str()),
+			      to_xmlChar(elem),
 			      0 );
     else
       return xmlNewTextChild( node,
 			      0,
-			      to_xmlChar(elem.c_str()),
-			      to_xmlChar(val.c_str()) );
+			      to_xmlChar(elem),
+			      to_xmlChar(val) );
   }
 
   inline xmlNode *XmlNewTextChild( xmlNode *node,
@@ -90,25 +100,52 @@ namespace TiCC {
 				   const std::string& elem,
 				   const std::string& val ){
     if ( val.empty() )
-      return xmlNewTextChild( node, ns,
-			      to_xmlChar(elem.c_str())
-			      , 0 );
+      return xmlNewTextChild( node,
+			      ns,
+			      to_xmlChar(elem)
+			      ,0 );
     else
-      return xmlNewTextChild( node, ns,
-			      to_xmlChar(elem.c_str()),
-			      to_xmlChar(val.c_str()) );
+      return xmlNewTextChild( node,
+			      ns,
+			      to_xmlChar(elem),
+			      to_xmlChar(val) );
   }
 
   inline void XmlAddContent( xmlNode *node, const std::string& cont ){
-    xmlNodeAddContent( node, to_xmlChar(cont.c_str()) );
+    xmlNodeAddContent( node, to_xmlChar(cont) );
   }
 
   inline xmlAttr *XmlSetAttribute( xmlNode *node,
 				   const std::string& att,
 				   const std::string& val ){
     return xmlSetProp( node,
-		       to_xmlChar(att.c_str()),
-		       to_xmlChar(val.c_str()) );
+		       to_xmlChar(att),
+		       to_xmlChar(val) );
+  }
+
+  inline std::string Name( const xmlNode *node ){
+    std::string result;
+    if ( node ){
+      result = to_string(node->name);
+    }
+    return result;
+  }
+
+  inline std::string TextValue( const xmlNode *node ){
+    /// extract the string content of an xmlNode
+    /*!
+      \param node The xmlNode to extract from
+      \return the string value of node
+    */
+    std::string result;
+    if ( node ){
+      xmlChar *tmp = xmlNodeGetContent( node );
+      if ( tmp ){
+	result = to_string(tmp );
+	xmlFree( tmp );
+      }
+    }
+    return result;
   }
 
   inline std::string getAttribute( const xmlNode *node,
@@ -116,8 +153,9 @@ namespace TiCC {
     if ( node ){
       const xmlAttr *a = node->properties;
       while ( a ){
-	if ( att == to_char(a->name) )
-	  return to_char(a->children->content);
+	if ( att == to_string(a->name) ){
+	  return TextValue(a->children);
+	}
 	a = a->next;
       }
     }
@@ -129,8 +167,7 @@ namespace TiCC {
     if ( node ){
       const xmlAttr *a = node->properties;
       while ( a ){
-	result[to_char(a->name) ]
-	  = to_char(a->children->content);
+	result[to_string(a->name)] = TextValue(a->children);
 	a = a->next;
       }
     }
@@ -146,48 +183,23 @@ namespace TiCC {
   std::map<std::string,std::string> getNSvalues( const xmlNode * );
   std::map<std::string,std::string> getDefinedNS( const xmlNode * );
 
-  std::string serialize( const xmlNode& node );
+  const std::string serialize( const xmlNode& );
+  const std::string serialize( const xmlNode* );
+  const std::string serialize( const xmlDoc& );
+  const std::string serialize( const xmlDoc* );
 
-  inline std::string Name( const xmlNode *node ){
-    std::string result;
-    if ( node ){
-      result = to_char(node->name);
-    }
-    return result;
+  inline std::ostream& operator << ( std::ostream& os, const xmlDoc& doc ){
+    os << serialize(doc);
+    return os;
   }
 
-  inline std::string XmlContent( const xmlNode *node ){
-    std::string result;
-    if ( node ){
-      xmlChar *tmp = xmlNodeListGetString( node->doc, node->children, 1 );
-      if ( tmp ){
-	result = std::string( to_char(tmp) );
-	xmlFree( tmp );
-      }
+  inline std::ostream& operator << ( std::ostream& os, const xmlDoc* doc ){
+    if ( doc ){
+      os << serialize(*doc);
     }
-    return result;
-  }
-
-  /// \brief XmlDoc is a C++ wrapper around libxml2::xmlDoc
-  class XmlDoc {
-    friend std::ostream& operator << ( std::ostream& , const XmlDoc& );
-  public:
-    explicit XmlDoc( const std::string& );
-    ~XmlDoc(){
-      xmlFreeDoc( the_doc );
+    else {
+      os << "No xmlDoc";
     }
-    void setRoot( xmlNode* );
-    xmlNode *getRoot() const;
-    xmlNode *MakeRoot( const std::string& );
-    const std::string toString() const;
-  private:
-    XmlDoc( const XmlDoc& ) =delete; // no copies please
-    XmlDoc& operator= ( const XmlDoc& ) =delete; // no copies please
-    xmlDoc *the_doc;
-  };
-
-  inline std::ostream& operator << ( std::ostream& os, const XmlDoc& doc ){
-    os << doc.toString();
     return os;
   }
 
@@ -197,7 +209,12 @@ namespace TiCC {
   }
 
   inline std::ostream& operator << ( std::ostream& os, const xmlNode *node ){
-    os << serialize( *node );
+    if ( node ){
+      os << serialize( *node );
+    }
+    else {
+      os << "No xmlNode";
+    }
     return os;
   }
 

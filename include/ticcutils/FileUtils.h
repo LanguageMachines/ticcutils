@@ -70,8 +70,8 @@ namespace TiCC {
     std::string _temp_name;
     std::ofstream *_os;
     bool _keep;
-    tmp_stream( const tmp_stream& );
-    tmp_stream operator=( const tmp_stream& );
+    tmp_stream( const tmp_stream& ) = delete;
+    tmp_stream operator=( const tmp_stream& ) = delete;
   };
 
 }

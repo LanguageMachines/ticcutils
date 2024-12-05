@@ -107,7 +107,7 @@ namespace TiCC {
   class CL_Options {
     friend std::ostream& operator<<( std::ostream&, const CL_Options& );
   public:
-    typedef std::vector<CL_item>::const_iterator const_iterator;
+    using const_iterator = std::vector<CL_item>::const_iterator;
     CL_Options();
     CL_Options( const std::string&, const std::string& );
     void allow_args( const std::string& = "", const std::string& = "" );
@@ -126,14 +126,6 @@ namespace TiCC {
     }
     void add_short_options( const std::string& s );
     void add_long_options( const std::string& s );
-    void set_short_options( const std::string& s ){
-      // misnomer, kept for backward compatability
-      add_short_options( s );
-    }
-    void set_long_options( const std::string& s ){
-      // misnomer, kept for backward compatability
-      add_long_options( s );
-    }
     const std::string& prog_name() const {
       /// return the stored name of the calling program (normally argv[0])
       return _prog_name;
@@ -334,8 +326,8 @@ namespace TiCC {
     bool extract_internal( const std::string&, std::string& );
     std::vector<CL_item> Opts;
     std::vector<std::string> MassOpts;
-    CL_Options( const CL_Options& );
-    CL_Options& operator=( const CL_Options& );
+    CL_Options( const CL_Options& ) = delete;
+    CL_Options& operator=( const CL_Options& ) = delete;
     std::set<char> valid_chars;
     std::set<char> valid_chars_par;
     std::set<char> valid_chars_opt;

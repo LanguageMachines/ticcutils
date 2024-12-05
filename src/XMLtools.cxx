@@ -38,53 +38,107 @@ using namespace std;
 
 namespace TiCC {
 
-  XmlDoc::XmlDoc( const string& elem ){
-    /// create an XmlDoc with a root node
-    /*!
-      \param elem the tag of the root node
-    */
-    the_doc = xmlNewDoc( to_xmlChar("1.0") );
-    MakeRoot( elem );
+  xmlDoc *create_xmlDocument( const std::string& root_name ){
+    xmlDoc *result=  xmlNewDoc( TiCC::to_xmlChar("1.0") );
+    xmlNode *root = xmlNewDocNode( result,
+				   0,
+				   TiCC::to_xmlChar(root_name),
+				   0 );
+    xmlDocSetRootElement( result, root );
+    return result;
   }
 
-  const string XmlDoc::toString() const {
-    /// serialize a complete XmlDoc to an UTF-8 string
+  xmlNode *getRoot( xmlDoc *doc ){
+    return xmlDocGetRootElement(doc);
+  }
+
+  const string serialize( const xmlDoc& doc ) {
+    /// serialize a complete xmlDoc to an UTF-8 string
     xmlChar *buf;
     int size;
-    xmlDocDumpFormatMemoryEnc( the_doc, &buf, &size, "UTF-8", 1 );
-    const string result = string( to_char(buf), size );
+    xmlDocDumpFormatMemoryEnc( const_cast<xmlDoc*>(&doc), &buf, &size, "UTF-8", 1 );
+    const string result = to_string( buf, size );
     xmlFree( buf );
     return result;
   }
 
-  xmlNode *XmlDoc::getRoot() const {
-    /// return the root node
-    if ( the_doc ){
-      return xmlDocGetRootElement(the_doc);
-    }
-    return 0;
-  }
-
-  void XmlDoc::setRoot( xmlNode *node ){
-    /// set the root node
-    if ( the_doc ){
-      xmlDocSetRootElement(the_doc, node );
-    }
-  }
-
-  xmlNode *XmlDoc::MakeRoot( const string& elem ){
-    /// create a root node with tag \e elem
+  bool isNCName( const string& s ){
+    /// test if a string is a valid NCName value
     /*!
-      \param elem the tag of the new root node
-      \return the newly created node
+      \param s the inputstring
+      \return true if \e s may be used as an NCName (e.g. for xml:id)
     */
-    xmlNode *root;
-    root = xmlNewDocNode( the_doc,
-			  0,
-			  to_xmlChar(elem.c_str()),
-			  0 );
-    xmlDocSetRootElement( the_doc, root );
-    return root;
+    int test = xmlValidateNCName( to_xmlChar(s), 0 );
+    if ( test != 0 ){
+      return false;
+    }
+    return true;
+  }
+
+  string create_NCName( const string& s ){
+    /// create a valid NCName
+    /*!
+      \param s a string to be used as template
+      \return a string that is a valid NCname
+
+      Make sure these prerequisites are met:
+      An xsd:NCName value must start with either a letter or underscore ( _ )
+      and may contain only letters, digits, underscores ( _ ), hyphens ( - ),
+      and periods ( . ).
+    */
+    if ( isNCName( s ) ){
+      return s;
+    }
+    else {
+      string result = s;
+      while ( !result.empty()
+	      && ( result.front() == '.'
+		   || result.front() == '-'
+		   || !isalpha(result.front() ) ) ){
+	if ( result.front() == '_' ){
+	  break;
+	}
+	result.erase(result.begin());
+      }
+      if ( result.empty() ){
+	throw runtime_error( "unable to create a valid NCName from '"
+			     + s + "', would be empty" );
+      }
+      if ( isNCName( result ) ){
+	return result;
+      }
+      else {
+	auto it = result.begin();
+	while ( it != result.end() ){
+	  if ( *it == ' ' ){
+	    // replace spaces by '_'
+	    *it = '_';
+	    ++it;
+	  }
+	  else if ( *it == '-'
+		    || *it == '_'
+		    || *it == '.' ){
+	    // not alphanumeric, but allowed
+	    ++it;
+	  }
+	  else if ( !isalnum(*it) ){
+	    it = result.erase(it);
+	  }
+	  else {
+	    ++it;
+	  }
+	}
+	if ( result.empty() ){
+	  throw runtime_error( "unable to create a valid NCName from '"
+			       + s + "', (empty result)" );
+	}
+	else if ( !isNCName( result ) ){
+	  throw runtime_error( "unable to create a valid NCName from '"
+			       + s + "'" );
+	}
+	return result;
+      }
+    }
   }
 
   string getNS( const xmlNode *node, string& prefix ){
@@ -99,9 +153,9 @@ namespace TiCC {
     const xmlNs *p = node->ns;
     if ( p ){
       if ( p->prefix ){
-	prefix = to_char(p->prefix);
+	prefix = to_string(p->prefix);
       }
-      result = to_char(p->href);
+      result = to_string(p->href);
     }
     return result;
   }
@@ -118,9 +172,9 @@ namespace TiCC {
       string pre;
       string val;
       if ( p->prefix ){
-	pre = to_char(p->prefix);
+	pre = to_string(p->prefix);
       }
-      val = to_char(p->href);
+      val = to_string(p->href);
       result[pre] = val;
       p = p->next;
     }
@@ -139,9 +193,9 @@ namespace TiCC {
       string pre;
       string val;
       if ( p->prefix ){
-	pre = to_char(p->prefix);
+	pre = to_string(p->prefix);
       }
-      val = to_char(p->href);
+      val = to_string(p->href);
       result[pre] = val;
       p = p->next;
     }
@@ -159,7 +213,7 @@ namespace TiCC {
       \return a list of all matching nodes
     */
     list<xmlNode*> nodes;
-    xmlXPathObject* result = xmlXPathEval( to_xmlChar(xpath.c_str()), ctxt);
+    xmlXPathObject* result = xmlXPathEval( to_xmlChar(xpath), ctxt);
     if ( result ){
       if (result->type != XPATH_NODESET) {
 	xmlXPathFreeObject(result);
@@ -202,13 +256,13 @@ namespace TiCC {
       if ( key.empty() ){
 	// the anonymous namespace
 	xmlXPathRegisterNs( ctxt,
-			    to_xmlChar(defaultP.c_str()),
-			    to_xmlChar(value.c_str()) );
+			    to_xmlChar(defaultP),
+			    to_xmlChar(value) );
       }
       else {
 	xmlXPathRegisterNs( ctxt,
-			    to_xmlChar(key.c_str()),
-			    to_xmlChar(value.c_str()) );
+			    to_xmlChar(key),
+			    to_xmlChar(value) );
       }
     }
   }
@@ -303,11 +357,11 @@ namespace TiCC {
     return xPath( root, xpath );
   }
 
-  string serialize( const xmlNode& node ){
+  const string serialize( const xmlNode& node ){
     /// serialize an xmlNode to a string (XML fragment)
     xmlBuffer *buf = xmlBufferCreate();
     xmlNodeDump( buf, 0, const_cast<xmlNode*>(&node), 0, 0 );
-    string result = to_char(xmlBufferContent( buf ));
+    const string result = to_string(xmlBufferContent( buf ));
     xmlBufferFree( buf );
     return result;
   }
