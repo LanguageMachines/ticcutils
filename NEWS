@@ -1,3 +1,11 @@
+16 dec 2024 0.36
+[Ko van der Sloot]
+* code rework and cleanup
+ - LogStream interface
+ - Enum type utils
+ - XmlTools
+* bumped library version
+* added more tests
 12 sep 2024 0.35
 [Ko van der Sloot]
 * C++17 is requied now
