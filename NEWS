@@ -6,6 +6,7 @@
  - XmlTools
 * bumped library version
 * added more tests
+
 12 sep 2024 0.35
 [Ko van der Sloot]
 * C++17 is requied now
