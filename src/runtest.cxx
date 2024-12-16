@@ -1139,8 +1139,8 @@ enum flags { No = 0, One = 1, Two= 2, Four = 4};
 
 enum class class_flags { nope = 0, ok = 1, warning = 1<<1, error = 1<<2 };
 
-DEFINE_ENUM_FLAG_OPERATORS(flags);
-DEFINE_ENUM_FLAG_OPERATORS(class_flags);
+DEFINE_ENUM_FLAG_OPERATORS(flags)
+DEFINE_ENUM_FLAG_OPERATORS(class_flags)
 
 std::ostream& operator<<( std::ostream& os, const flags& f ){
   os << int(f);
