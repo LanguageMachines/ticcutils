@@ -36,7 +36,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        compiler: [g++-12, clang++-15]
+        compiler: [g++-12, clang++-14]
 
     steps:
       - uses: actions/checkout@v4.1.1
