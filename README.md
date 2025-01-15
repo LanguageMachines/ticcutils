@@ -6,7 +6,7 @@
 TiCC utils
 ==============
 
-    TiCC utils 0.22 (c) ILK/CLST 1998 - 2024
+    TiCC utils 0.22 (c) ILK/CLST 1998 - 2025
     by Ko van der Sloot
 
     Tilburg centre for Cognition and Communication, Tilburg University.
