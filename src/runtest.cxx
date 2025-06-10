@@ -1271,6 +1271,7 @@ void test_ncname(){
   assertEqual( create_NCName("_appel-taart.met slagroom_"), "_appel-taart.met_slagroom_" );
 }
 
+
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
   Timer t1;
