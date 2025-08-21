@@ -17,7 +17,6 @@ on:
   pull_request:
     branches: [master]
 
-
 jobs:
   notification:
     runs-on: ubuntu-latest
