@@ -1,5 +1,6 @@
+
 /*
-  Copyright (c) 2006 - 2025
+  Copyright (c) 2006 - 2024
   CLST  - Radboud University
   ILK   - Tilburg University
 
@@ -26,13 +27,12 @@
 
 #include "ticcutils/UniHash.h"
 #include "ticcutils/Unicode.h"
+// normalizer2.h is included via Unicode.h
 
 using namespace std;
 using namespace icu;
 
 namespace Hash {
-
-  using namespace Tries;
 
   UniInfo::UniInfo( const UnicodeString& value,
 		    const unsigned int index ):
@@ -62,6 +62,10 @@ namespace Hash {
 
   UnicodeHash::~UnicodeHash(){
     /// destroy a UnicodeHash
+    // We must explicitly delete the pointers stored in the map
+    for ( auto& pair : _map ) {
+        delete pair.second;
+    }
   }
 
   unsigned int UnicodeHash::hash( const UnicodeString& value ){
@@ -72,16 +76,36 @@ namespace Hash {
       when a new hash is inserted, the reverse index is also updated
       the UnicodeString will be NFC normalized first.
     */
-    static TiCC::UnicodeNormalizer nfc_norm;
-    UnicodeString val = nfc_norm.normalize( value );
-    UniInfo *info = _tree.Retrieve( val );
-    if ( !info ){
-      info = new UniInfo( val, ++_num_of_tokens );
-      info = reinterpret_cast<UniInfo *>(_tree.Store( val, info ));
+    UErrorCode status = U_ZERO_ERROR;
+    const Normalizer2 *n2 = Normalizer2::getNFCInstance(status);
+    const UnicodeString *pVal = &value;
+    UnicodeString norm_storage;
+
+    // Optimization: Only normalize if strictly necessary
+    if ( U_SUCCESS(status) && !n2->isNormalized(value, status) ){
+      n2->normalize(value, norm_storage, status);
+      pVal = &norm_storage;
     }
+
+    // Map lookup
+    auto it = _map.find( *pVal );
+    UniInfo *info = nullptr;
+
+    if ( it == _map.end() ){
+      // Not found, insert new
+      info = new UniInfo( *pVal, ++_num_of_tokens );
+      _map.insert({ *pVal, info });
+    } else {
+      info = it->second;
+    }
+
     unsigned int idx = info->index();
     if ( idx >= _rev_index.size() ){
-      _rev_index.resize( _rev_index.size() + 1000 );
+      // Ensure capacity before resizing
+      if ( idx >= _rev_index.capacity() ) {
+           _rev_index.reserve( idx + 10000 );
+      }
+      _rev_index.resize( idx + 1000, nullptr );
     }
     _rev_index[idx] = info;
     return idx;
@@ -93,11 +117,20 @@ namespace Hash {
       \param value the string to lookup
       \return the hash value, or 0 when not found
     */
-    static TiCC::UnicodeNormalizer nfc_norm;
-    UnicodeString val = nfc_norm.normalize( value );
-    const UniInfo *info = _tree.Retrieve( val );
-    if ( info ){
-      return info->index();
+    UErrorCode status = U_ZERO_ERROR;
+    const Normalizer2 *n2 = Normalizer2::getNFCInstance(status);
+    const UnicodeString *pVal = &value;
+    UnicodeString norm_storage;
+
+    // Optimization: Only normalize if strictly necessary
+    if ( U_SUCCESS(status) && !n2->isNormalized(value, status) ){
+      n2->normalize(value, norm_storage, status);
+      pVal = &norm_storage;
+    }
+
+    auto it = _map.find( *pVal );
+    if ( it != _map.end() ){
+      return it->second->index();
     }
     return 0;
   }
@@ -115,7 +148,7 @@ namespace Hash {
 
   ostream& operator << ( ostream& os, const UnicodeHash& S ){
     /// output the content of a whole UnicodeHash structure (Debugging only)
-    return os << &S._tree;
+    return os << "UnicodeHash map size: " << S._map.size();
   }
 
 }

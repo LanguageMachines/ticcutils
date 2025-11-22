@@ -1,5 +1,6 @@
+
 /*
-  Copyright (c) 2006 - 2025
+  Copyright (c) 2006 - 2024
   CLST  - Radboud University
   ILK   - Tilburg University
 
@@ -29,7 +30,7 @@
 
 #include <vector>
 #include <ostream>
-#include "ticcutils/UniTrie.h"
+#include <unordered_map>
 #include "ticcutils/Unicode.h"
 
 namespace Hash {
@@ -60,13 +61,20 @@ namespace Hash {
     UniInfo& operator=( const UniInfo& ) = delete;
   };
 
+  // Custom hasher for icu::UnicodeString
+  struct UnicodeStringHash {
+      std::size_t operator()(const icu::UnicodeString& k) const {
+          return k.hashCode();
+      }
+  };
+
   /// \brief The UnicodeHash class is used to enumerate Unicode strings.
   ///
   /// Every string gets an UNIQUE id assigned.
   ///
   /// It also keeps a reverse index from the id back to the string.
   ///
-  /// Internally it uses a UniTrie for fast inserting en retrieving
+  /// Internally it uses a std::unordered_map for fast inserting en retrieving
   class UnicodeHash {
     friend std::ostream& operator << ( std::ostream&, const UnicodeHash& );
   public:
@@ -84,7 +92,8 @@ namespace Hash {
   private:
     unsigned int _num_of_tokens;
     std::vector<UniInfo*> _rev_index;
-    Tries::UniTrie<UniInfo> _tree;
+    // Replaced UniTrie with unordered_map
+    std::unordered_map<icu::UnicodeString, UniInfo*, UnicodeStringHash> _map;
     UnicodeHash( const UnicodeHash& ) = delete;
     UnicodeHash& operator=( const UnicodeHash& ) = delete;
   };
