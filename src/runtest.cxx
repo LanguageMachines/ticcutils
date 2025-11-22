@@ -1152,16 +1152,6 @@ std::ostream& operator<<( std::ostream& os, const class_flags& f ){
   return os;
 }
 
-std::ostream& operator<<( std::ostream& os, const flags& f ){
-  os << int(f);
-  return os;
-}
-
-std::ostream& operator<<( std::ostream& os, const class_flags& f ){
-  os << int(f);
-  return os;
-}
-
 void test_enum_flags() {
   {
     flags f = flags::Two|flags::Four;
