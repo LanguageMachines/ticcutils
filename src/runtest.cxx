@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2006 - 2024
+  Copyright (c) 2006 - 2025
   CLST  - Radboud University
   ILK   - Tilburg University
 
@@ -1139,8 +1139,18 @@ enum flags { No = 0, One = 1, Two= 2, Four = 4};
 
 enum class class_flags { nope = 0, ok = 1, warning = 1<<1, error = 1<<2 };
 
-DEFINE_ENUM_FLAG_OPERATORS(flags);
-DEFINE_ENUM_FLAG_OPERATORS(class_flags);
+DEFINE_ENUM_FLAG_OPERATORS(flags)
+DEFINE_ENUM_FLAG_OPERATORS(class_flags)
+
+std::ostream& operator<<( std::ostream& os, const flags& f ){
+  os << int(f);
+  return os;
+}
+
+std::ostream& operator<<( std::ostream& os, const class_flags& f ){
+  os << int(f);
+  return os;
+}
 
 std::ostream& operator<<( std::ostream& os, const flags& f ){
   os << int(f);
@@ -1270,6 +1280,7 @@ void test_ncname(){
   assertEqual( create_NCName(".-_!A#12!3"), "_A123" );
   assertEqual( create_NCName("_appel-taart.met slagroom_"), "_appel-taart.met_slagroom_" );
 }
+
 
 int main( const int argc, const char* argv[] ){
   cerr << BuildInfo() << endl;
