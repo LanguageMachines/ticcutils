@@ -63,8 +63,8 @@ namespace Hash {
   UnicodeHash::~UnicodeHash(){
     /// destroy a UnicodeHash
     // We must explicitly delete the pointers stored in the map
-    for ( auto& pair : _map ) {
-        delete pair.second;
+    for ( auto const& pair : _map ) {
+      delete pair.second;
     }
   }
 
