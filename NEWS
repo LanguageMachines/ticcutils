@@ -1,5 +1,9 @@
-22 nov 2015 0.37
+12 dec 20265 0.37
 [Ko van der Sloot]
+* updated UniHash.h and UniHash.cxx as suggested
+  by https://github.com/LanguageMachines/ticcutils/pull/30
+* newest json version
+* fixed GitHub actions
 
 16 dec 2024 0.36
 [Ko van der Sloot]
