@@ -72,9 +72,38 @@ namespace TiCC {
     return result;
   }
 
+  string UnicodeToUTF8( const UnicodeString& s,
+			UnicodeNormalizer & UN ){
+    /// convert a UnicodeString to a UTF-8 string
+    /*!
+      \param s the UnicodeString to convert
+      \param UN the UnicodeNormalizer to use.
+    */
+    UnicodeString normalized = UN.normalize( s );
+    string result;
+    normalized.toUTF8String(result);
+    return result;
+  }
+
   UnicodeString UnicodeFromUTF8( const string& s,
 				 const string& normalization ){
+    /// convert a UnicodeString to a UTF-8 string
+    /*!
+      \param s the UnicodeString to convert
+      \param UN the UnicodeNormalizer to use.
+    */
     UnicodeNormalizer UN( normalization);
+    UnicodeString result = UnicodeString::fromUTF8( s );
+    return UN.normalize( result );
+  }
+
+  UnicodeString UnicodeFromUTF8( const string& s,
+				 UnicodeNormalizer& UN ){
+    /// convert a UTF-8 string to a UnicodeString
+    /*!
+      \param s the UTF-8 string to convert
+      \param UN the UnicodeNormalizer to use.
+    */
     UnicodeString result = UnicodeString::fromUTF8( s );
     return UN.normalize( result );
   }
@@ -149,11 +178,17 @@ namespace TiCC {
     }
     else {
       UErrorCode status=U_ZERO_ERROR;
-      UnicodeString r = _normalizer->normalize( us, status );
-      if (U_FAILURE(status)){
-	throw invalid_argument("Normalizer");
+      if ( !_normalizer->isNormalized(us,status) ){
+	status=U_ZERO_ERROR;
+	UnicodeString r = _normalizer->normalize( us, status );
+	if (U_FAILURE(status)){
+	  throw invalid_argument("Normalizer");
+	}
+	return r;
       }
-      return r;
+      else {
+	return us;
+      }
     }
   }
 
