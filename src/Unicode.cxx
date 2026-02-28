@@ -57,6 +57,22 @@ namespace TiCC {
     return UN.normalize( result );
   }
 
+  UnicodeString UnicodeFromEnc( const string& s,
+				const string& encoding,
+				UnicodeNormalizer& norm ){
+    /// convert a character buffer in some encoding to a UnicodeString
+    /*!
+      \param s the string to interpret as a character buffer
+      \param encoding the encoding assumed for s. Default UTF8
+      \param norm the UnicodeNormalier to use.
+      \return a normalized UnicodeString object
+    */
+    UnicodeString result = UnicodeString( s.c_str(),
+					  s.length(),
+					  encoding.c_str() );
+    return norm.normalize( result );
+  }
+
   string UnicodeToUTF8( const UnicodeString& s,
 			const string& normalization ){
     /// convert a UnicodeString to a UTF-8 string
@@ -935,6 +951,44 @@ namespace TiCC {
     std::getline( is, line, delim );
     us = TiCC::UnicodeFromEnc( line, encoding, "NFC" );
     return is;
+  }
+
+  istream& getline( istream& is,
+		    UnicodeNormalizer& norm,
+		    UnicodeString& us,
+		    const string& input_encoding,
+		    const char delim ){
+    /// read a UnicodeString from an encoded file
+    /*!
+      \param is The stream to read from
+      \param norm The UnicodeNormalizer to use
+      \param us the UnicodeString to read. (will be cleared before reading)
+      the string is normalized in NFC.
+      \param input_encoding The Unicode encoding of the input stream.
+      It is up to the caller to assure this encoding is valid.
+      \param delim The delimiter. Default '\n'
+      \return the stream
+    */
+    string line;
+    std::getline( is, line, delim );
+    us = TiCC::UnicodeFromEnc( line, input_encoding, norm );
+    return is;
+  }
+
+  istream& getline( istream& is,
+		    UnicodeNormalizer& norm,
+		    UnicodeString& us,
+		    const char delim ){
+    /// read a UnicodeString from an encoded file
+    /*!
+      \param is The stream to read from
+      \param norm The UnicodeNormalizer to use
+      \param us the UnicodeString to read. (will be cleared before reading)
+      the string is normalized in NFC.
+      \param delim The delimiter. Default '\n'
+      \return the stream
+    */
+    return getline( is, norm, us, "UTF8", delim );
   }
 
   UnicodeString format_non_printable( const UChar32 c ){

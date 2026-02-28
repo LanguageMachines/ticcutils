@@ -899,12 +899,15 @@ void test_unicode( const string& path ){
   getline( in, line );
   assertFalse( line == "Hier staat een BOM voor. æ en ™ om te testen." );
   UnicodeString u3 = UnicodeFromEnc( line, "UTF16" );
-  string s3 = UnicodeToUTF8(  u3 );
+  string s3 = UnicodeToUTF8( u3 );
   assertEqual( s3, "Hier staat een BOM voor. æ en ™ om te testen." );
+  UnicodeNormalizer N1;
+  UnicodeString u4 = UnicodeFromEnc( line, "UTF16", N1 );
+  string s4 = UnicodeToUTF8( u4, N1 );
+  assertEqual( s4, "Hier staat een BOM voor. æ en ™ om te testen." );
   UnicodeString greek1 = "ἀντιϰειμένου";
   UnicodeString greek2 = "ἀντιϰειμένου";
   assertFalse( greek1 == greek2 ); // different normalizations!
-  UnicodeNormalizer N1;
   UnicodeString ng11 = N1.normalize( greek1 );
   UnicodeString ng12 = N1.normalize( greek2 );
   assertEqual( UnicodeToUTF8(ng11), UnicodeToUTF8(ng12) );

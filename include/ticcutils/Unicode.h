@@ -53,6 +53,10 @@ namespace TiCC {
 				const std::string& = "UTF8",
 				const std::string& = "" );
 
+  UnicodeString UnicodeFromEnc( const std::string&,
+				const std::string&,
+				UnicodeNormalizer& );
+
   UnicodeString UnicodeFromUTF8( const std::string&,
 				 const std::string& = "" );
 
@@ -153,6 +157,17 @@ namespace TiCC {
 
   std::istream& getline( std::istream&,
 			 icu::UnicodeString&,
+			 const char = '\n' );
+
+  std::istream& getline( std::istream&,
+			 UnicodeNormalizer&,
+			 UnicodeString&,
+			 const std::string&,
+			 const char = '\n' );
+
+  std::istream& getline( std::istream&,
+			 UnicodeNormalizer&,
+			 UnicodeString&,
 			 const char = '\n' );
 
   template< typename T >
