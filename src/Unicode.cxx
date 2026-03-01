@@ -486,10 +486,10 @@ namespace TiCC {
     UErrorCode stat = U_ZERO_ERROR;
     UParseError err;
     _trans = Transliterator::createFromRules( name,
-						   rules,
-						   UTRANS_FORWARD,
-						   err,
-						   stat );
+					      rules,
+					      UTRANS_FORWARD,
+					      err,
+					      stat );
     if ( U_FAILURE( stat ) ){
       string msg = "creating UniFilter: " + UnicodeToUTF8( name )
 	+ " failed\n" + "error in rules, line=" + toString(err.line)
@@ -556,12 +556,12 @@ namespace TiCC {
 			   + filename + "'" );
     }
     UnicodeString rule;
-    string line;
-    while ( getline( is, line ) ){
-      UnicodeString uline = UnicodeFromUTF8( line );
-      rule += to_icu_rule( uline );
+    UnicodeString line;
+    UnicodeNormalizer norm;
+    while ( getline( is, norm, line ) ){
+      rule += to_icu_rule( line );
     }
-    return init( rule, UnicodeFromUTF8(label) );
+    return init( rule, UnicodeFromUTF8(label,norm) );
   }
 
   UnicodeString UniFilter::filter( const UnicodeString& line ){
