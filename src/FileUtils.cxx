@@ -76,7 +76,7 @@ namespace TiCC {
   bool create_dir( const filesystem::path& p ){
     /// create a directory using 'name'
     /*!
-      \param path the path description
+      \param p the path description
       \return true if the path is created and a directory
       This function attempts to open a path /a/b/c/ from an expression like:
       \verbatim

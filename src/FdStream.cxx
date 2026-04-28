@@ -75,7 +75,7 @@ int fdoutbuf::overflow( int c ){
   return c;
 }
 
-streamsize fdoutbuf::xsputn( const char *s, streamsize num ){
+streamsize fdoutbuf::xsputn( const char *s, const std::streamsize num ){
   /// overloaded version of streambuf::xputn()
   /*!
     \param s the range of characters to write

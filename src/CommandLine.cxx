@@ -741,7 +741,7 @@ namespace TiCC {
   }
 
   void CL_Options::add_short_options( const string& s ){
-    /// add valid short options from \s
+    /// add valid short options from s
     /*!
       \param s a string representing the valid options
 
@@ -785,7 +785,7 @@ namespace TiCC {
   }
 
   void CL_Options::add_long_options( const string& s ){
-    /// set the long options from string \s
+    /// set the long options from string 's'
     /*!
       \param s a string representing the valid options
 

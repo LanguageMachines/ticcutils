@@ -73,7 +73,6 @@ namespace TiCC {
     /// create a LogStream connected to an output stream
     /*!
       \param as a stream to connect to
-      \param message the prefix message
       \param stamp the stamping flag to use
     */
   }

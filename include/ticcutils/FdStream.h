@@ -38,7 +38,7 @@ class fdoutbuf: public std::streambuf {
   bool connect( int );
  protected:
   virtual int overflow( int );
-  virtual std::streamsize xsputn( const char *, std::streamsize );
+  virtual std::streamsize xsputn( const char *, const std::streamsize );
   int _fd; // file descriptor
 };
 

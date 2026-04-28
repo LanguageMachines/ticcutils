@@ -106,7 +106,7 @@ namespace TiCC {
     /// convert a UnicodeString to a UTF-8 string
     /*!
       \param s the UnicodeString to convert
-      \param UN the UnicodeNormalizer to use.
+      \param normalization nanme of the normalization to use.
     */
     UnicodeNormalizer UN( normalization);
     UnicodeString result = UnicodeString::fromUTF8( s );
@@ -909,6 +909,13 @@ namespace TiCC {
   UnicodeString pad( const UnicodeString& in,
 		     int len,
 		     const UChar32 pad_char ){
+    /// pad a UnicodeString with 'pad_char', to a maximum length of 'len'
+    /*!
+      \param in The UnicodeString ro pad
+      \param len the desired length of the output string
+      ignored if len <= in.length
+      \param pad_char the character to pad with
+    */
     if ( len <= in.length() ){
       return in;
     }
@@ -963,7 +970,7 @@ namespace TiCC {
       \param is The stream to read from
       \param norm The UnicodeNormalizer to use
       \param us the UnicodeString to read. (will be cleared before reading)
-      the string is normalized in NFC.
+      the string is normalized using 'norm'
       \param input_encoding The Unicode encoding of the input stream.
       It is up to the caller to assure this encoding is valid.
       \param delim The delimiter. Default '\n'
@@ -993,7 +1000,9 @@ namespace TiCC {
 
   UnicodeString format_non_printable( const UChar32 c ){
     /// format a (maybe weird)  character into a printable form
-    // useful for debugging
+    /*!
+      \param c some unicode character
+    */
     UnicodeString result;
     if ( isprint(c)
 	 && (int)c > 31
@@ -1009,6 +1018,11 @@ namespace TiCC {
   }
 
   UnicodeString format_non_printable( const UnicodeString& in ){
+    /// format a (maybe weird) string of characters into a printable form
+    /*!
+      \param in some UnicodeString
+    */
+    // useful for debugging
     UnicodeString result;
     for ( int n=0; n < in.length(); ++n ){
       result += format_non_printable( in[n] );
