@@ -48,7 +48,7 @@ namespace TiCC {
     void stop();
     Timer& operator+=( const Timer& );
     friend Timer operator+( Timer, const Timer& );
-    std::string toString();
+    std::string toString() const;
     static std::string now();
     static void milli_wait( int );
   private:

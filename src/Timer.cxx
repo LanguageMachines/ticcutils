@@ -103,7 +103,7 @@ namespace TiCC {
     return lhs;
   }
 
-  string Timer::toString(){
+  string Timer::toString() const {
     /// pretty print the Timer value to a string
     stringstream os;
     os << *this;

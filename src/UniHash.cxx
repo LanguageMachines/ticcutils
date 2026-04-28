@@ -34,7 +34,7 @@ using namespace icu;
 
 namespace Hash {
 
-  UniInfo::UniInfo( const UnicodeString& value,
+  UniInfo::UniInfo( const icu::UnicodeString& value,
 		    const unsigned int index ):
     _value(value),_ID(index){
     /// create a UniInfo record
@@ -68,7 +68,7 @@ namespace Hash {
     }
   }
 
-  unsigned int UnicodeHash::hash( const UnicodeString& value ){
+  unsigned int UnicodeHash::hash( const icu::UnicodeString& value ){
     /// lookup or create a hash for the string parameter
     /*!
       \param value the string to hash
@@ -111,7 +111,7 @@ namespace Hash {
     return idx;
   }
 
-  unsigned int UnicodeHash::lookup( const UnicodeString& value ) const {
+  unsigned int UnicodeHash::lookup( const icu::UnicodeString& value ) const {
     /// lookup the hash for a string in the UnicodeHash
     /*!
       \param value the string to lookup
