@@ -111,7 +111,11 @@ namespace TiCC {
   }
 
   ostream& operator<<( ostream& os, const CL_item& it ){
-    /// output a CL_item to a stream
+    /// output one CL_item to a stream
+    /*!
+      \param os the outputstream
+      \param it the CL_item to add
+    */
     os << it.toString();
     return os;
   }
@@ -134,6 +138,10 @@ namespace TiCC {
 
   ostream& operator<<( ostream& os, const CL_Options& cl ){
     /// output a CL_Options struct to a stream
+    /*!
+      \param os the outputstream
+      \param cl the CL_Options to add
+    */
     os << cl.toString() << " ";
     for ( const auto& opt : cl.MassOpts ){
       os << opt << " ";
@@ -155,6 +163,9 @@ namespace TiCC {
 
   ostream& CL_Options::dump( ostream& os ) {
     /// dump a complete CL_Options struct to a stream. (DEBUGGING ONLY)
+     /*!
+      \param os the outputstream
+     */
     os << *this;
     if ( !valid_chars.empty() ){
       os << endl;
@@ -256,7 +267,7 @@ namespace TiCC {
 
   bool CL_Options::extract_internal( const string& w,
 				     string &opt_val ) {
-    /// check if a long option \e w is available, and extract it
+    /// check if a long option \e w is available, and remove it
     /*!
       \param w the long options to search for
       \param opt_val if \e w is available return the value
@@ -328,12 +339,21 @@ namespace TiCC {
 
   void CL_Options::insert( const string& s, const string& value ){
     /// add a long CL_item to the list of items
+    /*!
+      \param s the long option we will add
+      \param value the value of that option
+     */
     CL_item cl( s, value );
     Opts.push_back( cl );
   }
 
   void CL_Options::insert( const char c, const string& value, bool mood ){
     /// add a short CL_item to the list of items
+    /*!
+      \param c the short option we will add
+      \param value the value of that option
+      \param mood true (+) or false (-)
+     */
     CL_item cl( c, value, mood );
     Opts.push_back( cl );
   }
@@ -359,6 +379,11 @@ namespace TiCC {
 
   ostream& operator<<( ostream& os, const arg& a ){
     /// output an 'arg' to a stream
+    /*!
+      \param os the output stream
+      \param a an arg struct
+      \return the stream
+     */
     switch ( a.stat ){
     case UNKNOWN:
       os << "?";
@@ -392,6 +417,9 @@ namespace TiCC {
   vector<string> fix_quotes( const vector<string>& argv ){
     /// fix quotes in the input
     // handle only balanced quotes, and 1 quote per option
+    /*!
+      \param argv a list of strings to clean
+     */
     vector<string> result;
     bool q_found = false;
     for ( auto str : argv ){
@@ -422,6 +450,11 @@ namespace TiCC {
   bool CL_Options::Parse_Command_Line( const int Argc,
 				       const char * const *Argv ){
     /// parse a commandline into a CL_options structure
+    /*!
+      \param argc the number of arguments
+      \param argv an array of character strings
+      \return true on succes
+    */
     Opts.clear();
     vector<string> local_argv;
     if ( Argc == 0 ){
