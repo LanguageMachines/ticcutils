@@ -87,6 +87,18 @@ fi
 AC_OSX_PKG( [icu4c] )
 AC_MSG_NOTICE([pkg-config: PATH=$PKG_CONFIG_PATH])
 
+AC_CHECK_PROGS([DOXYGEN], [doxygen])
+if test -z "$DOXYGEN"; then
+   AC_MSG_WARN([Doxygen not found - continue without Doxygen support])
+else
+   AC_CHECK_PROGS([DOT], [dot])
+   if test -z "$DOT"; then
+      AC_MSG_ERROR([Doxygen needs dot, please install dot first])
+   fi
+fi
+AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
+
+
 PKG_CHECK_MODULES([XML2], [libxml-2.0 >= 2.6.16] )
 CXXFLAGS="$CXXFLAGS $XML2_CFLAGS"
 LIBS="$LIBS $XML2_LIBS"
