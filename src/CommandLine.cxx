@@ -822,8 +822,8 @@ namespace TiCC {
     /*!
       \param s a string representing the valid options
 
-      such a line looks like: "opt1,opt2:,opt3" defining options opt1, opt2,
-      opt3, wehre option opt2 have a parameter
+      such a line looks like: "opt1::,opt2:,opt3" defining options opt1, opt2,
+      opt3, where option opt2 needs a parameter and opt1 may have one.
 
      */
     vector<string> parts = TiCC::split_at( s, "," );
@@ -833,7 +833,7 @@ namespace TiCC {
 	// found a ':'
 	if ( pos == value.size()-2){
 	  if ( value[value.size()-1] == ':' ){
-	    // Ok, two ':' at the end
+	    // Ok, two ':' at the end, meaning an optional parameter
 	    // remove them
 	    value.resize(value.size()-2);
 	    valid_long_opt.insert( value );
@@ -844,7 +844,7 @@ namespace TiCC {
 	  }
 	}
 	else if ( pos == value.size()-1){
-	  // Ok, one ':' at the end
+	  // Ok, one ':' at the end, meaning an obligatory parameter
 	  // remove it
 	  value.pop_back();
 	  valid_long_par.insert( value );
