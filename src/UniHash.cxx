@@ -50,7 +50,12 @@ namespace Hash {
 
   ostream& operator<<( ostream& os,
 		       const UniInfo& tok ){
-    /// output a UniInfo record
+    /// output a UniInfo record to a stream
+    /*!
+      \param os the outputstream
+      \param tok the UniInfo to display
+      \return the stream
+    */
     os << tok._ID << " " << tok._value;
     return os;
   }
@@ -69,7 +74,7 @@ namespace Hash {
   }
 
   unsigned int UnicodeHash::hash( const icu::UnicodeString& value ){
-    /// lookup or create a hash for the string parameter
+    /// lookup or create a hash for the UnicodeString value parameter
     /*!
       \param value the string to hash
       \return the hash value
@@ -112,7 +117,7 @@ namespace Hash {
   }
 
   unsigned int UnicodeHash::lookup( const icu::UnicodeString& value ) const {
-    /// lookup the hash for a string in the UnicodeHash
+    /// lookup the hash for a UnicodeString value in the UnicodeHash
     /*!
       \param value the string to lookup
       \return the hash value, or 0 when not found
@@ -136,7 +141,7 @@ namespace Hash {
   }
 
   const UnicodeString& UnicodeHash::reverse_lookup( unsigned int index ) const {
-    /// lookup the string value for a certain index
+    /// lookup the UnicodeString value for a certain index
     /*!
       \param index the index we search
       \return the string value
