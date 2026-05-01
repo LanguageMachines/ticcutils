@@ -36,7 +36,8 @@ using namespace std;
 
 namespace TiCC {
 
-  bool bz2Compress( const string& inName, const string& outName ){
+  bool bz2Compress( const string& inName,
+		    const string& outName ){
     /// bz2 zip a file
     /*!
       \param inName the input file
@@ -62,7 +63,8 @@ namespace TiCC {
     return true;
   }
 
-  bool bz2Decompress( const string& inName, const string& outName ){
+  bool bz2Decompress( const string& inName,
+		      const string& outName ){
     /// bz2 unzip a file
     /*!
       \param inName the bz2 zipped input file
@@ -130,7 +132,8 @@ namespace TiCC {
     return bz2ReadStream( infile );
   }
 
-  bool bz2WriteStream( ostream& os, const string& buffer ){
+  bool bz2WriteStream( ostream& os,
+		       const string& buffer ){
     /// write a buffer to a bz2 stream
     /*!
       \param os the bz2 zipped output stream
@@ -142,7 +145,8 @@ namespace TiCC {
     return true;
   }
 
-  bool bz2WriteFile( const string& outName, const string& buffer ){
+  bool bz2WriteFile( const string& outName,
+		     const string& buffer ){
     /// write a buffer to a bz2 output file
     /*!
       \param outName the bz2 zipped output file
@@ -189,7 +193,8 @@ namespace TiCC {
     return gzReadStream( infile );
   }
 
-  bool gzWriteStream( ostream& os, const string& buffer ){
+  bool gzWriteStream( ostream& os,
+		      const string& buffer ){
     /// write a buffer to a gz stream
     /*!
       \param os the bz2 zipped output stream
@@ -200,7 +205,8 @@ namespace TiCC {
     return true;
   }
 
-  bool gzWriteFile( const string& outName, const string& buffer ){
+  bool gzWriteFile( const string& outName,
+		    const string& buffer ){
     /// write a buffer to a gz file
     /*!
       \param outName the gz zipped output file
@@ -215,7 +221,8 @@ namespace TiCC {
     return gzWriteStream( outfile, buffer );
   }
 
-  bool gzCompress( const string& inName, const string& outName ){
+  bool gzCompress( const string& inName,
+		   const string& outName ){
     /// gz zip a file
     /*!
       \param inName the input file
@@ -246,8 +253,9 @@ namespace TiCC {
     return true;
   }
 
-  bool gzDecompress( const string& inName, const string& outName ){
-    /// gz unzip a file
+  bool gzDecompress( const string& inName,
+		     const string& outName ){
+    /// unzip a file using gzip
     /*!
       \param inName the gz zipped input file
       \param outName the unzipped output file
