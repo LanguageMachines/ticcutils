@@ -113,7 +113,8 @@ namespace Sockets {
     }
   }
 
-  bool Socket::read( string& result, unsigned int timeout ) {
+  bool Socket::read( string& result,
+		     unsigned int timeout ) {
     /// read a line from a nonblocking Socket
     /*!
       \param result the read line
@@ -207,7 +208,8 @@ namespace Sockets {
     return true;
   }
 
-  bool Socket::write( const string& line, unsigned int timeout ){
+  bool Socket::write( const string& line,
+		      unsigned int timeout ){
     /// write a line to a non-blocking socket
     /*!
       \param line the line to write
@@ -497,6 +499,10 @@ namespace Sockets {
   /// Converts ascii text to in_addr struct.
   /// NULL is returned if the address can not be found.
   struct in_addr *atoaddr( const string& address ){
+    /*!
+      \param \param address a string descibing an IP address
+      \return an in_addr struct on success
+    */
     struct hostent *host;
     static struct in_addr saddr;
 
