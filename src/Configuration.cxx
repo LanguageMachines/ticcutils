@@ -51,7 +51,7 @@ namespace TiCC {
     /*!
       \param s the inputstring
       \param c special 'symbol' to replace
-      \return a new string where all occurences of "\\c" aee replaced  by "\c"
+      \return a new string where all occurences of "\\c" are replaced  by "\c"
     */
     string sString;
     string rString;
@@ -99,7 +99,8 @@ namespace TiCC {
     return result;
   }
 
-  bool Configuration::get_att_val( const string& line, const string& section ){
+  bool Configuration::get_att_val( const string& line,
+				   const string& section ){
     /// parse a string into an attribute/value pair and insert in a section
     /*!
       \param line the line to parse
@@ -127,18 +128,18 @@ namespace TiCC {
     return false;
   }
 
-  bool Configuration::fill( const string& fileName ){
+  bool Configuration::fill( const string& file_name ){
     /// fill a Configuration structure from a file
     /*!
-      \param fileName the name of the input file
+      \param file_name the name of the input file
       \return true on succes
     */
-    ifstream is( fileName );
+    ifstream is( file_name );
     if ( !is ){
-      cerr << "unable to read configuration from " << fileName << endl;
+      cerr << "unable to read configuration from " << file_name << endl;
       return false;
     }
-    string cdir = dirname( fileName );
+    string cdir = dirname( file_name );
     if ( cdir == "." ){
       cdir = "";
     }
@@ -175,16 +176,16 @@ namespace TiCC {
     return true;
   }
 
-  bool Configuration::fill( const string& fileName, const string& insect ){
+  bool Configuration::fill( const string& file_name, const string& insect ){
     /// fill a Configuration structure from a file for a certain section
     /*!
-      \param fileName the name of the input file
+      \param file_name the name of the input file
       \param insect the section to find and fill
       \return true on succes
     */
-    ifstream is( fileName );
+    ifstream is( file_name );
     if ( !is ){
-      cerr << "unable to read configuration from " << fileName << endl;
+      cerr << "unable to read configuration from " << file_name << endl;
       return false;
     }
     bool found = false;
@@ -220,7 +221,7 @@ namespace TiCC {
     }
     if ( !found ){
       cerr << "unable to find a section [[" << section << "]] in file: "
-	   << fileName << endl;
+	   << file_name << endl;
       return false;
     }
     return true;
@@ -443,7 +444,8 @@ namespace TiCC {
     return false;
   }
 
-  void Configuration::merge( const Configuration& in, bool override ) {
+  void Configuration::merge( const Configuration& in,
+			     bool override ) {
     /// merge two Configuration objects
     /*!
       \param in the Configuration to add

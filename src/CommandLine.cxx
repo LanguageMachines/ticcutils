@@ -378,7 +378,7 @@ namespace TiCC {
   /// @endcond
 
   ostream& operator<<( ostream& os, const arg& a ){
-    /// output an 'arg' to a stream
+    /// output an arg object to a stream
     /*!
       \param os the output stream
       \param a an arg struct

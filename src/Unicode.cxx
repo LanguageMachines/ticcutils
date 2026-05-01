@@ -909,11 +909,11 @@ namespace TiCC {
   UnicodeString pad( const UnicodeString& in,
 		     int len,
 		     const UChar32 pad_char ){
-    /// pad a UnicodeString with 'pad_char', to a maximum length of 'len'
+    /// pad a UnicodeString with \e pad_char, to a maximum length of \e len
     /*!
-      \param in The UnicodeString ro pad
+      \param in The UnicodeString to pad
       \param len the desired length of the output string
-      ignored if len <= in.length
+      ignored if \e len <= in.length
       \param pad_char the character to pad with
     */
     if ( len <= in.length() ){
@@ -929,7 +929,7 @@ namespace TiCC {
   istream& getline( istream& is,
 		    UnicodeString& us,
 		    const char delim ){
-    /// read a UnicodeString from an encoded file
+    /// read a UnicodeString from an UTF8 encoded file
     /*!
       \param is The stream to read from
       \param us the UnicodeString to read. (will be cleared before reading)
@@ -970,7 +970,7 @@ namespace TiCC {
       \param is The stream to read from
       \param norm The UnicodeNormalizer to use
       \param us the UnicodeString to read. (will be cleared before reading)
-      the string is normalized using 'norm'
+      the string is normalized using \e norm
       \param input_encoding The Unicode encoding of the input stream.
       It is up to the caller to assure this encoding is valid.
       \param delim The delimiter. Default '\n'
@@ -986,12 +986,12 @@ namespace TiCC {
 		    UnicodeNormalizer& norm,
 		    UnicodeString& us,
 		    const char delim ){
-    /// read a UnicodeString from an encoded file
+    /// read a UnicodeString from an UTF8 encoded file
     /*!
       \param is The stream to read from
       \param norm The UnicodeNormalizer to use
       \param us the UnicodeString to read. (will be cleared before reading)
-      the string is normalized in NFC.
+      the string is normalized using \e norm
       \param delim The delimiter. Default '\n'
       \return the stream
     */
