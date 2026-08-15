@@ -61,7 +61,8 @@ namespace TiCCServer {
   string Version() { return VERSION; }
   string VersionName() { return PACKAGE_STRING; }
 
-  childArgs::childArgs( ServerBase *server, Sockets::ClientSocket *sock ):
+  childArgs::childArgs( ServerBase *server,
+			Sockets::ClientSocket *sock ):
     _mother(server),_socket(sock){
     /// create a childArgs structure
     /*!
@@ -82,6 +83,11 @@ namespace TiCCServer {
   }
 
   string ServerBase::VersionInfo( bool full ){
+    /// return version information
+    /*!
+      \param full when true insert compilation date and time
+      \return the version information as a string
+    */
     string result;
     ostringstream oss;
     oss << VERSION;
@@ -246,7 +252,11 @@ namespace TiCCServer {
 
   void *ServerBase::callChild( void *a ) {
     /// generic callback function
-    /// pass the argument as a childArgs struct to the Server
+    /*!
+      \parameter a a void pointer to be interpreted as a childArgs
+      struct by the Server
+      \return NULL pointer
+    */
     childArgs* ca = reinterpret_cast<childArgs*>(a);
     ca->mother()->socketChild( ca );
     return 0;
@@ -254,9 +264,12 @@ namespace TiCCServer {
 
   volatile static bool keepGoing = true;
 
-  void KillServerFun( int Signal ){
+  void KillServerFun( int signal ){
     /// function to handle SIGTERM signals
-    if ( Signal == SIGTERM ){
+    /*!
+      \parameter signal a signal to handle
+    */
+    if ( signal == SIGTERM ){
       cerr << "KillServerFun caught a signal SIGTERM" << endl;
       keepGoing = false; // so stop accepting new connections
       // need a better plan here.
@@ -264,18 +277,26 @@ namespace TiCCServer {
     }
   }
 
-  void AfterDaemonFun( int Signal ){
-    /// function to handle SIGCHILD signals
-    cerr << "AfterDaemonFun caught a signal " << Signal << endl;
-    if ( Signal == SIGCHLD ){
+  void AfterDaemonFun( int signal ){
+    /// function to handle SIGCHLD signals
+    /*!
+      \parameter signal a signal to handle
+    */
+    cerr << "AfterDaemonFun caught a signal " << signal << endl;
+    if ( signal == SIGCHLD ){
+      cerr << "it was a SIGCHLD signal " << endl;
       exit(1);
     }
   }
 
-  void BrokenPipeChildFun( int Signal ){
+  void BrokenPipeChildFun( int a_signal ){
     /// function to handle SIGPIPE signals
-    cerr << "BrokenPipeChildFun caught a signal " << Signal << endl;
-    if ( Signal == SIGPIPE ){
+    /*!
+      \parameter a_signal a signal to handle
+    */
+    cerr << "BrokenPipeChildFun caught a signal " << a_signal << endl;
+    if ( a_signal == SIGPIPE ){
+      cerr << "it was a SIGPIPE signal " << endl;
       signal( SIGPIPE, BrokenPipeChildFun );
     }
   }
@@ -287,7 +308,8 @@ namespace TiCCServer {
     \return
   */
 #ifdef HAVE_DAEMON
-  int ServerBase::daemonize( int noCD , int noClose ){
+  int ServerBase::daemonize( int noCD ,
+			     int noClose ){
     return daemon( noCD, noClose );
   }
 #else
@@ -338,6 +360,9 @@ namespace TiCCServer {
 
   void ServerBase::sendReject( ostream& os ) const {
     /// send message that we are too busy
+    /*!
+      \param os an output stream
+     */
     os << "Maximum connections exceeded." << endl;
     os << "try again later..." << endl;
   }
@@ -381,6 +406,10 @@ namespace TiCCServer {
 
   void HttpServerBase::sendReject( ostream& os ) const {
     /// send HTTP message that we are too busy
+    /// send message that we are too busy
+    /*!
+      \param os an output stream
+     */
     os << "Status:503 Maximum number of connections exceeded.\n" << endl;
   }
 

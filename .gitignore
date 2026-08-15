@@ -36,9 +36,13 @@ src/gzout.gz
 src/gzout.txt
 src/nasty.txt
 src/runtest
+src/testlogstream
 src/test-suite.log
 src/tst.sh.log
 src/tst.sh.trs
+docs/doxyfile.stamp
+docs/html
+docs/latex
 stamp-h1
 test-driver
 tests/Makefile

@@ -75,7 +75,8 @@ int fdoutbuf::overflow( int c ){
   return c;
 }
 
-streamsize fdoutbuf::xsputn( const char *s, streamsize num ){
+streamsize fdoutbuf::xsputn( const char *s,
+			     const std::streamsize num ){
   /// overloaded version of streambuf::xputn()
   /*!
     \param s the range of characters to write
@@ -145,7 +146,9 @@ int fdinbuf::underflow(){
 
 // #define DEBUG
 
-bool nb_getline( istream& is, string& result, int& timeout ){
+bool nb_getline( istream& is,
+		 string& result,
+		 int& timeout ){
   /// a getline for nonblocking connections.
   /*!
     \param is the stream te read from. Should be non-blocking!
@@ -192,7 +195,9 @@ bool nb_getline( istream& is, string& result, int& timeout ){
   return false;
 }
 
-bool nb_putline( ostream& os, const string& what, int& timeout ){
+bool nb_putline( ostream& os,
+		 const string& what,
+		 int& timeout ){
   /// a putline for nonblocking connections.
   /*!
     \param os the output stream, must be NON-BLOCKING
@@ -226,8 +231,9 @@ bool nb_putline( ostream& os, const string& what, int& timeout ){
 	count = 0;
       }
     }
-    else
+    else {
       result = false;
+    }
     if ( os.eof() ){
       result = false;
     }
@@ -239,12 +245,20 @@ bool nb_putline( ostream& os, const string& what, int& timeout ){
 
 bool fdistream::open( int fd ){
   /// open an input stream connected to a file descriptor
+  /*!
+    \param fd the file descriptor
+    \return true
+  */
   _buf.connect( fd );
   return true;
 }
 
 bool fdostream::open( int fd ){
   /// open an output stream connected to a file descriptor
+  /*!
+    \param fd the file descriptor
+    \return true
+  */
   _buf.connect( fd );
   return true;
 }

@@ -899,16 +899,20 @@ void test_unicode( const string& path ){
   getline( in, line );
   assertFalse( line == "Hier staat een BOM voor. æ en ™ om te testen." );
   UnicodeString u3 = UnicodeFromEnc( line, "UTF16" );
-  string s3 = UnicodeToUTF8(  u3 );
+  string s3 = UnicodeToUTF8( u3 );
   assertEqual( s3, "Hier staat een BOM voor. æ en ™ om te testen." );
+  UnicodeNormalizer N1;
+  UnicodeString u4 = UnicodeFromEnc( line, "UTF16", N1 );
+  string s4 = UnicodeToUTF8( u4, N1 );
+  assertEqual( s4, "Hier staat een BOM voor. æ en ™ om te testen." );
   UnicodeString greek1 = "ἀντιϰειμένου";
   UnicodeString greek2 = "ἀντιϰειμένου";
   assertFalse( greek1 == greek2 ); // different normalizations!
-  UnicodeNormalizer N1;
   UnicodeString ng11 = N1.normalize( greek1 );
   UnicodeString ng12 = N1.normalize( greek2 );
   assertEqual( UnicodeToUTF8(ng11), UnicodeToUTF8(ng12) );
   assertEqual( UnicodeToUTF8(ng11,"NFD"), UnicodeToUTF8(ng12,"NFD") );
+  assertEqual( UnicodeToUTF8(ng11,N1), UnicodeToUTF8(ng12,N1) );
   UnicodeNormalizer N2("NFD");
   UnicodeString ng21 = N2.normalize( greek1 );
   UnicodeString ng22 = N2.normalize( greek2 );
@@ -918,6 +922,7 @@ void test_unicode( const string& path ){
   UnicodeString ng31 = N3.normalize( greek1 );
   UnicodeString ng32 = N3.normalize( greek2 );
   assertEqual( UnicodeToUTF8(ng31), UnicodeToUTF8(ng32) );
+  assertEqual( UnicodeToUTF8(ng11,N3), UnicodeToUTF8(ng12,N3) );
   string utf8_1 = "ἀντιϰειμένου";
   string utf8_2 = "ἀντικειμένου";
   assertEqual( TiCC::utf8_uppercase( utf8_1 ), "ἈΝΤΙΚΕΙΜΈΝΟΥ" );

@@ -45,6 +45,10 @@ namespace TiCC {
 
   bool isDir( const string& name ){
     /// check if 'name' is a directory
+    /*!
+      \param name some path description
+      \return true if the path is a directory
+    */
     try {
       filesystem::path the_path(name);
       return filesystem::is_directory(the_path);
@@ -56,6 +60,10 @@ namespace TiCC {
 
   bool isWritableDir( const string& name ){
     /// check if 'name' is a writable directory
+    /*!
+      \param name some path description
+      \return true if the path is a writable directory
+    */
     if ( isDir( name ) ){
       return access( name.c_str(), W_OK ) == 0;
     }
@@ -64,6 +72,10 @@ namespace TiCC {
 
   bool isFile( const string& name ){
     /// check if 'name' a regular file
+    /*!
+      \param name some path description
+      \return true if the path is a normal file
+    */
     try{
       filesystem::path the_path(name);
       return filesystem::is_regular_file(the_path);
@@ -76,7 +88,7 @@ namespace TiCC {
   bool create_dir( const filesystem::path& p ){
     /// create a directory using 'name'
     /*!
-      \param path the path description
+      \param p the path description
       \return true if the path is created and a directory
       This function attempts to open a path /a/b/c/ from an expression like:
       \verbatim
@@ -136,6 +148,10 @@ namespace TiCC {
 
   void erase( const string& name ){
     /// remove a file
+    /*!
+      \param name some path description
+      when it is a file, that file is removed
+    */
     if ( isFile( name ) ){
       filesystem::path p(name);
       try {
@@ -155,6 +171,13 @@ namespace TiCC {
   vector<string> gather_files_ext( const string& dir_name,
 				   const string& ext,
 				   bool recurse ){
+    /// select files from a directory with a certain extension
+    /*!
+      \param dir_name a directory to search in.
+      \param ext the desired extension
+      when empty, select ALL files
+      \param recurse when true, also search below dir_name
+    */
     vector<string> result;
     filesystem::path dir_path( dir_name );
     if ( recurse ){
@@ -343,8 +366,9 @@ namespace TiCC {
       \param tempdir the directory to insert the file in. (default /tmp )
       \param keep when true, the file will be permanent. (e.g. for
       debugging). Default is \e false.
-      An unique filename will be generated the prefix as the first part
-      of the name, and 6 random characters added. It will be inserted in /tmp
+      An unique filename will be generated, with the prefix as the first part
+      of the name, and 6 random characters added. It will be inserted in
+      \e tempdir.
       The file will be deleted on destruction of the tmp_stream object, except
       when keep is \e true
     */

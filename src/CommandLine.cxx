@@ -111,7 +111,11 @@ namespace TiCC {
   }
 
   ostream& operator<<( ostream& os, const CL_item& it ){
-    /// output a CL_item to a stream
+    /// output one CL_item to a stream
+    /*!
+      \param os the outputstream
+      \param it the CL_item to add
+    */
     os << it.toString();
     return os;
   }
@@ -134,6 +138,10 @@ namespace TiCC {
 
   ostream& operator<<( ostream& os, const CL_Options& cl ){
     /// output a CL_Options struct to a stream
+    /*!
+      \param os the outputstream
+      \param cl the CL_Options to add
+    */
     os << cl.toString() << " ";
     for ( const auto& opt : cl.MassOpts ){
       os << opt << " ";
@@ -155,6 +163,9 @@ namespace TiCC {
 
   ostream& CL_Options::dump( ostream& os ) {
     /// dump a complete CL_Options struct to a stream. (DEBUGGING ONLY)
+     /*!
+      \param os the outputstream
+     */
     os << *this;
     if ( !valid_chars.empty() ){
       os << endl;
@@ -256,7 +267,7 @@ namespace TiCC {
 
   bool CL_Options::extract_internal( const string& w,
 				     string &opt_val ) {
-    /// check if a long option \e w is available, and extract it
+    /// check if a long option \e w is available, and remove it
     /*!
       \param w the long options to search for
       \param opt_val if \e w is available return the value
@@ -328,12 +339,21 @@ namespace TiCC {
 
   void CL_Options::insert( const string& s, const string& value ){
     /// add a long CL_item to the list of items
+    /*!
+      \param s the long option we will add
+      \param value the value of that option
+     */
     CL_item cl( s, value );
     Opts.push_back( cl );
   }
 
   void CL_Options::insert( const char c, const string& value, bool mood ){
     /// add a short CL_item to the list of items
+    /*!
+      \param c the short option we will add
+      \param value the value of that option
+      \param mood true (+) or false (-)
+     */
     CL_item cl( c, value, mood );
     Opts.push_back( cl );
   }
@@ -358,7 +378,12 @@ namespace TiCC {
   /// @endcond
 
   ostream& operator<<( ostream& os, const arg& a ){
-    /// output an 'arg' to a stream
+    /// output an arg object to a stream
+    /*!
+      \param os the output stream
+      \param a an arg struct
+      \return the stream
+     */
     switch ( a.stat ){
     case UNKNOWN:
       os << "?";
@@ -392,6 +417,9 @@ namespace TiCC {
   vector<string> fix_quotes( const vector<string>& argv ){
     /// fix quotes in the input
     // handle only balanced quotes, and 1 quote per option
+    /*!
+      \param argv a list of strings to clean
+     */
     vector<string> result;
     bool q_found = false;
     for ( auto str : argv ){
@@ -422,6 +450,11 @@ namespace TiCC {
   bool CL_Options::Parse_Command_Line( const int Argc,
 				       const char * const *Argv ){
     /// parse a commandline into a CL_options structure
+    /*!
+      \param argc the number of arguments
+      \param argv an array of character strings
+      \return true on succes
+    */
     Opts.clear();
     vector<string> local_argv;
     if ( Argc == 0 ){
@@ -741,7 +774,7 @@ namespace TiCC {
   }
 
   void CL_Options::add_short_options( const string& s ){
-    /// add valid short options from \s
+    /// add valid short options from s
     /*!
       \param s a string representing the valid options
 
@@ -785,12 +818,12 @@ namespace TiCC {
   }
 
   void CL_Options::add_long_options( const string& s ){
-    /// set the long options from string \s
+    /// set the long options from string 's'
     /*!
       \param s a string representing the valid options
 
-      such a line looks like: "opt1,opt2:,opt3" defining options opt1, opt2,
-      opt3, wehre option opt2 have a parameter
+      such a line looks like: "opt1::,opt2:,opt3" defining options opt1, opt2,
+      opt3, where option opt2 needs a parameter and opt1 may have one.
 
      */
     vector<string> parts = TiCC::split_at( s, "," );
@@ -800,7 +833,7 @@ namespace TiCC {
 	// found a ':'
 	if ( pos == value.size()-2){
 	  if ( value[value.size()-1] == ':' ){
-	    // Ok, two ':' at the end
+	    // Ok, two ':' at the end, meaning an optional parameter
 	    // remove them
 	    value.resize(value.size()-2);
 	    valid_long_opt.insert( value );
@@ -811,7 +844,7 @@ namespace TiCC {
 	  }
 	}
 	else if ( pos == value.size()-1){
-	  // Ok, one ':' at the end
+	  // Ok, one ':' at the end, meaning an obligatory parameter
 	  // remove it
 	  value.pop_back();
 	  valid_long_par.insert( value );

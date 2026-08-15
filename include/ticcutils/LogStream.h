@@ -43,9 +43,9 @@ namespace TiCC {
   public:
     explicit LogStream();
     explicit LogStream( int );
-    LogStream( std::ostream&,
-	       LogFlag = StampBoth );
-    LogStream( const LogStream * );
+    explicit LogStream( std::ostream&,
+			LogFlag = StampBoth );
+    explicit LogStream( const LogStream * );
     LogStream *create( const std::string&, std::ios_base::openmode = std::ios::out );
     bool set_single_threaded_mode();
     bool single_threaded() const { return single_threaded_mode; };

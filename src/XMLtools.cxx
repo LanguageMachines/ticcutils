@@ -54,6 +54,10 @@ namespace TiCC {
 
   const string serialize( const xmlDoc& doc ) {
     /// serialize a complete xmlDoc to an UTF-8 string
+    /*!
+      \param doc the xmlDoc to serialize
+      \return the \e doc as an UTF8 string
+    */
     xmlChar *buf;
     int size;
     xmlDocDumpFormatMemoryEnc( const_cast<xmlDoc*>(&doc), &buf, &size, "UTF-8", 1 );
@@ -141,7 +145,8 @@ namespace TiCC {
     }
   }
 
-  string getNS( const xmlNode *node, string& prefix ){
+  string getNS( const xmlNode *node,
+		string& prefix ){
     /// get the NameSpace of a node
     /*!
       \param node the node to examine
@@ -206,11 +211,11 @@ namespace TiCC {
 
   list<xmlNode*> FindLocal( xmlXPathContext* ctxt,
 			    const string& xpath ){
-    /// extract all nodes matching a XPath
+    /// extract all nodes matching an XPath
     /*!
       \param ctxt the XPathContext to search through
       \param xpath an XPath expression
-      \return a list of all matching nodes
+      \return a list of all matching xmlNode nodes
     */
     list<xmlNode*> nodes;
     xmlXPathObject* result = xmlXPathEval( to_xmlChar(xpath), ctxt);
@@ -329,7 +334,8 @@ namespace TiCC {
     return FindNodes( root, xpath );
   }
 
-  xmlNode *xPath( const xmlNode *node, const string& xpath ){
+  xmlNode *xPath( const xmlNode *node,
+		  const string& xpath ){
     /// search a node using an XPath expression
     /*!
       \param node the node to search in
@@ -345,7 +351,8 @@ namespace TiCC {
     return result;
   }
 
-  xmlNode *xPath( xmlDoc *doc, const string& xpath ){
+  xmlNode *xPath( xmlDoc *doc,
+		  const string& xpath ){
     /// search a node using an XPath expression
     /*!
       \param doc the xmlDoc to search in
@@ -359,6 +366,10 @@ namespace TiCC {
 
   const string serialize( const xmlNode& node ){
     /// serialize an xmlNode to a string (XML fragment)
+    /*!
+      \param node the xmlNode to serialize
+      \return a string representaion of the node and its siblings
+    */
     xmlBuffer *buf = xmlBufferCreate();
     xmlNodeDump( buf, 0, const_cast<xmlNode*>(&node), 0, 0 );
     const string result = to_string(xmlBufferContent( buf ));

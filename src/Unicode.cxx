@@ -57,6 +57,22 @@ namespace TiCC {
     return UN.normalize( result );
   }
 
+  UnicodeString UnicodeFromEnc( const string& s,
+				const string& encoding,
+				UnicodeNormalizer& norm ){
+    /// convert a character buffer in some encoding to a UnicodeString
+    /*!
+      \param s the string to interpret as a character buffer
+      \param encoding the encoding assumed for s. Default UTF8
+      \param norm the UnicodeNormalier to use.
+      \return a normalized UnicodeString object
+    */
+    UnicodeString result = UnicodeString( s.c_str(),
+					  s.length(),
+					  encoding.c_str() );
+    return norm.normalize( result );
+  }
+
   string UnicodeToUTF8( const UnicodeString& s,
 			const string& normalization ){
     /// convert a UnicodeString to a UTF-8 string
@@ -72,9 +88,38 @@ namespace TiCC {
     return result;
   }
 
+  string UnicodeToUTF8( const UnicodeString& s,
+			UnicodeNormalizer & UN ){
+    /// convert a UnicodeString to a UTF-8 string
+    /*!
+      \param s the UnicodeString to convert
+      \param UN the UnicodeNormalizer to use.
+    */
+    UnicodeString normalized = UN.normalize( s );
+    string result;
+    normalized.toUTF8String(result);
+    return result;
+  }
+
   UnicodeString UnicodeFromUTF8( const string& s,
 				 const string& normalization ){
+    /// convert a UnicodeString to a UTF-8 string
+    /*!
+      \param s the UnicodeString to convert
+      \param normalization nanme of the normalization to use.
+    */
     UnicodeNormalizer UN( normalization);
+    UnicodeString result = UnicodeString::fromUTF8( s );
+    return UN.normalize( result );
+  }
+
+  UnicodeString UnicodeFromUTF8( const string& s,
+				 UnicodeNormalizer& UN ){
+    /// convert a UTF-8 string to a UnicodeString
+    /*!
+      \param s the UTF-8 string to convert
+      \param UN the UnicodeNormalizer to use.
+    */
     UnicodeString result = UnicodeString::fromUTF8( s );
     return UN.normalize( result );
   }
@@ -149,11 +194,17 @@ namespace TiCC {
     }
     else {
       UErrorCode status=U_ZERO_ERROR;
-      UnicodeString r = _normalizer->normalize( us, status );
-      if (U_FAILURE(status)){
-	throw invalid_argument("Normalizer");
+      if ( !_normalizer->isNormalized(us,status) ){
+	status=U_ZERO_ERROR;
+	UnicodeString r = _normalizer->normalize( us, status );
+	if (U_FAILURE(status)){
+	  throw invalid_argument("Normalizer");
+	}
+	return r;
       }
-      return r;
+      else {
+	return us;
+      }
     }
   }
 
@@ -435,10 +486,10 @@ namespace TiCC {
     UErrorCode stat = U_ZERO_ERROR;
     UParseError err;
     _trans = Transliterator::createFromRules( name,
-						   rules,
-						   UTRANS_FORWARD,
-						   err,
-						   stat );
+					      rules,
+					      UTRANS_FORWARD,
+					      err,
+					      stat );
     if ( U_FAILURE( stat ) ){
       string msg = "creating UniFilter: " + UnicodeToUTF8( name )
 	+ " failed\n" + "error in rules, line=" + toString(err.line)
@@ -505,12 +556,12 @@ namespace TiCC {
 			   + filename + "'" );
     }
     UnicodeString rule;
-    string line;
-    while ( getline( is, line ) ){
-      UnicodeString uline = UnicodeFromUTF8( line );
-      rule += to_icu_rule( uline );
+    UnicodeString line;
+    UnicodeNormalizer norm;
+    while ( getline( is, norm, line ) ){
+      rule += to_icu_rule( line );
     }
-    return init( rule, UnicodeFromUTF8(label) );
+    return init( rule, UnicodeFromUTF8(label,norm) );
   }
 
   UnicodeString UniFilter::filter( const UnicodeString& line ){
@@ -858,6 +909,13 @@ namespace TiCC {
   UnicodeString pad( const UnicodeString& in,
 		     int len,
 		     const UChar32 pad_char ){
+    /// pad a UnicodeString with \e pad_char, to a maximum length of \e len
+    /*!
+      \param in The UnicodeString to pad
+      \param len the desired length of the output string
+      ignored if \e len <= in.length
+      \param pad_char the character to pad with
+    */
     if ( len <= in.length() ){
       return in;
     }
@@ -871,7 +929,7 @@ namespace TiCC {
   istream& getline( istream& is,
 		    UnicodeString& us,
 		    const char delim ){
-    /// read a UnicodeString from an encoded file
+    /// read a UnicodeString from an UTF8 encoded file
     /*!
       \param is The stream to read from
       \param us the UnicodeString to read. (will be cleared before reading)
@@ -902,9 +960,49 @@ namespace TiCC {
     return is;
   }
 
+  istream& getline( istream& is,
+		    UnicodeNormalizer& norm,
+		    UnicodeString& us,
+		    const string& input_encoding,
+		    const char delim ){
+    /// read a UnicodeString from an encoded file
+    /*!
+      \param is The stream to read from
+      \param norm The UnicodeNormalizer to use
+      \param us the UnicodeString to read. (will be cleared before reading)
+      the string is normalized using \e norm
+      \param input_encoding The Unicode encoding of the input stream.
+      It is up to the caller to assure this encoding is valid.
+      \param delim The delimiter. Default '\n'
+      \return the stream
+    */
+    string line;
+    std::getline( is, line, delim );
+    us = TiCC::UnicodeFromEnc( line, input_encoding, norm );
+    return is;
+  }
+
+  istream& getline( istream& is,
+		    UnicodeNormalizer& norm,
+		    UnicodeString& us,
+		    const char delim ){
+    /// read a UnicodeString from an UTF8 encoded file
+    /*!
+      \param is The stream to read from
+      \param norm The UnicodeNormalizer to use
+      \param us the UnicodeString to read. (will be cleared before reading)
+      the string is normalized using \e norm
+      \param delim The delimiter. Default '\n'
+      \return the stream
+    */
+    return getline( is, norm, us, "UTF8", delim );
+  }
+
   UnicodeString format_non_printable( const UChar32 c ){
     /// format a (maybe weird)  character into a printable form
-    // useful for debugging
+    /*!
+      \param c some unicode character
+    */
     UnicodeString result;
     if ( isprint(c)
 	 && (int)c > 31
@@ -920,6 +1018,11 @@ namespace TiCC {
   }
 
   UnicodeString format_non_printable( const UnicodeString& in ){
+    /// format a (maybe weird) string of characters into a printable form
+    /*!
+      \param in some UnicodeString
+    */
+    // useful for debugging
     UnicodeString result;
     for ( int n=0; n < in.length(); ++n ){
       result += format_non_printable( in[n] );

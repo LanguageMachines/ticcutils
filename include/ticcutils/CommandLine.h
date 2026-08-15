@@ -46,12 +46,12 @@ namespace TiCC {
   class CL_item {
     friend std::ostream& operator<<( std::ostream&, const CL_item& );
   public:
-  CL_item( const std::string& s, const std::string& o ):
-    _option(s), _value( o ), _mood( false ), _long_opt(true) {};
-  CL_item( char c, const std::string& o, bool m=false ):
-    _option(1,c),_value( o ), _mood( m ), _long_opt(false){};
-  CL_item( const CL_item& in ):
-    _option( in._option ),
+    CL_item( const std::string& s, const std::string& o ):
+      _option(s), _value( o ), _mood( false ), _long_opt(true) {};
+    CL_item( char c, const std::string& o, bool m=false ):
+      _option(1,c),_value( o ), _mood( m ), _long_opt(false){};
+    CL_item( const CL_item& in ):
+      _option( in._option ),
       _value(in._value),
       _mood(in._mood),
       _long_opt(in._long_opt){
@@ -225,7 +225,7 @@ namespace TiCC {
       return false;
     }
 
-    bool extract( const char c, std::string& v, bool& b){
+    bool extract( const char c, std::string& v, bool& b ){
       /// extract a short option
       /*!
 	\param c the option we search
@@ -340,7 +340,8 @@ namespace TiCC {
   };
 
   template <>
-    inline bool CL_Options::is_present( const char c, std::string& v ) const {
+    inline bool CL_Options::is_present( const char c,
+					std::string& v ) const {
     /// check if a short option is present
     /*!
       \param c the option we search
@@ -352,7 +353,8 @@ namespace TiCC {
   }
 
   template <>
-    inline bool CL_Options::is_present( const std::string& s, std::string& v ) const {
+    inline bool CL_Options::is_present( const std::string& s,
+					std::string& v ) const {
     /// check if a long option is present
     /*!
       \param s the option we search
@@ -363,7 +365,8 @@ namespace TiCC {
   }
 
   template <>
-    inline bool CL_Options::extract( const char c, std::string& v ){
+    inline bool CL_Options::extract( const char c,
+				     std::string& v ){
     /// extract a short option
     /*!
       \param c the option we search
@@ -375,7 +378,8 @@ namespace TiCC {
   }
 
   template <>
-    inline bool CL_Options::extract( const std::string& s, std::string& v ){
+    inline bool CL_Options::extract( const std::string& s,
+				     std::string& v ){
     /// extract a long option
     /*!
       \param s the option we search
