@@ -1,4 +1,10 @@
-12 dec 20265 0.37
+15 aug 2026 0.38
+[Ko van der Sloot]
+* added variants to several Unicode functions. The now take a UnicodeNormalizer
+  parameter. Avoids recreating those several times.
+* started work on documenting
+
+12 dec 2025 0.37
 [Ko van der Sloot]
 * updated UniHash.h and UniHash.cxx as suggested
   by https://github.com/LanguageMachines/ticcutils/pull/30
