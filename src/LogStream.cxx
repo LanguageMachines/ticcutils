@@ -108,7 +108,7 @@ namespace TiCC {
   }
 
   void LogStream::add_message( const int i ){
-    /// append a number to the current messsage
+    /// append a number to the current messsage. is this ever used?
     string m = "-" + std::to_string(i);
     add_message( m );
   }
