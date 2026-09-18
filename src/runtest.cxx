@@ -883,6 +883,18 @@ void test_logstream( const string& path ){
   assertEqual( system( cmd.c_str() ), 0 );
 }
 
+void test_get( const string& path ){
+  ifstream in( path + "UTF8.test" );
+  UnicodeString total;
+  while ( in ){
+    UChar32 ch;
+    ch = getUTF8( in );
+    total += ch;
+  }
+  cerr << "total=\n" << total << endl;
+  assertEqual( total, "禁禂\næ en ™ om te testen.\nJáá!\nἀντιϰειμένου\n" );
+}
+
 void test_unicode( const string& path ){
   UChar32 uc0 = L'私';
   UnicodeString u1 = uc0;
@@ -1327,6 +1339,7 @@ int main( const int argc, const char* argv[] ){
   test_configuration( testdir );
   test_pretty_print();
   test_logstream( testdir );
+  test_get( testdir );
   test_unicode( testdir );
   test_unicode_split();
   test_unicode_split_exact();

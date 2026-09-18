@@ -998,6 +998,63 @@ namespace TiCC {
     return getline( is, norm, us, "UTF8", delim );
   }
 
+  // Source - https://codereview.stackexchange.com/a/250364
+  // Posted by Loki Astari, modified by community. See post 'Timeline' for change history
+  // Retrieved 2026-09-18, License - CC BY-SA 4.0
+
+  struct Encoding {
+    int    mask;
+    int    value;
+    int     extra;
+  };
+
+  Encoding const utf8Info[] = {
+    { 0x80, 0x00, 0 },
+    { 0xE0, 0xC0, 1 },
+    { 0xF0, 0xE0, 2 },
+    { 0xF8, 0xF0, 3 }
+  };
+
+  UChar32 decodeUtf( istream& stream, UChar32 result, int count) {
+    for(; count; --count) {
+      int next = stream.get();
+      if ( (next & 0xC0) != 0x80) {
+	// Not a valid continuation character
+	stream.setstate(std::ios::badbit);
+	return -1;
+      }
+      result = (result << 6) | (next & 0x3F);
+    }
+    return result;
+  }
+
+  UChar32 getCodePoint( istream& stream ){
+    // NOTE: Does not remove any initial BOM marker.
+    int next = stream.get();
+    if ( next == EOF ) {
+      return -1;
+    }
+    for( auto const& type: utf8Info ) {
+      if ( (next & type.mask) == type.value ) {
+	  return decodeUtf(stream, next & ~type.mask, type.extra);
+        }
+    }
+    // Not a valid first character
+    stream.setstate(std::ios::badbit);
+    return -1;
+  }
+
+  UChar32 getUTF8( istream& is ){
+    return getCodePoint( is );
+  }
+  // istream& operator>>(std::istream& str, UChar32& out) {
+  //   UChar32 tmp = getCodePoint(str);
+  //   if (str) {
+  //     out = tmp;
+  //   }
+  //   return str;
+  // }
+
   UnicodeString format_non_printable( const UChar32 c ){
     /// format a (maybe weird)  character into a printable form
     /*!

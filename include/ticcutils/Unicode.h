@@ -150,6 +150,8 @@ namespace TiCC {
   std::string utf8_lowercase( const std::string& ); // Unicode safe version
   std::string utf8_uppercase( const std::string& ); // Unicode safe version
 
+  UChar32 getUTF8( std::istream& );
+
   std::istream& getline( std::istream&,
 			 icu::UnicodeString&,
 			 const std::string&,
