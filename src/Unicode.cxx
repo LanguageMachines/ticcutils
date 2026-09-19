@@ -998,14 +998,14 @@ namespace TiCC {
     return getline( is, norm, us, "UTF8", delim );
   }
 
-  // Source - https://codereview.stackexchange.com/a/250364
+  // Original Source - https://codereview.stackexchange.com/a/250364
   // Posted by Loki Astari, modified by community. See post 'Timeline' for change history
   // Retrieved 2026-09-18, License - CC BY-SA 4.0
-
+  // adapted by Ko vd Sloot. (mostly syntax errors)
   struct Encoding {
-    int    mask;
-    int    value;
-    int     extra;
+    int mask;
+    int value;
+    int extra;
   };
 
   Encoding const utf8Info[] = {
@@ -1036,8 +1036,8 @@ namespace TiCC {
     }
     for( auto const& type: utf8Info ) {
       if ( (next & type.mask) == type.value ) {
-	  return decodeUtf(stream, next & ~type.mask, type.extra);
-        }
+	return decodeUtf(stream, next & ~type.mask, type.extra);
+      }
     }
     // Not a valid first character
     stream.setstate(std::ios::badbit);
@@ -1047,13 +1047,6 @@ namespace TiCC {
   UChar32 getUTF8( istream& is ){
     return getCodePoint( is );
   }
-  // istream& operator>>(std::istream& str, UChar32& out) {
-  //   UChar32 tmp = getCodePoint(str);
-  //   if (str) {
-  //     out = tmp;
-  //   }
-  //   return str;
-  // }
 
   UnicodeString format_non_printable( const UChar32 c ){
     /// format a (maybe weird)  character into a printable form

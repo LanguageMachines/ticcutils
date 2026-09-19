@@ -342,7 +342,7 @@ void test_opt_18(){
   CL_Options opts;
   // check bug: space after '=' in long option
   opts.allow_args( "", "aap:" );
-  opts.set_debug(true);
+  opts.set_debug(false);
   opts.parse_args( "--aap value1 --aap=value2 test --aap= value3" );
   vector<string> ts;
   string res;
@@ -654,7 +654,7 @@ void test_unicodehash(){
   assertEqual( index, 2 );
   UnicodeString greek1 = "ἀντιϰειμένου";
   UnicodeString greek2 = "ἀντιϰειμένου"; //different normalizations!
-  assertFalse( greek1 == greek2 );
+  assertNotEqual( greek1, greek2 );
   index = uh.hash( greek1 );
   assertEqual( index, 4 );
   index = uh.hash( greek2 );
@@ -891,8 +891,34 @@ void test_get( const string& path ){
     ch = getUTF8( in );
     total += ch;
   }
-  cerr << "total=\n" << total << endl;
   assertEqual( total, "禁禂\næ en ™ om te testen.\nJáá!\nἀντιϰειμένου\n" );
+}
+
+void test_getline( const string& path ){
+  ifstream in( path + "UTF8.test" );
+  UnicodeString greek1 = "ἀντιϰειμένου";
+  UnicodeString greek2 = "ἀντιϰειμένου";
+  UnicodeString ok[] = { "禁禂",
+			 "æ en ™ om te testen.",
+			 "Jáá!",
+			 greek1 // not NFC normalized
+  };
+  UnicodeString total;
+  int cnt = 0;
+  assertNotEqual( greek1, greek2 );
+  UnicodeString line;
+  while ( getline( in, line ) ){
+    if ( cnt == 3 ){
+      // getLine wil normalize
+      assertNotEqual( line, greek1 );
+      assertEqual( line, greek2 );
+    }
+    else {
+      assertEqual( line, ok[cnt++] );
+    }
+    total += line + "\n";
+  }
+  assertEqual( total, "禁禂\næ en ™ om te testen.\nJáá!\nἀντιϰειμένου\n" );
 }
 
 void test_unicode( const string& path ){
@@ -1340,6 +1366,7 @@ int main( const int argc, const char* argv[] ){
   test_pretty_print();
   test_logstream( testdir );
   test_get( testdir );
+  test_getline( testdir );
   test_unicode( testdir );
   test_unicode_split();
   test_unicode_split_exact();
