@@ -162,6 +162,25 @@ inline void MyTSerie::stop( const std::string& fun ){
 	      << std::endl;						\
   }
 
+#define assertNotEqual( XX , YY )						\
+  last_what.clear();							\
+  try {									\
+    test_neq<decltype(XX), decltype(YY)>( __func__, __FILE__, __LINE__, (XX), (YY), currentTestContext ); \
+  }									\
+  catch ( const std::exception& e ){					\
+    last_what = e.what();						\
+    ++currentTestContext._fails;					\
+    if ( currentTestContext.isDefault() ){				\
+      std::cout << FAIL << std::endl;					\
+    }             							\
+    else {								\
+      std::cerr << "\t";						\
+    }									\
+    std::cerr << __func__ << "(" << __FILE__ << ":" << __LINE__		\
+	      << ") : caucht exception, what='" << e.what() << "'"	\
+	      << std::endl;						\
+  }
+
 #define assertThrow( XX, EE )						\
   do { 									\
     last_what.clear();							\
@@ -314,6 +333,31 @@ inline void test_eq( const char* F, const char* fun, int L,
       std::cerr << "\t";
     }
     std::cerr << F << "(" << fun << ":" << L << ") : '" << s1 << "' != '"
+	      << s2 << "'" << std::endl;
+  }
+  else if ( !testSilent && T.isDefault() ){
+    std::cout << OK << std::endl;
+  }
+}
+
+template <typename T1, typename T2>
+inline void test_neq( const char* F, const char* fun, int L,
+		      const T1& s1, const T2& s2, MyTSerie& T ){
+  if ( !testSilent && T.isDefault() ){
+    std::cout << "test: " << F << "(" << fun << ":" << L << "): ";
+  }
+  ++T._tests;
+  typename std::common_type<T1,T2>::type s11 = s1;
+  typename std::common_type<T1,T2>::type s22 = s2;
+  if ( s11 == s22 ){
+    ++T._fails;
+    if ( T.isDefault() ){
+      std::cout << FAIL << std::endl;
+    }
+    else {
+      std::cerr << "\t";
+    }
+    std::cerr << F << "(" << fun << ":" << L << ") : '" << s1 << "' == '"
 	      << s2 << "'" << std::endl;
   }
   else if ( !testSilent && T.isDefault() ){
