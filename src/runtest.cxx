@@ -1177,9 +1177,10 @@ void test_assert() {
 
 void test_json() {
   using namespace nlohmann;
-  string J = "{\"label\":\"Dit is een test.\"}";
+  string J = "{\"value\":\"not used\",\"label\":\"Dit is een test.\"}";
   json parsed = json::parse( J );
-  assertEqual( parsed["label"] , "Dit is een test." )
+  assertEqual( parsed["label"] , "Dit is een test." );
+  assertEqual( parsed["something"] , nullptr );
 }
 
 enum flags { No = 0, One = 1, Two= 2, Four = 4};
@@ -1202,9 +1203,9 @@ std::ostream& operator<<( std::ostream& os, const class_flags& f ){
 void test_enum_flags() {
   {
     flags f = flags::Two|flags::Four;
-    cerr << f << endl;
-    cerr << (f & (flags::Two|flags::Four) ) << endl;
-    cerr << (f & flags::Two) << endl;
+    // cerr << f << endl;
+    // cerr << (f & (flags::Two|flags::Four) ) << endl;
+    // cerr << (f & flags::Two) << endl;
     // cppcheck-suppress knownConditionTrueFalse
     assertTrue( f == 6 );
     assertTrue( f % (flags::Two|flags::Four) );
