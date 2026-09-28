@@ -1021,7 +1021,7 @@ namespace TiCC {
       if ( (next & 0xC0) != 0x80) {
 	// Not a valid continuation character
 	stream.setstate(std::ios::badbit);
-	return -1;
+	return EOF;
       }
       result = (result << 6) | (next & 0x3F);
     }
@@ -1032,7 +1032,7 @@ namespace TiCC {
     // NOTE: Does not remove any initial BOM marker.
     int next = stream.get();
     if ( next == EOF ) {
-      return -1;
+      return EOF;
     }
     for( auto const& type: utf8Info ) {
       if ( (next & type.mask) == type.value ) {
@@ -1041,7 +1041,7 @@ namespace TiCC {
     }
     // Not a valid first character
     stream.setstate(std::ios::badbit);
-    return -1;
+    return EOF;
   }
 
   UChar32 getUTF8( istream& is ){
