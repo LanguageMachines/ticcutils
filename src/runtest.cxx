@@ -887,9 +887,13 @@ void test_get( const string& path ){
   ifstream in( path + "UTF8.test" );
   UnicodeString total;
   while ( in ){
-    UChar32 ch;
-    ch = getUTF8( in );
-    total += ch;
+    UChar32 ch = getUTF8( in );
+    if ( ch != EOF ){
+      total += ch;
+    }
+    else {
+      break;
+    }
   }
   assertEqual( total, "禁禂\næ en ™ om te testen.\nJáá!\nἀντιϰειμένου\n" );
 }
