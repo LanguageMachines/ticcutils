@@ -134,7 +134,10 @@ namespace TiCC {
 
   /// @cond HIDDEN
   /// a structure to store locking information per thread
-  struct lock_s { pthread_t id; int cnt; time_t tim; };
+  struct lock_s {
+    lock_s() : id(0), cnt(-1), tim(0) {};
+    pthread_t id; int cnt; time_t tim;
+  };
 
 #define MAX_LOCKS 500
 
