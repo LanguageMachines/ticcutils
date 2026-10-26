@@ -253,7 +253,7 @@ namespace TiCCServer {
   void *ServerBase::callChild( void *a ) {
     /// generic callback function
     /*!
-      \parameter a a void pointer to be interpreted as a childArgs
+      \param a a void pointer to be interpreted as a childArgs
       struct by the Server
       \return NULL pointer
     */
@@ -267,7 +267,7 @@ namespace TiCCServer {
   void KillServerFun( int signal ){
     /// function to handle SIGTERM signals
     /*!
-      \parameter signal a signal to handle
+      \param signal a signal to handle
     */
     if ( signal == SIGTERM ){
       cerr << "KillServerFun caught a signal SIGTERM" << endl;
@@ -280,7 +280,7 @@ namespace TiCCServer {
   void AfterDaemonFun( int signal ){
     /// function to handle SIGCHLD signals
     /*!
-      \parameter signal a signal to handle
+      \param signal a signal to handle
     */
     cerr << "AfterDaemonFun caught a signal " << signal << endl;
     if ( signal == SIGCHLD ){
@@ -292,7 +292,7 @@ namespace TiCCServer {
   void BrokenPipeChildFun( int a_signal ){
     /// function to handle SIGPIPE signals
     /*!
-      \parameter a_signal a signal to handle
+      \param a_signal a signal to handle
     */
     cerr << "BrokenPipeChildFun caught a signal " << a_signal << endl;
     if ( a_signal == SIGPIPE ){

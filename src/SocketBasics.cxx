@@ -500,7 +500,7 @@ namespace Sockets {
   /// NULL is returned if the address can not be found.
   struct in_addr *atoaddr( const string& address ){
     /*!
-      \param \param address a string descibing an IP address
+      \param address a string descibing an IP address
       \return an in_addr struct on success
     */
     struct hostent *host;
