@@ -92,12 +92,6 @@ namespace TiCC {
     buf.Threshold( ls->buf.Threshold() );
   }
 
-  LogStream *LogStream::create( const string& filename,
-				std::ios_base::openmode mode ){
-    ofstream os( filename, mode );
-    return new LogStream( os );
-  }
-
   void LogStream::add_message( const string& s ){
     /// append a string to the current messsage
     if ( !s.empty() ){
