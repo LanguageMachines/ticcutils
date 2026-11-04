@@ -1183,7 +1183,7 @@ void test_json() {
   assertEqual( parsed["something"] , nullptr );
 }
 
-enum flags { No = 0, One = 1, Two= 2, Four = 4};
+enum flags { No = 0, One = 1, Two= 16, Four = 256 };
 
 enum class class_flags { nope = 0, ok = 1, warning = 1<<1, error = 1<<2 };
 
@@ -1207,11 +1207,11 @@ void test_enum_flags() {
     // cerr << (f & (flags::Two|flags::Four) ) << endl;
     // cerr << (f & flags::Two) << endl;
     // cppcheck-suppress knownConditionTrueFalse
-    assertTrue( f == 6 );
+    assertEqual( f , 272 ); // 16 + 256
     assertTrue( f % (flags::Two|flags::Four) );
     f = ~f;
     // cppcheck-suppress knownConditionTrueFalse
-    assertEqual( f, -7 );
+    assertEqual( f, -273 );
     f &= flags::One;
     std::stringstream ss;
     ss << f;
