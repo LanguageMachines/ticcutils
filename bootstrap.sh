@@ -20,11 +20,20 @@
 automake=automake
 aclocal=aclocal
 
-if $automake --version|head -1 |grep ' 1\.[^1][0-9]'; then
-    echo "automake 1.4-1.9 is active. You should use automake 1.10 or later"
+if $automake --version|head -1 |grep ' 1\.[4-8]'; then
+    echo "automake 1.4-1.8 is active. You should use automake 1.9 or later"
     if test -f /etc/debian_version; then
         echo " sudo apt-get install automake"
         echo " sudo update-alternatives --config automake"
+    fi
+    exit 1
+fi
+
+if $aclocal --version|head -1 |grep ' 1\.[4-8]'; then
+    echo "aclocal 1.4-1.8 is active. You should use aclocal 1.9 or later"
+    if test -f /etc/debian_version; then
+        echo " sudo apt-get install aclocal"
+        echo " sudo update-alternatives --config aclocal"
     fi
     exit 1
 fi
